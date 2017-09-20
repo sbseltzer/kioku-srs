@@ -37,6 +37,8 @@ To build from source, I'm thinking CMake. This would be for maximum portability.
 - [jsont](https://github.com/rsms/jsont) - A portable JSON library.
 - [ims-json](https://github.com/inmotionsoftware/ims-json) - Another portable JSON library I'm considering with a focus on speed and efficiency.
 - [php-lua](https://github.com/laruence/php-lua) - A PHP PECL package for embedding a Lua interpreter in PHP.
+- [hotel](https://github.com/typicode/hotel) - This looks promising for developing a client or server?
+- [mongoose](https://github.com/cesanta/mongoose) - Portable embedded webserver that appears to support PHP.
 
 ## Basic Architecture
 
