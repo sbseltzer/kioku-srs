@@ -54,7 +54,6 @@ Above that is the Server layer.
 - REST - Uses the SRS Interface Module to implement the REST protocol on an HTTP Server.
 
 Above that is the Client layer.
-
 - Model - The API for interfacing with the SRS data model.
 - Sync - The API for syncing Git databases.
 - Schedule - The API for scheduling.
@@ -76,14 +75,13 @@ To build from source, I'm thinking CMake. This would be for maximum portability.
 
 ### Libraries
 
+- [mongoose](https://github.com/cesanta/mongoose) - Portable embedded webserver.
 - [libgit2](https://libgit2.github.com/) - This is wrapped to create a filesystem database thingy. The rationale is for portable synchronization, file management, and deck version history.
-- [lua](https://lua.org) - I'm thinking of using this as a portable dynamic loader for backend tasks. This would also make it easier to embed with things like PHP.
+- [lua](https://lua.org) - I'm thinking of using this as a portable dynamic loader for backend tasks. This would also make it easier to embed with things like PHP. It'd also serve as a nice configuration language, providing similar value to JSON.
 - [luagit2](https://github.com/libgit2/luagit2) - Lua bindings for libgit2. Why not?
 - [utf8](https://github.com/sheredom/utf8.h) - A portable single-header library for UTF-8 string functions.
-- [jsont](https://github.com/rsms/jsont) - A portable JSON library.
-- [ims-json](https://github.com/inmotionsoftware/ims-json) - Another portable JSON library I'm considering with a focus on speed and efficiency.
+- [jsont](https://github.com/rsms/jsont) or [ims-json](https://github.com/inmotionsoftware/ims-json) - Portable JSON library.
 - [hotel](https://github.com/typicode/hotel) - This looks promising for developing a client or server.
-- [mongoose](https://github.com/cesanta/mongoose) - Portable embedded webserver.
 - [php-src](https://github.com/php/php-src) - The PHP source code for compiling the interpreter and CGI.
 - [php-lua](https://github.com/laruence/php-lua) - A PHP PECL package for embedding a Lua interpreter in PHP.
 - [markdown-it](https://github.com/markdown-it/markdown-it) - A Javascript Markdown parser.
