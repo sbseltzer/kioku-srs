@@ -2,6 +2,8 @@
 
 A portable, versioned, distributed, self-hosted spaced repetition system (SRS) inspired by Anki and backed by Git.
 
+This is really born of my frustration with Anki. It does its job wonderfully, but it's a nightmare to hack on.
+
 ## Concept
 
 The idea is to have a decoupled framework that allows the user to sync using free hosting solutions, empower developers to easily implement clients and servers that can be mixed/matched, and empower server admins to deploy their own servers.
