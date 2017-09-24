@@ -39,7 +39,7 @@ Using these decoupled components, anyone could write an implementation of any co
 ### API Layers
 
 The lowest layer is the Plumbing layer.
-- Filesystem - One that reads and manipulates data.
+- Filesystem - One that watches/reads/writes data.
 - History - One that versions data via Git.
 - Sync - One that syncs data via Git.
 
