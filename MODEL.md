@@ -1,10 +1,31 @@
+# Model
+This file is a draft of how data is managed in Kioku.
+
+## Goals
+
+
+## Filesystem
+This is a draft of the git-managed filesystem, which acts as a sort of database.
+```
+/.plugins - where native (compiled/binary) plugins go
+  /lua-scripting-engine
+    -- files
+  /python-scripting-engine
+    -- files
+  /ruby-scripting-engine
+    -- files
 /user-name
-  /addons - where addon scripts go
+  /.git - This is a git repository
+  tags.txt - list of available tags
+  /addons - where addon scripts go - this is the root include path for scripting all languages
     /my-addon-folder
+      addon-info.(lua|json|xml|txt) - Contains stuff like plugin dependency, where it came from, etc.
+      install.(lua|rb|py) - How it installs/uninstalls itself.
       -- script files go here
-      some-script.[lua|rb|py]
+      some-script.(lua|rb|py) - Some arbitrary script file
   /templates
     /note-template-id
+      depend.(lua|json|xml) - Dependencies... This might be a bad idea... This should probably rely on resources at best. Then again, a generator might utilize a special addon to do its work, but then again that's kinda the role of the generator.
       generator.(lua|rb|py) - used to describe how it generates cards from a note
       sides.(txt|lua|json|xml|csv) - used to describe how many sides the note has
       fields.(txt|lua|json|xml|csv) - used to describe the fields available to the note
@@ -14,17 +35,17 @@
         ...
         side-name-Z.(html?|md|markdown|txt)
         -- End sides --
-        /resource
-          -- Extra arbitrary files used by this template
-          -- When a foreign note type is imported, resources go here by default to prevent name conflicts
+      /resource
+        -- Extra arbitrary files used by this template
+        -- When a foreign note type is imported, resources go here by default to prevent name conflicts
     /resource
       -- extra arbitrary files used by all templates
   /decks
     /deck-id
       manifest.txt
-      /card-id
+      /note-id - Some unique name for the note
         .template - solely refers to a note id
-        .schedule - solely contains scheduling data for the card
+        .schedule - solely contains scheduling data for the card - the history of this can be used for anonymous research purposes
         fields-import.[txt|lua|json|xml|csv] - A special override file for defining all fields in one file. This is useful for import/export of foreign note types or translating between incompatible ones.
         /fields
           -- Data for fields as named in the note template fields file --
@@ -33,8 +54,77 @@
           field-data-Z.(html?|md|markdown|txt)
           -- End fields
   /media
+    .gitignore
     -- arbitrary media files for use in decks
     filenameA
     filenameB
     ...
     filenameZ
+/.base-user
+  -- Same structure as above, but all of these exist for all users.
+  -- This would include stuff like default note types, default scripts, default tags, etc.
+```
+
+## API
+
+Install Plugin
+
+Get Users
+
+Install Addon (for user)
+
+Uninstall Addon (for user)
+
+Get Deck List (for user)
+
+Get Note List (for deck | for note type | for tag)
+
+Get Card List (for deck | for note type | for note | for tag)
+
+Add Tag (for user)
+
+Delete Tag (for user)
+
+Add Note Type (for user)
+
+Delete Note Type (for user)
+
+Edit Note Type (for user)
+
+Add Deck (to user)
+
+Add Note (to deck)
+
+Set Field Content (for note)
+
+Add Resource File (to note type)
+
+Add Media File (to user)
+
+Get Media List (for user | for deck | for note)
+
+Generate Cards (for note)
+
+Format Card Content (for card using note template)
+
+Get Note (for card)
+
+Add Tag (to note)
+
+Give Answer (for card)
+
+Suspend (for card | for note)
+
+Delete (for card | for note)
+
+Search Using Filter String (for cards | for notes)
+
+Sync (user)
+
+## Syncing Considerations
+
+Being Git, there's always the possibility of a merge conflict.
+
+In other SRSs, they just say "pick one". My problem with this is if a card was added on one system and a note type was modified on another, one of those changes will be lost.
+
+Instead, it should give the user an interface to merge. In most cases, they'll simply need to 
