@@ -89,6 +89,7 @@ To build from source, I'm thinking CMake. This would be for maximum portability.
 - [markdown-it](https://github.com/markdown-it/markdown-it) - A Javascript Markdown parser.
 - [stackedit](https://github.com/benweet/stackedit) - An in-browser Markdown editor.
 - [mbedtls](https://github.com/ARMmbed/mbedtls) - Appears to be the smallest, most portable SSL implementation, which would allow for HTTPS on mongoose.
+- [pypy](http://doc.pypy.org/en/latest/embedding.html) - This seems to be a good sandboxed, portable, embedded python solution.
 
 ## Basic Architecture
 
