@@ -6,6 +6,8 @@ Lua is going to be the most portable and easy to integrate.
 
 My thought is to write an interface for scripting engines.
 
+I think at least Python should be supported. So many SRS solutions use it, and I think it would be a necessary addition to attract the modding community. Since Lua and Python are so desirable, using [lunatic-python](https://labix.org/lunatic-python) is worth consideration.
+
 ## Motivation
 One thing that is troublesome to me is that a big part of what scares me away from other SRSs is shoehorning the user into modding with a specific language. In particular, Python, which both Anki and Mnemosyne seem to prefer. Python is a great language. I'd even argue that Ruby is a good candidate for writing an SRS. The problem is they're not as portable as C or Lua. One place where all modern SRS solutions have common ground is HTML/Javascript, but they don't seem to leverage those as much as they ought to. I'd like to ensure most things can be done through that avenue. The vast majority of Anki addons are UI related, and often written to aid in changes to the model. Some change the controller.
 
