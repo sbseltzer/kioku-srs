@@ -157,3 +157,5 @@ Being Git, there's always the possibility of a merge conflict.
 In other SRSs, they just say "pick one". My problem with this is if a card was added on one system and a note type was modified on another, one of those changes will be lost.
 
 Instead, it should give the user an interface to merge. In most cases, they'll simply need to 
+
+One thing I'd like to facilitate is sharing of cards/decks in a merge friendly way. Like, being able to update an RTK deck to newer revisions without it screwing up history.
