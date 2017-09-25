@@ -76,11 +76,17 @@ This is a draft of the git-managed filesystem, which acts as a sort of database.
 
 Install Plugin (for device)
 
+Uninstall Plugin (for device)
+
+Get Plugins (for device)
+
 Get Users (for device)
 
 Install Addon (for user)
 
 Uninstall Addon (for user)
+
+Get Addons (for user)
 
 Get Deck List (for user)
 
