@@ -49,8 +49,7 @@ This is a draft of the git-managed filesystem, which acts as a sort of database.
       manifest.txt
       /note-id - Some unique name for the note
         .template - solely refers to a note id
-        .schedule - solely contains scheduling data for the card - the history of this can be used for anonymous research purposes
-        fields-import.[txt|lua|json|xml|csv] - A special override file for defining all fields in one file. This is useful for import/export of foreign note types or translating between incompatible ones.
+        .schedule - solely contains scheduling data for the card - the history of this can be used for anonymous research purposes fields.(txt|lua|json|xml|html?|csv) - A special override file for defining all fields in one file. This would be useful for import/export of foreign note types or translating between incompatible ones. This would forego use of the /fields folder. Deleting/replacing that folder would be fine since git could revert it.
         /fields
           -- Data for fields as named in the note template fields file --
           field-data-A.(html?|md|markdown|txt)
