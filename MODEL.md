@@ -130,6 +130,8 @@ Suspend (for card | for note)
 
 Delete (for card | for note)
 
+Reschedule To Date (for card | for note)
+
 Search Using Filter String (for cards | for notes)
 
 Sync (for user)
