@@ -17,15 +17,19 @@ This is a draft of the git-managed filesystem, which acts as a sort of database.
 /user-name
   /.git - This is a git repository
   tags.txt - list of available tags
+  /options
+    general.[lua|json|xml] - General user options
+    addons.[lua|json|xml] - General addon options
+    interface.[lua|json|xml] - General interface options
   /addons - where addon scripts go - this is the root include path for scripting all languages
     /my-addon-folder
-      addon-info.(lua|json|xml|txt) - Contains stuff like plugin dependency, where it came from, etc.
+      info.(lua|json|xml|txt) - Contains stuff like plugin dependency, where it came from, etc.
       install.(lua|rb|py) - How it installs/uninstalls itself.
+      options.(lua|rb|py) - Specialized options available to client.
       -- script files go here
       some-script.(lua|rb|py) - Some arbitrary script file
   /templates
     /note-template-id
-      depend.(lua|json|xml) - Dependencies... This might be a bad idea... This should probably rely on resources at best. Then again, a generator might utilize a special addon to do its work, but then again that's kinda the role of the generator.
       generator.(lua|rb|py) - used to describe how it generates cards from a note
       sides.(txt|lua|json|xml|csv) - used to describe how many sides the note has
       fields.(txt|lua|json|xml|csv) - used to describe the fields available to the note
