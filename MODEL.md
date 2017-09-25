@@ -7,6 +7,7 @@ This file is a draft of how data is managed in Kioku.
 ## Filesystem
 This is a draft of the git-managed filesystem, which acts as a sort of database.
 ```
+.version - Implementation version information for this device
 /.plugins - where native (compiled/binary) plugins go
   /lua-scripting-engine
     -- files
@@ -16,6 +17,7 @@ This is a draft of the git-managed filesystem, which acts as a sort of database.
     -- files
 /user-name
   /.git - This is a git repository
+  .version - Implementation version information for this user.
   tags.txt - list of available tags
   /options
     general.[lua|json|xml] - General user options
