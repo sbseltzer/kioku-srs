@@ -72,7 +72,7 @@ This is a draft of the git-managed filesystem, which acts as a sort of database.
   -- This would include stuff like default note types, default scripts, default tags, etc.
 ```
 
-## API
+## REST API
 
 Install Plugin (for device)
 
