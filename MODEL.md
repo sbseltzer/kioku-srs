@@ -66,15 +66,17 @@ This is a draft of the git-managed filesystem, which acts as a sort of database.
     ...
     filenameZ
 /.base-user
-  -- Same structure as above, but all of these exist for all users.
+  -- Same structure as above, but acts as a sort of base class
+  -- Content here is available to all users and cannot be modified by users.
+  -- Users can, however, override content here by creating duplicates in their directory.
   -- This would include stuff like default note types, default scripts, default tags, etc.
 ```
 
 ## API
 
-Install Plugin
+Install Plugin (for device)
 
-Get Users
+Get Users (for device)
 
 Install Addon (for user)
 
