@@ -8,6 +8,7 @@ This file is a draft of how data is managed in Kioku.
 This is a draft of the git-managed filesystem, which acts as a sort of database.
 ```
 .version - Implementation version information for this device
+LOG.txt - Logfile for server. Clients can implement their own logging, or log to server.
 /.plugins - where native (compiled/binary) plugins go
   /lua-scripting-engine
     -- files
@@ -30,6 +31,7 @@ This is a draft of the git-managed filesystem, which acts as a sort of database.
       options.(lua|rb|py) - Specialized options available to client.
       -- script files go here
       some-script.(lua|rb|py) - Some arbitrary script file
+      LOG.txt - Addon-specific logging.
   /templates
     /note-template-id
       generator.(lua|rb|py) - used to describe how it generates cards from a note
@@ -149,6 +151,10 @@ Import Deck (for user)
 Export Addon (for user)
 
 Import Addon (for user)
+
+Write Log (for device)
+
+Get Logfile (for device)
 
 ## Syncing Considerations
 
