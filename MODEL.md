@@ -157,6 +157,10 @@ Restore File to Previous Version (for user)
 
 Get Anonymous Scheduling Data (for user)
 
+Get Options (for user)
+
+Set Options (for user)
+
 Export Deck (for user)
 
 Import Deck (for user)
