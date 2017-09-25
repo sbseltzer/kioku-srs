@@ -93,6 +93,7 @@ To build from source, I'm thinking CMake. This would be for maximum portability.
 - [mbedtls](https://github.com/ARMmbed/mbedtls) - Appears to be the smallest, most portable SSL implementation, which would allow for HTTPS on mongoose.
 - [pypy](http://doc.pypy.org/en/latest/embedding.html) - This seems to be a good sandboxed, portable, embedded python solution.
 - [lunatic-python](https://labix.org/lunatic-python) - This looks very promising as a best-of-both-worlds thing.
+- [luacurl](http://luacurl.luaforge.net/) - Platform independent, apparently. Very simple looking.
 
 ## Basic Architecture
 
