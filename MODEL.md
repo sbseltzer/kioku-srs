@@ -138,6 +138,10 @@ Export Deck (for user)
 
 Import Deck (for user)
 
+Export Addon (for user)
+
+Import Addon (for user)
+
 ## Syncing Considerations
 
 Being Git, there's always the possibility of a merge conflict.
