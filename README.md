@@ -42,6 +42,8 @@ The lowest layer is the Plumbing layer.
 - Filesystem - One that watches/reads/writes data.
 - History - One that versions data via Git.
 - Sync - One that syncs data via Git.
+- Plugin - Interface for plugins.
+- Addons - Interface for addons.
 
 Above that is the SRS layer.
 - Model - One that builds and modifies a data model using Filesystem & History modules.

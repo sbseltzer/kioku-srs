@@ -1,15 +1,17 @@
 # Model
-This file is a draft of how data is managed in Kioku.
+
+This file is a draft of how data is managed in Kioku. I think this will probably drive the high level design.
 
 ## Goals
 
 
 ## Filesystem
-This is a draft of the git-managed filesystem, which acts as a sort of database.
+
+This is a draft of the partly git-managed filesystem, which acts as a sort of database.
 ```
 .version - Implementation version information for this device
 LOG.txt - Logfile for server. Clients can implement their own logging, or log to server.
-/.plugins - where native (compiled/binary) plugins go
+/.plugins - Where native (compiled/binary) plugins go. Not synced.
   /lua-scripting-engine
     -- files
   /python-scripting-engine
@@ -18,12 +20,16 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
     -- files
 /user-name
   /.git - This is a git repository
+  .gitignore
+  .sync
   .version - Implementation version information for this user. This is checked against the device .version file for ABI compatibility.
-  tags.txt - list of available tags
+  tags.txt - list of available tags, which should be kept as an aggregate of all note tags.txt files.
   /options
-    general.[lua|json|xml] - General user options
-    addons.[lua|json|xml] - General addon options
-    interface.[lua|json|xml] - General interface options
+    general.[lua|json|xml|ini] - General user options
+    addons.[lua|json|xml|ini] - Addon options
+    interface.[lua|json|xml|ini] - User interface options
+    schedule.[lua|json|xml|ini] - Scheduling options
+    sync.[lua|json|xml|ini] - Syncing options
   /addons - where addon scripts go - this is the root include path for scripting all languages
     /my-addon-folder
       info.(lua|json|xml|txt) - Contains stuff like plugin dependency, where it came from, etc.
@@ -52,6 +58,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
     /deck-id
       manifest.txt
       /note-id - Some unique name for the note
+        tags.txt - Tags used by this card. Since this is a filesystem database, there will be some redundancy here with the upper tags.txt file.
         .template - solely refers to a note id
         .schedule - solely contains scheduling data for the card - the history of this can be used for anonymous research purposes fields.(txt|lua|json|xml|html?|csv) - A special override file for defining all fields in one file. This would be useful for import/export of foreign note types or translating between incompatible ones. This would forego use of the /fields folder. Deleting/replacing that folder would be fine since git could revert it.
         /fields
@@ -138,6 +145,12 @@ Search Using Filter String (for cards | for notes)
 
 Sync (for user)
 
+Set Sync Method (for file | for file extension)
+
+Get File Hash (for file)
+
+Get List of Unstaged Files (for user)
+
 Get Full Revision History (for user)
 
 Restore File to Previous Version (for user)
@@ -156,6 +169,10 @@ Write Log (for device)
 
 Get Logfile (for device)
 
+Convert To Note Type (for note)
+
+Rename User (for user)
+
 ## Syncing Considerations
 
 Being Git, there's always the possibility of a merge conflict.
@@ -165,3 +182,7 @@ In other SRSs, they just say "pick one". My problem with this is if a card was a
 Instead, it should give the user an interface to merge. In most cases, they'll simply need to 
 
 One thing I'd like to facilitate is sharing of cards/decks in a merge friendly way. Like, being able to update an RTK deck to newer revisions without it screwing up history.
+
+I very much suspect there will be files introduced that should be synced, but not with Git. One example might certain kinds of content in the media folder. Another would be, say, embedded databases that addons choose to use. It'd be nice to use Rsync, but it's not well supported on Windows. Nearly every syncing solution I've found has serious portability problems. It may be best to roll my own using a portable FTP library and just version the checksums of non-versioned files. It's not very efficient, but it'd get the job done.
+
+This might also be a job for plugins/addons.
