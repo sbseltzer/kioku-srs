@@ -18,7 +18,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
     -- files
 /user-name
   /.git - This is a git repository
-  .version - Implementation version information for this user.
+  .version - Implementation version information for this user. This is checked against the device .version file for ABI compatibility.
   tags.txt - list of available tags
   /options
     general.[lua|json|xml] - General user options
