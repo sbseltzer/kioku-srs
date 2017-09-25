@@ -130,11 +130,13 @@ Sync (for user)
 
 Get Full Revision History (for user)
 
-Revert Change (for user)
-
-Commit Change (for user)
+Restore File to Previous Version (for user)
 
 Get Anonymous Scheduling Data (for user)
+
+Export Deck (for user)
+
+Import Deck (for user)
 
 ## Syncing Considerations
 
