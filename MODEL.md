@@ -228,3 +228,14 @@ This might also be a job for plugins/addons. I think it'd be nice to offer users
   - Rewriting history for a single-file repository is much simpler than surgical strikes in a collection.
   - So many repositories, though. This would be quite nasty to self-host.
   
+## Sharing
+
+Sharing decks, note types, notes, and addons is desirable. In what way, though? There are many use-cases that become available with Git, and many ways to go about it.
+
+With Addons, there's a strong analogy to submodules, but some people may prefer to modify them and keep them versioned in their own history.
+
+Decks are the trickiest. 
+
+## Security
+
+A big part of this will be what addons can modify. Some things should be sacred.
