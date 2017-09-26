@@ -36,6 +36,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
       some-custom-group.(lua|json|xml|ini)
   /addons - where addon scripts go - this is the root include path for scripting all languages
     /my-addon-folder
+      .version - Implementation version for this addon. This is checked against the device .version file for ABI compatibility.
       info.(lua|json|xml|txt) - Contains stuff like plugin dependency, where it came from, etc.
       manifest.(lua|json|xml|txt) - Data-oriented install/uninstall information.
       options.(lua|json|xml|ini) - Specialized options available to client.
