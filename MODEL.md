@@ -55,7 +55,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
         -- Extra arbitrary files used by this template
         -- When a foreign note type is imported, resources go here by default to prevent name conflicts
     /resource
-      -- extra arbitrary files used by all templates
+      -- extra arbitrary files accessible to all templates
   /decks
     /deck-id
       manifest.txt
