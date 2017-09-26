@@ -105,9 +105,11 @@ Get Note List (for deck | for note type | for tag)
 
 Get Card List (for deck | for note type | for note | for tag)
 
-Add Tag (for user)
+Get Next Scheduled Card (from deck)
 
-Delete Tag (for user)
+Add Tag (for user | to note)
+
+Delete Tag (for user | from note)
 
 Add Note Type (for user)
 
@@ -133,8 +135,6 @@ Format Card Content (for card using note template)
 
 Get Note (for card)
 
-Add Tag (to note)
-
 Give Answer (for card)
 
 Suspend (for card | for note)
@@ -159,9 +159,9 @@ Restore File to Previous Version (for user)
 
 Get Anonymous Scheduling Data (for user)
 
-Get Options (for user)
+Get Options (for user | for addon | for deck)
 
-Set Options (for user)
+Set Options (for user | for addon | for deck)
 
 Export Deck (for user)
 
