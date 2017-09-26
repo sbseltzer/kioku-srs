@@ -19,6 +19,42 @@ In an ideal world someone could write a client implementation as a CLI or even i
 
 One hardmode use-case would be a media capture plugin. This is extremely platform dependent and is difficult to accomplish via browser alone. Many browsers will support [MediaStreamRecorder](https://github.com/streamproc/MediaStreamRecorder) and/or [RecordRTC](https://github.com/muaz-khan/RecordRTC), but for some platforms it may be necessary to implement it using some combination of Lua and native modules. It seems the best bet would be to use [Cordova](https://cordova.apache.org/) with [cordova-media-capture-plugin](https://github.com/apache/cordova-plugin-media-capture) for the quirky mobile platforms. A lot of the quirks in that plugin can be mitigated by the decoupled architecture of this application.
 
+## Dependencies
+
+### Build System
+
+Potential options:
+
+- Make
+- CMake
+- Autotools
+- Premake
+
+To build from source, I'm thinking CMake. This would be for maximum portability.
+
+### Libraries
+
+- [mongoose](https://github.com/cesanta/mongoose) - Portable embedded webserver.
+- [libgit2](https://libgit2.github.com/) - This is wrapped to create a filesystem database thingy. The rationale is for portable synchronization, file management, and deck version history.
+- [lua](https://lua.org) - I'm thinking of using this as a portable dynamic loader for backend tasks. This would also make it easier to embed with things like PHP. It'd also serve as a nice configuration language, providing similar value to JSON.
+- [luagit2](https://github.com/libgit2/luagit2) - Lua bindings for libgit2. Why not?
+- [utf8.h](https://github.com/sheredom/utf8.h) - A portable single-header library for UTF-8 string functions.
+- [ims-json](https://github.com/inmotionsoftware/ims-json) - Portable JSON library.
+- [hotel](https://github.com/typicode/hotel) - This looks promising for developing a client or server.
+- [php-src](https://github.com/php/php-src) - The PHP source code for compiling the interpreter and CGI.
+- [php-lua](https://github.com/laruence/php-lua) - A PHP PECL package for embedding a Lua interpreter in PHP.
+- [markdown-it](https://github.com/markdown-it/markdown-it) - A Javascript Markdown parser.
+- [stackedit](https://github.com/benweet/stackedit) - An in-browser Markdown editor.
+- [mbedtls](https://github.com/ARMmbed/mbedtls) - Appears to be the smallest, most portable SSL implementation, which would allow for HTTPS on mongoose.
+- [pypy](http://doc.pypy.org/en/latest/embedding.html) - This seems to be a good sandboxed, portable, embedded python solution.
+- [lunatic-python](https://labix.org/lunatic-python) - This looks very promising as a best-of-both-worlds thing.
+- [luacurl](http://luacurl.luaforge.net/) - Platform independent, apparently. Very simple looking.
+- [v7](https://github.com/cesanta/v7) or [mjs](https://github.com/cesanta/mjs) - Embedded Portable Javascript engine with Lua-like binding API. V7 is recently deprecated, but has a much broader feature set. mJS is so stripped down that it doesn't even look like JS.
+- [frozen](https://github.com/cesanta/frozen) - Portable, extremely minimal JSON parser/emitter. No objects included.
+- [slre](https://github.com/cesanta/slre) - Super Light RegEx library. Portable. Gives a subset of Perl-style regex in C.
+
+## Basic Architecture
+
 ### Components
 
 This loosely follows an MVC pattern.
@@ -63,40 +99,3 @@ Above that is the Client layer.
 - Schedule - The API for scheduling.
 - Statistic - The API for computing statistics.
 - REST - The API for implementing whatever layers are needed for the REST Server.
-
-## Dependencies
-
-### Build System
-
-Potential options:
-
-- Make
-- CMake
-- Autotools
-- Premake
-
-To build from source, I'm thinking CMake. This would be for maximum portability.
-
-### Libraries
-
-- [mongoose](https://github.com/cesanta/mongoose) - Portable embedded webserver.
-- [libgit2](https://libgit2.github.com/) - This is wrapped to create a filesystem database thingy. The rationale is for portable synchronization, file management, and deck version history.
-- [lua](https://lua.org) - I'm thinking of using this as a portable dynamic loader for backend tasks. This would also make it easier to embed with things like PHP. It'd also serve as a nice configuration language, providing similar value to JSON.
-- [luagit2](https://github.com/libgit2/luagit2) - Lua bindings for libgit2. Why not?
-- [utf8.h](https://github.com/sheredom/utf8.h) - A portable single-header library for UTF-8 string functions.
-- [ims-json](https://github.com/inmotionsoftware/ims-json) - Portable JSON library.
-- [hotel](https://github.com/typicode/hotel) - This looks promising for developing a client or server.
-- [php-src](https://github.com/php/php-src) - The PHP source code for compiling the interpreter and CGI.
-- [php-lua](https://github.com/laruence/php-lua) - A PHP PECL package for embedding a Lua interpreter in PHP.
-- [markdown-it](https://github.com/markdown-it/markdown-it) - A Javascript Markdown parser.
-- [stackedit](https://github.com/benweet/stackedit) - An in-browser Markdown editor.
-- [mbedtls](https://github.com/ARMmbed/mbedtls) - Appears to be the smallest, most portable SSL implementation, which would allow for HTTPS on mongoose.
-- [pypy](http://doc.pypy.org/en/latest/embedding.html) - This seems to be a good sandboxed, portable, embedded python solution.
-- [lunatic-python](https://labix.org/lunatic-python) - This looks very promising as a best-of-both-worlds thing.
-- [luacurl](http://luacurl.luaforge.net/) - Platform independent, apparently. Very simple looking.
-- [v7](https://github.com/cesanta/v7) or [mjs](https://github.com/cesanta/mjs) - Embedded Portable Javascript engine with Lua-like binding API. V7 is recently deprecated, but has a much broader feature set. mJS is so stripped down that it doesn't even look like JS.
-- [frozen](https://github.com/cesanta/frozen) - Portable, extremely minimal JSON parser/emitter. No objects included.
-- [slre](https://github.com/cesanta/slre) - Super Light RegEx library. Portable. Gives a subset of Perl-style regex in C.
-
-## Basic Architecture
-
