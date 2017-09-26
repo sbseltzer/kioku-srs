@@ -63,16 +63,17 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
   /decks
     /deck-id
       manifest.txt
-      /note-id - Some unique name for the note
-        tags.txt - Tags used by this card. Since this is a filesystem database, there will be some redundancy here with the upper tags.txt file.
-        .template - solely refers to a note id
-        .schedule - solely contains scheduling data for the card - the history of this can be used for anonymous research purposes fields.(txt|lua|json|xml|html?|csv) - A special override file for defining all fields in one file. This would be useful for import/export of foreign note types or translating between incompatible ones. This would forego use of the /fields folder. Deleting/replacing that folder would be fine since git could revert it.
-        /fields
-          -- Data for fields as named in the note template fields file --
-          field-data-A.(html?|md|markdown|txt)
-          ...
-          field-data-Z.(html?|md|markdown|txt)
-          -- End fields
+      /notes
+        /note-id - Some unique name for the note
+          tags.txt - Tags used by this card. Since this is a filesystem database, there will be some redundancy here with the upper tags.txt file.
+          .template - solely refers to a note id
+          .schedule - solely contains scheduling data for the card - the history of this can be used for anonymous research purposes fields.(txt|lua|json|xml|html?|csv) - A special override file for defining all fields in one file. This would be useful for import/export of foreign note types or translating between incompatible ones. This would forego use of the /fields folder. Deleting/replacing that folder would be fine since git could revert it.
+          /fields
+            -- Data for fields as named in the note template fields file --
+            field-data-A.(html?|md|markdown|txt)
+            ...
+            field-data-Z.(html?|md|markdown|txt)
+            -- End fields
   /media
     .gitignore
     -- arbitrary media files for use in decks
