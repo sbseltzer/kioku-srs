@@ -62,6 +62,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
       -- extra arbitrary files accessible to all templates
   /decks
     /deck-id
+      .option-group - soley references option group
       manifest.txt
       /notes
         /note-id - Some unique name for the note
