@@ -25,11 +25,15 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
   .version - Implementation version information for this user. This is checked against the device .version file for ABI compatibility.
   tags.txt - list of available tags, which should be kept as an aggregate of all note tags.txt files.
   /options
-    general.[lua|json|xml|ini] - General user options
-    addons.[lua|json|xml|ini] - Addon options
-    interface.[lua|json|xml|ini] - User interface options
-    schedule.[lua|json|xml|ini] - Scheduling options
-    sync.[lua|json|xml|ini] - Syncing options
+    general.(lua|json|xml|ini) - General user options
+    addons.(lua|json|xml|ini) - Addon options
+    interface.(lua|json|xml|ini) - User interface options
+    schedule.(lua|json|xml|ini) - Scheduling options
+    sync.(lua|json|xml|ini) - Syncing options
+    /groups - option groups for decks
+      default.(lua|json|xml|ini) - The default options.
+      -- arbitrary extra option groups.
+      some-custom-group.(lua|json|xml|ini)
   /addons - where addon scripts go - this is the root include path for scripting all languages
     /my-addon-folder
       info.(lua|json|xml|txt) - Contains stuff like plugin dependency, where it came from, etc.
