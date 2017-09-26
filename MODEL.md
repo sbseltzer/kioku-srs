@@ -75,6 +75,8 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
             ...
             field-data-Z.(html?|md|markdown|txt)
             -- End fields
+      /media - Decks have their own separately versioned media folders. If the deck is deleted, the media (and space overhead) can go with it.
+        -- arbitrary media files for use in this deck
   /media
     .gitignore
     -- arbitrary media files for use in decks
