@@ -199,4 +199,32 @@ One thing I'd like to facilitate is sharing of cards/decks in a merge friendly w
 
 I very much suspect there will be files introduced that should be synced, but not with Git. One example might certain kinds of content in the media folder. Another would be, say, embedded databases that addons choose to use. It'd be nice to use Rsync, but it's not well supported on Windows. Nearly every syncing solution I've found has serious portability problems. It may be best to roll my own using a portable FTP library and just version the checksums of non-versioned files. It's not very efficient, but it'd get the job done.
 
-This might also be a job for plugins/addons.
+Alternatively, there are [scripts like this](https://robinwinslow.uk/2013/06/11/dont-ever-commit-binary-files-to-git/) that purge binary files by rewriting history. You could even preserve commit times by [faking them](https://stackoverflow.com/questions/3895453/how-do-i-make-a-git-commit-in-the-past#3898842). On the other hand, you end up with incompatible histories. This would basically put the user in the same place that Anki does when modifying note types, but for every time media is deleted/modified (or perhaps only when they want to reclaim space). Not so good. This is where there'd need to be a companion sync method (maybe a tiny metadata repository) that assists in getting a re-clone.
+
+This might also be a job for plugins/addons. I think it'd be nice to offer users the option to change out how they sync certain kinds of files.
+
+### Some ideas for syncing media
+- Version them right along with everything else.  
+  - To hell with the user.
+- Version them with everything else, but provide surgical removal of previous version via history rewrites.  
+  - Complex to implement.
+  - Requires a full repo re-sync when the user wishes to reclaim space.
+- Version them in their own repository, and do a history rewrite for binary files when the user wants to reclaim space.  
+  - Gives user the opportunity to version anything and prune later.
+  - Easy to delete a media repository wholesale.
+  - Hard to implement history replay.
+  - Requires a media repo re-sync in order to fully remove a media file.
+  - Requires an extra remote repository.
+- Only version checksums for unversioned files, then use something like SFTP for actual syncing.  
+  - Basically what Anki does.
+  - Easy to implement.
+  - Doesn't rewrite history.
+  - Consistently avoids bloat.
+  - Files managed this way can't be versioned, which might not be desirable in some cases.
+  - Requires help from an external protocol and some other media hosting service.
+- Version checksums like above, but instead have each media file in its own little repository.  
+  - Not terribly hard to implement.
+  - Files can be versioned and later be permanently deleted without any complexity.
+  - Rewriting history for a single-file repository is much simpler than surgical strikes in a collection.
+  - So many repositories, though. This would be quite nasty to self-host.
+  
