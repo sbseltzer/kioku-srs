@@ -33,14 +33,16 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
   /addons - where addon scripts go - this is the root include path for scripting all languages
     /my-addon-folder
       info.(lua|json|xml|txt) - Contains stuff like plugin dependency, where it came from, etc.
-      install.(lua|rb|py) - How it installs/uninstalls itself.
-      options.(lua|rb|py) - Specialized options available to client.
+      manifest.(lua|json|xml|txt) - Data-oriented install/uninstall information.
+      install.(lua|rb|py) - Optional specialized script for install/uninstall.
+      options.(lua|json|xml|ini) - Specialized options available to client.
+      startup.(lua|rb|py) - This is executed when the SRS server launches.
       -- script files go here
       some-script.(lua|rb|py) - Some arbitrary script file
       LOG.txt - Addon-specific logging.
   /templates
     /note-template-id
-      generator.(lua|rb|py) - used to describe how it generates cards from a note
+      generator.(lua|rb|py) - used to describe how to generate cards from a note
       sides.(txt|lua|json|xml|csv) - used to describe how many sides the note has
       fields.(txt|lua|json|xml|csv) - used to describe the fields available to the note
       /sides
