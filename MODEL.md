@@ -38,7 +38,6 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
     /my-addon-folder
       info.(lua|json|xml|txt) - Contains stuff like plugin dependency, where it came from, etc.
       manifest.(lua|json|xml|txt) - Data-oriented install/uninstall information.
-      install.(lua|rb|py) - Optional specialized script for install/uninstall.
       options.(lua|json|xml|ini) - Specialized options available to client.
       startup.(lua|rb|py) - This is executed when the SRS server launches.
       -- script files go here
