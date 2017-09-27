@@ -36,7 +36,10 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
       -- arbitrary extra option groups.
       some-custom-group.(lua|json|xml|ini)
   /addons - where addon scripts go - this is the root include path for scripting all languages
+    .gitignore - CONSIDER - Should the contents of this folder be ignored? Addons may be git versioned separately by advanced users, or installed/updated via archive. In fact, an addon package manager might make for a good meta-addon.
+    .gitmodules - CONSIDER - Some addons might be git repositories. The user would need an interface for managing this. If they start their own addon repository here, it'd be nice to provide a user-friendly interface to control how it's kept updated.
     /my-addon-folder
+      /.git - CONSIDER - It would be nice if addons could be versioned with git. Forked or otherwise.
       .version - Implementation version for this addon. This is checked against the device .version file for ABI compatibility.
       info.(lua|json|xml|txt) - Contains stuff like plugin dependency, where it came from, etc.
       manifest.(lua|json|xml|txt) - Data-oriented install/uninstall information.
