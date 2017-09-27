@@ -36,6 +36,8 @@ Mnemosyne did something right by providing sync options and self-hosting. Anki n
 
 Kioku aims to make SRS implementation easy. If DuoLingo decided one day to use it as their internal backbone, they totally can.
 
+If a user wants to use alternative syncing mechanisms, they can implement or download an addon that facilitates that. Same can be said for The Algorithm (though this one may be much more difficult to facilitate).
+
 ### Collaborative Learning
 
 Something no other SRS has done yet is deck/template collaboration. Being able to fork decks and contribute to them is something that Git can facilitate. Still, this is not a simple problem to solve. Particularly when it comes to users who have forked a deck and want to stay up-to-date with them. This becomes difficult (or perhaps impossible) if the user makes their own modifications to the deck content, which is something that should be encouraged.
