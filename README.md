@@ -2,6 +2,10 @@
 
 A portable, versioned, distributed, self-hosted spaced repetition system (SRS) inspired by Anki and backed by Git.
 
+## Concept
+
+The idea is to have a decoupled framework that allows the user to sync using free hosting solutions, empower developers to easily implement clients and servers that can be mixed/matched, and empower server admins to deploy their own servers.
+
 ## Why?
 
 This is really born of my frustration with Anki (and other SRS solutions). Anki does its job wonderfully, but it's a nightmare to hack on.
@@ -43,10 +47,6 @@ If a user wants to use alternative syncing mechanisms, they can implement or dow
 Something no other SRS has done yet is deck/template collaboration. Being able to fork decks and contribute to them is something that Git can facilitate. Still, this is not a simple problem to solve. Particularly when it comes to users who have forked a deck and want to stay up-to-date with them. This becomes difficult (or perhaps impossible) if the user makes their own modifications to the deck content, which is something that should be encouraged.
 
 On the other hand, there is no precedent for this. Kioku does not have to implement this perfectly. It can simply facilitate it and improve in future iterations.
-
-## Concept
-
-The idea is to have a decoupled framework that allows the user to sync using free hosting solutions, empower developers to easily implement clients and servers that can be mixed/matched, and empower server admins to deploy their own servers.
 
 ## Goals
 
