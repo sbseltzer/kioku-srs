@@ -248,7 +248,13 @@ This might also be a job for plugins/addons. I think it'd be nice to offer users
   - Rewriting history for a single-file repository is much simpler than surgical strikes in a collection.
   - So many repositories, though. This would be quite nasty to self-host.
   
+A number of the above strategies suffer from needed extra hosting solutions (multiple git repos, sync services, FTP, etc). The multiple git repository one is particularly bad because it'd be cumbersome for a user to manage without hosting their own automated solution. Granted, a solution like that should probably be available from the get-go just like AnkiWeb. On the other hand, having a built-in self-hosted solution for any of these methods should be available by design. It's an SRS server managing this model, but it also pushes to a locally hosted remote as its first remote. This would mean that, in the FTP case, an FTP server would also be present locally. This is kinda crappy, though, since now you've got twice as much space being taken up per client. The most appropriate solution to this would be to have locally hosted unversioned media be available on-demand, similar to how a remote server would handle it.
+
 I think there is probably some value in the surgical strike for situations where the user has done something ridiculous like commit a gigantic binary early on and later wants to remove it. Having a generic way to delete revisions in a pinch would be nice. This is especially relevant if they download a shared deck that comes with a lot of images/sounds and later wishes to delete it. All revision history relating to the imported files would need to be purged.
+
+There's nothing saying that these couldn't all be mixed and matched, implemented over time. If I did do that, what would be the best order?
+1. The easiest "screw the user" approach would be totally appropriate if the "surgical history rewrite" approach gets implemented later. That way it can be introduced as the need begins to arise.
+2. The Anki-like checksum versioning scheme would be in line with the precedent set by current SRS solutions.
 
 ## Sharing
 
