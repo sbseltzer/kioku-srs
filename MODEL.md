@@ -63,6 +63,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
       -- extra arbitrary files accessible to all templates
   /decks
     /deck-id
+      /.git - CONSIDER - What if shared decks were forks? One issue would be that templates would also need to be forked, and that could become complex (unless the template could be embedded in the deck).
       .option-group - soley references option group
       manifest.txt
       /notes
