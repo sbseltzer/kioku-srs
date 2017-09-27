@@ -89,15 +89,17 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
             ...
             field-data-Z.(html?|md|markdown|txt)
             -- End fields
+      .media - Metadata for media repository syncing.
       /media - Decks have their own separately versioned media folders. If the deck is deleted, the media (and space overhead) can go with it.
+        /.git - Having media history managed separately from the deck would mean history could be rewritten to save space in a slightly safer fashion. The references to deleted content will still be present in note history, so clobbering them isn't the worst thing in the world. The user could, of course, mark certain ones as versioned.
+        .gitattributes
         -- arbitrary media files for use in this deck
+  .media - Metadata for media repository syncing.
   /media
+    /.git
     .gitignore
-    -- arbitrary media files for use in decks
-    filenameA
-    filenameB
-    ...
-    filenameZ
+    .gitattributes
+    -- arbitrary media files for use in all decks
 /.base-user
   -- Same structure as above, but acts as a sort of base class
   -- Content here is available to all users and cannot be modified by users.
