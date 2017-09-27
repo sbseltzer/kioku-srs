@@ -23,6 +23,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
   .gitignore
   .sync
   .version - Implementation version information for this user. This is checked against the device .version file for ABI compatibility.
+  searches.txt - list of saved searches
   tags.txt - list of available tags, which should be kept as an aggregate of all note tags.txt files.
   /options
     general.(lua|json|xml|ini) - General user options
