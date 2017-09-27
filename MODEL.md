@@ -50,7 +50,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
     /my-addon-folder
       /.git - CONSIDER - It would be nice if addons could be versioned with git. Forked or otherwise.
       .version - Implementation version for this addon. This is checked against the device .version file for ABI compatibility.
-      info.(lua|json|xml|txt) - Contains stuff like plugin dependency, where it came from, etc.
+      info.(lua|json|xml|txt) - Contains stuff like plugin dependency, where it came from, permissions, etc.
       manifest.(lua|json|xml|txt) - Data-oriented install/uninstall information.
       options.(lua|json|xml|ini) - Specialized options available to client.
       startup.(lua|rb|py) - This is executed when the SRS server launches.
