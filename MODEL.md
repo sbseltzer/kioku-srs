@@ -232,6 +232,8 @@ This might also be a job for plugins/addons. I think it'd be nice to offer users
   - Rewriting history for a single-file repository is much simpler than surgical strikes in a collection.
   - So many repositories, though. This would be quite nasty to self-host.
   
+I think there is probably some value in the surgical strike for situations where the user has done something ridiculous like commit a gigantic binary early on and later wants to remove it. Having a generic way to delete revisions in a pinch would be nice. This is especially relevant if they download a shared deck that comes with a lot of images/sounds and later wishes to delete it. All revision history relating to the imported files would need to be purged.
+
 ## Sharing
 
 Sharing decks, note types, notes, and addons is desirable. In what way, though? There are many use-cases that become available with Git, and many ways to go about it.
