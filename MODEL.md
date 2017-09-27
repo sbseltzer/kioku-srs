@@ -235,6 +235,9 @@ This might also be a job for plugins/addons. I think it'd be nice to offer users
   - Hard to implement history replay.
   - Requires a media repo re-sync in order to fully remove a media file.
   - Requires an extra remote repository.
+- Use [Git LFS](https://github.com/git-lfs/git-lfs/blob/master/docs/api/basic-transfers.md)
+  - Requires a host with the LFS server installed.
+  - Using this locally would offer no particular benefits over directly versioning the files.
 - Only version checksums for unversioned files, then use something like SFTP, [Google Drive](https://developers.google.com/drive/v3/reference/), [Dropbox](https://www.dropbox.com/developers/documentation/http/documentation), or something else for actual syncing.  
   - Closest to what Anki does.
   - Easy-ish to implement.
