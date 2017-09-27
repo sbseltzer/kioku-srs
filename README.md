@@ -2,15 +2,58 @@
 
 A portable, versioned, distributed, self-hosted spaced repetition system (SRS) inspired by Anki and backed by Git.
 
-This is really born of my frustration with Anki. It does its job wonderfully, but it's a nightmare to hack on.
+## Why?
+
+This is really born of my frustration with Anki (and other SRS solutions). Anki does its job wonderfully, but it's a nightmare to hack on.
+
+This section will review the main problems Kioku aims to solve.
+
+### Portability
+
+There are two kinds of portability here. Software Portability, and Addon Portability.
+
+Anki and Mnemosyne are fairly portable to most Desktop and Mobile environments. The desktop apps have some problems that stem from using Python/Qt, and the mobile apps ultimately suffer from the lack of Addons and interface features.
+
+Kioku proposes a decoupled architecture and choice of technology that's designed with full portability in mind, even if it doesn't happen all at once. If everything is done right, someone could trivially modify Kioku to run in embedded Linux terminal.
+
+### Hackability
+
+Anki's modding framework is extremely permissive, but not very clear. Mnemosyne doesn't appear to have a very tight-knit modding community in the way Anki does. Both require use of Python and neither are portable.
+
+Kioku aims to make modding possible in any language that can be bound to C/C++ and support an HTTP client stack.
+
+### Version History
+
+No other SRS, so far as I'm aware at the time of writing this, supports full revision history. They support backups and learning history, but arbitrary files cannot be versioned. Worse yet, in Anki it is impossible to implement your own without potentially compromising database integrity. Not goo. Individual updates to cards/notes cannot be viewed or rolled back.
+
+### User Freedom
+
+Mnemosyne did something right by providing sync options and self-hosting. Anki not so much, but it has made progress.
+
+Kioku aims to make SRS implementation easy. If DuoLingo decided one day to use it as their internal backbone, they totally can.
+
+### Collaborative Learning
+
+Something no other SRS has done yet is deck/template collaboration. Being able to fork decks and contribute to them is something that Git can facilitate. Still, this is not a simple problem to solve. Particularly when it comes to users who have forked a deck and want to stay up-to-date with them. This becomes difficult (or perhaps impossible) if the user makes their own modifications to the deck content, which is something that should be encouraged.
+
+On the other hand, there is no precedent for this. Kioku does not have to implement this perfectly. It can simply facilitate it and improve in future iterations.
 
 ## Concept
 
 The idea is to have a decoupled framework that allows the user to sync using free hosting solutions, empower developers to easily implement clients and servers that can be mixed/matched, and empower server admins to deploy their own servers.
 
-### Goals
+## Goals
 
-Properties this should fulfill.
+### Features
+- Program is portable.
+- Addons are portable.
+- Can be self-hosted.
+- All user data can be versioned.
+- Certain kinds of user data can be unversioned and synced via different mechanisms.
+- Can import from and export to major SRS solutions such as Anki and Mnemosyne.
+- Can be installed or run self-contained (e.g. flash drive).
+
+### Properties
 1. Decoupled. The APIs for this should be written in such a way that bindings/implementations in other languages are possible, and mixing them is possible.
 2. Portable. At minimum, a client/server implementation should be able to run on anything that could support an HTTP server. HTML/Javascript/CSS browsing support would be required if the user plans to utilize such features in their addons and cards.
 3. Extensible. Various implementations of clients/servers could be written, and addons could similarly be written in a feature-level portable way. This would mean Javascript for clientside (which could cover anything the REST API touches) and Lua for serverside (extending the REST API). Serverside addons could probably be distributed in a portable way so long as there's a way to configure them to use native modules for multiple platforms. Portability of clientside addons would ultimately depend on the client being used. If they're natively written without a full HTML interface, addon authors would need to be able to check what platform/client their addon is running on and select an implementation accordingly, assuming the client supports it in some way. I think that clientside addons would be best wrapped in Lua with a common interface for loading/injection purposes at the very least.
