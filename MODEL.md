@@ -8,11 +8,18 @@ This file is a draft of how data is managed in Kioku. I think this will probably
 ## Filesystem
 
 This is a draft of the partly git-managed filesystem, which acts as a sort of database.
+
 ```
 .version - Implementation version information for this device
 LOG.txt - Logfile for server. Clients can implement their own logging, or log to server.
 /.plugins - Where native (compiled/binary) plugins go. Not synced.
+  /some-scripting-engine
+    .version - Implementation version information. This is checked against device .version file for ABI compatibility.
+    .sources - Where to get the binaries from for various platforms, which in turn represents device compatibility.
+    -- files
   /lua-scripting-engine
+    -- files
+  /javascript-scripting-engine
     -- files
   /python-scripting-engine
     -- files
