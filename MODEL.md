@@ -159,6 +159,12 @@ Format Card Content (for card using note template)
 
 Get Note (for card)
 
+Get Card By Child ID (for note)
+
+Get Card By Unique ID (for deck)
+
+Get Siblings (for card)
+
 Give Answer (for card)
 
 Suspend (for card | for note)
