@@ -197,6 +197,8 @@ In our case, it should give the user an interface to merge. In most cases, they'
 
 One thing I'd like to facilitate is sharing of cards/decks in a merge friendly way. Like, being able to update an RTK deck to newer revisions without it screwing up history.
 
+Even cooler would be anonymous data collection to see where people generally get stuck in a deck.
+
 I very much suspect there will be files introduced that should be synced, but not with Git. One example might certain kinds of content in the media folder. Another would be, say, embedded databases that addons choose to use. It'd be nice to use Rsync, but it's not well supported on Windows. Nearly every syncing solution I've found has serious portability problems. It may be best to roll my own using a portable FTP library and just version the checksums of non-versioned files. It's not very efficient, but it'd get the job done.
 
 Alternatively, there are [scripts like this](https://robinwinslow.uk/2013/06/11/dont-ever-commit-binary-files-to-git/) that purge binary files by rewriting history. You could even preserve commit times by [faking them](https://stackoverflow.com/questions/3895453/how-do-i-make-a-git-commit-in-the-past#3898842). On the other hand, you end up with incompatible histories. This would basically put the user in the same place that Anki does when modifying note types, but for every time media is deleted/modified (or perhaps only when they want to reclaim space). Not so good. This is where there'd need to be a companion sync method (maybe a tiny metadata repository) that assists in getting a re-clone.
