@@ -99,7 +99,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
     /.git
     .gitignore
     .gitattributes
-    -- arbitrary media files for use in all decks
+    -- arbitrary media files for use in all decks/templates/addons
 /.base-user
   -- Same structure as above, but acts as a sort of base class
   -- Content here is available to all users and cannot be modified by users.
