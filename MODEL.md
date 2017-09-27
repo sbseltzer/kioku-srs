@@ -205,21 +205,23 @@ Alternatively, there are [scripts like this](https://robinwinslow.uk/2013/06/11/
 
 This might also be a job for plugins/addons. I think it'd be nice to offer users the option to change out how they sync certain kinds of files.
 
-### Some ideas for syncing media
+### Some ideas for syncing media (particularly binary files)
 - Version them right along with everything else.  
   - To hell with the user.
+  - Who needs disk space anyway?
 - Version them with everything else, but provide surgical removal of previous version via history rewrites.  
   - Complex to implement.
   - Requires a full repo re-sync when the user wishes to reclaim space.
+  - This would require an extra versioned file that helps determine when this is necessary.
 - Version them in their own repository, and do a history rewrite for binary files when the user wants to reclaim space.  
   - Gives user the opportunity to version anything and prune later.
   - Easy to delete a media repository wholesale.
   - Hard to implement history replay.
   - Requires a media repo re-sync in order to fully remove a media file.
   - Requires an extra remote repository.
-- Only version checksums for unversioned files, then use something like SFTP for actual syncing.  
-  - Basically what Anki does.
-  - Easy to implement.
+- Only version checksums for unversioned files, then use something like SFTP, [Google Drive](https://developers.google.com/drive/v3/reference/), [Dropbox](https://www.dropbox.com/developers/documentation/http/documentation), or something else for actual syncing.  
+  - Closest to what Anki does.
+  - Easy-ish to implement.
   - Doesn't rewrite history.
   - Consistently avoids bloat.
   - Files managed this way can't be versioned, which might not be desirable in some cases.
