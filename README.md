@@ -22,9 +22,13 @@ Anki's modding framework is extremely permissive, but not very clear. Mnemosyne 
 
 Kioku aims to make modding possible in any language that can be bound to C/C++ and support an HTTP client stack.
 
-### Version History
+### Progress is Sacred
 
-No other SRS, so far as I'm aware at the time of writing this, supports full revision history. They support backups and learning history, but arbitrary files cannot be versioned. Worse yet, in Anki it is impossible to implement your own without potentially compromising database integrity. Not goo. Individual updates to cards/notes cannot be viewed or rolled back.
+No other SRS, so far as I'm aware at the time of writing this, supports full revision history. They support backups and learning history, but arbitrary files cannot be versioned. Worse yet, in Anki it is impossible to implement your own without potentially compromising database integrity. Not good. Individual updates to cards/notes cannot be viewed or rolled back.
+
+With Kioku being backed by Git, every action has a chance to be versioned right off the bat. Every. Single. Action. If your computer crashes in the middle of editing a card, Git's amend feature can ensure there is a low likelihood of losing ANY work.
+
+Being flatfile based, you also stand little chance of ending up in a corrupted state. Database backed solutions are vulnerable to this. They mitigate it by saving compressed backups. A Git repository serves this purpose intrinsically.
 
 ### User Freedom
 
