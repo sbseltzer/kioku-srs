@@ -141,7 +141,7 @@ Native binary for a Device that's loaded at runtime which implements an interfac
 #### Script Engine
 Plugin that implements an interface for running scripts, and binding required API functions.
 ### User
-A User has a collection of Addons, Options, Decks, Media, and so on for a particular Device. The concept of a User is Device-local. When using the term "User" in the context of hosting the Model (such as a GitHub user repo as a remote that the User has push access to) or in the context of hosting the Client (such as a web interface like AnkiWeb that connects to an internal Device) it does not quite mean the same thing.
+A User has a collection of Addons, Options, Decks, Media, and so on for a particular Device. The concept of a User is Device-local in that it exists as a repository. When using the term "User" in the context of hosting the Model (such as a GitHub user repo as a remote that the User has push access to) or in the context of hosting the Client (such as a web interface like AnkiWeb that connects to an internal Device) it does not quite mean the same thing.
 ### Script
 Any file that uses a script format as made available by a corresponding Script Engine.
 ### Addon
