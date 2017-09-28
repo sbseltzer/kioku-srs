@@ -35,38 +35,38 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
   searches.txt - list of saved searches
   tags.txt - list of available tags, which should be kept as an aggregate of all note tags.txt files.
   /options
-    general.(lua|json|xml|ini) - General user options
-    addons.(lua|json|xml|ini) - Addon options
-    interface.(lua|json|xml|ini) - User interface options
-    schedule.(lua|json|xml|ini) - Scheduling options
-    sync.(lua|json|xml|ini) - Syncing options
+    general.(config) - General user options
+    addons.(config) - Addon options
+    interface.(config) - User interface options
+    schedule.(config) - Scheduling options
+    sync.(config) - Syncing options
     /groups - option groups for decks
-      default.(lua|json|xml|ini) - The default options.
+      default.(config) - The default options.
       -- arbitrary extra option groups.
-      some-custom-group.(lua|json|xml|ini)
+      some-custom-group.(config)
   /addons - where addon scripts go - this is the root include path for scripting all languages
     .gitignore - CONSIDER - Should the contents of this folder be ignored? Addons may be git versioned separately by advanced users, or installed/updated via archive. In fact, an addon package manager might make for a good meta-addon.
     .gitmodules - CONSIDER - Some addons might be git repositories. The user would need an interface for managing this. If they start their own addon repository here, it'd be nice to provide a user-friendly interface to control how it's kept updated.
     /my-addon-folder
       /.git - CONSIDER - It would be nice if addons could be versioned with git. Forked or otherwise.
       .version - Implementation version for this addon. This is checked against the device .version file for ABI compatibility.
-      info.(lua|json|xml|txt) - Contains stuff like plugin dependency, where it came from, permissions, etc.
-      manifest.(lua|json|xml|txt) - Data-oriented install/uninstall information.
-      options.(lua|json|xml|ini) - Specialized options available to client.
-      startup.(lua|rb|py) - This is executed when the SRS server launches.
+      info.(config) - Contains stuff like plugin dependency, where it came from, permissions, etc.
+      manifest.(config) - Data-oriented install/uninstall information.
+      options.(config) - Specialized options available to client.
+      startup.(script) - This is executed when the SRS server launches.
       -- script files go here
-      some-script.(lua|rb|py) - Some arbitrary script file
+      some-script.(script) - Some arbitrary script file
       LOG.txt - Addon-specific logging.
   /templates
     /note-template-id
-      generator.(lua|rb|py) - used to describe how to generate cards from a note
-      sides.(txt|lua|json|xml|csv) - used to describe how many sides the note has
-      fields.(txt|lua|json|xml|csv) - used to describe the fields available to the note
+      generator.(script) - used to describe how to generate cards from a note
+      sides.(config) - used to describe how many sides the note has
+      fields.(config) - used to describe the fields available to the note
       /sides
         -- Display templates for card sides as named in the sides file --
-        side-name-A.(html?|md|markdown|txt)
+        side-name-A.(markup)
         ...
-        side-name-Z.(html?|md|markdown|txt)
+        side-name-Z.(markup)
         -- End sides --
       /media
         -- Extra arbitrary files used by this template
@@ -83,20 +83,20 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
           tags.txt - Tags used by this card. Since this is a filesystem database, there will be some redundancy here with the upper tags.txt file.
           .template - solely refers to a note id
           .schedule - solely contains scheduling data for the card - the history of this can be used for anonymous research purposes
-          fields.(txt|lua|json|xml|html?|csv) - A special override file for defining all fields in one file. This would be useful for import/export of foreign note types or translating between incompatible ones. This would forego use of the /fields folder. Deleting/replacing that folder would be fine since git could revert it.
+          fields.(config) - A special override file for defining all fields in one file. This would be useful for import/export of foreign note types or translating between incompatible ones. This would forego use of the /fields folder. Deleting/replacing that folder would be fine since git could revert it.
           /fields
             -- Data for fields as named in the note template fields file --
-            field-data-A.(html?|md|markdown|txt)
+            field-data-A.(markup)
             ...
-            field-data-Z.(html?|md|markdown|txt)
+            field-data-Z.(markup)
             -- End fields
           /generated
             .gitignore - This folder is not versioned. This serves as a cache of generated card content.
             /card-id
               -- Generated card sides as named in the note template sides file --
-                side-name-A.(html?|txt)
+                side-name-A.(display)
               ...
-                side-name-Z.(html?|txt)
+                side-name-Z.(display)
               -- End sides --
       .media - Metadata for media repository syncing.
       /media - Decks have their own separately versioned media folders. If the deck is deleted, the media (and space overhead) can go with it.
