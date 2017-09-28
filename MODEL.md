@@ -146,7 +146,7 @@ A User has a collection of Addons, Options, Decks, Media, and so on for a partic
 Any file that uses a script format as made available by a corresponding Script Engine.
 ### Addon
 A collection of files and scripts to extend the server implementation.
-#### Type
+#### Addon Type
 Addons can be one or more types. The Addon metadata instructs the Scripting Engine what types it can serve as, which affects what functionality is exposed to the scripting environment.
 - Scheduler
 - Host API Extension - Adding an interface for communication with GitHub, GitLab, BitBucket, etc.
