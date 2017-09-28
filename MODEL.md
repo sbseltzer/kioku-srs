@@ -116,6 +116,33 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
   -- This would include stuff like default note types, default scripts, default tags, etc.
 ```
 
+## Types / Concepts
+
+### Device
+### Plugin
+### User
+### Addon
+### Script Format
+### Config Format
+### Display Format
+### Scheduler
+### Sync Strategy
+### Options
+### Option Group
+### Deck
+### Deck Option Group
+### Note
+### Note Type
+### Note Fields
+### Note Template
+### Note Sides
+### Note Field Data
+### Note Card Generator
+### Note Cards
+### Card
+### Card Content
+
+
 ## REST API
 
 Install Plugin (for device)
