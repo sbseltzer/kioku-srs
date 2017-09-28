@@ -421,11 +421,29 @@ There's nothing saying that these couldn't all be mixed and matched, implemented
 2. The Anki-like checksum versioning scheme would be in line with the precedent set by current SRS solutions.
 
 ## Sharing
+Sharing parts of a collection is desirable. Note Templates, Addons, Decks, and individual Notes/Cards are great candidates for sharing with others. It'd be very nice if these could be managed by separate Git repos. There are many use-cases that become available with Git, and many ways to go about it.
 
-The most difficult problem to solve is the sharing problem. Note Templates, Addons, Decks, and individual Notes/Cards are great candidates for sharing with others. It'd be very nice if these could be optionally managed by separate Git repos.
+Let's say we use Git to manage parts of a collection individually. This would allow for sharing. How do we keep these synced?
+
+Well, first it depends on whether the user intends to modify the content. If they cloned a shared *thing*, it now needs to be forked before they can continue to sync it. This means they'd need to create a bare repository somewhere and add it as a remote. The controller can AT LEAST create a local one for them by default, but now they need to know that a remote one needs to be created before it can be available on other devices. In addition, the other devices need to know that there's a subrepository of some kind to clone/pull.
+
+The basic pattern is this:
+- The user tree can contain subprojects (not necessarily subtrees or submodules - simply git repositories).
+- These subprojects can have the following remotes
+  - An origin remote (required) - the upstream original - for example, an addon would have its origin be the authors repository.
+  - One or more sync remotes (required) - the place(s) the user syncs to which they have push access to - this might be the same as the origin remote.
+- The user has a way of keeping track of subprojects similar to subtrees or submodules so the controller knows what to sync and where.
+- When the user syncs, all subprojects must also be synced to keep themselves at their HEAD. This is opaque to the user - it should appear as though they're all part of the same collection.
+- If changes are available on the origin and the origin is different than all the sync remotes, it is considered an update, and the user is given the option to update.
+- If the user wishes to contribute back to the origin via interface, they are given an interface that goes through all possible relevant changes to construct a patch (a la checkboxes) on a separate branch starting from where their last common point is. If it can be submitted as a PR via the appropriate API, that action is performed and they are given the link to the PR so they can work with the maintainer. Otherwise it generates a patch file and they are given the maintainers email address to send it to.
+
+It's important to keep in mind that when using Git to  anything in a collection, there's potentially a need for a fork. Forking can't be automated if the user wants to use a host they can't control. Hosts with an API (such as GitHub or GitLab) are less of a problem so long as the user configures everything properly.
+
+With Addons, there's a strong analogy to submodules, but some people may prefer to modify them and keep them versioned in their own history.
 
 ### Decks
-Sharing decks is something any respectable SRS supports. With Git, a unique use-case arises: Open Source SRS Decks. The RTK deck could be updated to stay in sync with Kanji Koohi. In addition, the Template for it may need updates to ensure hotlinks still work (a problem I encountered with the shared Anki deck). Perhaps dozens of people needed to make that change when one of them could have made a PR and solved it for everyone. If a keyword was changed for the better, but the user had already changed it to suit their preferences, a merge conflict would occur. This could technically happen on any field, but the others are less likely to change. The same might happen if the user makes slight adjustments to the hotlink on the Template, or remove fields that are maintained upstream. Additive changes on separate lines would be safest for the user so as not to compromise merge safety, especially the kind that cause clientside postprocessing.
+
+Sharing decks is something any respectable SRS supports. With Git, a unique use-case arises: Open Source SRS Decks. The RTK deck could be updated to stay in sync with Kanji Koohi. In addition, the Template for it may need updates to ensure hotlinks still work (a problem I encountered with a shared Anki deck). Perhaps dozens of people needed to make that change when one of them could have made a PR and solved it for everyone. If a keyword was changed for the better, but the user had already changed it to suit their preferences, a merge conflict would occur. This could technically happen on any field, but the others are less likely to change. The same might happen if the user makes slight adjustments to the hotlink on the Template, or remove fields that are maintained upstream. Additive changes on separate lines would be safest for the user so as not to compromise merge safety, especially the kind that cause clientside postprocessing.
 
 For instance, I often add senses of a keyword in parentheses to the end of ambiguous keywords in my RTK deck. If the keyword was modified upstream to better reflect the sense it was meant in, a merge conflict would occur when pull from the upstream repository to update my fork. This could have been mitigated by adding a new field to the template, and using it in one of two ways.
 1. Modify the front side of the template to format the senses in parentheses for me.
@@ -434,13 +452,7 @@ The latter is the safest way, but it's the more complicated way to go.
 
 If a bad maintainer causes a change to field IDs, or worse - sides, that could cause all sorts of unexpected problems for users, since now all of their notes would need to change.
 
-Decks are dependent on Note Templates, and in very specialized cases on Addons.
-
-Sharing decks, note types, notes, and addons is desirable. In what way, though? There are many use-cases that become available with Git, and many ways to go about it.
-
-With Addons, there's a strong analogy to submodules, but some people may prefer to modify them and keep them versioned in their own history.
-
-Decks are the trickiest. 
+Decks are dependent on Note Templates, and in very specialized cases Addons.
 
 ## Security
 
