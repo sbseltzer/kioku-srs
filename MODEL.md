@@ -42,7 +42,7 @@ users.(config) - List of users and paths to their directories. By default these 
     schedule.(config) - Scheduling options
     sync.(config) - Syncing options
     /groups - option groups for decks
-      default.(config) - The default options.
+      default.(config) - The default options. These can, of course, be reset by checking out the original version of it.
       -- arbitrary extra option groups.
       some-custom-group.(config)
   /addons - where addon scripts go - this is the root include path for scripting all languages
