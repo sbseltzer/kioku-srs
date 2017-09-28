@@ -25,7 +25,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
     -- files
   /ruby-scripting-engine
     -- files
-/user-name.git - The bare repository.
+/user-name.git - The bare repository. Only present on bare model hosts.
   /extern - Non-versioned data
 /user-name
   /.git - This is a git repository
