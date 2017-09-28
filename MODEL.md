@@ -60,6 +60,7 @@ users.(config) - List of users and paths to their directories. By default these 
       LOG.txt - Addon-specific logging.
   /templates
     /note-template-id
+      /.git - CONSIDER - What if shared templates were forks? One issue would be that decks that use them could run into problems if a template drastically changed its format.
       generator.(script) - used to describe how to generate cards from a note
       sides.(config) - used to describe how many sides the note has
       fields.(config) - used to describe the fields available to the note
