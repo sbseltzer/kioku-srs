@@ -149,6 +149,7 @@ A collection of files and scripts to extend the server implementation.
 #### Type
 Addons can be one or more types. The Addon metadata instructs the Scripting Engine what types it can serve as, which affects what functionality is exposed to the scripting environment.
 - Scheduler
+- Host API Extension - Adding an interface for communication with GitHub, GitLab, BitBucket, etc.
 - REST Extension - Adding arbitrary extensions to the REST interface for use by whatever client you choose. This might be used in combination with a script attached to cards to get special information provided by the addon in the client (such as a SQLite database). Very powerful concept.
 - Importer/Exporter
 - Template Installer 
