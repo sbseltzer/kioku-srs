@@ -241,6 +241,8 @@ Determines when to next show the Card to the User.
 
 ## REST API
 
+Poll Notifications (for device)
+
 Install Plugin (for device)
 
 Uninstall Plugin (for device)
