@@ -50,7 +50,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
     /my-addon-folder
       /.git - CONSIDER - It would be nice if addons could be versioned with git. Forked or otherwise.
       .version - Implementation version for this addon. This is checked against the device .version file for ABI compatibility.
-      info.(config) - Contains stuff like plugin dependency, where it came from, permissions, etc.
+      info.(config) - Contains stuff like plugin dependency, where it came from, permissions, what kind of mod it is, etc.
       manifest.(config) - Data-oriented install/uninstall information.
       options.(config) - Specialized options available to client.
       startup.(script) - This is executed when the SRS server launches.
@@ -126,6 +126,12 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
 Any file that uses a script format.
 ### Addon
 A collection of files and scripts to extend the server implementation.
+### Addon Types
+Scheduler
+REST Extension
+Import/Export Type
+Template Installer 
+Media Installer
 ### Formats
 This section describes file formats that could vary.
 #### Script Format
