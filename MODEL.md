@@ -420,6 +420,20 @@ There's nothing saying that these couldn't all be mixed and matched, implemented
 
 ## Sharing
 
+The most difficult problem to solve is the sharing problem. Note Templates, Addons, Decks, and individual Notes/Cards are great candidates for sharing with others. It'd be very nice if these could be optionally managed by separate Git repos.
+
+### Decks
+Sharing decks is something any respectable SRS supports. With Git, a unique use-case arises: Open Source SRS Decks. The RTK deck could be updated to stay in sync with Kanji Koohi. In addition, the Template for it may need updates to ensure hotlinks still work (a problem I encountered with the shared Anki deck). Perhaps dozens of people needed to make that change when one of them could have made a PR and solved it for everyone. If a keyword was changed for the better, but the user had already changed it to suit their preferences, a merge conflict would occur. This could technically happen on any field, but the others are less likely to change. The same might happen if the user makes slight adjustments to the hotlink on the Template, or remove fields that are maintained upstream. Additive changes on separate lines would be safest for the user so as not to compromise merge safety, especially the kind that cause clientside postprocessing.
+
+For instance, I often add senses of a keyword in parentheses to the end of ambiguous keywords in my RTK deck. If the keyword was modified upstream to better reflect the sense it was meant in, a merge conflict would occur when pull from the upstream repository to update my fork. This could have been mitigated by adding a new field to the template, and using it in one of two ways.
+1. Modify the front side of the template to format the senses in parentheses for me.
+2. Modify the front side by adding a script contained in my media folder that postprocesses the card, modifying the keyword to include the value in my senses field.
+The latter is the safest way, but it's the more complicated way to go.
+
+If a bad maintainer causes a change to field IDs, or worse - sides, that could cause all sorts of unexpected problems for users, since now all of their notes would need to change.
+
+Decks are dependent on Note Templates, and in very specialized cases on Addons.
+
 Sharing decks, note types, notes, and addons is desirable. In what way, though? There are many use-cases that become available with Git, and many ways to go about it.
 
 With Addons, there's a strong analogy to submodules, but some people may prefer to modify them and keep them versioned in their own history.
