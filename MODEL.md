@@ -68,10 +68,10 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
         ...
         side-name-Z.(html?|md|markdown|txt)
         -- End sides --
-      /resource
+      /media
         -- Extra arbitrary files used by this template
         -- When a foreign note type is imported, resources go here by default to prevent name conflicts
-    /resource
+    /media
       -- extra arbitrary files accessible to all templates
   /decks
     /deck-id
