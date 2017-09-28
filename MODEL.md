@@ -149,7 +149,7 @@ A collection of files and scripts to extend the server implementation.
 #### Type
 Addons can be one or more types. The Addon metadata instructs the Scripting Engine what types it can serve as, which affects what functionality is exposed to the scripting environment.
 - Scheduler
-- REST Extension
+- REST Extension - Adding arbitrary extensions to the REST interface for use by whatever client you choose. This might be used in combination with a script attached to cards to get special information provided by the addon in the client (such as a SQLite database). Very powerful concept.
 - Importer/Exporter
 - Template Installer 
 - Card Extension - Hooks into the generation of cards by doing some kind of pre/post-processing based on something like template or tags. Typical use-case might be specifying extra Javascript to insert at the end.
