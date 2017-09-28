@@ -127,12 +127,13 @@ users.(config) - List of users and paths to their directories. By default these 
 Any file that uses a script format.
 ### Addon
 A collection of files and scripts to extend the server implementation.
-### Addon Types
-Scheduler
-REST Extension
-Import/Export Type
-Template Installer 
-Media Installer
+#### Type
+Addons can be one or more types. The Addon metadata instructs the Scripting Engine what types it can serve as, which affects what functionality is exposed to the scripting environment.
+- Scheduler
+- REST Extension
+- Importer/Exporter
+- Template Installer 
+- Media Installer
 ### Formats
 This section describes file formats that could vary.
 #### Script Format
