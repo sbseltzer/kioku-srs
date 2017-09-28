@@ -140,7 +140,7 @@ Addons can be one or more types. The Addon metadata instructs the Scripting Engi
 - Template Installer 
 - Media Installer
 ### Formats
-This section describes file formats that could vary.
+This section describes abstract file formats that could vary.
 #### Script Format
 Facilitated by a Script Engine. Must support an HTTP client, and be able to bind to C functions.
 
