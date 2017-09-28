@@ -139,6 +139,7 @@ Addons can be one or more types. The Addon metadata instructs the Scripting Engi
 - Importer/Exporter
 - Template Installer 
 - Media Installer
+- Option Group Extension
 ### Formats
 This section describes abstract file formats that could vary.
 #### Script Format
