@@ -197,8 +197,22 @@ Unique ID of a deck within a User.
 ### Template
 Describes a how Notes of a particular Type are handled when generating Cards.
 #### Fields
+A list of field names. These determine the data that a Note using this Template can define. These are also used by Template Sides to specify where Note Field Data is placed. The Template Card Generator uses these to determine how the Note Field Data is processed and through Sides into Cards.
+
+VALIDATION:
+- All fields specified by the fields file should appear at least once on one or more sides. The fact that there are unused fields in a template must be available to the client in some way. Anytime this validation status changes from valid to invalid, it must be reported to the client and resolved in one of two ways:  
+  1. Ignore it.
+  2. Offer to remove the field from the list and delete it's data from all notes that use it.
 #### Sides
-These describe the textual format for each side of the card using a special markup for placing fields.
+These describe the textual format for each side of the card using a special markup for placing fields. The Template could define any number of sides, but generally there will be 2. Composed of a side list file and a number of side template files.
+
+These are processed in a manner similar to a CGI script.
+
+VALIDATION:
+- Every name in the sides file must have a corresponding side template file. There can be extraneous side template files, but this must be reported to the client. If a side template file is missing, this must be reported to the client and resolved in one of two ways:  
+  1. Create a blank file with that name and offer them an interface to edit it.
+  2. Offer to remove the specified side from the list.
+- Validate Fields.
 #### Card Generator
 Facilitated by a portable subset of Scripts; A scripted API for generating cards from a note. These are defined as part of a Note Template. It's important that these are portable to all devices.
 
