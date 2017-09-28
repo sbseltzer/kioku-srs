@@ -102,6 +102,13 @@ To build from source, I'm thinking CMake. This would be for maximum portability.
 - [frozen](https://github.com/cesanta/frozen) - Portable, extremely minimal JSON parser/emitter. No objects included.
 - [slre](https://github.com/cesanta/slre) - Super Light RegEx library. Portable. Gives a subset of Perl-style regex in C.
 
+### Companion APIs
+These would be an immense help in giving users an opportunity to sync their data to private and public sources without needing to know how to create and manage Git repositories.
+
+- [GitLab API](http://doc.gitlab.com/ce/api/)
+- [GitHub API](https://developer.github.com/v3/)
+- [BitBucket API](https://developer.atlassian.com/bitbucket/api/2/reference/)
+
 ## Basic Architecture
 
 ### Components
