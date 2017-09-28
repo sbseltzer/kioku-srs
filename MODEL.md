@@ -119,27 +119,76 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
 ## Types / Concepts
 
 ### Device
-### Plugin
-### User
+### Plugin (Script Engine)
+### User Content
+### Script
+Any file that uses a script format.
 ### Addon
-### Script Format
-### Config Format
-### Display Format
+A collection of files and scripts to extend the server implementation.
+### Formats
+This section describes file formats that could vary.
+#### Script Format
+Facilitated by Plugins. Must support an HTTP client, and be able to bind to C functions.
+
+Extension Ideas: lua, py, js, rb
+
+Portability: Lua and Python at minimum. Javascript via V7 is another promising option. 
+#### Config Format
+Nested key-value configuration format. Must be portable out of the box.
+
+Extension Ideas: json, js, lua
+
+Portability: JSON and Lua at minimum. Javascript via V7 is another promising option.
+#### Markup Format
+Facilitated by Generators; Formats are actually quite arbitrary.
+ 
+Extension Ideas: txt, md/markdown, html
+
+Portability: Generators for markup must be in the portable subset of script formats.
+#### Display Format
+Up to the templating and/or client implementation. This is what is delivered to the end client via the REST API.
+
+Extension Ideas: html, md/markdown, txt
+
+Portability: HTML and TXT must be available out of the box. Other possibilities include CGI-compatible languages such as PHP, or even custom formats for specialized clients.
+#### Import/Export Format
+Facilitated by Addons; Available formats for import/export of decks.
+Extension Ideas: csv, txt, apkg, kioku
+Portability: This is only necessary on Desktop/PC, but since it is facilitated by Addons, it could be ported anywhere.
 ### Scheduler
-### Sync Strategy
+Facilitated by Addons; A scripted API for scheduling cards.
+### Media Sync Strategy
+Facilitated by Addons; A scripted API for synchronizing user media between devices.
+This must be applicable on a per-file basis, and it must be possible to change it later.
+At minimum, Git must be supported.
 ### Options
+These follow a key-value nested config format.
 ### Option Group
+These follow a key-value nested config format, but are used exclusively for configuring decks.
 ### Deck
 ### Deck Option Group
 ### Note
+A unique note within a Deck
+### Note ID
+The unique ID of a note within a Deck.
 ### Note Type
-### Note Fields
+An available type for use by Notes, which has an associated Template.
 ### Note Template
+A collection of files that describe a Note Type.
+### Note Fields
 ### Note Sides
 ### Note Field Data
 ### Note Card Generator
+Facilitated by a portable subset of Scripts; A scripted API for generating cards from a note. These are defined as part of a Note Template. It's important that these are portable to all devices.
+
+It's possible that this may end up similar to addons in that they define their compatibility, and revert to a device-defined default implementation on unsupported devices (concatenating their fields).
+
+For instance, say the user uses Ruby to generate their cards natively on Desktop. Or worse, they use Lua to fire off a Ruby script to do the dirty work. A mobile device that has no Ruby plugin or Ruby interpreter installed will bomb out and be forced to use some other default generator.
+
+On the flip side, what they ought to do is leave the generator alone (or very lightweight) andutilize the API to do the real work in Javascript clientside.
 ### Note Cards
 ### Card
+### Card ID
 ### Card Content
 
 
