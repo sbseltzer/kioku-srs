@@ -78,11 +78,12 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
       /.git - CONSIDER - What if shared decks were forks? One issue would be that templates would also need to be forked, and that could become complex (unless the template could be embedded in the deck).
       .option-group - soley references option group
       manifest.txt
+      .scheduler
       /notes
         /note-id - Some unique name for the note
           tags.txt - Tags used by this card. Since this is a filesystem database, there will be some redundancy here with the upper tags.txt file.
           .template - solely refers to a note id
-          .schedule - solely contains scheduling data for the card - the history of this can be used for anonymous research purposes
+          .schedule - solely contains scheduling data for each card - the history of this can be used for anonymous research purposes
           fields.(config) - A special override file for defining all fields in one file. This would be useful for import/export of foreign note types or translating between incompatible ones. This would forego use of the /fields folder. Deleting/replacing that folder would be fine since git could revert it.
           /fields
             -- Data for fields as named in the note template fields file --
