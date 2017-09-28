@@ -25,6 +25,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
     -- files
   /ruby-scripting-engine
     -- files
+users.(config) - List of users and paths to their directories. By default these are within the Model tree. Users on some devices (such as Desktop) may wish to have their user located elsewhere on the Device. Since the Git repo starts within the User directory, it is appropriate to allow them to store it elsewhere on the Device so long as there's a reference to it here.
 /user-name.git - The bare repository. Only present on bare model hosts.
   /extern - Non-versioned data
 /user-name
