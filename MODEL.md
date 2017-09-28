@@ -121,10 +121,15 @@ users.(config) - List of users and paths to their directories. By default these 
 ## Types / Concepts
 
 ### Device
-### Plugin (Script Engine)
-### User Content
+A native device that hosts the controller (serverside) portion of the application.
+### Plugin
+Native binary for a Device that's loaded at runtime which implements an interface to provide extra functionality on the Device. The most important use-case would be a script engine.
+#### Script Engine
+Plugin that implements an interface for running scripts, and binding required API functions.
+### User
+A User has a collection of Addons, Options, Decks, Media, and so on for a particular Device. The concept of a User is Device-local. When using the term "User" in the context of hosting the Model (such as a GitHub user repo as a remote that the User has push access to) or in the context of hosting the Client (such as a web interface like AnkiWeb that connects to an internal Device) it does not quite mean the same thing.
 ### Script
-Any file that uses a script format.
+Any file that uses a script format as made available by a corresponding Script Engine.
 ### Addon
 A collection of files and scripts to extend the server implementation.
 #### Type
@@ -137,7 +142,7 @@ Addons can be one or more types. The Addon metadata instructs the Scripting Engi
 ### Formats
 This section describes file formats that could vary.
 #### Script Format
-Facilitated by Plugins. Must support an HTTP client, and be able to bind to C functions.
+Facilitated by a Script Engine. Must support an HTTP client, and be able to bind to C functions.
 
 Extension Ideas: lua, py, js, rb
 
