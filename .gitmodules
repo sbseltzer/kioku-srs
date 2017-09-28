@@ -4,9 +4,6 @@
 [submodule "extern/mongoose"]
 	path = extern/mongoose
 	url = https://github.com/cesanta/mongoose.git
-[submodule "extern/ims-json"]
-	path = extern/ims-json
-	url = https://github.com/inmotionsoftware/ims-json.git
 [submodule "extern/libgit2"]
 	path = extern/libgit2
 	url = https://github.com/libgit2/libgit2.git
@@ -16,3 +13,6 @@
 [submodule "extern/mbedtls"]
 	path = extern/mbedtls
 	url = https://github.com/ARMmbed/mbedtls.git
+[submodule "extern/jansson"]
+	path = extern/jansson
+	url = https://github.com/akheron/jansson.git
