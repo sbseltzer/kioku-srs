@@ -120,6 +120,17 @@ users.(config) - List of users and paths to their directories. By default these 
   -- This would include stuff like default note types, default scripts, default tags, etc.
 ```
 
+## User Restraint
+
+One point of concern is Users getting too "clever" by manipulating history directly with a CLI. If they seriously tamper with things in dangerous/opaque ways (history rewrites, squashing, etc.), that's on them. The application will interpret that as it will, but it may not do what they think.
+
+To make things fair, all documentation that describes history-reliant functionality (i.e. Git as a database) must be aggregated for advanced Git users to review.
+
+It'd be convenient for application commits to be clear and separate from CLI commits. It'd also be convenient to prevent CLI commits that modify metadata. However, the application should be robust enough to still utilize such history changes by simply analyzing history on a per-file basis. This is why metadata is usually dedicated to individual files.
+
+So far this has assumed a single-branch scenario. Branches could be a very powerful tool, but also seriously complicate matters. All application commits would happen on whatever branch the user is set to. Devices would need to always fetch/push all branches and select the most recent HEAD for application commits.  Before supporting such a feature, there'd need to be some very clearly defined use-cases to flesh out merge strategies.
+
+
 ## Types / Concepts
 
 ### Device
