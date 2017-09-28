@@ -152,6 +152,7 @@ Addons can be one or more types. The Addon metadata instructs the Scripting Engi
 - REST Extension
 - Importer/Exporter
 - Template Installer 
+- Card Extension - Hooks into the generation of cards by doing some kind of pre/post-processing based on something like template or tags. Typical use-case might be specifying extra Javascript to insert at the end.
 - Media Installer
 - Option Group Extension
 ### Formats
