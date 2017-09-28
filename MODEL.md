@@ -130,6 +130,7 @@ It'd be convenient for application commits to be clear and separate from CLI com
 
 So far this has assumed a single-branch scenario. Branches could be a very powerful tool, but also seriously complicate matters. All application commits would happen on whatever branch the user is set to. Devices would need to always fetch/push all branches and select the most recent HEAD for application commits.  Before supporting such a feature, there'd need to be some very clearly defined use-cases to flesh out merge strategies.
 
+One possibility is to preinstall hooks that prevent the user from doing anything too dangerous, like committing too many unrelated changes at once.
 
 ## Types / Concepts
 
