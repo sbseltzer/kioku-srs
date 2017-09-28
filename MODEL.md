@@ -230,7 +230,11 @@ VALIDATION:
 #### Card Generator
 Facilitated by a portable subset of Scripts; A scripted API for generating cards from a note. These are defined as part of a Note Template. It's important that these are portable to all devices.
 
-These determine how many cards to generate, their IDs, and the content of their fields. Hence, Cloze Deletion cards would have a special generator that defines what to replace text matching `{{c%d::text(::hint)?}}` with for N cards.
+These determine how many cards to generate, their IDs, and the content of their fields.
+
+Common use cases:
+- Reverse cards would be a relatively simple generator.
+- Cloze Deletion cards would have a special generator that defines what to replace text matching `{{c%d::text(::hint)?}}` with for N cards.
 
 Portability Note: It's possible that this may end up similar to addons in that they define their compatibility, and revert to a device-defined default implementation on unsupported devices (concatenating their fields). For instance, say the user uses Ruby to generate their cards natively on Desktop. Or worse, they use Lua to fire off a Ruby script to do the dirty work. A mobile device that has no Ruby plugin or Ruby interpreter installed will bomb out and be forced to use some other default generator. On the flip side, what they ought to do is leave the generator alone (or very lightweight) andutilize the API to do the real work in Javascript clientside.
 ### Note
