@@ -172,6 +172,13 @@ Portability: This is only necessary on Desktop/PC, but since it is facilitated b
 ### Scheduler
 Facilitated by Addons; A scripted API for scheduling cards.
 It has access to the content and history of `.schedule` files, and is tasked with determining what to set that content to when a User answers a Card.
+### Media Directory
+### Media File
+An arbitrary file of any type.
+### Media Path
+Works similar to a `PATH` environment variable. It's list of Media Directories that form an aggregate collection of files. They are limited to being within the User directory tree.
+### Media Map
+Available on a per-device/user basis.
 ### Media Sync Strategy
 Facilitated by Addons; A scripted API for synchronizing user media between devices.
 This must be applicable on a per-file basis, and it must be possible to change it later.
