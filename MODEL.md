@@ -90,6 +90,14 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
             ...
             field-data-Z.(html?|md|markdown|txt)
             -- End fields
+          /generated
+            .gitignore - This folder is not versioned. This serves as a cache of generated card content.
+            /card-id
+              -- Generated card sides as named in the note template sides file --
+                side-name-A.(html?|txt)
+              ...
+                side-name-Z.(html?|txt)
+              -- End sides --
       .media - Metadata for media repository syncing.
       /media - Decks have their own separately versioned media folders. If the deck is deleted, the media (and space overhead) can go with it.
         /.git - Having media history managed separately from the deck would mean history could be rewritten to save space in a slightly safer fashion. The references to deleted content will still be present in note history, so clobbering them isn't the worst thing in the world. The user could, of course, mark certain ones as versioned.
