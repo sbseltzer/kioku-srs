@@ -166,6 +166,8 @@ Generate Cards (for note)
 
 Format Card Content (for card using note template)
 
+Get Note Type (for note)
+
 Get Note (for card)
 
 Get Card By Child ID (for note)
