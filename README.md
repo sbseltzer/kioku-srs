@@ -141,7 +141,7 @@ The lowest layer is the Plumbing layer.
 Above that is the SRS layer.
 - Model - One that builds and modifies a data model using Filesystem & History modules.
 - Stats - One that computes statistics based on the Model module.
-- Schedule - One that computes/modifies scheduling using the Model module.
+- Schedule - One that computes/modifies scheduling using the Model module. Example: [Anki Implementation](https://github.com/dae/anki/blob/master/anki/sched.py)
 - Options - One that manages options using the Model module.
 - Control - The control interface for SRSing which uses with the Model module.
 - Delivery - One that composes content from the Model module for the user.
