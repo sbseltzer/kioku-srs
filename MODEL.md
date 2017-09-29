@@ -212,6 +212,10 @@ The basic pattern is this:
 
 It's important to keep in mind that when using Git to sync anything in a collection, there's potentially a need for a fork. Forking can't be automated if the user wants to use a host they can't control. Hosts with an API (such as GitHub or GitLab) are less of a problem so long as the user configures everything properly. If the user is a novice Git user, it's probably not a good idea to have a complex tree, even if it's mostly abstracted away from them.
 
+Okay, freaking cool concept - host APIs would allow opaque repository management. This means Kioku could be comprised of any repository combination and have it automated for those hosts.
+
+GitHub in particular could act as a public sharing framework for Kioku content. It even has a [search API](https://developer.github.com/v3/search/#search-repositories) so that repositories could indicate that they're for Kioku via something like tags or topics. This way a list of shared content could easily be embedded/sorted into the UI via the Kioku REST API.
+
 ### Addons
 With Addons, there's a strong analogy to submodules, but some people may prefer to modify them and keep them versioned in their own history.
 
