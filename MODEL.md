@@ -136,11 +136,9 @@ One possibility is to preinstall hooks that prevent the user from doing anything
 
 ## Syncing Considerations
 
-Being Git, there's always the possibility of a merge conflict.
-
 In other SRSs you can end up in situations where they say "pick one". My problem with this is if a card was added on one system and a note type was modified on another, one of those changes might be lost. Anki is picky when it comes to modifying fields on note types - requires a total database upload. There's probably a good reason for this, but it's not terribly obvious.
 
-In our case, it should give the user an interface to merge. In most cases, they'll simply need to "pick one" on a per-file basis. At the very least, show version A, version B, say which devices they're from and give them an interface to arbitrate.
+Being Git, there's always the possibility of a merge conflict. In our case, it should give the user an interface to merge. In most cases, they'll simply need to "pick one" on a per-file basis. At the very least, show version A, version B, say which devices they're from and give them an interface to arbitrate.
 
 One thing I'd like to facilitate is sharing of cards/decks in a merge friendly way. Like, being able to update an RTK deck to newer revisions without it screwing up history.
 
