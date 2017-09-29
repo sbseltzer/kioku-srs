@@ -391,6 +391,8 @@ Determines when to next show the Card to the User.
 
 Poll Notifications (for device)
 
+Poll Updates (for addons | for decks | for templates)
+
 Install Plugin (for device)
 
 Uninstall Plugin (for device)
