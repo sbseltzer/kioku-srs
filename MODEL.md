@@ -89,7 +89,7 @@ users.(config) - List of users and paths to their directories. By default these 
       /notes
         /note-id - Some unique name for the note
           tags.txt - Tags used by this card. Since this is a filesystem database, there will be some redundancy here with the upper tags.txt file.
-          .template - solely refers to a note id
+          .template - solely refers to a note type template - maybe to overcome shared deck dependency, this could refer to a remote so it can be imported.
           .schedule - solely contains scheduling data for each card - the history of this can be used for anonymous research purposes
           fields.(config) - A special override file for defining all fields in one file. This would be useful for import/export of foreign note types or translating between incompatible ones. This would forego use of the /fields folder. Deleting/replacing that folder would be fine since git could revert it.
           /fields
