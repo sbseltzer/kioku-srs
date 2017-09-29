@@ -77,6 +77,7 @@ users.(config) - List of users and paths to their directories. By default these 
       -- extra arbitrary files accessible to all templates
   /decks
     /deck-id
+      .generated - indicates if this is generated from another deck as a custom study session
       /.research - CONSIDER - This would be a special .git that is handled internally to version just the .schedule files. This might make it simpler to track research data anonymously without needing to post-process history.
       /.git - CONSIDER - What if shared decks were forks? One issue would be that templates would also need to be forked, and that could become complex (unless the template could be embedded in the deck).
       .option-group - soley references option group
