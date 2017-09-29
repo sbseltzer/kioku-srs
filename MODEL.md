@@ -50,6 +50,7 @@ users.(config) - List of users and paths to their directories. By default these 
   /addons - where addon scripts go - this is the root include path for scripting all languages
     .gitignore - CONSIDER - Should the contents of this folder be ignored? Addons may be git versioned separately by advanced users, or installed/updated via archive. In fact, an addon package manager might make for a good meta-addon.
     .gitmodules - CONSIDER - Some addons might be git repositories. The user would need an interface for managing this. If they start their own addon repository here, it'd be nice to provide a user-friendly interface to control how it's kept updated.
+    .addons - CONSIDER - Instead of submodules, a special way of managing addon subprojects that fulfills the needs of Kioku.
     /my-addon-folder
       /.git - CONSIDER - It would be nice if addons could be versioned with git. Forked or otherwise.
       .version - Implementation version for this addon. This is checked against the device .version file for ABI compatibility.
