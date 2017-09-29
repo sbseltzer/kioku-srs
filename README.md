@@ -103,6 +103,14 @@ To build from source, I'm thinking CMake. This would be for maximum portability.
 - [v7](https://github.com/cesanta/v7) or [mjs](https://github.com/cesanta/mjs) - Embedded Portable Javascript engine with Lua-like binding API. V7 is recently deprecated, but has a much broader feature set. mJS is so stripped down that it doesn't even look like JS.
 - [frozen](https://github.com/cesanta/frozen) - Portable, extremely minimal JSON parser/emitter. No objects included.
 - [slre](https://github.com/cesanta/slre) - Super Light RegEx library. Portable. Gives a subset of Perl-style regex in C.
+- [generic-c-hashmap](https://github.com/Kijewski/generic-c-hashmap) - A portable generic easy-to-use hashmap in C. Header only. Very slick API.
+
+### Companion APIs
+These would be an immense help in giving users an opportunity to sync their data to private and public sources without needing to know how to create and manage Git repositories.
+
+- [GitLab API](http://doc.gitlab.com/ce/api/)
+- [GitHub API](https://developer.github.com/v3/)
+- [BitBucket API](https://developer.atlassian.com/bitbucket/api/2/reference/)
 
 ## Basic Architecture
 
@@ -135,7 +143,7 @@ The lowest layer is the Plumbing layer.
 Above that is the SRS layer.
 - Model - One that builds and modifies a data model using Filesystem & History modules.
 - Stats - One that computes statistics based on the Model module.
-- Schedule - One that computes/modifies scheduling using the Model module.
+- Schedule - One that computes/modifies scheduling using the Model module. Example: [Anki Implementation](https://github.com/dae/anki/blob/master/anki/sched.py)
 - Options - One that manages options using the Model module.
 - Control - The control interface for SRSing which uses with the Model module.
 - Delivery - One that composes content from the Model module for the user.

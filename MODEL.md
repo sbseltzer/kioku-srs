@@ -25,6 +25,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
     -- files
   /ruby-scripting-engine
     -- files
+users.(config) - List of users and paths to their directories. By default these are within the Model tree. Users on some devices (such as Desktop) may wish to have their user located elsewhere on the Device. Since the Git repo starts within the User directory, it is appropriate to allow them to store it elsewhere on the Device so long as there's a reference to it here.
 /user-name.git - The bare repository. Only present on bare model hosts.
   /extern - Non-versioned data
 /user-name
@@ -41,7 +42,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
     schedule.(config) - Scheduling options
     sync.(config) - Syncing options
     /groups - option groups for decks
-      default.(config) - The default options.
+      default.(config) - The default options. These can, of course, be reset by checking out the original version of it.
       -- arbitrary extra option groups.
       some-custom-group.(config)
   /addons - where addon scripts go - this is the root include path for scripting all languages
@@ -59,6 +60,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
       LOG.txt - Addon-specific logging.
   /templates
     /note-template-id
+      /.git - CONSIDER - What if shared templates were forks? One issue would be that decks that use them could run into problems if a template drastically changed its format.
       generator.(script) - used to describe how to generate cards from a note
       sides.(config) - used to describe how many sides the note has
       fields.(config) - used to describe the fields available to the note
@@ -75,6 +77,7 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
       -- extra arbitrary files accessible to all templates
   /decks
     /deck-id
+      /.research - CONSIDER - This would be a special .git that is handled internally to version just the .schedule files. This might make it simpler to track research data anonymously without needing to post-process history.
       /.git - CONSIDER - What if shared decks were forks? One issue would be that templates would also need to be forked, and that could become complex (unless the template could be embedded in the deck).
       .option-group - soley references option group
       manifest.txt
@@ -117,25 +120,47 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
   -- This would include stuff like default note types, default scripts, default tags, etc.
 ```
 
+## User Restraint
+
+One point of concern is Users getting too "clever" by manipulating history directly with a CLI. If they seriously tamper with things in dangerous/opaque ways (history rewrites, squashing, etc.), that's on them. The application will interpret that as it will, but it may not do what they think.
+
+To make things fair, all documentation that describes history-reliant functionality (i.e. Git as a database) must be aggregated for advanced Git users to review.
+
+It'd be convenient for application commits to be clear and separate from CLI commits. It'd also be convenient to prevent CLI commits that modify metadata. However, the application should be robust enough to still utilize such history changes by simply analyzing history on a per-file basis. This is why metadata is usually dedicated to individual files.
+
+So far this has assumed a single-branch scenario. Branches could be a very powerful tool, but also seriously complicate matters. All application commits would happen on whatever branch the user is set to. Devices would need to always fetch/push all branches and select the most recent HEAD for application commits.  Before supporting such a feature, there'd need to be some very clearly defined use-cases to flesh out merge strategies.
+
+One possibility is to preinstall hooks that prevent the user from doing anything too dangerous, like committing too many unrelated changes at once.
+
 ## Types / Concepts
 
 ### Device
-### Plugin (Script Engine)
-### User Content
+A native device that hosts the controller (serverside) portion of the application.
+### Plugin
+Native binary for a Device that's loaded at runtime which implements an interface to provide extra functionality on the Device. The most important use-case would be a script engine.
+#### Script Engine
+Plugin that implements an interface for running scripts, and binding required API functions.
+### User
+A User has a collection of Addons, Options, Decks, Media, and so on for a particular Device. The concept of a User is Device-local in that it exists as a repository. When using the term "User" in the context of hosting the Model (such as a GitHub user repo as a remote that the User has push access to) or in the context of hosting the Client (such as a web interface like AnkiWeb that connects to an internal Device) it does not quite mean the same thing.
 ### Script
-Any file that uses a script format.
+Any file that uses a script format as made available by a corresponding Script Engine.
 ### Addon
 A collection of files and scripts to extend the server implementation.
-### Addon Types
-Scheduler
-REST Extension
-Import/Export Type
-Template Installer 
-Media Installer
+#### Addon Type
+Addons can be one or more types. The Addon metadata instructs the Scripting Engine what types it can serve as, which affects what functionality is exposed to the scripting environment.
+- Scheduler
+- Host API Extension - Adding an interface for communication with GitHub, GitLab, BitBucket, etc.
+- REST Extension - Adding arbitrary extensions to the REST interface for use by whatever client you choose. This might be used in combination with a script attached to cards to get special information provided by the addon in the client (such as a SQLite database). Very powerful concept.
+- Importer/Exporter
+- Template Installer 
+- Card Extension - Hooks into the generation of cards by doing some kind of pre/post-processing based on something like template or tags. Typical use-case might be specifying extra Javascript to insert at the end.
+- Media Installer
+- Option Group Extension
+
 ### Formats
-This section describes file formats that could vary.
+This section describes abstract file formats that could vary.
 #### Script Format
-Facilitated by Plugins. Must support an HTTP client, and be able to bind to C functions.
+Facilitated by a Script Engine. Must support an HTTP client, and be able to bind to C functions.
 
 Extension Ideas: lua, py, js, rb
 
@@ -158,12 +183,21 @@ Up to the templating and/or client implementation. This is what is delivered to 
 Extension Ideas: html, md/markdown, txt
 
 Portability: HTML and TXT must be available out of the box. Other possibilities include CGI-compatible languages such as PHP, or even custom formats for specialized clients.
+
 #### Import/Export Format
 Facilitated by Addons; Available formats for import/export of decks.
 Extension Ideas: csv, txt, apkg, kioku
 Portability: This is only necessary on Desktop/PC, but since it is facilitated by Addons, it could be ported anywhere.
 ### Scheduler
 Facilitated by Addons; A scripted API for scheduling cards.
+It has access to the content and history of `.schedule` files, and is tasked with determining what to set that content to when a User answers a Card.
+### Media Directory
+### Media File
+An arbitrary file of any type.
+### Media Path
+Works similar to a `PATH` environment variable. It's list of Media Directories that form an aggregate collection of files. They are limited to being within the User directory tree.
+### Media Map
+Available on a per-device/user basis.
 ### Media Sync Strategy
 Facilitated by Addons; A scripted API for synchronizing user media between devices.
 This must be applicable on a per-file basis, and it must be possible to change it later.
@@ -173,33 +207,69 @@ These follow a key-value nested config format.
 ### Option Group
 These follow a key-value nested config format, but are used exclusively for configuring decks.
 ### Deck
-### Deck Option Group
-### Note
-A unique note within a Deck
-### Note ID
-The unique ID of a note within a Deck.
-### Note Type
-An available type for use by Notes, which has an associated Template.
-### Note Template
-A collection of files that describe a Note Type.
-### Note Fields
-### Note Sides
-### Note Field Data
-### Note Card Generator
+A unique Deck within a User.
+#### ID
+Unique ID of a deck within a User.
+#### Name
+#### Deck Option Group
+#### Notes
+
+### Template
+Describes a how Notes of a particular Type are handled when generating Cards.
+
+#### Fields
+A list of field names. These determine the data that a Note using this Template can define. These are also used by Template Sides to specify where Note Field Data is placed. The Template Card Generator uses these to determine how the Note Field Data is processed and through Sides into Cards.
+
+VALIDATION:
+- All fields specified by the fields file should appear at least once on one or more sides. The fact that there are unused fields in a template must be available to the client in some way. Anytime this validation status changes from valid to invalid, it must be reported to the client and resolved in one of two ways:  
+  1. Ignore it.
+  2. Offer to remove the field from the list and delete it's data from all notes that use it.
+
+#### Sides
+These describe the textual format for each side of the card using a special markup for placing fields. The Template could define any number of sides, but generally there will be 2. Composed of a side list file and a number of side template files.
+
+These are processed in a manner similar to a CGI script.
+
+VALIDATION:
+- Every name in the sides file must have a corresponding side template file. There can be extraneous side template files, but this must be reported to the client. If a side template file is missing, this must be reported to the client and resolved in one of two ways:  
+  1. Create a blank file with that name and offer them an interface to edit it.
+  2. Offer to remove the specified side from the list.
+- Validate Fields.
+
+#### Card Generator
 Facilitated by a portable subset of Scripts; A scripted API for generating cards from a note. These are defined as part of a Note Template. It's important that these are portable to all devices.
 
-It's possible that this may end up similar to addons in that they define their compatibility, and revert to a device-defined default implementation on unsupported devices (concatenating their fields).
+These determine how many cards to generate, their IDs, and the content of their fields.
 
-For instance, say the user uses Ruby to generate their cards natively on Desktop. Or worse, they use Lua to fire off a Ruby script to do the dirty work. A mobile device that has no Ruby plugin or Ruby interpreter installed will bomb out and be forced to use some other default generator.
+Common use cases:
+- Reverse cards would be a relatively simple generator.
+- Cloze Deletion cards would have a special generator that defines what to replace text matching `{{c%d::text(::hint)?}}` with for N cards.
 
-On the flip side, what they ought to do is leave the generator alone (or very lightweight) andutilize the API to do the real work in Javascript clientside.
-### Note Cards
+Portability Note: It's possible that this may end up similar to addons in that they define their compatibility, and revert to a device-defined default implementation on unsupported devices (concatenating their fields). For instance, say the user uses Ruby to generate their cards natively on Desktop. Or worse, they use Lua to fire off a Ruby script to do the dirty work. A mobile device that has no Ruby plugin or Ruby interpreter installed will bomb out and be forced to use some other default generator. On the flip side, what they ought to do is leave the generator alone (or very lightweight) andutilize the API to do the real work in Javascript clientside.
+
+### Note
+A unique Note within a Deck
+#### ID
+The unique ID of a note within a Deck.
+#### Type
+An available type for use by Notes, which has an associated Template.
+A collection of files that describe a Note Type.
+#### Field Data
+The textual content stored in each Field as defined by its Template.
+#### Cards
+The list of cards generated by a Note.
+
 ### Card
-### Card ID
-### Card Content
-
+#### ID
+The unique ID of a card within a Note.
+#### Side Content
+The textual content on a given side of a Card.
+#### Schedule
+Determines when to next show the Card to the User.
 
 ## REST API
+
+Poll Notifications (for device)
 
 Install Plugin (for device)
 
@@ -360,12 +430,38 @@ There's nothing saying that these couldn't all be mixed and matched, implemented
 2. The Anki-like checksum versioning scheme would be in line with the precedent set by current SRS solutions.
 
 ## Sharing
+Sharing parts of a collection is desirable. Note Templates, Addons, Decks, and individual Notes/Cards are great candidates for sharing with others. It'd be very nice if these could be managed by separate Git repos. There are many use-cases that become available with Git, and many ways to go about it.
 
-Sharing decks, note types, notes, and addons is desirable. In what way, though? There are many use-cases that become available with Git, and many ways to go about it.
+Let's say we use Git to manage parts of a collection individually. This would allow for sharing. How do we keep these synced?
+
+Well, first it depends on whether the user intends to modify the content. If they cloned a shared *thing*, it now needs to be forked before they can continue to sync it. This means they'd need to create a bare repository somewhere and add it as a remote. The controller can AT LEAST create a local one for them by default, but now they need to know that a remote one needs to be created before it can be available on other devices. In addition, the other devices need to know that there's a subrepository of some kind to clone/pull.
+
+The basic pattern is this:
+- The user tree can contain subprojects (not necessarily subtrees or submodules - simply git repositories).
+- These subprojects can have the following remotes
+  - An origin remote (required) - the upstream original - for example, an addon would have its origin be the authors repository.
+  - One or more sync remotes (required) - the place(s) the user syncs to which they have push access to - this might be the same as the origin remote.
+- The user has a way of keeping track of subprojects similar to subtrees or submodules so the controller knows what to sync and where.
+- When the user syncs, all subprojects must also be synced to keep themselves at their HEAD. This is opaque to the user - it should appear as though they're all part of the same collection.
+- If changes are available on the origin and the origin is different than all the sync remotes, it is considered an update, and the user is given the option to update.
+- If the user wishes to contribute back to the origin via GUI, they are given a GUI that goes through all possible relevant changes to construct a patch (a la checkboxes) on a separate branch starting from where their last common point is. If it can be submitted as a PR via the appropriate API, that action is performed and they are given the link to the PR so they can work with the maintainer. Otherwise it generates a patch file and they are given the maintainers email address to send it to.
+
+It's important to keep in mind that when using Git to sync anything in a collection, there's potentially a need for a fork. Forking can't be automated if the user wants to use a host they can't control. Hosts with an API (such as GitHub or GitLab) are less of a problem so long as the user configures everything properly. If the user is a novice Git user, it's probably not a good idea to have a complex tree, even if it's mostly abstracted away from them.
 
 With Addons, there's a strong analogy to submodules, but some people may prefer to modify them and keep them versioned in their own history.
 
-Decks are the trickiest. 
+### Decks
+
+Sharing decks is something any respectable SRS supports. With Git, a unique use-case arises: Open Source SRS Decks. The RTK deck could be updated to stay in sync with Kanji Koohi. In addition, the Template for it may need updates to ensure hotlinks still work (a problem I encountered with a shared Anki deck). Perhaps dozens of people needed to make that change when one of them could have made a PR and solved it for everyone. If a keyword was changed for the better, but the user had already changed it to suit their preferences, a merge conflict would occur. This could technically happen on any field, but the others are less likely to change. The same might happen if the user makes slight adjustments to the hotlink on the Template, or remove fields that are maintained upstream. Additive changes on separate lines would be safest for the user so as not to compromise merge safety, especially the kind that cause clientside postprocessing.
+
+For instance, I often add senses of a keyword in parentheses to the end of ambiguous keywords in my RTK deck. If the keyword was modified upstream to better reflect the sense it was meant in, a merge conflict would occur when pull from the upstream repository to update my fork. This could have been mitigated by adding a new field to the template, and using it in one of two ways.
+1. Modify the front side of the template to format the senses in parentheses for me.
+2. Modify the front side by adding a script contained in my media folder that postprocesses the card, modifying the keyword to include the value in my senses field.
+The latter is the safest way, but it's the more complicated way to go.
+
+If a bad maintainer causes a change to field IDs, or worse - sides, that could cause all sorts of unexpected problems for users, since now all of their notes would need to change.
+
+Decks are dependent on Note Templates, and in very specialized cases Addons.
 
 ## Security
 
