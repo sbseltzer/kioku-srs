@@ -131,6 +131,44 @@ users.(config) - List of users and paths to their directories. By default these 
   -- This would include stuff like default note types, default scripts, default tags, etc.
 ```
 
+## Repository Usage
+
+I've now got at least 3 sections detailing all the horrific problems with using Git as a backend. Namely because there are so many options. It's looking more and more like the best option is a roll-my-own type solution.
+
+To plot this out in simpler terms, let's look at what some of the problems to deal with are.
+
+1. How to keep overall filesystem state synced.
+1. How to share content.
+1. How to download shared content.
+1. How to hack on shared content.
+1. How to contribute your hacks on shared content back to their source.
+1. How to manage/sync large content.
+1. How to prevent large content from taking up space when you feel permanently done with it.
+
+#### Submodules
+I think forcing the use of submodules is a poor choice because they impose a serious burden on any user who wishes to work within the spaces managed by Kioku. It's not a bad idea to make Kioku robust enough to handle cases where users deliberately use submodules, but it should not be a targeted use-case.
+
+#### Subtrees
+I'm still thinking through the implications of using subtrees, but the first thing that stands out is that their content is part of the parent repository history. This raises concerns with imported media. If someone feels totally done with a deck, addon, template, or media, they should be able to get rid of it with no strings attached. Subtrees also impose a burden on users in that they shouldn't mix commits with child and parent, and also have somewhat complex push requirements when contributing back upstream. I'm also not sure they can be branched without a fork.
+
+#### Subrepositories
+This is more user friendly, I think, but like subtrees it involves getting child content into parent history. It's nice because people can do what they want with that subrepository while staying out of Kioku's way and keep all their stuff synced easily. This is especially great for those who are making changes to stuff and want to still be able to sync without creating a fork.
+
+#### Roll-my-own
+I think I might need to take this route.
+
+Some helpful info.
+- https://git.wiki.kernel.org/index.php/SubprojectSupport?highlight=%2528subproject%2529
+- https://stackoverflow.com/questions/23550689/git-nested-repositories-composer-vs-submodules-vs-subtree-vs
+- http://debuggable.com/posts/git-fake-submodules:4b563ee4-f3cc-4061-967e-0e48cbdd56cb
+- https://git-scm.com/book/en/v1/Git-Tools-Subtree-Merging
+- https://stackoverflow.com/questions/12668711/git-using-subtree-or-submodule-to-manage-external-resources
+- https://stackoverflow.com/questions/12078365/how-exactly-does-git-submodule-work/12078816#12078816
+- http://blog.nwcadence.com/git-subtrees/
+- https://www.atlassian.com/blog/git/alternatives-to-git-submodule-git-subtree
+- https://git.wiki.kernel.org/index.php/GitSubmoduleTutorial#Gotchas
+- https://stackoverflow.com/questions/996164/is-anyone-really-using-git-super-subprojects
+
 ## User Restraint
 
 One point of concern is Users getting too "clever" by manipulating history directly with a CLI. If they seriously tamper with things in dangerous/opaque ways (history rewrites, squashing, etc.), that's on them. The application will interpret that as it will, but it may not do what they think.
@@ -153,6 +191,12 @@ I'm imagining a few possible workflows. The one that's most familiar to me is th
 - Download an addon with Kioku as a user, but modify it directly in Kioku like a noob. Kioku might be able to protect the user from this by automatically creating a user branch and switching to it, versioning that. They'd need to know that in order to sync it they'll need their own forked remote to push to. It'd also need to notify them of how to properly contribute by creating a fork (which could be automated via API).
 
 Actually, [subtrees](http://blog.nwcadence.com/git-subtrees/) fulfill a lot of the qualities needed for shared content. It keeps everything in user history and makes it relatively simple to change how things are managed later. One thing it would need to be careful of with stuff like decks is ignoring stuff like user-specific metadata. Someone could whitelist it in a subproject. Subtrees would also split out commits from the parent repository - that is, although they're all part of the same repository.
+
+Still, I'm liking the idea of a shallow clone with a user branch. I think the big benefit of subtrees is that they don't need to fork in order to sync new changes. They can fork if/when they want to contribute upstream. The downside is it's less friendly to users working within the tree.
+
+[This StackExchange Thread](https://stackoverflow.com/questions/23550689/git-nested-repositories-composer-vs-submodules-vs-subtree-vs) has a very comprehensive discussion of submodules and subrepositories. After reading it, I'm thinking subrepositories is the way to go. When working from the parent, it's all versioned. The only problem is that when synced, they won't be subrepositories anymore. This can be fixed with a roll-your-own-git-init method by versioning some kind of remote info file. The thing is, this solution starts to look a lot like submodules, especially when it starts pointing to a particular branch. Reinventing the wheel and all that rubbish. The big drawback with subrepos and subtrees having their history duplicated in the parent is they can't be decoupled later. I remember I had a Kana deck once that came with what seemed like hundreds of poorly compressed images and sounds. When I was done with that deck, I had no desire to keep it around (at least not on my device). It simply took up too much space. This is where a submodule-like approach is powerful. It actually could be considered a compression feature. You could choose to (temporarily) unsync certain things with certain devices in the interest of saving space. The reverse is also true - most git hosts only limit repository size per repository.
+
+Then again, the history rewrite technique is appropriate at the top level when doing things like that. Still very messy.
 
 The following sections are very related to this issue.
 
