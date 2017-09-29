@@ -159,7 +159,7 @@ I'm still thinking through the implications of using subtrees, but the first thi
 This is more user friendly, I think, but like subtrees it involves getting child content into parent history. It's nice because people can do what they want with that subrepository while staying out of Kioku's way and keep all their stuff synced easily. This is especially great for those who are making changes to stuff and want to still be able to sync without creating a fork.
 
 #### Roll-my-own
-I think I might need to take this route.
+I think I might need to take this route. It would probably end up being easier and clearer than any of the above. If the user doesn't ever need to create the repositories themselves (a la host API), I'd probably do something similar to submodules and make it fairly granular.
 
 Some helpful info.
 - https://git.wiki.kernel.org/index.php/SubprojectSupport?highlight=%2528subproject%2529
