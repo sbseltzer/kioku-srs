@@ -133,6 +133,10 @@ So far this has assumed a single-branch scenario. Branches could be a very power
 
 One possibility is to preinstall hooks that prevent the user from doing anything too dangerous, like committing too many unrelated changes at once.
 
+Now that I think of it, what really bugged me about Anki was the fact that I couldn't manage things with Git IN ADDITION TO the built-in syncing method. Part of why I'm doing this is for user freedom. Imposing these kinds of restrictions and designing it into a corner would sorta defeat the purpose.
+
+One option would be to have Kioku manage things in special workdir paths. Like `.kioku/` or `.deck/` and so on, instead of `.git`. This would mean the user can version any part the collection with Git as usual without interference, and Kioku will just do its thing and version stuff as specified by the REST interface and config files, ignoring the fact that there are subprojects. The only problem with this is it's potentially not very space efficient, especially if media is being versioned. It also could makes user interfaces for sharing less elegant, as it would essentially be working like subtrees from Kioku's point of view.
+
 ## Types / Concepts
 
 ### Device
