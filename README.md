@@ -105,6 +105,8 @@ To build from source, I'm thinking CMake. This would be for maximum portability.
 - [slre](https://github.com/cesanta/slre) - Super Light RegEx library. Portable. Gives a subset of Perl-style regex in C.
 - [generic-c-hashmap](https://github.com/Kijewski/generic-c-hashmap) - A portable generic easy-to-use hashmap in C. Header only. Very slick API.
 
+It's worth noting that anything with a viral license is not a problem so long as it is wrapped appropriately. The end-goal is to have some reusable interfaces so that Kioku can be an SRS implementation framework.
+
 ### Companion APIs
 These would be an immense help in giving users an opportunity to sync their data to private and public sources without needing to know how to create and manage Git repositories.
 
