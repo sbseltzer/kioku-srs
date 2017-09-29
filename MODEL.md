@@ -2,6 +2,8 @@
 
 This file is a draft of how data is managed in Kioku. I think this will probably drive the high level design.
 
+For Types/Concepts and the REST API, see the bottom of this page.
+
 ## Goals
 
 
@@ -26,9 +28,9 @@ LOG.txt - Logfile for server. Clients can implement their own logging, or log to
   /ruby-scripting-engine
     -- files
 users.(config) - List of users and paths to their directories. By default these are within the Model tree. Users on some devices (such as Desktop) may wish to have their user located elsewhere on the Device. Since the Git repo starts within the User directory, it is appropriate to allow them to store it elsewhere on the Device so long as there's a reference to it here.
-/user-name.git - The bare repository. Only present on bare model hosts.
+/user-name.git - The bare repository. Only present on model hosts (which might be the local machine).
   /extern - Non-versioned data
-/user-name
+/user-name - If the model host is on the local machine, this can be deleted between sessions (provided there are no unversioned, unsynced files).
   /.git - This is a git repository
   .gitignore
   .sync
@@ -136,6 +138,98 @@ One possibility is to preinstall hooks that prevent the user from doing anything
 Now that I think of it, what really bugged me about Anki was the fact that I couldn't manage things with Git IN ADDITION TO the built-in syncing method. Part of why I'm doing this is for user freedom. Imposing these kinds of restrictions and designing it into a corner would sorta defeat the purpose.
 
 One option would be to have Kioku manage things in special workdir paths. Like `.kioku/` or `.deck/` and so on, instead of `.git`. This would mean the user can version any part the collection with Git as usual without interference, and Kioku will just do its thing and version stuff as specified by the REST interface and config files, ignoring the fact that there are subprojects. The only problem with this is it's potentially not very space efficient, especially if media is being versioned. It also could makes user interfaces for sharing less elegant, as it would essentially be working like subtrees from Kioku's point of view.
+
+## Syncing Considerations
+
+In other SRSs you can end up in situations where they say "pick one". My problem with this is if a card was added on one system and a note type was modified on another, one of those changes might be lost. Anki is picky when it comes to modifying fields on note types - requires a total database upload. There's probably a good reason for this, but it's not terribly obvious.
+
+Being Git, there's always the possibility of a merge conflict. In our case, it should give the user an interface to merge. In most cases, they'll simply need to "pick one" on a per-file basis. At the very least, show version A, version B, say which devices they're from and give them an interface to arbitrate.
+
+One thing I'd like to facilitate is sharing of cards/decks in a merge friendly way. Like, being able to update an RTK deck to newer revisions without it screwing up history.
+
+Even cooler would be anonymous data collection to see where people generally get stuck in a deck.
+
+I very much suspect there will be files introduced that should be synced, but not with Git. One example might certain kinds of content in the media folder. Another would be, say, embedded databases that addons choose to use. It'd be nice to use Rsync, but it's not well supported on Windows. Nearly every syncing solution I've found has serious portability problems. It may be best to roll my own using a portable FTP library and just version the checksums of non-versioned files. It's not very efficient, but it'd get the job done.
+
+Alternatively, there are [scripts like this](https://robinwinslow.uk/2013/06/11/dont-ever-commit-binary-files-to-git/) that purge binary files by rewriting history. You could even preserve commit times by [faking them](https://stackoverflow.com/questions/3895453/how-do-i-make-a-git-commit-in-the-past#3898842). On the other hand, you end up with incompatible histories. This would basically put the user in the same place that Anki does when modifying note types, but for every time media is deleted/modified (or perhaps only when they want to reclaim space). Not so good. This is where there'd need to be a companion sync method (maybe a tiny metadata repository) that assists in getting a re-clone.
+
+This might also be a job for plugins/addons. I think it'd be nice to offer users the option to change out how they sync certain kinds of files.
+
+### Some ideas for syncing media (particularly binary files)
+- Version them right along with everything else.  
+  - To hell with the user.
+  - Who needs disk space anyway?
+- Version them with everything else, but provide surgical removal of previous version via history rewrites.  
+  - Complex to implement.
+  - Requires a full repo re-sync when the user wishes to reclaim space.
+  - This would require an extra versioned file that helps determine when this is necessary.
+- Version them in their own repository, and do a history rewrite for binary files when the user wants to reclaim space.  
+  - Gives user the opportunity to version anything and prune later.
+  - Easy to delete a media repository wholesale.
+  - Hard to implement history replay.
+  - Requires a media repo re-sync in order to fully remove a media file.
+  - Requires an extra remote repository.
+- Use [Git LFS](https://github.com/git-lfs/git-lfs/blob/master/docs/api/basic-transfers.md)
+  - Requires a host with the LFS server installed.
+  - Using this locally would offer no particular benefits over directly versioning the files.
+- Only version checksums for unversioned files, then use something like SFTP, [Google Drive](https://developers.google.com/drive/v3/reference/), [Dropbox](https://www.dropbox.com/developers/documentation/http/documentation), or something else for actual syncing.  
+  - Closest to what Anki does.
+  - Easy-ish to implement.
+  - Doesn't rewrite history.
+  - Consistently avoids bloat.
+  - Files managed this way can't be versioned, which might not be desirable in some cases.
+  - Requires help from an external protocol and some other media hosting service.
+- Version checksums like above, but instead have each media file in its own little repository.  
+  - Not terribly hard to implement.
+  - Files can be versioned and later be permanently deleted without any complexity.
+  - Rewriting history for a single-file repository is much simpler than surgical strikes in a collection.
+  - So many repositories, though. This would be quite nasty to self-host.
+  
+A number of the above strategies suffer from needed extra hosting solutions (multiple git repos, sync services, FTP, etc). The multiple git repository one is particularly bad because it'd be cumbersome for a user to manage without hosting their own automated solution. Granted, a solution like that should probably be available from the get-go just like AnkiWeb. On the other hand, having a built-in self-hosted solution for any of these methods should be available by design. It's an SRS server managing this model, but it also pushes to a locally hosted remote as its first remote. This would mean that, in the FTP case, an FTP server would also be present locally. This is kinda crappy, though, since now you've got twice as much space being taken up per client. The most appropriate solution to this would be to have locally hosted unversioned media be available on-demand, similar to how a remote server would handle it.
+
+I think there is probably some value in the surgical strike for situations where the user has done something ridiculous like commit a gigantic binary early on and later wants to remove it. Having a generic way to delete revisions in a pinch would be nice. This is especially relevant if they download a shared deck that comes with a lot of images/sounds and later wishes to delete it. All revision history relating to the imported files would need to be purged.
+
+There's nothing saying that these couldn't all be mixed and matched, implemented over time. If I did do that, what would be the best order?
+1. The easiest "screw the user" approach would be totally appropriate if the "surgical history rewrite" approach gets implemented later. That way it can be introduced as the need begins to arise.
+2. The Anki-like checksum versioning scheme would be in line with the precedent set by current SRS solutions.
+
+## Sharing
+Sharing parts of a collection is desirable. Note Templates, Addons, Decks, and individual Notes/Cards are great candidates for sharing with others. It'd be very nice if these could be managed by separate Git repos. There are many use-cases that become available with Git, and many ways to go about it.
+
+Let's say we use Git to manage parts of a collection individually. This would allow for sharing. How do we keep these synced?
+
+Well, first it depends on whether the user intends to modify the content. If they cloned a shared *thing*, it now needs to be forked before they can continue to sync it. This means they'd need to create a bare repository somewhere and add it as a remote. The controller can AT LEAST create a local one for them by default, but now they need to know that a remote one needs to be created before it can be available on other devices. In addition, the other devices need to know that there's a subrepository of some kind to clone/pull.
+
+The basic pattern is this:
+- The user tree can contain subprojects (not necessarily subtrees or submodules - simply git repositories).
+- These subprojects can have the following remotes
+  - An origin remote (required) - the upstream original - for example, an addon would have its origin be the authors repository.
+  - One or more sync remotes (required) - the place(s) the user syncs to which they have push access to - this might be the same as the origin remote.
+- The user has a way of keeping track of subprojects similar to subtrees or submodules so the controller knows what to sync and where.
+- When the user syncs, all subprojects must also be synced to keep themselves at their HEAD. This is opaque to the user - it should appear as though they're all part of the same collection.
+- If changes are available on the origin and the origin is different than all the sync remotes, it is considered an update, and the user is given the option to update.
+- If the user wishes to contribute back to the origin via GUI, they are given a GUI that goes through all possible relevant changes to construct a patch (a la checkboxes) on a separate branch starting from where their last common point is. If it can be submitted as a PR via the appropriate API, that action is performed and they are given the link to the PR so they can work with the maintainer. Otherwise it generates a patch file and they are given the maintainers email address to send it to.
+
+It's important to keep in mind that when using Git to sync anything in a collection, there's potentially a need for a fork. Forking can't be automated if the user wants to use a host they can't control. Hosts with an API (such as GitHub or GitLab) are less of a problem so long as the user configures everything properly. If the user is a novice Git user, it's probably not a good idea to have a complex tree, even if it's mostly abstracted away from them.
+
+### Addons
+With Addons, there's a strong analogy to submodules, but some people may prefer to modify them and keep them versioned in their own history.
+
+### Decks
+Sharing decks is something any respectable SRS supports. With Git, a unique use-case arises: Open Source SRS Decks. The RTK deck could be updated to stay in sync with Kanji Koohi. In addition, the Template for it may need updates to ensure hotlinks still work (a problem I encountered with a shared Anki deck). Perhaps dozens of people needed to make that change when one of them could have made a PR and solved it for everyone. If a keyword was changed for the better, but the user had already changed it to suit their preferences, a merge conflict would occur. This could technically happen on any field, but the others are less likely to change. The same might happen if the user makes slight adjustments to the hotlink on the Template, or remove fields that are maintained upstream. Additive changes on separate lines would be safest for the user so as not to compromise merge safety, especially the kind that cause clientside postprocessing.
+
+For instance, I often add senses of a keyword in parentheses to the end of ambiguous keywords in my RTK deck. If the keyword was modified upstream to better reflect the sense it was meant in, a merge conflict would occur when pull from the upstream repository to update my fork. This could have been mitigated by adding a new field to the template, and using it in one of two ways.
+1. Modify the front side of the template to format the senses in parentheses for me.
+2. Modify the front side by adding a script contained in my media folder that postprocesses the card, modifying the keyword to include the value in my senses field.
+The latter is the safest way, but it's the more complicated way to go.
+
+If a bad maintainer causes a change to field IDs, or worse - sides, that could cause all sorts of unexpected problems for users, since now all of their notes would need to change.
+
+Decks are dependent on Note Templates, and in very specialized cases Addons.
+
+## Security
+
+A big part of this will be what addons can modify. Some things should be sacred.
 
 ## Types / Concepts
 
@@ -377,97 +471,3 @@ Get Logfile (for device)
 Convert To Note Type (for note)
 
 Rename User (for user)
-
-## Syncing Considerations
-
-Being Git, there's always the possibility of a merge conflict.
-
-In other SRSs you can end up in situations where they say "pick one". My problem with this is if a card was added on one system and a note type was modified on another, one of those changes might be lost. Anki is picky when it comes to modifying fields on note types - requires a total database upload. There's probably a good reason for this, but it's not terribly obvious.
-
-In our case, it should give the user an interface to merge. In most cases, they'll simply need to "pick one" on a per-file basis. At the very least, show version A, version B, say which devices they're from and give them an interface to arbitrate.
-
-One thing I'd like to facilitate is sharing of cards/decks in a merge friendly way. Like, being able to update an RTK deck to newer revisions without it screwing up history.
-
-Even cooler would be anonymous data collection to see where people generally get stuck in a deck.
-
-I very much suspect there will be files introduced that should be synced, but not with Git. One example might certain kinds of content in the media folder. Another would be, say, embedded databases that addons choose to use. It'd be nice to use Rsync, but it's not well supported on Windows. Nearly every syncing solution I've found has serious portability problems. It may be best to roll my own using a portable FTP library and just version the checksums of non-versioned files. It's not very efficient, but it'd get the job done.
-
-Alternatively, there are [scripts like this](https://robinwinslow.uk/2013/06/11/dont-ever-commit-binary-files-to-git/) that purge binary files by rewriting history. You could even preserve commit times by [faking them](https://stackoverflow.com/questions/3895453/how-do-i-make-a-git-commit-in-the-past#3898842). On the other hand, you end up with incompatible histories. This would basically put the user in the same place that Anki does when modifying note types, but for every time media is deleted/modified (or perhaps only when they want to reclaim space). Not so good. This is where there'd need to be a companion sync method (maybe a tiny metadata repository) that assists in getting a re-clone.
-
-This might also be a job for plugins/addons. I think it'd be nice to offer users the option to change out how they sync certain kinds of files.
-
-### Some ideas for syncing media (particularly binary files)
-- Version them right along with everything else.  
-  - To hell with the user.
-  - Who needs disk space anyway?
-- Version them with everything else, but provide surgical removal of previous version via history rewrites.  
-  - Complex to implement.
-  - Requires a full repo re-sync when the user wishes to reclaim space.
-  - This would require an extra versioned file that helps determine when this is necessary.
-- Version them in their own repository, and do a history rewrite for binary files when the user wants to reclaim space.  
-  - Gives user the opportunity to version anything and prune later.
-  - Easy to delete a media repository wholesale.
-  - Hard to implement history replay.
-  - Requires a media repo re-sync in order to fully remove a media file.
-  - Requires an extra remote repository.
-- Use [Git LFS](https://github.com/git-lfs/git-lfs/blob/master/docs/api/basic-transfers.md)
-  - Requires a host with the LFS server installed.
-  - Using this locally would offer no particular benefits over directly versioning the files.
-- Only version checksums for unversioned files, then use something like SFTP, [Google Drive](https://developers.google.com/drive/v3/reference/), [Dropbox](https://www.dropbox.com/developers/documentation/http/documentation), or something else for actual syncing.  
-  - Closest to what Anki does.
-  - Easy-ish to implement.
-  - Doesn't rewrite history.
-  - Consistently avoids bloat.
-  - Files managed this way can't be versioned, which might not be desirable in some cases.
-  - Requires help from an external protocol and some other media hosting service.
-- Version checksums like above, but instead have each media file in its own little repository.  
-  - Not terribly hard to implement.
-  - Files can be versioned and later be permanently deleted without any complexity.
-  - Rewriting history for a single-file repository is much simpler than surgical strikes in a collection.
-  - So many repositories, though. This would be quite nasty to self-host.
-  
-A number of the above strategies suffer from needed extra hosting solutions (multiple git repos, sync services, FTP, etc). The multiple git repository one is particularly bad because it'd be cumbersome for a user to manage without hosting their own automated solution. Granted, a solution like that should probably be available from the get-go just like AnkiWeb. On the other hand, having a built-in self-hosted solution for any of these methods should be available by design. It's an SRS server managing this model, but it also pushes to a locally hosted remote as its first remote. This would mean that, in the FTP case, an FTP server would also be present locally. This is kinda crappy, though, since now you've got twice as much space being taken up per client. The most appropriate solution to this would be to have locally hosted unversioned media be available on-demand, similar to how a remote server would handle it.
-
-I think there is probably some value in the surgical strike for situations where the user has done something ridiculous like commit a gigantic binary early on and later wants to remove it. Having a generic way to delete revisions in a pinch would be nice. This is especially relevant if they download a shared deck that comes with a lot of images/sounds and later wishes to delete it. All revision history relating to the imported files would need to be purged.
-
-There's nothing saying that these couldn't all be mixed and matched, implemented over time. If I did do that, what would be the best order?
-1. The easiest "screw the user" approach would be totally appropriate if the "surgical history rewrite" approach gets implemented later. That way it can be introduced as the need begins to arise.
-2. The Anki-like checksum versioning scheme would be in line with the precedent set by current SRS solutions.
-
-## Sharing
-Sharing parts of a collection is desirable. Note Templates, Addons, Decks, and individual Notes/Cards are great candidates for sharing with others. It'd be very nice if these could be managed by separate Git repos. There are many use-cases that become available with Git, and many ways to go about it.
-
-Let's say we use Git to manage parts of a collection individually. This would allow for sharing. How do we keep these synced?
-
-Well, first it depends on whether the user intends to modify the content. If they cloned a shared *thing*, it now needs to be forked before they can continue to sync it. This means they'd need to create a bare repository somewhere and add it as a remote. The controller can AT LEAST create a local one for them by default, but now they need to know that a remote one needs to be created before it can be available on other devices. In addition, the other devices need to know that there's a subrepository of some kind to clone/pull.
-
-The basic pattern is this:
-- The user tree can contain subprojects (not necessarily subtrees or submodules - simply git repositories).
-- These subprojects can have the following remotes
-  - An origin remote (required) - the upstream original - for example, an addon would have its origin be the authors repository.
-  - One or more sync remotes (required) - the place(s) the user syncs to which they have push access to - this might be the same as the origin remote.
-- The user has a way of keeping track of subprojects similar to subtrees or submodules so the controller knows what to sync and where.
-- When the user syncs, all subprojects must also be synced to keep themselves at their HEAD. This is opaque to the user - it should appear as though they're all part of the same collection.
-- If changes are available on the origin and the origin is different than all the sync remotes, it is considered an update, and the user is given the option to update.
-- If the user wishes to contribute back to the origin via GUI, they are given a GUI that goes through all possible relevant changes to construct a patch (a la checkboxes) on a separate branch starting from where their last common point is. If it can be submitted as a PR via the appropriate API, that action is performed and they are given the link to the PR so they can work with the maintainer. Otherwise it generates a patch file and they are given the maintainers email address to send it to.
-
-It's important to keep in mind that when using Git to sync anything in a collection, there's potentially a need for a fork. Forking can't be automated if the user wants to use a host they can't control. Hosts with an API (such as GitHub or GitLab) are less of a problem so long as the user configures everything properly. If the user is a novice Git user, it's probably not a good idea to have a complex tree, even if it's mostly abstracted away from them.
-
-With Addons, there's a strong analogy to submodules, but some people may prefer to modify them and keep them versioned in their own history.
-
-### Decks
-
-Sharing decks is something any respectable SRS supports. With Git, a unique use-case arises: Open Source SRS Decks. The RTK deck could be updated to stay in sync with Kanji Koohi. In addition, the Template for it may need updates to ensure hotlinks still work (a problem I encountered with a shared Anki deck). Perhaps dozens of people needed to make that change when one of them could have made a PR and solved it for everyone. If a keyword was changed for the better, but the user had already changed it to suit their preferences, a merge conflict would occur. This could technically happen on any field, but the others are less likely to change. The same might happen if the user makes slight adjustments to the hotlink on the Template, or remove fields that are maintained upstream. Additive changes on separate lines would be safest for the user so as not to compromise merge safety, especially the kind that cause clientside postprocessing.
-
-For instance, I often add senses of a keyword in parentheses to the end of ambiguous keywords in my RTK deck. If the keyword was modified upstream to better reflect the sense it was meant in, a merge conflict would occur when pull from the upstream repository to update my fork. This could have been mitigated by adding a new field to the template, and using it in one of two ways.
-1. Modify the front side of the template to format the senses in parentheses for me.
-2. Modify the front side by adding a script contained in my media folder that postprocesses the card, modifying the keyword to include the value in my senses field.
-The latter is the safest way, but it's the more complicated way to go.
-
-If a bad maintainer causes a change to field IDs, or worse - sides, that could cause all sorts of unexpected problems for users, since now all of their notes would need to change.
-
-Decks are dependent on Note Templates, and in very specialized cases Addons.
-
-## Security
-
-A big part of this will be what addons can modify. Some things should be sacred.

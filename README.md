@@ -53,11 +53,13 @@ On the other hand, there is no precedent for this. Kioku does not have to implem
 ### Features
 - Program is portable.
 - Addons are portable.
+- Addons can extend/modify/reimplement nearly all functionality.
 - Can be self-hosted.
 - All user data can be versioned.
 - Certain kinds of user data can be unversioned and synced via different mechanisms.
 - Can import from and export to major SRS solutions such as Anki and Mnemosyne.
 - Can be installed or run self-contained (e.g. flash drive).
+- Can be used for research purposes.
 
 ### Properties
 1. Decoupled. The APIs for this should be written in such a way that bindings/implementations in other languages are possible, and mixing them is possible.
