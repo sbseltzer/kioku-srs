@@ -137,7 +137,16 @@ One possibility is to preinstall hooks that prevent the user from doing anything
 
 Now that I think of it, what really bugged me about Anki was the fact that I couldn't manage things with Git IN ADDITION TO the built-in syncing method. Part of why I'm doing this is for user freedom. Imposing these kinds of restrictions and designing it into a corner would sorta defeat the purpose.
 
-One option would be to have Kioku manage things in special workdir paths. Like `.kioku/` or `.deck/` and so on, instead of `.git`. This would mean the user can version any part the collection with Git as usual without interference, and Kioku will just do its thing and version stuff as specified by the REST interface and config files, ignoring the fact that there are subprojects. The only problem with this is it's potentially not very space efficient, especially if media is being versioned. It also could makes user interfaces for sharing less elegant, as it would essentially be working like subtrees from Kioku's point of view.
+One option would be to have Kioku manage things in special workdir paths. Like `.kioku/` or `.deck/` and so on, instead of `.git`. This would mean the user can version any part the collection with Git as usual without interference, and Kioku will just do its thing and automatically version stuff as specified by the REST interface and config files, ignoring the fact that there are subprojects. The only problem with this is it's potentially not very space efficient, especially if media is being versioned. It also could makes user interfaces for sharing less elegant, as it would essentially be working like subtrees from Kioku's point of view.
+
+I'm imagining a couple of possible workflows. The one that's most familiar to me is the addon developer. I'd want to have full control over my versioning of an addon. Here are some ideas.
+- Work on it directly in the worktree, either letting Kioku version it until I'm ready to make a repository, or versioning it myself within Kioku.
+- Work on it outside of the worktree pushing to a remote and accepting updates to it inside Kioku, perhaps on a development branch (which would need to be an advanced option in the Kioku interface).
+- Download an addon with Kioku as a user, but modify it directly in Kioku like a noob. Kioku might be able to protect the user from this by automatically creating a user branch and switching to it, versioning that. They'd need to know that in order to sync it they'll need their own forked remote to push to. It'd also need to notify them of how to properly contribute by creating a fork (which could be automated via API).
+
+Actually, [subtrees](http://blog.nwcadence.com/git-subtrees/) fulfill a lot of the qualities needed for shared content. It keeps everything in user history and makes it relatively simple to change how things are managed later. One thing it would need to be careful of with stuff like decks is ignoring stuff like user-specific metadata. Someone could whitelist it in a subproject. Subtrees would also split out commits from the parent repository - that is, although they're all part of the same repository.
+
+The following sections are very related to this issue.
 
 ## Syncing Considerations
 
