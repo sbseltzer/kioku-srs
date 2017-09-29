@@ -7,9 +7,11 @@ For Types/Concepts and the REST API, see the bottom of this page.
 ## Goals
 
 - This is not a Git GUI.
+- The Model is mostly composed of flatfiles backed by one or more Git Object Databases.
+- Metadata has high granularity (split between many files) to simplify history and merging.
+- In general, commits aim to be discrete - one commit == one change.
 - Content can be shared. Addons, Templates, Decks, and individual Notes.
 - Users are empowered to contribute back to shared content in a relatively user-friendly way.
-- Metadata has high granularity (split between many files) to simplify history and merging.
 - Multiple sync methods can be supported.
 - Multiple sync hosts can be supported.
 - User has freedom to work within the tree as they see fit for their own purposes.
