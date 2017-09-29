@@ -53,6 +53,7 @@ On the other hand, there is no precedent for this. Kioku does not have to implem
 ### Features
 - Program is portable.
 - Addons are portable.
+- Addons can extend/modify/reimplement nearly all functionality.
 - Can be self-hosted.
 - All user data can be versioned.
 - Certain kinds of user data can be unversioned and synced via different mechanisms.
