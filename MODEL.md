@@ -207,10 +207,10 @@ The basic pattern is this:
 
 It's important to keep in mind that when using Git to sync anything in a collection, there's potentially a need for a fork. Forking can't be automated if the user wants to use a host they can't control. Hosts with an API (such as GitHub or GitLab) are less of a problem so long as the user configures everything properly. If the user is a novice Git user, it's probably not a good idea to have a complex tree, even if it's mostly abstracted away from them.
 
+### Addons
 With Addons, there's a strong analogy to submodules, but some people may prefer to modify them and keep them versioned in their own history.
 
 ### Decks
-
 Sharing decks is something any respectable SRS supports. With Git, a unique use-case arises: Open Source SRS Decks. The RTK deck could be updated to stay in sync with Kanji Koohi. In addition, the Template for it may need updates to ensure hotlinks still work (a problem I encountered with a shared Anki deck). Perhaps dozens of people needed to make that change when one of them could have made a PR and solved it for everyone. If a keyword was changed for the better, but the user had already changed it to suit their preferences, a merge conflict would occur. This could technically happen on any field, but the others are less likely to change. The same might happen if the user makes slight adjustments to the hotlink on the Template, or remove fields that are maintained upstream. Additive changes on separate lines would be safest for the user so as not to compromise merge safety, especially the kind that cause clientside postprocessing.
 
 For instance, I often add senses of a keyword in parentheses to the end of ambiguous keywords in my RTK deck. If the keyword was modified upstream to better reflect the sense it was meant in, a merge conflict would occur when pull from the upstream repository to update my fork. This could have been mitigated by adding a new field to the template, and using it in one of two ways.
