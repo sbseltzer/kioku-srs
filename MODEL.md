@@ -73,6 +73,7 @@ users.(config) - List of users and paths to their directories. By default these 
   /templates
     /note-template-id
       /.git - CONSIDER - What if shared templates were forks? One issue would be that decks that use them could run into problems if a template drastically changed its format.
+      .deps - Addon dependencies (hopefully none)
       generator.(script) - used to describe how to generate cards from a note
       sides.(config) - used to describe how many sides the note has
       fields.(config) - used to describe the fields available to the note
@@ -89,6 +90,7 @@ users.(config) - List of users and paths to their directories. By default these 
       -- extra arbitrary files accessible to all templates
   /decks
     /deck-id
+      .deps - Addon/Template dependencies (hopefully no addons needed, but templates are fairly likely)
       .generated - indicates if this is generated from another deck as a custom study session
       /.research - CONSIDER - This would be a special .git that is handled internally to version just the .schedule files. This might make it simpler to track research data anonymously without needing to post-process history.
       /.git - CONSIDER - What if shared decks were forks? One issue would be that templates would also need to be forked, and that could become complex (unless the template could be embedded in the deck).
