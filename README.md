@@ -75,13 +75,6 @@ One hardmode use-case would be a media capture plugin. This is extremely platfor
 
 ### Build System
 
-Potential options:
-
-- Make
-- CMake
-- Autotools
-- Premake
-
 To build from source, I'm thinking CMake. This would be for maximum portability.
 
 ### Libraries
