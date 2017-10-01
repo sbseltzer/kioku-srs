@@ -60,6 +60,7 @@ On the other hand, there is no precedent for this. Kioku does not have to implem
 - Can import from and export to major SRS solutions such as Anki and Mnemosyne.
 - Can be installed or run self-contained (e.g. flash drive).
 - Can be used for research purposes.
+- Support LaTeX, HTML, CSS, Javascript, images, videos, sounds, and so on.
 
 ### Properties
 1. Decoupled. The APIs for this should be written in such a way that bindings/implementations in other languages are possible, and mixing them is possible.
@@ -104,6 +105,7 @@ To build from source, I'm thinking CMake. This would be for maximum portability.
 - [frozen](https://github.com/cesanta/frozen) - Portable, extremely minimal JSON parser/emitter. No objects included.
 - [slre](https://github.com/cesanta/slre) - Super Light RegEx library. Portable. Gives a subset of Perl-style regex in C.
 - [generic-c-hashmap](https://github.com/Kijewski/generic-c-hashmap) - A portable generic easy-to-use hashmap in C. Header only. Very slick API.
+- [katex](https://github.com/Khan/KaTeX) - Fast Javascript LaTeX generator.
 
 It's worth noting that anything with a viral license is not a problem so long as it is wrapped appropriately. The end-goal is to have some reusable interfaces so that Kioku can be an SRS implementation framework.
 
