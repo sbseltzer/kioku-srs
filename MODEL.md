@@ -135,31 +135,22 @@ users.(config) - List of users and paths to their directories. By default these 
   -- This would include stuff like default note types, default scripts, default tags, etc.
 ```
 
-## Repository Usage
+## Repository/Storage Usage
 
 I've now got at least 3 sections detailing all the horrific problems with using Git as a backend. Namely because there are so many options. It's looking more and more like the best option is a roll-my-own type solution.
 
-To plot this out in simpler terms, let's look at what some of the problems to deal with are.
+To plot this out in simpler terms, let's look at what some of the problems to deal with are in order of priority.
 
 1. How to keep overall filesystem state synced.
-1. How to share content.
-1. How to download shared content.
-1. How to hack on shared content.
-1. How to contribute your hacks on shared content back to their source.
-1. How to manage/sync large content.
-1. How to prevent large content from taking up space when you feel permanently done with it.
-
-#### Submodules
-I think forcing the use of submodules is a poor choice because they impose a serious burden on any user who wishes to work within the spaces managed by Kioku. It's not a bad idea to make Kioku robust enough to handle cases where users deliberately use submodules, but it should not be a targeted use-case.
-
-#### Subtrees
-I'm still thinking through the implications of using subtrees, but the first thing that stands out is that their content is part of the parent repository history. This raises concerns with imported media. If someone feels totally done with a deck, addon, template, or media, they should be able to get rid of it with no strings attached. Subtrees also impose a burden on users in that they shouldn't mix commits with child and parent, and also have somewhat complex push requirements when contributing back upstream. I'm also not sure they can be branched without a fork.
-
-#### Subrepositories
-This is more user friendly, I think, but like subtrees it involves getting child content into parent history. It's nice because people can do what they want with that subrepository while staying out of Kioku's way and keep all their stuff synced easily. This is especially great for those who are making changes to stuff and want to still be able to sync without creating a fork.
-
-#### Roll-my-own
-I think I might need to take this route. It would probably end up being easier and clearer than any of the above. If the user doesn't ever need to create the repositories themselves (a la host API), I'd probably do something similar to submodules and make it fairly granular. However, I see it being very possible that people don't want to use any of the predefined host services, or they don't feel comfortable handing off a full-access token (though they'd be best off making a new account regardless), or perhaps wish to roll-their-own host. Some people may not care about bloat. This is the inherent problem with a multi-repository solution.
+2. How to manage/sync large content.
+3. How to prevent large content from taking up space when you feel permanently done with it.
+4. How to stay out of the user's way when they're working in the user filesystem tree.
+5. How to share content.
+6. How to download shared content.
+7. How to hack on shared content.
+8. How to contribute your hacks on shared content back to their source.
+ 
+Something I'd like to preface this with, concerning media size, is that the largest shared Anki decks I could find were under 250MB. My personal collection, which includes many video clips, is around 205MB. I imagine that could swell quite a bit over time, but I think it'll still be okay.
 
 Some helpful info.
 - https://git.wiki.kernel.org/index.php/SubprojectSupport?highlight=%2528subproject%2529
@@ -172,6 +163,20 @@ Some helpful info.
 - https://www.atlassian.com/blog/git/alternatives-to-git-submodule-git-subtree
 - https://git.wiki.kernel.org/index.php/GitSubmoduleTutorial#Gotchas
 - https://stackoverflow.com/questions/996164/is-anyone-really-using-git-super-subprojects
+
+### Submodules
+I think forcing the use of submodules is a poor choice because they impose a serious burden on any user who wishes to work within the spaces managed by Kioku. It's not a bad idea to make Kioku robust enough to handle cases where users deliberately use submodules, but it should not be a targeted use-case.
+
+### Subtrees
+I'm still thinking through the implications of using subtrees, but the first thing that stands out is that their content is part of the parent repository history. This raises concerns with imported media. If someone feels totally done with a deck, addon, template, or media, they should be able to get rid of it with no strings attached. Subtrees also impose a burden on users in that they shouldn't mix commits with child and parent, and also have somewhat complex push requirements when contributing back upstream. I'm also not sure they can be branched without a fork.
+
+### Subrepositories
+This is more user friendly, I think, but like subtrees it involves getting child content into parent history. It's nice because people can do what they want with that subrepository while staying out of Kioku's way and keep all their stuff synced easily. This is especially great for those who are making changes to stuff and want to still be able to sync without creating a fork.
+
+### Roll-my-own
+I think I might need to take this route. It would probably end up being easier and clearer than any of the above. If the user doesn't ever need to create the repositories themselves (a la host API), I'd probably do something similar to submodules and make it fairly granular. However, I see it being very possible that people don't want to use any of the predefined host services, or they don't feel comfortable handing off a full-access token (though they'd be best off making a new account regardless), or perhaps wish to roll-their-own host. Some people may not care about bloat. This is the inherent problem with a multi-repository solution.
+
+
 
 ## User Restraint
 
