@@ -4,6 +4,9 @@ cmake_install.cmake
 *.vcxproj*
 *.sln
 *.exe
+*.o
+*.a
+*.so
 Win32/
 Debug/
 Release/
