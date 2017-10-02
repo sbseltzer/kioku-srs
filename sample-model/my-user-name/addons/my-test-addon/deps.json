@@ -1,16 +1,16 @@
 {
     plugins: [
-        "https://github.com/kioku/scripting-engine-lua.git",
+        { repo: "https://github.com/kioku/plugin-se-lua.git", tag: "v1" },
     ]
     addons: [
-        "https://github.com/user/addon-a.git",
+        { repo: "https://github.com/user/addon-a.git", tag: "v2" },
     ]
     templates: [
-        "https://github.com/user/template-x.git",
-        "https://github.com/user2/template-y.git",
+        { repo: "https://github.com/user/template-x.git", tag: "dev-3" },
+        { repo: "https://github.com/user/template-y.git", tag: "v1.01" },
     ]
     media: [
-        "https://github.com/user/some-media.git",
-        "https://github.com/user/some-other-media.git",
+        { repo: "https://github.com/user/media-x.git", tag: "version-6" },
+        { repo: "https://github.com/user/media-y.git", tag: "v1" },
     ]
 }
