@@ -1,4 +1,4 @@
-#include "model.h"
-#include "controller.h"
-#include "server.h"
-#include "rest.h"
+#include "kioku/model.h"
+#include "kioku/controller.h"
+#include "kioku/server.h"
+#include "kioku/rest.h"

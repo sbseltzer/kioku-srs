@@ -52,12 +52,12 @@ add_library(lua5-3-4 OBJECT ${CMAKE_SOURCE_DIR}/extern/lua/ldblib.c
                             ${CMAKE_SOURCE_DIR}/extern/lua/lundump.c
                             )
 add_executable( kioku
-                src/main.c
-                src/model.c
-                src/controller.c
-                src/rest.c
-                src/server.c
-                extern/parson/parson.c
-                extern/mongoose/mongoose.c
+                ${CMAKE_SOURCE_DIR}/src/main.c
+                ${CMAKE_SOURCE_DIR}/src/kioku/model.c
+                ${CMAKE_SOURCE_DIR}/src/kioku/controller.c
+                ${CMAKE_SOURCE_DIR}/src/kioku/rest.c
+                ${CMAKE_SOURCE_DIR}/src/kioku/server.c
+                ${CMAKE_SOURCE_DIR}/extern/parson/parson.c
+                ${CMAKE_SOURCE_DIR}/extern/mongoose/mongoose.c
                 )
 add_dependencies( kioku lua5-3-4 )
