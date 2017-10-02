@@ -83,12 +83,12 @@ To build from source, I'm thinking CMake. This would be for maximum portability.
 - [mongoose](https://github.com/cesanta/mongoose) - Portable embedded webserver and network stack.
 - [libgit2](https://libgit2.github.com/) - This will be wrapped to create a filesystem database thingy. The rationale is for portable synchronization, file management, and deck version history.
 - [utf8.h](https://github.com/sheredom/utf8.h) - A portable single-header library for UTF-8 string functions.
+- [curl](https://github.com/curl/curl) - This one should be obvious.
 - [mbedtls](https://github.com/ARMmbed/mbedtls) - Appears to be the smallest, most portable SSL implementation, which would allow for HTTPS on mongoose.
 - [openssl](https://github.com/openssl/openssl) - More common/accepted. This is currently the only supported libgit2 SSL implementation (though there's a feature in progress).
 - [parson](https://github.com/kgabis/parson) - Simplistic C89 JSON parser.
 - [slre](https://github.com/cesanta/slre) - Super Light RegEx library. Portable. Gives a subset of Perl-style regex in C.
 - [generic-c-hashmap](https://github.com/Kijewski/generic-c-hashmap) - A portable generic easy-to-use hashmap in C. Header only. Very slick API.
-- [curl](https://github.com/curl/curl) - This one should be obvious.
 
 #### Frontend
 - [markdown-it](https://github.com/markdown-it/markdown-it) - A Javascript Markdown parser.
