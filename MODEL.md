@@ -176,7 +176,11 @@ This is more user friendly, I think, but like subtrees it involves getting child
 ### Roll-my-own
 I think I might need to take this route. It would probably end up being easier and clearer than any of the above. If the user doesn't ever need to create the repositories themselves (a la host API), I'd probably do something similar to submodules and make it fairly granular. However, I see it being very possible that people don't want to use any of the predefined host services, or they don't feel comfortable handing off a full-access token (though they'd be best off making a new account regardless), or perhaps wish to roll-their-own host. Some people may not care about bloat. This is the inherent problem with a multi-repository solution.
 
+#### Full Versioning with Subtrees and Reimport
+Version the whole thing using Subtrees for sharing. When things bloat, have a faked history rewrite feature that lets you keep your history without media bloat.
 
+#### External REST Wrappers
+Use external REST APIs to automatically fork and break up user tree into subprojects, managed similarly to submodules.
 
 ## User Restraint
 
