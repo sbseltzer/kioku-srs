@@ -79,6 +79,8 @@ To build from source, I'm thinking CMake. This would be for maximum portability.
 
 ### Libraries
 
+Here are some libraries I'm thinking of using.
+
 #### Backend
 - [mongoose](https://github.com/cesanta/mongoose) - Portable embedded webserver and network stack.
 - [libgit2](https://libgit2.github.com/) - This will be wrapped to create a filesystem database thingy. The rationale is for portable synchronization, file management, and deck version history.
@@ -89,6 +91,8 @@ To build from source, I'm thinking CMake. This would be for maximum portability.
 - [parson](https://github.com/kgabis/parson) - Simplistic C89 JSON parser.
 - [slre](https://github.com/cesanta/slre) - Super Light RegEx library. Portable. Gives a subset of Perl-style regex in C.
 - [generic-c-hashmap](https://github.com/Kijewski/generic-c-hashmap) - A portable generic easy-to-use hashmap in C. Header only. Very slick API.
+- [autoupdate](https://github.com/pmq20/libautoupdate) - A cross-platform in-place application updater in C.
+- [tinydir](https://github.com/cxong/tinydir) - A portable directory/file reader in a single header.
 
 #### Frontend
 - [markdown-it](https://github.com/markdown-it/markdown-it) - A Javascript Markdown parser.
