@@ -1,0 +1,16 @@
+{
+    plugins: [
+        "https://github.com/kioku/scripting-engine-lua.git",
+    ]
+    addons: [
+        "https://github.com/user/addon-a.git",
+    ]
+    templates: [
+        "https://github.com/user/template-x.git",
+        "https://github.com/user2/template-y.git",
+    ]
+    media: [
+        "https://github.com/user/some-media.git",
+        "https://github.com/user/some-other-media.git",
+    ]
+}
