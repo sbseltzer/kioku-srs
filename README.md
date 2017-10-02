@@ -79,25 +79,34 @@ To build from source, I'm thinking CMake. This would be for maximum portability.
 
 ### Libraries
 
-- [mongoose](https://github.com/cesanta/mongoose) - Portable embedded webserver.
-- [libgit2](https://libgit2.github.com/) - This is wrapped to create a filesystem database thingy. The rationale is for portable synchronization, file management, and deck version history.
-- [lua](https://lua.org) - I'm thinking of using this as a portable dynamic loader for backend tasks. This would also make it easier to embed with things like PHP. It'd also serve as a nice configuration language, providing similar value to JSON.
-- [luagit2](https://github.com/libgit2/luagit2) - Lua bindings for libgit2. Why not?
+#### Backend
+- [mongoose](https://github.com/cesanta/mongoose) - Portable embedded webserver and network stack.
+- [libgit2](https://libgit2.github.com/) - This will be wrapped to create a filesystem database thingy. The rationale is for portable synchronization, file management, and deck version history.
 - [utf8.h](https://github.com/sheredom/utf8.h) - A portable single-header library for UTF-8 string functions.
-- [hotel](https://github.com/typicode/hotel) - This looks promising for developing a client or server.
-- [php-src](https://github.com/php/php-src) - The PHP source code for compiling the interpreter and CGI.
-- [php-lua](https://github.com/laruence/php-lua) - A PHP PECL package for embedding a Lua interpreter in PHP.
-- [markdown-it](https://github.com/markdown-it/markdown-it) - A Javascript Markdown parser.
-- [stackedit](https://github.com/benweet/stackedit) - An in-browser Markdown editor.
 - [mbedtls](https://github.com/ARMmbed/mbedtls) - Appears to be the smallest, most portable SSL implementation, which would allow for HTTPS on mongoose.
-- [pypy](http://doc.pypy.org/en/latest/embedding.html) - This seems to be a good sandboxed, portable, embedded python solution.
-- [lunatic-python](https://labix.org/lunatic-python) - This looks very promising as a best-of-both-worlds thing.
-- [luacurl](http://luacurl.luaforge.net/) - Platform independent, apparently. Very simple looking.
-- [v7](https://github.com/cesanta/v7) or [mjs](https://github.com/cesanta/mjs) - Embedded Portable Javascript engine with Lua-like binding API. V7 is recently deprecated, but has a much broader feature set. mJS is so stripped down that it doesn't even look like JS.
+- [openssl](https://github.com/openssl/openssl) - More common/accepted. This is currently the only supported libgit2 SSL implementation (though there's a feature in progress).
 - [parson](https://github.com/kgabis/parson) - Simplistic C89 JSON parser.
 - [slre](https://github.com/cesanta/slre) - Super Light RegEx library. Portable. Gives a subset of Perl-style regex in C.
 - [generic-c-hashmap](https://github.com/Kijewski/generic-c-hashmap) - A portable generic easy-to-use hashmap in C. Header only. Very slick API.
+- [curl](https://github.com/curl/curl) - This one should be obvious.
+
+#### Frontend
+- [markdown-it](https://github.com/markdown-it/markdown-it) - A Javascript Markdown parser.
+- [stackedit](https://github.com/benweet/stackedit) - An in-browser Markdown editor.
 - [katex](https://github.com/Khan/KaTeX) - Fast Javascript LaTeX generator.
+
+#### Server
+- [hotel](https://github.com/typicode/hotel) - This looks promising for developing a client or server.
+- [php-src](https://github.com/php/php-src) - The PHP source code for compiling the interpreter and CGI.
+- [php-lua](https://github.com/laruence/php-lua) - A PHP PECL package for embedding a Lua interpreter in PHP.
+
+#### Scripting
+- [lua](https://lua.org) - I'm thinking of using this as a portable dynamic loader for backend tasks. This would also make it easier to embed with things like PHP. It'd also serve as a nice configuration language, providing similar value to JSON.
+- [v7](https://github.com/cesanta/v7) - Embedded Portable Javascript engine with Lua-like binding API. V7 is recently deprecated, but has a much broader feature set. mJS is so stripped down that it doesn't even look like JS.
+- [pypy](http://doc.pypy.org/en/latest/embedding.html) - This seems to be a good sandboxed, portable, embedded python solution.
+- [lunatic-python](https://labix.org/lunatic-python) - This looks very promising as a best-of-both-worlds thing.
+- [luagit2](https://github.com/libgit2/luagit2) - Lua bindings for libgit2. Why not?
+- [luacurl](http://luacurl.luaforge.net/) - Platform independent, apparently. Very simple looking.
 
 It's worth noting that anything with a viral license is not a problem so long as it is wrapped appropriately. The end-goal is to have some reusable interfaces so that Kioku can be an SRS implementation framework.
 
