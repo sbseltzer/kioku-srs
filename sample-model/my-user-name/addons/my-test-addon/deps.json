@@ -1,14 +1,14 @@
 {
     plugins: [
         { repo: "https://github.com/kioku/plugin-se-lua.git", tag: "v1" },
-    ]
+    ],
     addons: [
         { repo: "https://github.com/user/addon-a.git", tag: "v2" },
-    ]
+    ],
     templates: [
         { repo: "https://github.com/user/template-x.git", tag: "dev-3" },
         { repo: "https://github.com/user/template-y.git", tag: "v1.01" },
-    ]
+    ],
     media: [
         { repo: "https://github.com/user/media-x.git", tag: "version-6" },
         { repo: "https://github.com/user/media-y.git", tag: "v1" },
