@@ -16,6 +16,9 @@ My activity is typically limited to the following.
 
 For simplicity's sake, it'd probably be best to start with making an AnkiWeb-like service that I self-host so I don't need to worry about making fat clients. Granted, the architecture is exactly the same, but at least it simplifies things for now. I'd probably use [Laravel](https://laravel.com/docs/5.5/authentication) because of how easy it would be to get secure user logins all squared away. That could simply wrap a hosted [Cordova](https://cordova.apache.org/#getstarted) application and/or wrap the REST API using [Laravel's Stateless Authentication](https://laravel.com/docs/5.5/authentication#stateless-http-basic-authentication). That way I could use it on any platform out of the box so long as I have internet access.
 
+## The Bare Minimum
+そもそも、it must qualify as an SRS. This means the ability to add/edit notes and schedule them. To that end, we must start with the Model and Controller (REST API) to implement this. For now, the editor view can be a plaintext editor and non-repping version control can be done manually. The rep view could be a simple command line app that prints the card to `stdout` and makes you submit your answer on `stdin`, using cURL to interface with the server.
+
 ## Platform Support:
 
 ### Desktop: Windows, Linux
