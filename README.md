@@ -93,6 +93,7 @@ Here are some libraries I'm thinking of using.
 - [generic-c-hashmap](https://github.com/Kijewski/generic-c-hashmap) - A portable generic easy-to-use hashmap in C. Header only. Very slick API.
 - [autoupdate](https://github.com/pmq20/libautoupdate) - A cross-platform in-place application updater in C.
 - [tinydir](https://github.com/cxong/tinydir) - A portable directory/file reader in a single header.
+- [sundown](https://github.com/vmg/sundown) - A portable, secure markdown processing library in C.
 
 #### Frontend
 - [markdown-it](https://github.com/markdown-it/markdown-it) - A Javascript Markdown parser.
