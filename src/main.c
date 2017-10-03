@@ -14,6 +14,7 @@ static struct mg_serve_http_opts s_http_server_opts;
     mg_send_http_chunk(connection, "", 0); /* Send empty chunk, the end of response */ \
   } while(0)
 
+/* Talk to this with `curl localhost:8000/api/v1/sum --data "{\"n1\": YOUR_N1_NUMBER, \"n2\": YOUR_N2_NUMBER}"` */
 static void handle_sum_call(struct mg_connection *nc, struct http_message *hm) {
   double result = 0;
   char buf[100] = {0};
