@@ -99,6 +99,7 @@ Here are some libraries I'm thinking of using.
 - [markdown-it](https://github.com/markdown-it/markdown-it) - A Javascript Markdown parser.
 - [stackedit](https://github.com/benweet/stackedit) - An in-browser Markdown editor.
 - [katex](https://github.com/Khan/KaTeX) - Fast Javascript LaTeX generator.
+- [quill](https://quilljs.com/docs/formats/#inline) - Portable in-browser rich text editor. Actually comes with a formula module powered by KaTeX.
 
 #### Scripting
 - [lua](https://lua.org) - I'm thinking of using this as a portable dynamic loader for backend tasks. This would also make it easier to embed with things like PHP. It'd also serve as a nice configuration language, providing similar value to JSON.
