@@ -424,6 +424,8 @@ Common use cases:
 
 Portability Note: It's possible that this may end up similar to addons in that they define their compatibility, and revert to a device-defined default implementation on unsupported devices (concatenating their fields). For instance, say the user uses Ruby to generate their cards natively on Desktop. Or worse, they use Lua to fire off a Ruby script to do the dirty work. A mobile device that has no Ruby plugin or Ruby interpreter installed will bomb out and be forced to use some other default generator. On the flip side, what they ought to do is leave the generator alone (or very lightweight) andutilize the API to do the real work in Javascript clientside.
 
+Issues: One issue I've had with Anki in generated clozes is how scheduling info gets associated with its cloze number. If someone wanted to change the order of clozes later or remove one, there's the possibility of erroneously having one card inherit scheduling information of another. It's really the content being tested on within the card that counts, but scheduling info should not necessarily be reset just because content changes. This is not really a problem Anki aims to solve, but it'd be nice if that could be avoided here.
+
 ### Note
 A unique Note within a Deck
 #### ID
