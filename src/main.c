@@ -89,10 +89,11 @@ static void handle_sum_call(struct mg_connection *nc, struct http_message *hm) {
     codestring = HTTP_OK;
   }
   /* Serialize and respond */
-  char result_buffer[64] = {0};
+  char result_buffer[32] = {0};
   if (json_serialize_to_buffer(root_value, result_buffer, sizeof(result_buffer)) == JSONFailure)
   {
     rest_respond(nc, HTTP_INTERNAL_ERROR, "{\"error\":\"Failed to serialize result @%s:%u\"}", __FILE__, __LINE__);
+    kLOG_WRITE("Buffer was not long enough (%zu < %zu)", sizeof(result_buffer), json_serialization_size(root_value));
   }
   else
   {
