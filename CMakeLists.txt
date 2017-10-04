@@ -8,6 +8,7 @@ include_directories( include
                      extern/utf8.h
                      extern/lua
                      extern/generic-c-hashmap
+                     extern/tinydir
                      ) 
 
 # find_package(LibGit2 REQUIRED)
