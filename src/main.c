@@ -5,6 +5,7 @@
 static const char *s_http_port = "8000";
 static struct mg_serve_http_opts s_http_server_opts;
 #define HTTP_BAD_REQUEST "400 Bad Request"
+#define HTTP_INTERNAL_ERROR "500 Internal Server Error"
 #define HTTP_OK "200 OK"
 
 #define rest_respond(connection, codestring, format, ...)               \
@@ -57,7 +58,6 @@ static void handle_sum_call(struct mg_connection *nc, struct http_message *hm) {
     }
   } while (0);
   /* Respond */
-  char result_buffer[100] = {0};
   const char *codestring = NULL;
   if (error_msg != NULL)
   {
@@ -88,8 +88,17 @@ static void handle_sum_call(struct mg_connection *nc, struct http_message *hm) {
     json_object_set_number(root_object, "result", result);
     codestring = HTTP_OK;
   }
-  json_serialize_to_buffer(root_value, result_buffer, sizeof(result_buffer));
-  rest_respond(nc, codestring, "%s", result_buffer);
+  /* Serialize and respond */
+  char result_buffer[64] = {0};
+  if (json_serialize_to_buffer(root_value, result_buffer, sizeof(result_buffer)) == JSONFailure)
+  {
+    rest_respond(nc, HTTP_INTERNAL_ERROR, "{\"error\":\"Failed to serialize result @%s:%u\"}", __FILE__, __LINE__);
+  }
+  else
+  {
+    rest_respond(nc, codestring, "%s", result_buffer);
+  }
+  /* Cleanup */
   json_value_free(root_value);
 }
 
