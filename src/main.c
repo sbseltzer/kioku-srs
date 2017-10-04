@@ -21,7 +21,8 @@ static double sum_call(double n1, double n2)
   return n1 + n2;
 }
 /* Talk to this with `curl localhost:8000/api/v1/sum --data "{\"n1\": YOUR_N1_NUMBER, \"n2\": YOUR_N2_NUMBER}"` */
-static void handle_sum_call(struct mg_connection *nc, struct http_message *hm) {
+static void handle_sum_call(struct mg_connection *nc, struct http_message *hm)
+{
   double result = 0;
   char buf[100] = {0};
   memcpy(buf, hm->body.p,
@@ -108,9 +109,12 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
 
   switch (ev) {
     case MG_EV_HTTP_REQUEST:
-      if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "sum") == 0) {
+      if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "sum") == 0)
+      {
         handle_sum_call(nc, hm); /* Handle RESTful call */
-      } else if (mg_vcmp(&hm->uri, "/printcontent") == 0) {
+      }
+      else if (mg_vcmp(&hm->uri, "/printcontent") == 0)
+      {
         char buf[100] = {0};
         memcpy(buf, hm->body.p,
                sizeof(buf) - 1 < hm->body.len ? sizeof(buf) - 1 : hm->body.len);
