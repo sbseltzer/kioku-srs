@@ -61,27 +61,30 @@ static void handle_sum_call(struct mg_connection *nc, struct http_message *hm) {
   const char *codestring = NULL;
   if (error_msg != NULL)
   {
-    /* If it failed too early, initialize a fresh JSON object */
     if (root_value == NULL)
     {
+      /* If it failed too early, initialize a fresh JSON object */
       root_value = json_value_init_object();
       root_object = json_value_get_object(root_value);
     }
-    /* Otherwise, clear the existing one */
     else
     {
+      /* Otherwise, clear the existing one to reuse as the response */
       json_object_clear(root_object);
     }
+    /* Construct result */
     json_object_set_string(root_object, "error", error_msg);
     codestring = HTTP_BAD_REQUEST;
   }
   else
   {
+    /* Perform method */
     double n1 = json_object_get_number(root_object, "n1");
     double n2 = json_object_get_number(root_object, "n2");
     result = sum_call(n1, n2);
-
+    /* Clear the request object to reuse as the response */
     json_object_clear(root_object);
+    /* Construct result */
     json_object_set_number(root_object, "result", result);
     codestring = HTTP_OK;
   }
