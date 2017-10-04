@@ -19,3 +19,6 @@
 [submodule "extern/generic-c-hashmap"]
 	path = extern/generic-c-hashmap
 	url = https://github.com/Kijewski/generic-c-hashmap.git
+[submodule "extern/tinydir"]
+	path = extern/tinydir
+	url = https://github.com/cxong/tinydir.git
