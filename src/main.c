@@ -21,6 +21,7 @@ static double sum_call(double n1, double n2)
 {
   return n1 + n2;
 }
+
 /* Talk to this with `curl localhost:8000/api/v1/sum --data "{\"n1\": YOUR_N1_NUMBER, \"n2\": YOUR_N2_NUMBER}"` */
 static void handle_sum_call(struct mg_connection *nc, struct http_message *hm)
 {
@@ -104,6 +105,7 @@ static void handle_sum_call(struct mg_connection *nc, struct http_message *hm)
   /* Cleanup */
   json_value_free(root_value);
 }
+
 static void handle_exit_call(struct mg_connection *nc, struct http_message *hm)
 {
   kill_me_now = true;
