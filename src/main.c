@@ -4,16 +4,21 @@
 
 static const char *s_http_port = "8000";
 static struct mg_serve_http_opts s_http_server_opts;
-#define BAD_REQUEST "400 Bad Request"
+#define HTTP_BAD_REQUEST "400 Bad Request"
+#define HTTP_OK "200 OK"
 
 #define rest_respond(connection, codestring, format, ...)               \
   do {                                                                  \
     fprintf(stderr, format "\r\n", __VA_ARGS__);                        \
-    mg_printf(connection, "%s", "HTTP/1.1 " codestring "\r\nTransfer-Encoding: chunked\r\n\r\n"); \
+    mg_printf(connection, "HTTP/1.1 %s\r\nTransfer-Encoding: chunked\r\n\r\n", codestring); \
     mg_printf_http_chunk(connection, format, __VA_ARGS__);              \
     mg_send_http_chunk(connection, "", 0); /* Send empty chunk, the end of response */ \
   } while(0)
 
+static double sum_call(double n1, double n2)
+{
+  return n1 + n2;
+}
 /* Talk to this with `curl localhost:8000/api/v1/sum --data "{\"n1\": YOUR_N1_NUMBER, \"n2\": YOUR_N2_NUMBER}"` */
 static void handle_sum_call(struct mg_connection *nc, struct http_message *hm) {
   double result = 0;
@@ -23,38 +28,65 @@ static void handle_sum_call(struct mg_connection *nc, struct http_message *hm) {
   fprintf(stderr, "Data: %s\n", buf);
 
   /* See if JSON value was provided as data */
-  JSON_Value  *root_value = json_parse_string(buf);
-  if (root_value == NULL)
-  {
-    rest_respond(nc, BAD_REQUEST, "{error: \"%s\"}", "JSON value not found");
-    json_value_free(root_value);
-    return;
-  }
-  /* See if it was provided as an object */
-  JSON_Object *root_object = json_value_get_object(root_value);
-  if (root_object == NULL)
-  {
-    rest_respond(nc, BAD_REQUEST, "{error: \"%s\"}", "JSON root object not found");
-    json_value_free(root_value);
-    return;
-  }
-  /* Check members */
-  if (!json_object_has_value_of_type(root_object, "n1", JSONNumber))
-  {
-    rest_respond(nc, BAD_REQUEST, "{error: \"%s\"}", "Expected JSON number 'n1'");
-    json_value_free(root_value);
-    return;
-  }
-  if (!json_object_has_value_of_type(root_object, "n2", JSONNumber))
-  {
-    rest_respond(nc, BAD_REQUEST, "{error: \"%s\"}", "Expected JSON number 'n2'");
-    json_value_free(root_value);
-    return;
-  }
-
+  JSON_Value *root_value = json_parse_string(buf);
+  JSON_Object *root_object = NULL;
+  const char *error_msg = NULL;
+  do {
+    if (root_value == NULL)
+    {
+      error_msg = "JSON value not found";
+      break;
+    }
+    /* See if it was provided as an object */
+    root_object = json_value_get_object(root_value);
+    if (root_object == NULL)
+    {
+      error_msg = "JSON root object not found";
+      break;
+    }
+    /* Check members */
+    if (!json_object_has_value_of_type(root_object, "n1", JSONNumber))
+    {
+      error_msg = "Expected JSON number 'n1'";
+      break;
+    }
+    if (!json_object_has_value_of_type(root_object, "n2", JSONNumber))
+    {
+      error_msg = "Expected JSON number 'n2'";
+      break;
+    }
+  } while (0);
   /* Respond */
-  result = json_object_get_number(root_object, "n1") + json_object_get_number(root_object, "n2");
-  rest_respond(nc, "200 OK", "{result: %lf}", result);
+  char result_buffer[100] = {0};
+  const char *codestring = NULL;
+  if (error_msg != NULL)
+  {
+    /* If it failed too early, initialize a fresh JSON object */
+    if (root_value == NULL)
+    {
+      root_value = json_value_init_object();
+      root_object = json_value_get_object(root_value);
+    }
+    /* Otherwise, clear the existing one */
+    else
+    {
+      json_object_clear(root_object);
+    }
+    json_object_set_string(root_object, "error", error_msg);
+    codestring = HTTP_BAD_REQUEST;
+  }
+  else
+  {
+    double n1 = json_object_get_number(root_object, "n1");
+    double n2 = json_object_get_number(root_object, "n2");
+    result = sum_call(n1, n2);
+
+    json_object_clear(root_object);
+    json_object_set_number(root_object, "result", result);
+    codestring = HTTP_OK;
+  }
+  json_serialize_to_buffer(root_value, result_buffer, sizeof(result_buffer));
+  rest_respond(nc, codestring, "%s", result_buffer);
   json_value_free(root_value);
 }
 
