@@ -55,6 +55,7 @@ add_library(lua5-3-4 OBJECT extern/lua/ldblib.c
 add_executable( kioku
                 src/main.c
                 src/kioku/log.c
+                src/kioku/filesystem.c
                 src/kioku/model.c
                 src/kioku/controller.c
                 src/kioku/rest.c
