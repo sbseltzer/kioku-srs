@@ -88,6 +88,10 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
 
 bool kioku_filesystem_create(const char *path)
 {
+  if (kioku_filesystem_exists(path))
+  {
+    return false;
+  }
   /* Do not allow creating an empty directory */
   if (path[strlen(path)] == '/')
   {
