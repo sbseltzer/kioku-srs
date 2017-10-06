@@ -95,9 +95,17 @@ void test_file_manage()
   ok(kioku_filesystem_exists(path));
   ok(kioku_filesystem_delete(path));
   ok(kioku_filesystem_exists(path) == false);
-  ok(kioku_filesystem_exists("a/"));
-  ok(kioku_filesystem_delete("a/"));
-  ok(kioku_filesystem_exists("a/") == false);
+  ok(kioku_filesystem_exists("a"));
+  ok(kioku_filesystem_delete("a") == false);
+  ok(kioku_filesystem_exists("a"));
+  ok(kioku_filesystem_delete("a/b") == false);
+  ok(kioku_filesystem_exists("a/b"));
+  ok(kioku_filesystem_delete("a/b/c"));
+  ok(kioku_filesystem_exists("a/b/c") == false);
+  ok(kioku_filesystem_delete("a/b"));
+  ok(kioku_filesystem_exists("a/b") == false);
+  ok(kioku_filesystem_delete("a"));
+  ok(kioku_filesystem_exists("a") == false);
 }
 int main(int argc, char **argv)
 {
