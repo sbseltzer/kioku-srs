@@ -1,6 +1,7 @@
 #include <tap.h>
 
 #include "kioku.h"
+#include "string.h"
 
 void test_trim_path()
 {
@@ -86,11 +87,24 @@ void test_concat_path()
   isnt(dest, expected_path);
 }
 
+void test_file_manage()
+{
+  const char *path = "a/b/c/a.txt";
+  ok(kioku_filesystem_exists(path) == false);
+  ok(kioku_filesystem_create(path));
+  ok(kioku_filesystem_exists(path));
+  ok(kioku_filesystem_delete(path));
+  ok(kioku_filesystem_exists(path) == false);
+  ok(kioku_filesystem_exists("a/"));
+  ok(kioku_filesystem_delete("a/"));
+  ok(kioku_filesystem_exists("a/") == false);
+}
 int main(int argc, char **argv)
 {
 /* kioku_filesystem_init(); */
 
   test_trim_path();
   test_concat_path();
+  test_file_manage();
 /* kioku_filesystem_exit(); */
 }

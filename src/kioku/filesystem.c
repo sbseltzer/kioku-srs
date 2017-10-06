@@ -128,6 +128,7 @@ bool kioku_filesystem_rename(const char *path, const char *newpath)
   return rename(path, newpath) == 0;
 }
 
+#define KIOKU_DIR_MAX_DEPTH 128
 bool kioku_filesystem_delete(const char *path)
 {
   if (!kioku_filesystem_exists(path))
