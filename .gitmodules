@@ -22,3 +22,6 @@
 [submodule "extern/tinydir"]
 	path = extern/tinydir
 	url = https://github.com/cxong/tinydir.git
+[submodule "extern/libtap"]
+	path = extern/libtap
+	url = https://github.com/zorgnax/libtap.git
