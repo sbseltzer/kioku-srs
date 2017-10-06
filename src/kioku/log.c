@@ -5,7 +5,7 @@
 /**
  * Used internally to get the logfile handle singleton
  */
-FILE *kLOG_GetHandle()
+FILE *kioku_log_GetHandle()
 {
   static FILE *handle = NULL;
   errno = 0;
@@ -20,9 +20,9 @@ FILE *kLOG_GetHandle()
 /**
  * Call at end of execution.
  */
-void kLOG_Exit()
+void kioku_log_Exit()
 {
-  FILE *handle = kLOG_GetHandle();
+  FILE *handle = kioku_log_GetHandle();
   if (handle != NULL)
   {
     errno = 0;

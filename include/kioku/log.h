@@ -9,15 +9,15 @@
 #include "kioku/types.h"
 #include <stdio.h>
 
-FILE *kLOG_GetHandle();
+FILE *kioku_log_GetHandle();
 
-void kLOG_Exit();
+void kioku_log_Exit();
 
 #define kLOG_WRITE(fmt, ...)                                  \
   do {                                                        \
-    fprintf(kLOG_GetHandle(), "%s:%d: ", __FILE__, __LINE__); \
-    fprintf(kLOG_GetHandle(), fmt, __VA_ARGS__);              \
-    fprintf(kLOG_GetHandle(), "\r\n");                        \
+    fprintf(kioku_log_GetHandle(), "%s:%d: ", __FILE__, __LINE__); \
+    fprintf(kioku_log_GetHandle(), fmt, __VA_ARGS__);              \
+    fprintf(kioku_log_GetHandle(), "\r\n");                        \
   } while (0)
 
 #endif /* _KIOKU_LOG_H */

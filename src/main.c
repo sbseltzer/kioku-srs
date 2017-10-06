@@ -222,7 +222,7 @@ int main(int argc, char *argv[]) {
   mg_mgr_free(&mgr);
 
   /* Cleanup logger resources */
-  kLOG_Exit();
+  kioku_log_Exit();
 
   return 0;
 }
