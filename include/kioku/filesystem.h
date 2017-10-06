@@ -7,6 +7,8 @@
 #define KIOKU_DIRSEP "/"
 
 /** Find the first and last chars to use in path for trimming redundant chars on each end.
+ * Up to one leading slash may remain.
+ * No trailing slashes past a first leading slash may remain.
  * \param[in] path Path to find trim points on.
  * \param[out] start Place to store the new start of the path string.
  * \param[out] end Place to store the new end of the path string.
