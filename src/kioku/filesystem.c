@@ -1,4 +1,41 @@
 #include "kioku/filesystem.h"
+#include "kioku/log.h"
+#include <assert.h>
+
+void kioku_path_trimpoints(const char *path, uint32_t *start, uint32_t *end)
+{
+  uint32_t path_start = 0;
+  uint32_t path_end = 0;
+  if (start == NULL || end == NULL)
+  {
+    return;
+  }
+  if (path != NULL)
+  {
+    path_end = strlen(path);
+    if (path_end > 0)
+    {
+      path_end--;
+    }
+    /* Strip extra slashes at start of path */
+    while ((path_start < path_end) && (path[path_start] == '/'))
+    {
+      path_start++;
+    }
+    /* If we stripped ALL slashes, make sure there's one leading on left */
+    if (path_start > 0)
+    {
+      path_start--;
+    }
+    /* Strip extra slashes on end of path */
+    while ((path_end > path_start) && (path[path_end] == '/'))
+    {
+      path_end--;
+    }
+  }
+  *start = path_start;
+  *end = path_end;
+}
 
 int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const char *path2)
 {
@@ -7,39 +44,34 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   {
     return -1;
   }
-  /* Since snprintf is not available everywhere, we first check if there's enough space, then use the less-safe sprintf. */
-  uint32_t path1_start = 0;
-  uint32_t path1_end = strlen(path1);
-  uint32_t path2_start = 0;
-  uint32_t path2_end = strlen(path2);
-  /* Strip extra slashes at start of path1 */
-  while ((path1_start < path1_end) && (path1[path1_start] == '/'))
-  {
-    path1_start++;
-  }
-  /* If we stripped ALL slashes, make sure there's one leading on left */
-  if (path1_start > 0)
-  {
-    path1_start--;
-  }
-  /* Strip extra slashes on end of path1 */
-  while ((path1_end > path1_start) && (path1[path1_end] == '/'))
-  {
-    path1_end--;
-  }
-  /* Strip extra slashes at start of path2 */
-  while ((path2_start < path2_end) && (path2[path2_start] == '/'))
+  uint32_t path1_start, path1_end, path2_start, path2_end;
+  kioku_path_trimpoints(path1, &path1_start, &path1_end);
+  kioku_path_trimpoints(path2, &path2_start, &path2_end);
+  /* The right hand portion should not have a leading slash */
+  if (path2[path2_start] == '/')
   {
     path2_start++;
   }
-  /* Strip extra slashes on end of path2 */
-  while ((path2_len > path2_start) && (path2[path2_len] == '/'))
-  {
-    path2_len--;
-  }
-  if (((path1_end - path1_start) + (path2_end - path2_start) + 1) < destsize)
+  uint32_t path1_len = (path1_end - path1_start) + 1;
+  uint32_t path2_len = (path2_end - path2_start) + 1;
+  /* First see if there's enough room */
+  if ((path1_len + path2_len + strlen(KIOKU_DIRSEP) + 1) > destsize)
   {
     return -1;
   }
-  return sprintf(dest, "%s" KIOKU_DIRSEP "%s", path1, path2);
+  uint32_t nbytes = 0;
+  /* Tack on trimmed path1 */
+  strncpy(dest, path1 + path1_start, path1_len);
+  nbytes += path1_len;
+  /* Tack on dir separator */
+  nbytes += sprintf(dest + nbytes, "%s", KIOKU_DIRSEP);
+  /* Tack on trimmed path2 */
+  strncpy(dest + nbytes, path2 + path2_start, path2_len);
+  nbytes += path2_len;
+  /* Null terminate */
+  dest[nbytes] = '\0';
+  /* Sanity check */
+  assert(nbytes < destsize);
+  assert(nbytes == strlen(dest));
+  return nbytes;
 }

@@ -7,6 +7,14 @@
 
 #define KIOKU_DIRSEP "/"
 
+
+/** Find the first and last chars to use in path for trimming redundant chars on each end.
+ * \param[in] path Path to find trim points on.
+ * \param[out] start Place to store the new start of the path string.
+ * \param[out] end Place to store the new end of the path string.
+ */
+void kioku_path_trimpoints(const char *path, uint32_t *start, uint32_t *end);
+
 /** Concatenate two paths, storing the result in dest.
  * \param[out] dest Place to store the resulting path.
  * \param[in] destsize Number of bytes available for storage in dest.
