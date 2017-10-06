@@ -9,6 +9,7 @@ include_directories( include
                      extern/lua
                      extern/generic-c-hashmap
                      extern/tinydir
+                     extern/libtap
                      ) 
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
