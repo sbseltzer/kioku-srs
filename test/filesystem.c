@@ -11,30 +11,30 @@ void test_trim_path()
 
   path = NULL;
   kioku_path_trimpoints(path, &start, &end);
-  ok(start == 0);
-  ok(end == 0);
+  cmp_ok(start, "==", 0, "Valid start");
+  cmp_ok(end, "==", 0, "Valid end");
 
   path = "";
   kioku_path_trimpoints(path, &start, &end);
-  ok(start == 0);
-  ok(end == 0);
+  cmp_ok(start, "==", 0, "Valid start");
+  cmp_ok(end, "==", 0, "Valid end");
 
   path = "/path";
   kioku_path_trimpoints(path, &start, &end);
-  ok(start == 0);
-  ok(end == 4);
+  cmp_ok(start, "==", 0, "Valid start");
+  cmp_ok(end, "==", 4, "Valid end");
 
   path = "/path/";
   kioku_path_trimpoints(path, &start, &end);
-  cmp_ok(start, "==", 0);
-  cmp_ok(end, "==", 4);
-  ok(strncmp(path + start, "/path", end - start) == 0);
+  cmp_ok(start, "==", 0, "Valid start");
+  cmp_ok(end, "==", 4, "Valid end");
+  ok(strncmp(path + start, "/path", end - start) == 0, "Valid substring");
 
   path = "///path//";
   kioku_path_trimpoints(path, &start, &end);
-  cmp_ok(start, "==", 2);
-  cmp_ok(end, "==", start + 4);
-  ok(strncmp(path + start, "/path", end - start) == 0);
+  cmp_ok(start, "==", 2, "Valid start");
+  cmp_ok(end, "==", start + 4, "Valid end");
+  ok(strncmp(path + start, "/path", end - start) == 0, "Valid substring");
 }
 
 void test_concat_path()
@@ -44,6 +44,33 @@ void test_concat_path()
   const char *expected_path;
   int32_t got_len;
   char dest[16] = {0};
+
+  /* Test empty paths */
+  path1 = "";
+  path2 = "";
+  expected_path = "";
+  got_len = kioku_path_concat(dest, sizeof(dest), path1, path2);
+  cmp_ok(strlen(dest), "==", got_len);
+  cmp_ok(strlen(expected_path), "==", got_len);
+  is(dest, expected_path);
+
+  /* Test empty path1 */
+  path1 = "";
+  path2 = "path/1";
+  expected_path = "path/1";
+  got_len = kioku_path_concat(dest, sizeof(dest), path1, path2);
+  cmp_ok(strlen(dest), "==", got_len);
+  cmp_ok(strlen(expected_path), "==", got_len);
+  is(dest, expected_path);
+
+  /* Test empty path2 */
+  path1 = "/test";
+  path2 = "";
+  expected_path = "/test";
+  got_len = kioku_path_concat(dest, sizeof(dest), path1, path2);
+  cmp_ok(strlen(dest), "==", got_len);
+  cmp_ok(strlen(expected_path), "==", got_len);
+  is(dest, expected_path);
 
   /* Test perfect input */
   path1 = "/test/";
@@ -70,12 +97,22 @@ void test_concat_path()
   cmp_ok(strlen(expected_path), "==", got_len);
   is(dest, expected_path);
 
+  /* Test adding a very small path */
+  path1 = "/";
+  path2 = "1";
+  expected_path = "/1";
+  got_len = kioku_path_concat(dest, sizeof(dest), path1, path2);
+  cmp_ok(strlen(dest), "==", got_len);
+  cmp_ok(strlen(expected_path), "==", got_len);
+  is(dest, expected_path);
+
   /* Test insufficient size */
   path1 = "/test/much/";
   path2 = "/longer/path/1";
   expected_path = "/test/much/longer/path/1";
-  cmp_ok(kioku_path_concat(dest, sizeof(dest), path1, path2), "<", 0);
+  cmp_ok(kioku_path_concat(dest, sizeof(dest), path1, path2), "==", sizeof(dest));
   isnt(dest, expected_path);
+  cmp_ok(strncmp(dest, expected_path, sizeof(dest)), "==", 0);
 
   /* Test dangerous append prevention */
   dest[0] = '.';
@@ -87,8 +124,7 @@ void test_concat_path()
   isnt(dest, expected_path);
 }
 
-void test_file_manage()
-{
+void test_file_manage() {
   const char *path = "a/b/c/a.txt";
   ok(kioku_filesystem_exists(path) == false);
   ok(kioku_filesystem_create(path));
@@ -149,6 +185,32 @@ void test_file_manage()
   ok(kioku_filesystem_delete("a/b/d"));
   ok(kioku_filesystem_delete("a/b"));
   ok(kioku_filesystem_delete("a"));
+
+  char fullpath[255] = {0};
+  kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b/c/a.txt");
+  ok(kioku_filesystem_exists(fullpath) == false);
+  ok(kioku_filesystem_create(fullpath));
+  ok(kioku_filesystem_exists(fullpath));
+  ok(kioku_filesystem_create(fullpath) == false);
+  ok(kioku_filesystem_delete(fullpath));
+  ok(kioku_filesystem_exists(fullpath) == false);
+
+  kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b/c");
+  ok(kioku_filesystem_delete(fullpath));
+  ok(kioku_filesystem_exists(fullpath) == false);
+  ok(kioku_filesystem_delete(fullpath) == false);
+
+  kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b");
+  printf("%s\r\n", fullpath );
+  ok(kioku_filesystem_delete(fullpath));
+  ok(kioku_filesystem_exists(fullpath) == false);
+  ok(kioku_filesystem_delete(fullpath) == false);
+
+  kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a");
+  printf("%s\r\n", fullpath );
+  ok(kioku_filesystem_delete(fullpath));
+  ok(kioku_filesystem_exists(fullpath) == false);
+  ok(kioku_filesystem_delete(fullpath) == false);
 }
 int main(int argc, char **argv)
 {
