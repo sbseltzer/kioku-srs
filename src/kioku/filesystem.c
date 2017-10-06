@@ -23,7 +23,13 @@ void kioku_path_trimpoints(const char *path, uint32_t *start, uint32_t *end)
   if (path != NULL)
   {
     path_end = strlen(path);
+    /* Index of strlen is at the null terminator, but we want to end at the last valid char. */
     if (path_end > 0)
+    {
+      path_end--;
+    }
+    /* Strip extra slashes on end of path */
+    while ((path_end > path_start) && (path[path_end] == '/'))
     {
       path_end--;
     }
@@ -37,11 +43,6 @@ void kioku_path_trimpoints(const char *path, uint32_t *start, uint32_t *end)
     {
       path_start--;
     }
-    /* Strip extra slashes on end of path */
-    while ((path_end > path_start) && (path[path_end] == '/'))
-    {
-      path_end--;
-    }
   }
   *start = path_start;
   *end = path_end;
@@ -50,7 +51,7 @@ void kioku_path_trimpoints(const char *path, uint32_t *start, uint32_t *end)
 int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const char *path2)
 {
   /* Don't let the user use this as an append. C99 states that using sprintf in this way could invoke undefined behaviour. */
-  if (dest == path1)
+  if (dest == path1 || dest == path2)
   {
     return -1;
   }
@@ -62,28 +63,29 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   {
     path2_start++;
   }
-  uint32_t path1_len = (path1_end - path1_start) + 1;
-  uint32_t path2_len = (path2_end - path2_start) + 1;
-  /* First see if there's enough room */
-  if ((path1_len + path2_len + strlen(KIOKU_DIRSEP) + 1) > destsize)
+  uint32_t outlen = 0;
+  uint32_t pi;
+  for (pi = path1_start; (outlen < destsize) && (pi <= path1_end) && (path1[pi] != '\0'); pi++)
   {
-    return -1;
+    dest[outlen] = path1[pi];
+    outlen++;
   }
-  uint32_t nbytes = 0;
-  /* Tack on trimmed path1 */
-  strncpy(dest, path1 + path1_start, path1_len);
-  nbytes += path1_len;
-  /* Tack on dir separator */
-  nbytes += sprintf(dest + nbytes, "%s", KIOKU_DIRSEP);
-  /* Tack on trimmed path2 */
-  strncpy(dest + nbytes, path2 + path2_start, path2_len);
-  nbytes += path2_len;
+  if ((outlen > 0) && (dest[outlen-1] != '/') && (path2[path2_start] != '\0'))
+  {
+    dest[outlen] = '/';
+    outlen++;
+  }
+  for (pi = path2_start; (outlen < destsize) && (pi <= path2_end) && (path2[pi] != 0); pi++)
+  {
+    dest[outlen] = path2[pi];
+    outlen++;
+  }
   /* Null terminate */
-  dest[nbytes] = '\0';
+  dest[outlen] = '\0';
   /* Sanity check */
-  assert(nbytes < destsize);
-  assert(nbytes == strlen(dest));
-  return nbytes;
+  assert(outlen <= destsize);
+  assert(outlen == strlen(dest));
+  return outlen;
 }
 
 bool kioku_filesystem_create(const char *path)
