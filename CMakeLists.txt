@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 2.6)
 
-project (Kioku)
+project (kioku)
 include_directories( include
                      extern/mongoose
                      extern/parson
@@ -11,9 +11,10 @@ include_directories( include
                      extern/tinydir
                      ) 
 
-# find_package(LibGit2 REQUIRED)
-# find_package(OpenSSL REQUIRED)
-# find_package(LibCURL REQUIRED)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+find_package(LibGit2 REQUIRED)
+find_package(OpenSSL REQUIRED)
+find_package(LibCURL REQUIRED)
 
 add_library(lua5-3-4 OBJECT extern/lua/ldblib.c
                             extern/lua/lgc.c
