@@ -88,6 +88,7 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
 
 bool kioku_filesystem_create(const char *path)
 {
+  /* Do not allow creating an empty directory */
   if (path[strlen(path)] == '/')
   {
     return false;
@@ -112,11 +113,9 @@ bool kioku_filesystem_create(const char *path)
 #else
     bool ok = mkdir(dupedpath, 0700) == 0;
 #endif
-    if (!ok)
-    {
-      break;
-    }
+    /* We don't do anything with ok for now. If we break the loop here we won't get to attempt all the directories we need to. */
     found[1] = oldval;
+    found++;
   }
   free(dupedpath);
   /* Creating file */
