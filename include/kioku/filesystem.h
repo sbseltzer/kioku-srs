@@ -40,14 +40,9 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
 const char *kioku_get_conf_directory();
 const char *kioku_get_user_directory(const char *username);
 
-bool kioku_file_create(const char *path);
-bool kioku_file_rename(const char *path, const char *newpath);
-bool kioku_file_delete(const char *path);
-bool kioku_file_exists(const char *path);
-
-bool kioku_directory_create(const char *path);
-bool kioku_directory_rename(const char *path, const char *newpath);
-bool kioku_directory_delete(const char *path);
-bool kioku_directory_exists(const char *path);
+bool kioku_filesystem_create(const char *path);
+bool kioku_filesystem_rename(const char *path, const char *newpath);
+bool kioku_filesystem_delete(const char *path);
+bool kioku_filesystem_exists(const char *path);
 
 #endif /* _KIOKU_FILESYSTEM_H */

@@ -1,6 +1,15 @@
 #include "kioku/filesystem.h"
 #include "kioku/log.h"
+#include "tinydir.h"
 #include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifdef WIN32
+#include <direct.h>
+#else
+#include <unistd.h>
+#endif
 
 void kioku_path_trimpoints(const char *path, uint32_t *start, uint32_t *end)
 {
@@ -74,4 +83,65 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   assert(nbytes < destsize);
   assert(nbytes == strlen(dest));
   return nbytes;
+}
+
+bool kioku_filesystem_create(const char *path)
+{
+  if (path[strlen(path)] == '/')
+  {
+    return false;
+  }
+  char *dupedpath = strdup(path);
+  char *found = dupedpath;
+  while (found != NULL)
+  {
+    found = strchr(found, '/');
+    if (found == NULL)
+    {
+      break;
+    }
+    if (kioku_filesystem_exists(dupedpath))
+    {
+      continue;
+    }
+    char oldval = found[1];
+    found[1] = 0;
+#ifdef WIN32
+    bool ok = _mkdir(dupedpath) == 0;
+#else
+    bool ok = mkdir(dupedpath, 0700) == 0;
+#endif
+    if (!ok)
+    {
+      break;
+    }
+    found[1] = oldval;
+  }
+  free(dupedpath);
+  /* Creating file */
+  FILE *fp = fopen(path, "w");
+  return (fp != NULL) && (fclose(fp) == 0);
+}
+
+bool kioku_filesystem_rename(const char *path, const char *newpath)
+{
+  return rename(path, newpath) == 0;
+}
+
+bool kioku_filesystem_delete(const char *path)
+{
+  if (!kioku_filesystem_exists(path))
+  {
+    return false;
+  }
+  return remove(path) == 0;
+}
+
+bool kioku_filesystem_exists(const char *path)
+{
+#ifdef WIN32
+  return _access(path, 00) == 0;
+#else
+  return access(path, R_OK) == 0;
+#endif
 }
