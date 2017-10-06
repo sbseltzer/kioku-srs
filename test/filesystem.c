@@ -93,9 +93,11 @@ void test_file_manage()
   ok(kioku_filesystem_exists(path) == false);
   ok(kioku_filesystem_create(path));
   ok(kioku_filesystem_exists(path));
+  ok(kioku_filesystem_create(path) == false);
 
   ok(kioku_filesystem_delete(path));
   ok(kioku_filesystem_exists(path) == false);
+  ok(kioku_filesystem_delete(path) == false);
 
   ok(kioku_filesystem_exists("a"));
   ok(kioku_filesystem_delete("a") == false);
@@ -106,17 +108,51 @@ void test_file_manage()
 
   ok(kioku_filesystem_delete("a/b/c"));
   ok(kioku_filesystem_exists("a/b/c") == false);
+  ok(kioku_filesystem_delete("a/b/c") == false);
 
   ok(kioku_filesystem_delete("a/b"));
   ok(kioku_filesystem_exists("a/b") == false);
+  ok(kioku_filesystem_delete("a/b") == false);
 
   ok(kioku_filesystem_delete("a"));
   ok(kioku_filesystem_exists("a") == false);
+  ok(kioku_filesystem_delete("a") == false);
+
+  /* Test a file-only rename */
+  ok(kioku_filesystem_create(path));
+  const char *newpath = "a/b/c/d.txt";
+  ok(kioku_filesystem_exists(newpath) == false);
+  ok(kioku_filesystem_rename(path, newpath));
+  ok(kioku_filesystem_exists(path) == false);
+  ok(kioku_filesystem_exists(newpath));
+
+  /* Test a directory-only rename */
+  path = "a/b/c";
+  newpath = "a/b/d";
+  ok(kioku_filesystem_exists(path));
+  ok(kioku_filesystem_exists(newpath) == false);
+  ok(kioku_filesystem_rename(path, newpath));
+  ok(kioku_filesystem_exists(path) == false);
+  ok(kioku_filesystem_exists(newpath));
+
+  /* Test a move-like rename */
+  path = "a/b/d/d.txt";
+  newpath = "a/b/c/d.txt";
+  ok(kioku_filesystem_exists(path));
+  ok(kioku_filesystem_exists(newpath) == false);
+  ok(kioku_filesystem_rename(path, newpath) == false);
+  ok(kioku_filesystem_exists(path));
+  ok(kioku_filesystem_exists(newpath) == false);
+
+  /* Cleanup */
+  ok(kioku_filesystem_delete(path));
+  ok(kioku_filesystem_delete("a/b/d"));
+  ok(kioku_filesystem_delete("a/b"));
+  ok(kioku_filesystem_delete("a"));
 }
 int main(int argc, char **argv)
 {
 /* kioku_filesystem_init(); */
-
   test_trim_path();
   test_concat_path();
   test_file_manage();
