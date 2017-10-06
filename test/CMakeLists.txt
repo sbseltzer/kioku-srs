@@ -5,3 +5,4 @@ macro(make_test target source library)
 endmacro(make_test)
 
 make_test(filesystem filesystem.c kioku)
+add_definitions(-DBUILDDIR="${CMAKE_CURRENT_BINARY_DIR}")
