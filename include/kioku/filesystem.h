@@ -7,7 +7,14 @@
 
 #define KIOKU_DIRSEP "/"
 
-int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const char *path2);
+/** Concatenate two paths, storing the result in dest.
+ * \param[out] dest Place to store the resulting path.
+ * \param[in] destsize Number of bytes available for storage in dest.
+ * \param[in] path1 Left side of the path to store.
+ * \param[in] path2 Right side of the path to store.
+ * \return Number of bytes placed in dest. -1 is returned if any of the pointers are NULL, or if there isn't enough room to store the concatenated path.
+ */
+ssize_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const char *path2);
 
 /**
  * The concept of a user home directory isn't really a cross-platform concept.

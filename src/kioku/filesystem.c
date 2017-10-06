@@ -1,6 +1,6 @@
 #include "kioku/filesystem.h"
 
-int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const char *path2)
+ssize_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const char *path2)
 {
   /* Don't let the user use this as an append. C99 states that using sprintf in this way could invoke undefined behaviour. */
   if (dest == path1)
