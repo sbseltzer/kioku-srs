@@ -17,7 +17,7 @@ find_package(LibGit2 REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(LibCURL REQUIRED)
 
-add_library(lua5-3-4 OBJECT extern/lua/ldblib.c
+add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             extern/lua/lgc.c
                             extern/lua/llex.c
                             extern/lua/lmem.c
@@ -54,15 +54,22 @@ add_library(lua5-3-4 OBJECT extern/lua/ldblib.c
                             extern/lua/lua.c
                             extern/lua/lundump.c
                             )
-add_executable( kioku
+add_library( kioku SHARED src/kioku/log.c
+                          src/kioku/filesystem.c
+                          src/kioku/model.c
+                          src/kioku/controller.c
+                          src/kioku/rest.c
+                          src/kioku/server.c
+                          extern/parson/parson.c
+                          )
+target_link_libraries( kioku )
+find_library( KIOKU_LIBRARY_PATH kioku ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_executable( kioku-server
                 src/main.c
-                src/kioku/log.c
-                src/kioku/filesystem.c
-                src/kioku/model.c
-                src/kioku/controller.c
-                src/kioku/rest.c
-                src/kioku/server.c
-                extern/parson/parson.c
                 extern/mongoose/mongoose.c
                 )
-add_dependencies( kioku lua5-3-4 )
+target_link_libraries( kioku-server kioku )
+add_dependencies( kioku-server kioku )
