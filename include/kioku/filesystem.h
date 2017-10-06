@@ -3,10 +3,8 @@
 
 #include "kioku/types.h"
 #include "kioku/log.h"
-#include "string.h"
 
 #define KIOKU_DIRSEP "/"
-
 
 /** Find the first and last chars to use in path for trimming redundant chars on each end.
  * \param[in] path Path to find trim points on.
