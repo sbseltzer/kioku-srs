@@ -40,9 +40,29 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
 const char *kioku_get_conf_directory();
 const char *kioku_get_user_directory(const char *username);
 
+/** Create an empty file along with leading parent directories if necessary.
+ * Because git doesn't see directories until there are files in them, why should the filesystem module?
+ * \param[in] path Path to the file to create.
+ * \return Whether the path and preceding directories could be created.
+ */
 bool kioku_filesystem_create(const char *path);
+
+/** Rename a file or directory
+ * \param[in] path Path to the file/dir to rename.
+ * \return Whether the file/dir was renamed.
+ */
 bool kioku_filesystem_rename(const char *path, const char *newpath);
+
+/** Delete a file or directory. Directories will be deleted recursively.
+ * \param[in] path Path to the file/dir to delete.
+ * \return Whether the file/dir was deleted.
+ */
 bool kioku_filesystem_delete(const char *path);
+
+/** Check if a file/dir exists.
+ * \param[in] path Path to the file/dir to check.
+ * \return Whether the file/dir exists.
+ */
 bool kioku_filesystem_exists(const char *path);
 
 #endif /* _KIOKU_FILESYSTEM_H */
