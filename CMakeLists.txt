@@ -73,3 +73,12 @@ add_executable( kioku-server
                 )
 target_link_libraries( kioku-server kioku )
 add_dependencies( kioku-server kioku )
+
+# add_subdirectory(src)
+add_subdirectory(test)
+
+enable_testing()
+
+add_library(tap SHARED extern/libtap/tap.c)
+
+add_test(NAME TestFileSystem COMMAND filesystem)
