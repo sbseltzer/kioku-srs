@@ -24,8 +24,7 @@ void kioku_path_trimpoints(const char *path, uint32_t *start, uint32_t *end);
  */
 int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const char *path2);
 
-/**
- * The concept of a user home directory isn't really a cross-platform concept.
+/** The concept of a user home directory isn't really a cross-platform concept.
  * To make this portable, we will define a method that determines a Kioku home directory.
  * Kioku needs a safe place where it has permission to read/write and store plugins/configurations.
  * The user can change where users are stored, but the file that lists those locations needs a home.
@@ -35,9 +34,14 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
  * - https://stackoverflow.com/a/933996
  * - https://github.com/ehsan/ogre/tree/master/Samples/Browser/src
  * - https://github.com/seltzy/orx/blob/master/code/src/io/orxFile.c
+ * \return Path to a consistent directory where Kioku can safely do its work undisturbed.
  */
+const char *kioku_get_home_directory();
 
-const char *kioku_get_conf_directory();
+/** Get the path to the directory where a Kioku user's collection is stored.
+ * \param[in] username The keyname of the user to get the path for.
+ * \return The stored path to their directory, which may or may not exist.
+ */
 const char *kioku_get_user_directory(const char *username);
 
 /** Create an empty file along with leading parent directories if necessary.
