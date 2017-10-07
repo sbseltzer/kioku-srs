@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <direct.h>
 #else
 #include <unistd.h>
@@ -114,7 +114,7 @@ bool kioku_filesystem_create(const char *path)
     }
     char oldval = found[1];
     found[1] = 0;
-#ifdef WIN32
+#ifdef _WIN32
     bool ok = _mkdir(dupedpath) == 0;
 #else
     bool ok = mkdir(dupedpath, 0700) == 0;
@@ -146,8 +146,8 @@ bool kioku_filesystem_delete(const char *path)
 
 bool kioku_filesystem_exists(const char *path)
 {
-#ifdef WIN32
-  return _access(path, 00) == 0;
+#ifdef _WIN32
+  return access(path, 00) == 0;
 #else
   return access(path, R_OK) == 0;
 #endif
