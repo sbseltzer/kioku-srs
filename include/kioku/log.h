@@ -6,12 +6,13 @@
 #define KIOKU_LOGFILE "LOG.txt"
 #endif
 
+#include "kioku/decl.h"
 #include "kioku/types.h"
 #include <stdio.h>
 
-FILE *kioku_log_GetHandle();
+kiokuAPI FILE *kioku_log_GetHandle();
 
-void kioku_log_Exit();
+kiokuAPI void kioku_log_Exit();
 
 #define kLOG_WRITE(fmt, ...)                                  \
   do {                                                        \

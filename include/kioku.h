@@ -3,6 +3,7 @@
 
 #define KIOKU_VERSION "0.0.0"
 
+#include "kioku/decl.h"
 #include "kioku/types.h"
 #include "kioku/log.h"
 #include "kioku/filesystem.h"
