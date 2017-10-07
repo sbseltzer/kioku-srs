@@ -80,6 +80,4 @@ add_subdirectory(test)
 
 enable_testing()
 
-add_library(tap SHARED extern/libtap/tap.c)
-
 add_test(NAME TestFileSystem COMMAND filesystem)
