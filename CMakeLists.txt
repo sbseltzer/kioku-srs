@@ -70,6 +70,7 @@ target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 add_executable( kioku-server
                 src/main.c
                 extern/mongoose/mongoose.c
+                extern/parson/parson.c
                 )
 target_link_libraries( kioku-server kioku )
 add_dependencies( kioku-server kioku )
