@@ -4,7 +4,11 @@
 #ifdef _WIN32
 #define kiokuAPI __declspec(dllexport)
 #else
-#define kiokuAPI extern
+#define kiokuAPI
+#endif
+
+#ifdef __cplusplus
+#define kiokuAPI extern "C" kiokuAPI
 #endif
 
 #define KIOKU_DIRSEP "/"
