@@ -13,9 +13,9 @@ include_directories( include
                      ) 
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-find_package(LibGit2 REQUIRED)
-find_package(OpenSSL REQUIRED)
-find_package(LibCURL REQUIRED)
+#find_package(LibGit2 REQUIRED)
+#find_package(OpenSSL REQUIRED)
+#find_package(LibCURL REQUIRED)
 
 add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             extern/lua/lgc.c
