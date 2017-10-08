@@ -184,7 +184,9 @@ void test_concat_path()
   cmp_ok(strlen(expected_path), "==", got_len);
   cmp_ok(got_len, ">", DESTSIZE - 1);
   /* This one is a reasonably portable way to try and tease out a segfault */
+  diag("Will it segfault?");
   got_len = kioku_path_concat((char*)-1, 0, path1, path2);
+  diag("Nope. Hooray!");
   cmp_ok(strlen(expected_path), "==", got_len);
   cmp_ok(got_len, ">", DESTSIZE - 1);
 
