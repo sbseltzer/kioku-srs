@@ -6,7 +6,7 @@
 
 void test_up_path()
 {
-  printf("Testing kioku_path_up_index...\r\n");
+  diag("Testing kioku_path_up_index...\r\n");
   /* Test full path traversal */
   char path[] = "a/ab/abc/abcd/abcde.txt";
   int32_t index = kioku_path_up_index(path, -1);
@@ -44,7 +44,7 @@ void test_up_path()
 
 void test_trim_path()
 {
-  printf("Testing kioku_path_trimpoints...\r\n");
+  diag("Testing kioku_path_trimpoints...\r\n");
   const char *path;
   uint32_t start;
   uint32_t end;
@@ -80,7 +80,7 @@ void test_trim_path()
 #define DESTSIZE 16
 void test_concat_path()
 {
-  printf("Testing kioku_path_concat...\r\n");
+  diag("Testing kioku_path_concat...\r\n");
   const char *path1;
   const char *path2;
   const char *expected_path;
@@ -202,7 +202,7 @@ void test_concat_path()
 }
 
 void test_file_manage() {
-  printf("Testing file management functions...\r\n");
+  diag("Testing file management functions...\r\n");
   const char *path = "a/b/c/a.txt";
   ok(kioku_filesystem_exists(path) == false);
   ok(kioku_filesystem_create(path));
@@ -279,13 +279,13 @@ void test_file_manage() {
   ok(kioku_filesystem_delete(fullpath) == false);
 
   kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b");
-  printf("%s\r\n", fullpath );
+  diag("%s\r\n", fullpath );
   ok(kioku_filesystem_delete(fullpath));
   ok(kioku_filesystem_exists(fullpath) == false);
   ok(kioku_filesystem_delete(fullpath) == false);
 
   kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a");
-  printf("%s\r\n", fullpath );
+  diag("%s\r\n", fullpath );
   ok(kioku_filesystem_delete(fullpath));
   ok(kioku_filesystem_exists(fullpath) == false);
   ok(kioku_filesystem_delete(fullpath) == false);
