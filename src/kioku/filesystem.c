@@ -69,8 +69,8 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   }
   uint32_t wrotelen = 0;
   uint32_t neededlen = 0;
-  uint32_t pi;
   size_t max_index = destsize - 1;
+  uint32_t pi = 0;
   for (pi = path1_start; (pi <= path1_end) && (path1[pi] != '\0'); pi++)
   {
     if ((dest != NULL) && (wrotelen < max_index))
