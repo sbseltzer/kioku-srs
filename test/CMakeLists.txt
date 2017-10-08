@@ -1,4 +1,3 @@
-find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 
 macro(make_test target source library)
     add_executable(${target} ${source} ${CMAKE_SOURCE_DIR}/extern/libtap/tap.c)

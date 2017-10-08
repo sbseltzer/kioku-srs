@@ -1,6 +1,10 @@
 cmake_minimum_required (VERSION 2.6)
 
 project (kioku)
+
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 include_directories( include
                      extern/mongoose
                      extern/parson
