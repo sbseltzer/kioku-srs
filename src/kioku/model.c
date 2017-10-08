@@ -26,11 +26,56 @@ static bool kioku_model_load_userlist()
 
 bool kioku_model_init(uint32_t argc, char **argv)
 {
-  /* git_libgit2_init(); */
+  git_libgit2_init();
   return true;
 }
 
 void kioku_model_exit()
 {
-  /* git_libgit2_shutdown(); */
+  git_libgit2_shutdown();
+}
+
+bool kioku_model_isrepo(const char *path)
+{
+  
+}
+
+bool kioku_model_init_repo(git_repository **repo_out, const char *path)
+{
+  bool result = false;
+  git_repository_init_options initopts = GIT_REPOSITORY_INIT_OPTIONS_INIT;
+  initopts.flags = GIT_REPOSITORY_INIT_MKPATH;
+  git_repository_init_ext(repo_out, path, &initopts);
+  return result;
+}
+bool kioku_model_clone_repo(git_repository **repo_out, const char *path, const char *remote_url)
+{
+  bool result = false;
+  git_clone_options opts = GIT_CLONE_OPTIONS_INIT;
+  git_clone(repo_out, remote_url, path, &opts);
+  return result;
+}
+
+bool kioku_deck_open(const char *path)
+{
+  bool result = false;
+  char *fullpath = NULL;
+  if (!kioku_model_isrepo(path))
+  {
+    kioku_model_init_repo(&repo, path);
+  }
+  int32_t pathlen = kioku_path_concat(NULL, 0, path, ".scheduler");
+  if (pathlen <= 0)
+  {
+    return result;
+  }
+  fullpath = malloc(pathlen + 1);
+  int32_t wrote = kioku_path_concat(fullpath, pathlen + 1, path, ".scheduler");
+  if (wrote != pathlen)
+  {
+    return result;
+  }
+  result = kioku_filesystem_create(fullpath);
+  free(fullpath);
+  return result;
 }
