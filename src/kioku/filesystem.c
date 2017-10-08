@@ -13,6 +13,7 @@
 /* Microsoft (correctly) refuses to recognize strdup as being ISO C compliant,
    despite being part of POSIX, and recommends its own standard-compliant name. */
 #define strdup _strdup
+#define rmdir _rmdir
 #else
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -220,19 +221,14 @@ bool kioku_filesystem_delete(const char *path)
   {
     return result;
   }
-#ifdef _WIN32
-  /* https://stackoverflow.com/a/6218957 */
   if (kioku_filesystem_isdir(path))
   {
-    result = _rmdir(path) == 0;
+    result = rmdir(path) == 0;
   }
   else
   {
     result = remove(path) == 0;
   }
-#else
-  result = remove(path) == 0;
-#endif
   return result;
 }
 
