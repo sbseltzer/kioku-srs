@@ -13,6 +13,8 @@
    despite being part of POSIX, and recommends its own standard-compliant name. */
 #define strdup _strdup
 #else
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #endif
 
@@ -189,8 +191,7 @@ bool kioku_filesystem_delete(const char *path)
   }
 #ifdef _WIN32
   /* https://stackoverflow.com/a/6218957 */
-  DWORD dwAttrib = GetFileAttributes(path);
-  if (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)
+  if (kioku_filesystem_isdir(path))
   {
     result = _rmdir(path) == 0;
   }
@@ -212,4 +213,25 @@ bool kioku_filesystem_exists(const char *path)
 #else
   return access(path, R_OK) == 0;
 #endif
+}
+
+bool kioku_filesystem_isdir(const char *path)
+{
+  bool result = false;
+  if (!kioku_filesystem_exists(path))
+  {
+    return result;
+  }
+#ifdef _WIN32
+  /* https://stackoverflow.com/a/6218957 */
+  result = (GetFileAttributes(path) & FILE_ATTRIBUTE_DIRECTORY);
+#else
+  /* https://stackoverflow.com/a/4553053 */
+  struct stat statbuf;
+  if (stat(path, &statbuf) == 0)
+  {
+    result = S_ISDIR(statbuf.st_mode);
+  }
+#endif
+  return result;
 }

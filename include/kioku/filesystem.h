@@ -76,4 +76,10 @@ kiokuAPI bool kioku_filesystem_delete(const char *path);
  */
 kiokuAPI bool kioku_filesystem_exists(const char *path);
 
+/** Check if path is a dir.
+ * \param[in] path Path to the file/dir to check.
+ * \return Whether the file/dir is a directory. It will also return false if it doesn't exist.
+ */
+kiokuAPI bool kioku_filesystem_isdir(const char *path);
+
 #endif /* _KIOKU_FILESYSTEM_H */

@@ -215,8 +215,10 @@ void test_file_manage() {
   diag("Testing file management functions...\r\n");
   const char *path = "a/b/c/a.txt";
   ok(kioku_filesystem_exists(path) == false);
+  ok(kioku_filesystem_isdir(path) == false);
   ok(kioku_filesystem_create(path));
   ok(kioku_filesystem_exists(path));
+  ok(kioku_filesystem_isdir(path) == false);
   ok(kioku_filesystem_create(path) == false);
 
   ok(kioku_filesystem_delete(path));
@@ -224,14 +226,18 @@ void test_file_manage() {
   ok(kioku_filesystem_delete(path) == false);
 
   ok(kioku_filesystem_exists("a"));
+  ok(kioku_filesystem_isdir("a"));
   ok(kioku_filesystem_delete("a") == false);
   ok(kioku_filesystem_exists("a"));
 
   ok(kioku_filesystem_delete("a/b") == false);
   ok(kioku_filesystem_exists("a/b"));
+  ok(kioku_filesystem_isdir("a/b"));
 
+  ok(kioku_filesystem_isdir("a/b/c"));
   ok(kioku_filesystem_delete("a/b/c"));
   ok(kioku_filesystem_exists("a/b/c") == false);
+  ok(kioku_filesystem_isdir("a/b/c") == false);
   ok(kioku_filesystem_delete("a/b/c") == false);
 
   ok(kioku_filesystem_delete("a/b"));
