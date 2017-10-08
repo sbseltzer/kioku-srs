@@ -199,8 +199,7 @@ void test_concat_path()
   got_len = kioku_path_concat(dest, sizeof(dest), path1, path2);
   cmp_ok(got_len, "<", 0);
   isnt(dest, expected_path);
-  cmp_ok(got_len, "<", DESTSIZE - 1);
-  cmp_ok(strlen(dest), "<", DESTSIZE);
+  is(dest, ".");
 }
 
 void test_file_manage() {
