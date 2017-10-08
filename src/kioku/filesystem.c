@@ -142,7 +142,12 @@ bool kioku_filesystem_create(const char *path)
   }
   free(dupedpath);
   /* Creating file */
+#ifdef _WIN32
+  FILE *fp = NULL;
+  fopen_s(&fp, path, "w");
+#else
   FILE *fp = fopen(path, "w");
+#endif
   return (fp != NULL) && (fclose(fp) == 0);
 }
 
