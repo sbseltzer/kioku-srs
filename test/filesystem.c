@@ -288,10 +288,12 @@ void test_file_manage() {
 }
 int main(int argc, char **argv)
 {
+  plan(NO_PLAN);
 /* kioku_filesystem_init(); */
   test_up_path();
   test_trim_path();
   test_concat_path();
   test_file_manage();
 /* kioku_filesystem_exit(); */
+  done_testing();
 }
