@@ -54,7 +54,7 @@ void kioku_path_trimpoints(const char *path, uint32_t *start, uint32_t *end)
 
 int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const char *path2)
 {
-  /* Don't let the user use this as an append. C99 states that using sprintf in this way could invoke undefined behaviour. */
+  /* Don't let the user use this as an append or anything dangerous like that. */
   if (dest == path1 || dest == path2)
   {
     return -1;
@@ -69,25 +69,26 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   }
   uint32_t outlen = 0;
   uint32_t pi;
-  for (pi = path1_start; (outlen < destsize) && (pi <= path1_end) && (path1[pi] != '\0'); pi++)
+  size_t max_index = destsize - 1;
+  for (pi = path1_start; (outlen < max_index) && (pi <= path1_end) && (path1[pi] != '\0'); pi++)
   {
     dest[outlen] = path1[pi];
     outlen++;
   }
-  if ((outlen > 0) && (dest[outlen-1] != '/') && (path2[path2_start] != '\0'))
+  if ((outlen > 0) && (outlen < max_index) && (dest[outlen-1] != '/') && (path2[path2_start] != '\0'))
   {
     dest[outlen] = '/';
     outlen++;
   }
-  for (pi = path2_start; (outlen < destsize) && (pi <= path2_end) && (path2[pi] != 0); pi++)
+  for (pi = path2_start; (outlen < max_index) && (pi <= path2_end) && (path2[pi] != 0); pi++)
   {
     dest[outlen] = path2[pi];
     outlen++;
   }
+  /* Sanity check */
+  assert(outlen <= max_index);
   /* Null terminate */
   dest[outlen] = '\0';
-  /* Sanity check */
-  assert(outlen <= destsize);
   assert(outlen == strlen(dest));
   return outlen;
 }
