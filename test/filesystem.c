@@ -43,6 +43,7 @@ void test_up_path()
 
 void test_trim_path()
 {
+  printf("Testing kioku_path_trimpoints...\r\n");
   const char *path;
   uint32_t start;
   uint32_t end;
@@ -77,6 +78,7 @@ void test_trim_path()
 
 void test_concat_path()
 {
+  printf("Testing kioku_path_concat...\r\n");
   const char *path1;
   const char *path2;
   const char *expected_path;
@@ -163,6 +165,7 @@ void test_concat_path()
 }
 
 void test_file_manage() {
+  printf("Testing file management functions...\r\n");
   const char *path = "a/b/c/a.txt";
   ok(kioku_filesystem_exists(path) == false);
   ok(kioku_filesystem_create(path));
