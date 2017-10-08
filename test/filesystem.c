@@ -76,6 +76,7 @@ void test_trim_path()
   ok(strncmp(path + start, "/path", end - start) == 0, "Valid substring");
 }
 
+#define DESTSIZE 16
 void test_concat_path()
 {
   printf("Testing kioku_path_concat...\r\n");
@@ -83,7 +84,7 @@ void test_concat_path()
   const char *path2;
   const char *expected_path;
   int32_t got_len;
-  char dest[16] = {0};
+  char dest[DESTSIZE] = {0};
 
   /* Test empty paths */
   path1 = "";
@@ -93,6 +94,8 @@ void test_concat_path()
   cmp_ok(strlen(dest), "==", got_len);
   cmp_ok(strlen(expected_path), "==", got_len);
   is(dest, expected_path);
+  cmp_ok(got_len, "<", DESTSIZE - 1);
+  cmp_ok(strlen(dest), "<", DESTSIZE);
 
   /* Test empty path1 */
   path1 = "";
@@ -102,6 +105,8 @@ void test_concat_path()
   cmp_ok(strlen(dest), "==", got_len);
   cmp_ok(strlen(expected_path), "==", got_len);
   is(dest, expected_path);
+  cmp_ok(got_len, "<", DESTSIZE - 1);
+  cmp_ok(strlen(dest), "<", DESTSIZE);
 
   /* Test empty path2 */
   path1 = "/test";
@@ -111,6 +116,8 @@ void test_concat_path()
   cmp_ok(strlen(dest), "==", got_len);
   cmp_ok(strlen(expected_path), "==", got_len);
   is(dest, expected_path);
+  cmp_ok(got_len, "<", DESTSIZE - 1);
+  cmp_ok(strlen(dest), "<", DESTSIZE);
 
   /* Test perfect input */
   path1 = "/test/";
@@ -120,6 +127,8 @@ void test_concat_path()
   cmp_ok(strlen(dest), "==", got_len);
   cmp_ok(strlen(expected_path), "==", got_len);
   is(dest, expected_path);
+  cmp_ok(got_len, "<", DESTSIZE - 1);
+  cmp_ok(strlen(dest), "<", DESTSIZE);
 
   /* Test removal of redundant slashes */
   path1 = "///test//";
@@ -128,6 +137,8 @@ void test_concat_path()
   cmp_ok(strlen(dest), "==", got_len);
   cmp_ok(strlen(expected_path), "==", got_len);
   is(dest, expected_path);
+  cmp_ok(got_len, "<", DESTSIZE - 1);
+  cmp_ok(strlen(dest), "<", DESTSIZE);
 
   /* Test adding necessary slashes */
   path1 = "/test";
@@ -136,6 +147,8 @@ void test_concat_path()
   cmp_ok(strlen(dest), "==", got_len);
   cmp_ok(strlen(expected_path), "==", got_len);
   is(dest, expected_path);
+  cmp_ok(got_len, "<", DESTSIZE - 1);
+  cmp_ok(strlen(dest), "<", DESTSIZE);
 
   /* Test adding a very small path */
   path1 = "/";
@@ -145,14 +158,19 @@ void test_concat_path()
   cmp_ok(strlen(dest), "==", got_len);
   cmp_ok(strlen(expected_path), "==", got_len);
   is(dest, expected_path);
+  cmp_ok(got_len, "<", DESTSIZE - 1);
+  cmp_ok(strlen(dest), "<", DESTSIZE);
 
   /* Test insufficient size */
   path1 = "/test/much/";
   path2 = "/longer/path/1";
   expected_path = "/test/much/longer/path/1";
-  cmp_ok(kioku_path_concat(dest, sizeof(dest), path1, path2), "==", sizeof(dest));
+  got_len = kioku_path_concat(dest, sizeof(dest), path1, path2);
+  cmp_ok(got_len, "==", sizeof(dest) - 1);
   isnt(dest, expected_path);
-  cmp_ok(strncmp(dest, expected_path, sizeof(dest)), "==", 0);
+  cmp_ok(strncmp(dest, expected_path, sizeof(dest) - 1), "==", 0);
+  cmp_ok(got_len, "==", DESTSIZE - 1);
+  cmp_ok(strlen(dest), "==", DESTSIZE - 1);
 
   /* Test dangerous append prevention */
   dest[0] = '.';
@@ -160,8 +178,11 @@ void test_concat_path()
   path1 = dest;
   path2 = "dont/append";
   expected_path = "./dont/append";
-  cmp_ok(kioku_path_concat(dest, sizeof(dest), path1, path2), "<", 0);
+  got_len = kioku_path_concat(dest, sizeof(dest), path1, path2);
+  cmp_ok(got_len, "<", 0);
   isnt(dest, expected_path);
+  cmp_ok(got_len, "<", DESTSIZE - 1);
+  cmp_ok(strlen(dest), "<", DESTSIZE);
 }
 
 void test_file_manage() {
