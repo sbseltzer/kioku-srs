@@ -19,6 +19,17 @@
 #include <unistd.h>
 #endif
 
+static FILE *kioku_filesystem_open(const char *path, const char *mode)
+{
+#ifdef _WIN32
+  FILE *fp = NULL;
+  fopen_s(&fp, path, mode);
+#else
+  FILE *fp = fopen(path, mode);
+#endif
+  return fp;
+}
+
 /** \todo It may be a good idea to have a max path length and use a strnlen-like method. */
 
 void kioku_path_trimpoints(const char *path, size_t *start, size_t *end)
@@ -181,12 +192,8 @@ bool kioku_filesystem_create(const char *path)
   }
   free(dupedpath);
   /* Creating file */
-#ifdef _WIN32
-  FILE *fp = NULL;
-  fopen_s(&fp, path, "w");
-#else
-  FILE *fp = fopen(path, "w");
-#endif
+
+  FILE *fp = kioku_filesystem_open(path, "w");
   return (fp != NULL) && (fclose(fp) == 0);
 }
 
