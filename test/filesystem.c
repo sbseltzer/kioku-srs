@@ -174,10 +174,10 @@ void test_concat_path()
   cmp_ok(strlen(dest), "==", DESTSIZE - 1);
 
   /* Test various valid ways of size probing */
-  got_len = kioku_path_concat(NULL, sizeof(dest), path1, path2);
+  got_len = kioku_path_concat(dest, 0, path1, path2);
   cmp_ok(strlen(expected_path), "==", got_len);
   cmp_ok(got_len, ">", DESTSIZE - 1);
-  got_len = kioku_path_concat(dest, 0, path1, path2);
+  got_len = kioku_path_concat(NULL, sizeof(dest), path1, path2);
   cmp_ok(strlen(expected_path), "==", got_len);
   cmp_ok(got_len, ">", DESTSIZE - 1);
   got_len = kioku_path_concat(NULL, 0, path1, path2);
