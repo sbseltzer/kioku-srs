@@ -80,7 +80,8 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
     }
     neededlen++;
   }
-  if ((wrotelen > 0)  && (dest[wrotelen-1] != '/') && (path2[path2_start] != '\0'))
+  /* Add separator iff path1 had content that didn't end with a separator and path2 non-empty */
+  if ((wrotelen > 0) && (path1[path1_end] != '/') && (path2[path2_start] != '\0'))
   {
     if ((dest != NULL) && (wrotelen < max_index))
     {
