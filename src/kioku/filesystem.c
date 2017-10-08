@@ -19,6 +19,8 @@
 #include <unistd.h>
 #endif
 
+/** \todo It may be a good idea to have a max path length and use a strnlen-like method. */
+
 void kioku_path_trimpoints(const char *path, size_t *start, size_t *end)
 {
   size_t path_start = 0;
