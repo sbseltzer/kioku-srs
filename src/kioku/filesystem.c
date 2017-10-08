@@ -8,6 +8,7 @@
 
 #ifdef _WIN32
 #include <direct.h>
+#include <io.h>
 #else
 #include <unistd.h>
 #endif
@@ -147,7 +148,7 @@ bool kioku_filesystem_delete(const char *path)
 bool kioku_filesystem_exists(const char *path)
 {
 #ifdef _WIN32
-  return access(path, 00) == 0;
+  return _access(path, 00) == 0;
 #else
   return access(path, R_OK) == 0;
 #endif
