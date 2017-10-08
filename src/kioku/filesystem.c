@@ -159,11 +159,26 @@ bool kioku_filesystem_rename(const char *path, const char *newpath)
 #define KIOKU_DIR_MAX_DEPTH 128
 bool kioku_filesystem_delete(const char *path)
 {
+  bool result = false;
   if (!kioku_filesystem_exists(path))
   {
-    return false;
+    return result;
   }
-  return remove(path) == 0;
+#ifdef _WIN32
+  /* https://stackoverflow.com/a/6218957 */
+  DWORD dwAttrib = GetFileAttributes(path);
+  if (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)
+  {
+    result = _rmdir(path) == 0;
+  }
+  else
+  {
+    result = remove(path) == 0;
+  }
+#else
+  result = remove(path) == 0;
+#endif
+  return result;
 }
 
 bool kioku_filesystem_exists(const char *path)
