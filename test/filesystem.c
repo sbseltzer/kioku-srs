@@ -3,6 +3,44 @@
 #include "kioku.h"
 #include "string.h"
 
+void test_up_path()
+{
+  printf("Testing kioku_path_up_index...\r\n");
+  /* Test full path traversal */
+  char path[] = "a/ab/abc/abcd/abcde.txt";
+  int32_t index = kioku_path_up_index(path, -1);
+  cmp_ok(index, "==", 13);
+  path[index] = '\0';
+  is(path, "a/ab/abc/abcd");
+  index = kioku_path_up_index(path, index);
+  cmp_ok(index, "==", 8);
+  path[index] = '\0';
+  is(path, "a/ab/abc");
+  index = kioku_path_up_index(path, index);
+  cmp_ok(index, "==", 4);
+  path[index] = '\0';
+  is(path, "a/ab");
+  index = kioku_path_up_index(path, index);
+  cmp_ok(index, "==", 1);
+  path[index] = '\0';
+  is(path, "a");
+  index = kioku_path_up_index(path, index);
+  cmp_ok(index, "==", -1);
+
+  /* Test some potential edge cases */
+  index = kioku_path_up_index(NULL, -1);
+  cmp_ok(index, "==", -1);
+
+  index = kioku_path_up_index("", -1);
+  cmp_ok(index, "==", -1);
+
+  index = kioku_path_up_index("abcdefg", -1);
+  cmp_ok(index, "==", -1);
+
+  index = kioku_path_up_index("/", -1);
+  cmp_ok(index, "==", 0);
+}
+
 void test_trim_path()
 {
   const char *path;
@@ -215,6 +253,7 @@ void test_file_manage() {
 int main(int argc, char **argv)
 {
 /* kioku_filesystem_init(); */
+  test_up_path();
   test_trim_path();
   test_concat_path();
   test_file_manage();
