@@ -71,6 +71,7 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   uint32_t neededlen = 0;
   uint32_t pi = 0;
   size_t max_index = (destsize > 0) ? destsize - 1 : 0;
+  /* Tack on path1 */
   for (pi = path1_start; (pi <= path1_end) && (path1[pi] != '\0'); pi++)
   {
     if ((dest != NULL) && (wrotelen < max_index))
@@ -90,6 +91,7 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
     }
     neededlen++;
   }
+  /* Tack on path2 */
   for (pi = path2_start; (pi <= path2_end) && (path2[pi] != 0); pi++)
   {
     if ((dest != NULL) && (wrotelen < max_index))
@@ -107,8 +109,10 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   if ((dest != NULL) && (wrotelen <= max_index) && (destsize > 0))
   {
     dest[wrotelen] = '\0';
+    /* One more sanity check */
     assert(wrotelen == strlen(dest));
   }
+  /* Return number of bytes that were needed, minus the null terminator (i.e. string length) */
   return neededlen;
 }
 
