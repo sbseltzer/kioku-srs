@@ -67,30 +67,47 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   {
     path2_start++;
   }
-  uint32_t outlen = 0;
+  uint32_t wrotelen = 0;
+  uint32_t neededlen = 0;
   uint32_t pi;
   size_t max_index = destsize - 1;
-  for (pi = path1_start; (outlen < max_index) && (pi <= path1_end) && (path1[pi] != '\0'); pi++)
+  for (pi = path1_start; (pi <= path1_end) && (path1[pi] != '\0'); pi++)
   {
-    dest[outlen] = path1[pi];
-    outlen++;
+    if ((dest != NULL) && (wrotelen < max_index))
+    {
+      dest[wrotelen] = path1[pi];
+      wrotelen++;
+    }
+    neededlen++;
   }
-  if ((outlen > 0) && (outlen < max_index) && (dest[outlen-1] != '/') && (path2[path2_start] != '\0'))
+  if ((wrotelen > 0)  && (dest[wrotelen-1] != '/') && (path2[path2_start] != '\0'))
   {
-    dest[outlen] = '/';
-    outlen++;
+    if ((dest != NULL) && (wrotelen < max_index))
+    {
+      dest[wrotelen] = '/';
+      wrotelen++;
+    }
+    neededlen++;
   }
-  for (pi = path2_start; (outlen < max_index) && (pi <= path2_end) && (path2[pi] != 0); pi++)
+  for (pi = path2_start; (pi <= path2_end) && (path2[pi] != 0); pi++)
   {
-    dest[outlen] = path2[pi];
-    outlen++;
+    if ((dest != NULL) && (wrotelen < max_index))
+    {
+      dest[wrotelen] = path2[pi];
+      wrotelen++;
+    }
+    neededlen++;
   }
   /* Sanity check */
-  assert(outlen <= max_index);
+  assert(wrotelen <= max_index);
+  assert(wrotelen <= neededlen);
   /* Null terminate */
-  dest[outlen] = '\0';
-  assert(outlen == strlen(dest));
-  return outlen;
+  if (dest != NULL)
+  {
+    dest[wrotelen] = '\0';
+    assert(wrotelen == strlen(dest));
+  }
+  return neededlen;
 }
 
 int32_t kioku_path_up_index(const char *path, int32_t start_index)
