@@ -18,10 +18,10 @@
 #include <unistd.h>
 #endif
 
-void kioku_path_trimpoints(const char *path, uint32_t *start, uint32_t *end)
+void kioku_path_trimpoints(const char *path, size_t *start, size_t *end)
 {
-  uint32_t path_start = 0;
-  uint32_t path_end = 0;
+  size_t path_start = 0;
+  size_t path_end = 0;
   if (start == NULL || end == NULL)
   {
     return;
@@ -61,7 +61,7 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   {
     return -1;
   }
-  uint32_t path1_start, path1_end, path2_start, path2_end;
+  size_t path1_start, path1_end, path2_start, path2_end;
   kioku_path_trimpoints(path1, &path1_start, &path1_end);
   kioku_path_trimpoints(path2, &path2_start, &path2_end);
   /* The right hand portion should not have a leading slash */
@@ -71,7 +71,7 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   }
   uint32_t wrotelen = 0;
   uint32_t neededlen = 0;
-  uint32_t pi = 0;
+  size_t pi = 0;
   size_t max_index = (destsize > 0) ? destsize - 1 : 0;
   /* Tack on path1 */
   for (pi = path1_start; (pi <= path1_end) && (path1[pi] != '\0'); pi++)

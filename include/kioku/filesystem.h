@@ -12,7 +12,7 @@
  * \param[out] start Place to store the new start of the path string.
  * \param[out] end Place to store the new end of the path string.
  */
-kiokuAPI void kioku_path_trimpoints(const char *path, uint32_t *start, uint32_t *end);
+kiokuAPI void kioku_path_trimpoints(const char *path, size_t *start, size_t *end);
 
 /** Concatenate two paths, storing the result in dest.
  * \param[out] dest Place to store the resulting path.
