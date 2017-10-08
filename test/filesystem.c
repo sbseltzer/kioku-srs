@@ -46,8 +46,8 @@ void test_trim_path()
 {
   diag("Testing kioku_path_trimpoints...\r\n");
   const char *path;
-  uint32_t start;
-  uint32_t end;
+  size_t start;
+  size_t end;
 
   path = NULL;
   kioku_path_trimpoints(path, &start, &end);
