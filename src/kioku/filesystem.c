@@ -92,6 +92,18 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   return outlen;
 }
 
+int32_t kioku_path_up_index(const char *path, int32_t start_index)
+{
+  int32_t result = -1;
+  if (path == NULL)
+  {
+    return result;
+  }
+  /* March backward til it hits a separator. */
+  for (result = strlen(path) - 1; (result >= 0) && (path[result] != '/'); result--);
+  return result;
+}
+
 bool kioku_filesystem_create(const char *path)
 {
   if (kioku_filesystem_exists(path))

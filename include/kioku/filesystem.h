@@ -23,6 +23,14 @@ kiokuAPI void kioku_path_trimpoints(const char *path, uint32_t *start, uint32_t 
  */
 kiokuAPI int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const char *path2);
 
+/** Get the index of the final directory separator in the specified path.
+ * This is used to assist in traversing up a directory tree.
+ * \param[in] path The path string to traverse. Must be null terminated.
+ * \param[in] start_index The index to start traversing from. -1 means start from the end.
+ * \return Index of last path separator. -1 if there are no separators left.
+ */
+kiokuAPI int32_t kioku_path_up_index(const char *path, int32_t start_index);
+
 /** The concept of a user home directory isn't really a cross-platform concept.
  * To make this portable, we will define a method that determines a Kioku home directory.
  * Kioku needs a safe place where it has permission to read/write and store plugins/configurations.
