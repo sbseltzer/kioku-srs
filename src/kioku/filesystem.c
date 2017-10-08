@@ -142,6 +142,10 @@ int32_t kioku_path_up_index(const char *path, int32_t start_index)
 
 bool kioku_filesystem_create(const char *path)
 {
+  if (path == NULL)
+  {
+    return false;
+  }
   if (kioku_filesystem_exists(path))
   {
     return false;
@@ -188,13 +192,23 @@ bool kioku_filesystem_create(const char *path)
 
 bool kioku_filesystem_rename(const char *path, const char *newpath)
 {
-  return rename(path, newpath) == 0;
+  bool result = false;
+  if (path == NULL || newpath == NULL)
+  {
+    return result;
+  }
+  result = rename(path, newpath) == 0;
+  return result;
 }
 
 #define KIOKU_DIR_MAX_DEPTH 128
 bool kioku_filesystem_delete(const char *path)
 {
   bool result = false;
+  if (path == NULL)
+  {
+    return result;
+  }
   if (!kioku_filesystem_exists(path))
   {
     return result;
@@ -217,17 +231,27 @@ bool kioku_filesystem_delete(const char *path)
 
 bool kioku_filesystem_exists(const char *path)
 {
+  bool result = false;
+  if (path == NULL)
+  {
+    return result;
+  }
 #ifdef _WIN32
   /* https://stackoverflow.com/a/6218957 */
-  return GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES;
+  result = GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES;
 #else
-  return access(path, R_OK) == 0;
+  result = access(path, R_OK) == 0;
 #endif
+  return result;
 }
 
 bool kioku_filesystem_isdir(const char *path)
 {
   bool result = false;
+  if (path == NULL)
+  {
+    return result;
+  }
   if (!kioku_filesystem_exists(path))
   {
     return result;

@@ -213,6 +213,14 @@ void test_concat_path()
 
 void test_file_manage() {
   diag("Testing file management functions...\r\n");
+  ok(kioku_filesystem_exists(NULL) == false);
+  ok(kioku_filesystem_create(NULL) == false);
+  ok(kioku_filesystem_rename(NULL, NULL) == false);
+  ok(kioku_filesystem_rename(NULL, "a") == false);
+  ok(kioku_filesystem_rename("a", NULL) == false);
+  ok(kioku_filesystem_isdir(NULL) == false);
+  ok(kioku_filesystem_delete(NULL) == false);
+
   const char *path = "a/b/c/a.txt";
   ok(kioku_filesystem_exists(path) == false);
   ok(kioku_filesystem_isdir(path) == false);
