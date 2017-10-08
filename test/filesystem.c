@@ -200,6 +200,15 @@ void test_concat_path()
   cmp_ok(got_len, "<", 0);
   isnt(dest, expected_path);
   is(dest, ".");
+
+  /* Test dangerous prepend prevention */
+  path1 = "dont/prepend";
+  path2 = dest;
+  expected_path = "dont/prepend/.";
+  got_len = kioku_path_concat(dest, sizeof(dest), path1, path2);
+  cmp_ok(got_len, "<", 0);
+  isnt(dest, expected_path);
+  is(dest, ".");
 }
 
 void test_file_manage() {
