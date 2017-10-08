@@ -69,8 +69,8 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   }
   uint32_t wrotelen = 0;
   uint32_t neededlen = 0;
-  size_t max_index = destsize - 1;
   uint32_t pi = 0;
+  size_t max_index = (destsize > 0) ? destsize - 1 : 0;
   for (pi = path1_start; (pi <= path1_end) && (path1[pi] != '\0'); pi++)
   {
     if ((dest != NULL) && (wrotelen < max_index))
@@ -102,7 +102,8 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   assert(wrotelen <= max_index);
   assert(wrotelen <= neededlen);
   /* Null terminate */
-  if (dest != NULL)
+  /* NOTE: We need to make sure the destsize isn't zero before we try writing to it since max_index alone might deceive us */
+  if ((dest != NULL) && (wrotelen <= max_index) && (destsize > 0))
   {
     dest[wrotelen] = '\0';
     assert(wrotelen == strlen(dest));
