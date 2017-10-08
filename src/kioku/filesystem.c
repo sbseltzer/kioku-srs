@@ -1,3 +1,4 @@
+#include "kioku/types.h"
 #include "kioku/filesystem.h"
 #include "kioku/log.h"
 #include "tinydir.h"
@@ -115,6 +116,7 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
     assert(wrotelen == strlen(dest));
   }
   /* Return number of bytes that were needed, minus the null terminator (i.e. string length) */
+  assert(neededlen < INT32_MAX);
   return neededlen;
 }
 
@@ -125,8 +127,14 @@ int32_t kioku_path_up_index(const char *path, int32_t start_index)
   {
     return result;
   }
+  size_t pathlen = strlen(path);
+  if (pathlen == 0)
+  {
+    return result;
+  }
+  assert((int32_t)pathlen < INT32_MAX);
   /* March backward til it hits a separator. */
-  for (result = strlen(path) - 1; (result >= 0) && (path[result] != '/'); result--);
+  for (result = (int32_t)pathlen - 1; (result >= 0) && (path[result] != '/'); result--);
   return result;
 }
 
