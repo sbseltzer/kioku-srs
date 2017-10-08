@@ -169,7 +169,8 @@ bool kioku_filesystem_delete(const char *path)
 bool kioku_filesystem_exists(const char *path)
 {
 #ifdef _WIN32
-  return _access(path, 00) == 0;
+  /* https://stackoverflow.com/a/6218957 */
+  return GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES;
 #else
   return access(path, R_OK) == 0;
 #endif
