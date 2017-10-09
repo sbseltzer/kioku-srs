@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef _WIN32
+#ifdef kiokuOS_WINDOWS
 #include <direct.h>
 #include <io.h>
 /* Microsoft (correctly) refuses to recognize strdup as being ISO C compliant,
@@ -22,7 +22,7 @@
 
 static FILE *kioku_filesystem_open(const char *path, const char *mode)
 {
-#ifdef _WIN32
+#ifdef kiokuOS_WINDOWS
   FILE *fp = NULL;
   fopen_s(&fp, path, mode);
 #else
@@ -182,7 +182,7 @@ bool kioku_filesystem_create(const char *path)
     }
     char oldval = found[1];
     found[1] = 0;
-#ifdef _WIN32
+#ifdef kiokuOS_WINDOWS
     bool ok = _mkdir(dupedpath) == 0;
 #else
     bool ok = mkdir(dupedpath, 0700) == 0;
@@ -239,7 +239,7 @@ bool kioku_filesystem_exists(const char *path)
   {
     return result;
   }
-#ifdef _WIN32
+#ifdef kiokuOS_WINDOWS
   /* https://stackoverflow.com/a/6218957 */
   result = GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES;
 #else
@@ -259,7 +259,7 @@ bool kioku_filesystem_isdir(const char *path)
   {
     return result;
   }
-#ifdef _WIN32
+#ifdef kiokuOS_WINDOWS
   /* https://stackoverflow.com/a/6218957 */
   result = (GetFileAttributes(path) & FILE_ATTRIBUTE_DIRECTORY);
 #else
