@@ -17,6 +17,7 @@
 #elif defined kiokuOS_LINUX || defined kiokuOS_UNIX || defined kiokuOS_APPLE /* OS check */
 
 #if defined kiokuOS_APPLE
+/* https://stackoverflow.com/questions/7140575/mac-os-x-lion-what-is-the-max-path-length#16905266 */
 #include <sys/syslimits.h>
 #else
 #include <dirent.h>

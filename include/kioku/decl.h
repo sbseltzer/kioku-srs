@@ -16,6 +16,7 @@
 #define KIOKU_DIRSEP "/"
 
 #ifdef __APPLE__
+  /* https://stackoverflow.com/questions/6802903/c-ifdef-mac-os-x-question#6802945 */
   #define kiokuOS_APPLE
   #include "TargetConditionals.h"
   #ifdef TARGET_OS_IPHONE
