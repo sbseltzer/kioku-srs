@@ -1,6 +1,12 @@
 #include "kioku/simplegit.h"
 #include "kioku/filesystem.h"
 
+/** Useful resources:
+ *  - https://libgit2.github.com/docs/guides/101-samples/
+ *  - https://github.com/libgit2/libgit2/blob/master/examples/general.c
+ *  - https://stackoverflow.com/questions/27672722/libgit2-commit-example
+ *  - https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain
+ */
 bool kioku_simplegit_init()
 {
   git_libgit2_init();
