@@ -94,6 +94,7 @@ Here are some libraries I'm thinking of using.
 - [autoupdate](https://github.com/pmq20/libautoupdate) - A cross-platform in-place application updater in C.
 - [tinydir](https://github.com/cxong/tinydir) - A portable directory/file reader in a single header.
 - [sundown](https://github.com/vmg/sundown) - A portable, secure markdown processing library in C.
+- [uuid4](https://github.com/rxi/uuid4) - A tiny library for generating random Universally Unique IDs. Necessary for conforming to JSON API.
 
 #### Frontend
 - [markdown-it](https://github.com/markdown-it/markdown-it) - A Javascript Markdown parser.
