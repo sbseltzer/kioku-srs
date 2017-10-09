@@ -4,6 +4,38 @@
 #include "kioku/decl.h"
 #include "kioku/types.h"
 #include "kioku/log.h"
+#include "kioku/debug.h"
+
+#if defined kiokuOS_WINDOWS /* OS check */
+
+#include <direct.h>
+#ifndef _MAX_PATH
+#error Could not find macro for max path length!
+#endif
+#define kiokuPATH_MAX _MAX_PATH
+
+#elif defined kiokuOS_LINUX || defined kiokuOS_UNIX || defined kiokuOS_APPLE /* OS check */
+
+#if defined kiokuOS_APPLE
+#include <sys/syslimits.h>
+#else
+#include <dirent.h>
+#endif
+
+#ifndef PATH_MAX
+#error Could not find macro for max path length!
+#endif
+#define kiokuPATH_MAX PATH_MAX
+
+#else /* OS check */
+
+#ifndef PATH_MAX
+#error Could not find macro for max path length!
+#endif
+
+#endif /* OS check */
+
+kiokuSTATIC_ASSERT(kiokuPATH_MAX > 0);
 
 /** Find the first and last chars to use in path for trimming redundant chars on each end.
  * Up to one leading slash may remain.
