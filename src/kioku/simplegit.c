@@ -18,13 +18,24 @@ void kioku_simplegit_exit()
   git_libgit2_shutdown();
 }
 
-bool kioku_simplegit_isrepo(const char *path)
+bool srsGit_IsRepo(const char *path)
 {
   /* Pass NULL for the output parameter to check for but not open the repo */
   return (git_repository_open_ext(NULL, path, GIT_REPOSITORY_OPEN_NO_SEARCH, NULL) == 0);
 }
 
-bool kioku_simplegit_repo_new(git_repository **repo_out, const char *path, const kioku_repo_init_options opts)
+bool srsGit_Repo_Open(git_repository **repo_out, const char *path, const kioku_repo_init_options opts)
+{
+
+}
+bool srsGit_Repo_Clone(git_repository **repo_out, const char *path, const char *remote_url)
+{
+  bool result = false;
+  git_clone_options opts = GIT_CLONE_OPTIONS_INIT;
+  git_clone(repo_out, remote_url, path, &opts);
+  return result;
+}
+bool srsGit_Repo_Create(git_repository **repo_out, const char *path, const kioku_repo_init_options opts)
 {
   bool result = false;
   char *fullpath = NULL;
@@ -56,20 +67,42 @@ bool kioku_simplegit_repo_new(git_repository **repo_out, const char *path, const
   return result;
 }
 
-bool kioku_simplegit_repo_commit(git_respository *repo, const char *message)
+bool srsGit_Commit(git_respository *repo, const char *message)
 {
-  
+  git_oid oid = 0;
+  int error = GIT_SUCCESS;
+
+  error = git_reference_name_to_id(&oid, repo, "HEAD");
+
+  git_commit *parent = NULL;
+  error = git_commit_lookup(&parent, repo, git_object_id(obj));
+
+  git_signature *me = NULL;
+  error = git_signature_now(&me, "Me", "me@example.com");
+
+  const git_commit *parents[] = {parent};
+
+  git_oid new_commit_id = 0;
+  error = git_commit_create(
+    &new_commit_id,
+    repo,
+    "HEAD",                      /* name of ref to update */
+    me,                          /* author */
+    me,                          /* committer */
+    "UTF-8",                     /* message encoding */
+    message,  /* message */
+    tree,                        /* root tree */
+    2,                           /* parent count */
+    parents);                    /* parents */
+
+
 }
 
-bool kioku_simplegit_repo_add(git_respository *repo, const char *path)
+bool srsGit_Add(git_respository *repo, const char *path)
 {
-  
+  int error;
+  git_index *idx = NULL;
+  error = git_repository_index(&idx, repo);
+  error = git_index_add_bypath(idx, path);
 }
 
-bool kioku_simplegit_repo_clone(git_repository **repo_out, const char *path, const char *remote_url)
-{
-  bool result = false;
-  git_clone_options opts = GIT_CLONE_OPTIONS_INIT;
-  git_clone(repo_out, remote_url, path, &opts);
-  return result;
-}
