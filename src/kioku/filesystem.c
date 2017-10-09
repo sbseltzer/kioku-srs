@@ -2,7 +2,7 @@
 #include "kioku/filesystem.h"
 #include "kioku/log.h"
 #include "tinydir.h"
-#include <assert.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
