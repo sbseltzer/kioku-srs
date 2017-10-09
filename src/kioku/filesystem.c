@@ -21,6 +21,8 @@
 #include <unistd.h>
 #endif
 
+/* \todo Perhaps have a method called by an init that dynamically finds a "true" max path length */
+
 static FILE *kioku_filesystem_open(const char *path, const char *mode)
 {
 #ifdef kiokuOS_WINDOWS
