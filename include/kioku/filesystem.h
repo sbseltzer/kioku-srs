@@ -82,4 +82,24 @@ kiokuAPI bool kioku_filesystem_exists(const char *path);
  */
 kiokuAPI bool kioku_filesystem_isdir(const char *path);
 
+/** Gets the length of a file
+ * \param[in] filepath Path to the file
+ * \return If the file can be opened and the seek/tell is successful, it will return the length. -1 otherwise.
+ */
+kiokuAPI int32_t kioku_filesystem_getlen(const char *filepath);
+
+/** Set the content of a file (overwriting what may have been there)
+ * \param[in] filepath Path to the file
+ * \param[in] content The null-terminated content string to write.
+ * \return Whether successful
+ */
+kiokuAPI bool kioku_filesystem_setcontent(const char *filepath, const char *content);
+
+/** Get the content of a file.
+ * \param[in] filepath Path to the file
+ * \param[out] content Where to read the string into. Must be able to fit the value of readlen plus a null terminator.
+ * \param[in] count Size of the content buffer, including null-terminator.
+ * \return Whether successful
+ */
+kiokuAPI bool kioku_filesystem_getcontent(const char *filepath, char *content_out, size_t count);
 #endif /* _KIOKU_FILESYSTEM_H */

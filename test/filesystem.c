@@ -314,6 +314,53 @@ void test_file_manage() {
   ok(kioku_filesystem_exists(fullpath) == false);
   ok(kioku_filesystem_delete(fullpath) == false);
 }
+
+void test_file_io()
+{
+  diag("Testing file io functions");
+  char buffer[255] = {0};
+  cmp_ok(kioku_filesystem_getlen(NULL), "==", -1);
+  cmp_ok(kioku_filesystem_getlen("invalid/file/path.txt"), "==", -1);
+  cmp_ok(kioku_filesystem_getlen("."), "==", -1);
+
+  ok(kioku_filesystem_setcontent(NULL, "test") == false);
+  ok(kioku_filesystem_setcontent(".", "test") == false);
+
+  ok(kioku_filesystem_getcontent(NULL, NULL, 0) == false);
+  ok(kioku_filesystem_getcontent(".", NULL, 0) == false);
+  ok(kioku_filesystem_getcontent("invalid/file/path.txt", buffer, sizeof(buffer)) == false);
+
+  const char *filepath = "a/test/file.txt";
+  const char *content = "some text";
+
+  kioku_filesystem_delete(filepath);
+
+  ok(kioku_filesystem_setcontent(filepath, content) == false);
+  kioku_filesystem_create(filepath);
+  ok(kioku_filesystem_setcontent(filepath, content));
+  cmp_ok(kioku_filesystem_getlen(filepath), "==", strlen(content));
+
+  ok(kioku_filesystem_getcontent(filepath, buffer, sizeof(buffer)));
+  cmp_ok(strlen(buffer), "==", strlen(content));
+  is(buffer, content);
+
+  content = "some totally different text";
+  ok(kioku_filesystem_setcontent(filepath, content));
+  ok(kioku_filesystem_getcontent(filepath, buffer, sizeof(buffer)));
+  cmp_ok(strlen(buffer), "==", strlen(content));
+  is(buffer, content);
+
+  /* Cleanup */
+  char filepathdup[64] = {0};
+  strncpy(filepathdup, filepath, strlen(filepath));
+  int32_t upindex = -1;
+  while ((upindex = kioku_path_up_index(filepathdup, upindex)) != -1)
+  {
+    ok(kioku_filesystem_delete(filepathdup));
+    filepathdup[upindex] = '\0';
+  }
+}
+
 int main(int argc, char **argv)
 {
   plan(NO_PLAN);
@@ -322,6 +369,7 @@ int main(int argc, char **argv)
   test_trim_path();
   test_concat_path();
   test_file_manage();
+  test_file_io();
 /* kioku_filesystem_exit(); */
   done_testing();
 }

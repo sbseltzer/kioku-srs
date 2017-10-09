@@ -272,3 +272,91 @@ bool kioku_filesystem_isdir(const char *path)
 #endif
   return result;
 }
+
+int32_t kioku_filesystem_getlen(const char *filepath)
+{
+  int32_t result = -1;
+  if (filepath == NULL)
+  {
+    return result;
+  }
+  if (!kioku_filesystem_exists(filepath))
+  {
+    return result;
+  }
+  if (kioku_filesystem_isdir(filepath))
+  {
+    return result;
+  }
+  FILE *fp = kioku_filesystem_open(filepath, "r");
+  if (fp != NULL)
+  {
+    fseek(fp, 0, SEEK_END);
+    result = ftell(fp);
+  }
+  fclose(fp);
+  return result;
+}
+
+bool kioku_filesystem_setcontent(const char *filepath, const char *content)
+{
+  bool result = false;
+  if (filepath == NULL)
+  {
+    return result;
+  }
+  if (content == NULL)
+  {
+    return result;
+  }
+  if (!kioku_filesystem_exists(filepath))
+  {
+    return result;
+  }
+  if (kioku_filesystem_isdir(filepath))
+  {
+    return result;
+  }
+  FILE *fp = kioku_filesystem_open(filepath, "w");
+  if (fp == NULL)
+  {
+    return result;
+  }
+  result = fputs(content, fp) >= 0;
+  fclose(fp);
+  return result;
+}
+
+bool kioku_filesystem_getcontent(const char *filepath, char *content_out, size_t count)
+{
+  bool result = false;
+  if (filepath == NULL)
+  {
+    return result;
+  }
+  if (content_out == NULL)
+  {
+    return result;
+  }
+  if (count == 0)
+  {
+    return result;
+  }
+  if (!kioku_filesystem_exists(filepath))
+  {
+    return result;
+  }
+  if (kioku_filesystem_isdir(filepath))
+  {
+    return result;
+  }
+  FILE *fp = kioku_filesystem_open(filepath, "r");
+  if (fp == NULL)
+  {
+    return result;
+  }
+  char *str = fgets(content_out, count, fp);
+  result = str == content_out;
+  fclose(fp);
+  return result;
+}
