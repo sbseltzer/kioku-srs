@@ -14,6 +14,7 @@
    despite being part of POSIX, and recommends its own standard-compliant name. */
 #define strdup _strdup
 #define rmdir _rmdir
+#define getcwd _getcwd
 #else
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -33,6 +34,40 @@ static FILE *kioku_filesystem_open(const char *path, const char *mode)
 
 /** \todo It may be a good idea to have a max path length and use a strnlen-like method. */
 
+size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
+{
+  size_t result = 0;
+  char *path = NULL;
+  /* \todo mitigate max path length using the getcwd and chdir method described below for all platforms */
+  /* QUOTH THE SPEC: http://pubs.opengroup.org/onlinepubs/9699919799/functions/getcwd.html
+     If the pathname obtained from getcwd() is longer than {PATH_MAX} bytes, it could produce an [ENAMETOOLONG] error if passed to chdir().
+     Therefore, in order to return to that directory it may be necessary to break the pathname into sections shorter than {PATH_MAX} bytes and call chdir() on each section in turn (the first section being an absolute pathname and subsequent sections being relative pathnames).
+     A simpler way to handle saving and restoring the working directory when it may be deeper than {PATH_MAX} bytes in the file hierarchy is to use a file descriptor and fchdir(), rather than getcwd() and chdir().
+     However, the two methods do have some differences. The fchdir() approach causes the program to restore a working directory even if it has been renamed in the meantime, whereas the chdir() approach restores to a directory with the same name as the original, even if the directories were renamed in the meantime.
+     Since the fchdir() approach does not access parent directories, it can succeed when getcwd() would fail due to permissions problems.
+     In applications conforming to earlier versions of this standard, it was not possible to use the fchdir() approach when the working directory is searchable but not readable, as the only way to open a directory was with O_RDONLY, whereas the getcwd() approach can succeed in this case. */
+  char cwd[kiokuPATH_MAX+1];
+  path = getcwd(cwd, nbytes);
+  if (path == cwd)
+  {
+    while (*path == '.')
+    {
+      path++;
+    }
+    int32_t needed = kioku_path_concat(path_out, nbytes, path, relative);
+    if (needed > 0)
+    {
+      result = (size_t) needed;
+    }
+  }
+#if 0
+#if kiokuOS_WINDOWS
+  path = _fullpath(path_out, relative, nbytes);
+#else
+#endif
+#endif
+  return result;
+}
 void kioku_path_trimpoints(const char *path, size_t *start, size_t *end)
 {
   size_t path_start = 0;
