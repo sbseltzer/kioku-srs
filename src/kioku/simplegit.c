@@ -20,7 +20,8 @@ void kioku_simplegit_exit()
 
 bool kioku_simplegit_isrepo(const char *path)
 {
-  return false;
+  /* Pass NULL for the output parameter to check for but not open the repo */
+  return (git_repository_open_ext(NULL, path, GIT_REPOSITORY_OPEN_NO_SEARCH, NULL) == 0);
 }
 
 bool kioku_simplegit_repo_new(git_repository **repo_out, const char *path, const kioku_repo_init_options opts)
