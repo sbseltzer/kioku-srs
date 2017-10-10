@@ -85,25 +85,25 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   }
   if (result)
   {
-    result = kioku_simplegit_repo_add(fullpath);
+    result = srsGit_Add(fullpath);
   }
   free(fullpath);
   if (result)
   {
-    result = kioku_simplegit_repo_commit(srsGIT_REPO, opts.first_commit_message);
+    result = srsGitCommit(opts.first_commit_message);
   }
   return result;
 }
 
-bool srsGit_Commit(git_respository *repo, const char *message)
+bool srsGit_Commit(const char *message)
 {
   git_oid oid = 0;
   int error = GIT_OK;
 
-  error = git_reference_name_to_id(&oid, repo, "HEAD");
+  error = git_reference_name_to_id(&oid, srsGIT_REPO, "HEAD");
 
   git_commit *parent = NULL;
-  error = git_commit_lookup(&parent, repo, git_object_id(obj));
+  error = git_commit_lookup(&parent, srsGIT_REPO, git_object_id(obj));
 
   git_signature *me = NULL;
   error = git_signature_now(&me, "Me", "me@example.com");
@@ -113,7 +113,7 @@ bool srsGit_Commit(git_respository *repo, const char *message)
   git_oid new_commit_id = 0;
   error = git_commit_create(
     &new_commit_id,
-    repo,
+    srsGIT_REPO,
     "HEAD",                      /* name of ref to update */
     me,                          /* author */
     me,                          /* committer */
@@ -124,11 +124,11 @@ bool srsGit_Commit(git_respository *repo, const char *message)
     parents);                    /* parents */
 }
 
-bool srsGit_Add(git_respository *repo, const char *path)
+bool srsGit_Add(const char *path)
 {
   int error;
   git_index *idx = NULL;
-  error = git_repository_index(&idx, repo);
+  error = git_repository_index(&idx, srsGIT_REPO);
   error = git_index_add_bypath(idx, path);
 }
 
