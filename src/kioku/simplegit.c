@@ -1,21 +1,35 @@
+#include "git2.h"
 #include "kioku/simplegit.h"
 #include "kioku/filesystem.h"
+#include "kioku/log.h"
 
+static git_repository *srsGIT_REPO = NULL;
+static bool srsGIT_READY = false;
 /** Useful resources:
  *  - https://libgit2.github.com/docs/guides/101-samples/
  *  - https://github.com/libgit2/libgit2/blob/master/examples/general.c
  *  - https://stackoverflow.com/questions/27672722/libgit2-commit-example
  *  - https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain
  */
-bool kioku_simplegit_init()
+bool srsGit_Init()
 {
-  git_libgit2_init();
-  return true;
+  int num_inits = git_libgit2_init();
+  srsGIT_READY = num_inits > 0;
+  return srsGIT_READY;
 }
 
-void kioku_simplegit_exit()
+bool srsGit_Exit()
 {
-  git_libgit2_shutdown();
+  int inits_left = 0;
+  do {
+    inits_left = git_libgit2_shutdown();
+  } while (inits_left > 0);
+  srsGIT_READY = (inits_left == 0);
+  if (inits_left < GIT_SUCCESS)
+  {
+    /* handle error */
+  }
+  return !srsGIT_READY;
 }
 
 bool srsGit_IsRepo(const char *path)
