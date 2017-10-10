@@ -26,9 +26,9 @@ bool srsGit_Exit()
     inits_left = git_libgit2_shutdown();
   } while (inits_left > 0);
   srsGIT_READY = (inits_left == 0);
-  if (inits_left < GIT_SUCCESS)
+  if (inits_left < GIT_OK)
   {
-    /* handle error */
+    /* \todo handle error */
   }
   return !srsGIT_READY;
 }
@@ -98,7 +98,7 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
 bool srsGit_Commit(git_respository *repo, const char *message)
 {
   git_oid oid = 0;
-  int error = GIT_SUCCESS;
+  int error = GIT_OK;
 
   error = git_reference_name_to_id(&oid, repo, "HEAD");
 
