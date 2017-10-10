@@ -44,26 +44,32 @@ const char *srsGit_Repo_GetCurrent()
   return git_repository_path(srsGIT_REPO);
 }
 
-bool srsGit_Repo_Open(const char *path, const kioku_repo_init_options opts)
+bool srsGit_Repo_Open(const char *path)
 {
-
+  bool result = false;
+  int error = git_repository_open(&srsGIT_REPO, path);
+  result = error == GIT_OK;
+  /* \todo handle errors */
+  return result;
 }
 
 bool srsGit_Repo_Clone(const char *path, const char *remote_url)
 {
   bool result = false;
   git_clone_options opts = GIT_CLONE_OPTIONS_INIT;
-  git_clone(repo_out, remote_url, path, &opts);
+  int error = git_clone(&srsGIT_REPO, remote_url, path, &opts);
+  /* \todo handle errors */
+  result = error == GIT_OK;
   return result;
 }
 
-bool srsGit_Repo_Create(const char *path, const kioku_repo_init_options opts)
+bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
 {
   bool result = false;
   char *fullpath = NULL;
   git_repository_init_options gitinitopts = GIT_REPOSITORY_INIT_OPTIONS_INIT;
   gitinitopts.flags = GIT_REPOSITORY_INIT_MKPATH;
-  git_repository_init_ext(repo_out, path, &gitinitopts);
+  git_repository_init_ext(&srsGIT_REPO, path, &gitinitopts);
 
   int32_t pathlen = kioku_path_concat(NULL, 0, path, opts.first_file_name);
   if (pathlen <= 0)
@@ -84,7 +90,7 @@ bool srsGit_Repo_Create(const char *path, const kioku_repo_init_options opts)
   free(fullpath);
   if (result)
   {
-    result = kioku_simplegit_repo_commit(*repo_out, opts.first_commit_message);
+    result = kioku_simplegit_repo_commit(srsGIT_REPO, opts.first_commit_message);
   }
   return result;
 }
