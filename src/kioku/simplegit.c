@@ -39,18 +39,20 @@ bool srsGit_IsRepo(const char *path)
   return (git_repository_open_ext(NULL, path, GIT_REPOSITORY_OPEN_NO_SEARCH, NULL) == 0);
 }
 
-bool srsGit_Repo_Open(git_repository **repo_out, const char *path, const kioku_repo_init_options opts)
+bool srsGit_Repo_Open(const char *path, const kioku_repo_init_options opts)
 {
 
 }
-bool srsGit_Repo_Clone(git_repository **repo_out, const char *path, const char *remote_url)
+
+bool srsGit_Repo_Clone(const char *path, const char *remote_url)
 {
   bool result = false;
   git_clone_options opts = GIT_CLONE_OPTIONS_INIT;
   git_clone(repo_out, remote_url, path, &opts);
   return result;
 }
-bool srsGit_Repo_Create(git_repository **repo_out, const char *path, const kioku_repo_init_options opts)
+
+bool srsGit_Repo_Create(const char *path, const kioku_repo_init_options opts)
 {
   bool result = false;
   char *fullpath = NULL;
@@ -109,8 +111,6 @@ bool srsGit_Commit(git_respository *repo, const char *message)
     tree,                        /* root tree */
     2,                           /* parent count */
     parents);                    /* parents */
-
-
 }
 
 bool srsGit_Add(git_respository *repo, const char *path)
