@@ -10,6 +10,7 @@ static bool srsGIT_READY = false;
  *  - https://github.com/libgit2/libgit2/blob/master/examples/general.c
  *  - https://stackoverflow.com/questions/27672722/libgit2-commit-example
  *  - https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain
+ *  - https://git-scm.com/book/be/v2/Appendix-B%3A-Embedding-Git-in-your-Applications-Libgit2
  */
 bool srsGit_Init()
 {
