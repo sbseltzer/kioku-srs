@@ -39,6 +39,11 @@ bool srsGit_IsRepo(const char *path)
   return (git_repository_open_ext(NULL, path, GIT_REPOSITORY_OPEN_NO_SEARCH, NULL) == 0);
 }
 
+const char *srsGit_Repo_GetCurrent()
+{
+  return git_repository_path(srsGIT_REPO);
+}
+
 bool srsGit_Repo_Open(const char *path, const kioku_repo_init_options opts)
 {
 
