@@ -5,7 +5,7 @@
 #include <string.h>
 
 static git_repository *srsGIT_REPO = NULL;
-static bool srsGIT_READY = false;
+static int srsGIT_READY = 0;
 /** Useful resources:
  *  - https://libgit2.github.com/docs/guides/101-samples/
  *  - https://github.com/libgit2/libgit2/blob/master/examples/general.c
@@ -13,44 +13,82 @@ static bool srsGIT_READY = false;
  *  - https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain
  *  - https://git-scm.com/book/be/v2/Appendix-B%3A-Embedding-Git-in-your-Applications-Libgit2
  */
-bool srsGit_Init()
+
+#define git_init_lib() assert((srsGIT_READY = git_libgit2_init()) > 0)
+#define git_exit_lib() assert((srsGIT_READY = git_libgit2_shutdown()) >= 0)
+
+uint32_t srsGit_InitCount()
 {
-  int num_inits = git_libgit2_init();
-  srsGIT_READY = num_inits > 0;
   return srsGIT_READY;
 }
 
-bool srsGit_Exit()
+bool srsGit_Repo_Close()
 {
-  int inits_left = 0;
-  do {
-    inits_left = git_libgit2_shutdown();
-  } while (inits_left > 0);
-  srsGIT_READY = (inits_left == 0);
-  if (inits_left < GIT_OK)
+  /* \todo The docs say that any objects associated with the freed repo will remain until freed, and accessing them without their backing repo will result in undefined behaviour. Come up with a strategy to ensure they are all freed here, or at least assert that there's nothing remaining (since not freeing them would be the fault of the programmer). */
+  if (srsGIT_REPO != NULL)
   {
-    /* \todo handle error */
+    git_repository_free(srsGIT_REPO);
+    srsGIT_REPO = NULL;
   }
-  return !srsGIT_READY;
+  return srsGIT_REPO == NULL;
+}
+
+bool srsGit_Shutdown()
+{
+  while (srsGit_InitCount() > 0)
+  {
+    git_exit_lib();
+  }
+  return (srsGIT_READY == 0) && srsGit_Repo_Close();
 }
 
 bool srsGit_IsRepo(const char *path)
 {
   /* Pass NULL for the output parameter to check for but not open the repo */
-  return (git_repository_open_ext(NULL, path, GIT_REPOSITORY_OPEN_NO_SEARCH, NULL) == 0);
+  bool result = false;
+  git_init_lib();
+  result = (git_repository_open_ext(NULL, path, GIT_REPOSITORY_OPEN_NO_SEARCH, NULL) == 0);
+  git_exit_lib();
+  return result;
 }
 
 const char *srsGit_Repo_GetCurrent()
 {
-  return git_repository_path(srsGIT_REPO);
+  const char *result = NULL;
+  git_init_lib();
+  result = git_repository_path(srsGIT_REPO);
+  git_exit_lib();
+  return result;
 }
 
 bool srsGit_Repo_Open(const char *path)
 {
-  bool result = false;
-  int error = git_repository_open(&srsGIT_REPO, path);
-  result = error == GIT_OK;
-  /* \todo handle errors */
+  bool result = true;
+  git_init_lib();
+
+  /* Free the current repository first, if any */
+  const char *currepo = srsGit_Repo_GetCurrent();
+  if (currepo != NULL)
+  {
+    printf("Closing out %s before opening %s" kiokuSTRING_LF, currepo, path);
+    result = srsGit_Repo_Close();
+    if (result)
+    {
+      printf("Closed repo successfully.");
+    }
+    else
+    {
+      fprintf(stderr, "Something went wrong while trying to free the repo. Opening a new one could be dangerous!");
+    }
+  }
+  if (!result)
+  {
+    return result;
+  }
+
+  int git_result = git_repository_open(&srsGIT_REPO, path);
+  result = (srsGIT_REPO != NULL);
+  /* We do not call git_exit_lib here because we want the user to be able to continue using the repository */
   return result;
 }
 
@@ -59,20 +97,23 @@ bool srsGit_Repo_Clone(const char *path, const char *remote_url)
 {
   bool result = false;
   git_clone_options opts = GIT_CLONE_OPTIONS_INIT;
-  int error = git_clone(&srsGIT_REPO, remote_url, path, &opts);
+  git_init_lib();
+  int git_result = git_clone(&srsGIT_REPO, remote_url, path, &opts);
   /* \todo handle errors */
-  result = error == GIT_OK;
+  result = git_result == GIT_OK;
+  git_exit_lib();
   return result;
 }
 #endif
 
 bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
 {
-  assert(git_libgit2_init() == 1);
-
   bool result = false;
   char *fullpath = NULL;
   git_repository_init_options gitinitopts = GIT_REPOSITORY_INIT_OPTIONS_INIT;
+
+  git_init_lib();
+
   gitinitopts.flags = GIT_REPOSITORY_INIT_MKPATH;
   git_repository_init_ext(&srsGIT_REPO, path, &gitinitopts);
 
@@ -104,9 +145,9 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   }
   result = srsGit_Add(fullpath);
   free(fullpath);
-  git_repository_free(srsGIT_REPO);
-  srsGIT_REPO = NULL;
-  assert(git_libgit2_shutdown() == 0);
+
+  /* We do not call git_exit_lib here because we want the user to be able to continue using the repository */
+
   return result;
 }
 
@@ -119,27 +160,32 @@ bool srsGit_Commit(const char *message)
 	git_commit *parent;
 	char oid_hex[GIT_OID_HEXSZ+1] = { 0 };
 	git_index *index;
+  git_init_lib();
   if (srsGIT_REPO == NULL)
   {
     return false;
   }
+
+  /* Try to open the index */
+  git_result = git_repository_index(&index, srsGIT_REPO);
+  result = result && (git_result == 0);
+  if (!result)
+  {
+    const git_error *err = giterr_last();
+    if (err == NULL)
+    {
+      fprintf(stderr, "Error occurred, but giterr_last returned null...\n");
+      abort();
+    }
+    fprintf(stderr, "Could not open repository index: %s\n", err->message);
+    abort();
+  }
+
   /* See if this is the first commit */
   git_result = git_repository_head_unborn(srsGIT_REPO);
   result = result && (git_result == 0 || git_result == 1);
   if (git_result == 1)
   {
-    git_result = git_repository_index(&index, srsGIT_REPO);
-    result = result && (git_result == 0);
-    if (!result)
-    {
-      const git_error *err = giterr_last();
-      if (err == NULL)
-      {
-        fprintf(stderr, "Error occurred, but giterr_last returned null...\n");
-      }
-      fprintf(stderr, "Could not open repository index: %s\n", err->message);
-      abort();
-    }
     git_result = git_index_write_tree(&oid, index);
     result = result && (git_result == 0);
     if (!result)
@@ -249,8 +295,14 @@ bool srsGit_Commit(const char *message)
   /* Cleanup */
 	git_tree_free(tree);
   git_index_free(index);
-	git_commit_free(parent);
+  if (parent != NULL)
+	{
+    git_commit_free(parent);
+  }
 	git_signature_free(me);
+
+  git_exit_lib();
+
   return result;
 }
 
@@ -261,6 +313,9 @@ bool srsGit_Add(const char *path)
 	git_oid oid;
 	git_tree *tree;
 	git_index *index;
+
+  git_init_lib();
+
   if (srsGIT_REPO == NULL)
   {
     return false;
@@ -318,7 +373,10 @@ bool srsGit_Add(const char *path)
   git_index_write(index);
   git_index_free(index);
 	git_tree_free(tree);
+
   assert(count == 1);
+  git_exit_lib();
+
   return result;
 }
 
