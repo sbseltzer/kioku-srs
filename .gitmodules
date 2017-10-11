@@ -31,3 +31,6 @@
 [submodule "extern/zlib"]
 	path = extern/zlib
 	url = https://github.com/madler/zlib.git
+[submodule "extern/greatest"]
+	path = extern/greatest
+	url = https://github.com/silentbicycle/greatest.git

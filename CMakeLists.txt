@@ -14,6 +14,7 @@ include_directories( include
                      extern/generic-c-hashmap
                      extern/tinydir
                      extern/libtap
+                     extern/greatest
                      ) 
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
@@ -36,7 +37,7 @@ if (NOT LIBSSH2_FOUND)
 #   add_subdirectory(extern/libssh2)
 endif()
 
-#find_package(LibGit2)
+find_package(LibGit2)
 if(NOT LIBGIT2_FOUND)
 #       add_subdirectory(extern/libgit2)
        set(PC_LIBGIT2_INCLUDEDIR "${CMAKE_SOURCE_DIR}/extern/libgit2/include")
@@ -85,13 +86,14 @@ add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             )
 add_library( kioku SHARED src/kioku/log.c
                           src/kioku/filesystem.c
+                          src/kioku/simplegit.c
                           src/kioku/model.c
                           src/kioku/controller.c
                           src/kioku/rest.c
                           src/kioku/server.c
                           extern/parson/parson.c
                           )
-target_link_libraries( kioku )
+target_link_libraries( kioku git2 )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
@@ -110,3 +112,4 @@ add_subdirectory(test)
 enable_testing()
 
 add_test(NAME TestFileSystem COMMAND filesystem)
+add_test(NAME TestGit COMMAND git)
