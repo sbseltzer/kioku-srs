@@ -14,8 +14,8 @@ static int srsGIT_READY = 0;
  *  - https://git-scm.com/book/be/v2/Appendix-B%3A-Embedding-Git-in-your-Applications-Libgit2
  */
 
-#define git_init_lib() assert((srsGIT_READY = git_libgit2_init()) > 0)
-#define git_exit_lib() assert((srsGIT_READY = git_libgit2_shutdown()) >= 0)
+#define srsGIT_INIT_LIB() assert((srsGIT_READY = git_libgit2_init()) > 0)
+#define srsGIT_EXIT_LIB() assert((srsGIT_READY = git_libgit2_shutdown()) >= 0)
 
 uint32_t srsGit_InitCount()
 {
@@ -37,7 +37,7 @@ bool srsGit_Shutdown()
 {
   while (srsGit_InitCount() > 0)
   {
-    git_exit_lib();
+    srsGIT_EXIT_LIB();
   }
   return (srsGIT_READY == 0) && srsGit_Repo_Close();
 }
@@ -55,16 +55,16 @@ bool srsGit_IsRepo(const char *path)
 const char *srsGit_Repo_GetCurrent()
 {
   const char *result = NULL;
-  git_init_lib();
+  srsGIT_INIT_LIB();
   result = git_repository_path(srsGIT_REPO);
-  git_exit_lib();
+  srsGIT_EXIT_LIB();
   return result;
 }
 
 bool srsGit_Repo_Open(const char *path)
 {
   bool result = true;
-  git_init_lib();
+  srsGIT_INIT_LIB();
 
   /* Free the current repository first, if any */
   const char *currepo = srsGit_Repo_GetCurrent();
@@ -88,7 +88,7 @@ bool srsGit_Repo_Open(const char *path)
 
   int git_result = git_repository_open(&srsGIT_REPO, path);
   result = (srsGIT_REPO != NULL);
-  /* We do not call git_exit_lib here because we want the user to be able to continue using the repository */
+  /* We do not call srsGIT_EXIT_LIB here because we want the user to be able to continue using the repository */
   return result;
 }
 
@@ -97,11 +97,11 @@ bool srsGit_Repo_Clone(const char *path, const char *remote_url)
 {
   bool result = false;
   git_clone_options opts = GIT_CLONE_OPTIONS_INIT;
-  git_init_lib();
+  srsGIT_INIT_LIB();
   int git_result = git_clone(&srsGIT_REPO, remote_url, path, &opts);
   /* \todo handle errors */
   result = git_result == GIT_OK;
-  git_exit_lib();
+  srsGIT_EXIT_LIB();
   return result;
 }
 #endif
@@ -112,7 +112,7 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   char *fullpath = NULL;
   git_repository_init_options gitinitopts = GIT_REPOSITORY_INIT_OPTIONS_INIT;
 
-  git_init_lib();
+  srsGIT_INIT_LIB();
 
   gitinitopts.flags = GIT_REPOSITORY_INIT_MKPATH;
   git_repository_init_ext(&srsGIT_REPO, path, &gitinitopts);
@@ -146,7 +146,7 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   result = srsGit_Add(fullpath);
   free(fullpath);
 
-  /* We do not call git_exit_lib here because we want the user to be able to continue using the repository */
+  /* We do not call srsGIT_EXIT_LIB here because we want the user to be able to continue using the repository */
 
   return result;
 }
@@ -160,7 +160,7 @@ bool srsGit_Commit(const char *message)
 	git_commit *parent;
 	char oid_hex[GIT_OID_HEXSZ+1] = { 0 };
 	git_index *index;
-  git_init_lib();
+  srsGIT_INIT_LIB();
   if (srsGIT_REPO == NULL)
   {
     return false;
@@ -294,7 +294,7 @@ bool srsGit_Commit(const char *message)
   }
 	git_signature_free(me);
 
-  git_exit_lib();
+  srsGIT_EXIT_LIB();
 
   return result;
 }
@@ -307,7 +307,7 @@ bool srsGit_Add(const char *path)
 	git_tree *tree;
 	git_index *index;
 
-  git_init_lib();
+  srsGIT_INIT_LIB();
 
   if (srsGIT_REPO == NULL)
   {
@@ -368,7 +368,7 @@ bool srsGit_Add(const char *path)
 	git_tree_free(tree);
 
   assert(count == 1);
-  git_exit_lib();
+  srsGIT_EXIT_LIB();
 
   return result;
 }
