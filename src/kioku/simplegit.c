@@ -67,6 +67,8 @@ bool srsGit_Repo_Clone(const char *path, const char *remote_url)
 
 bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
 {
+  assert(git_libgit2_init() == 1);
+
   bool result = false;
   char *fullpath = NULL;
   git_repository_init_options gitinitopts = GIT_REPOSITORY_INIT_OPTIONS_INIT;
@@ -87,50 +89,235 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   }
   if (result)
   {
-    result = srsGit_Add(fullpath);
+    result = kioku_filesystem_setcontent(fullpath, opts.first_file_content);
   }
-  free(fullpath);
   if (result)
   {
-    result = srsGitCommit(opts.first_commit_message);
+    printf("Running add...\n");
+    result = srsGit_Add(fullpath);
   }
+  if (result)
+  {
+    printf("Running commit...\n");
+    result = srsGit_Commit(opts.first_commit_message);
+  }
+  result = srsGit_Add(fullpath);
+  free(fullpath);
+  git_repository_free(srsGIT_REPO);
+  srsGIT_REPO = NULL;
+  assert(git_libgit2_shutdown() == 0);
   return result;
 }
 
 bool srsGit_Commit(const char *message)
 {
-  git_oid oid = 0;
-  int error = GIT_OK;
+  int git_result = GIT_OK;
+  bool result = true;
+	git_oid oid, parent_id, commit_id;
+	git_tree *tree;
+	git_commit *parent;
+	char oid_hex[GIT_OID_HEXSZ+1] = { 0 };
+	git_index *index;
+  if (srsGIT_REPO == NULL)
+  {
+    return false;
+  }
+  /* See if this is the first commit */
+  git_result = git_repository_head_unborn(srsGIT_REPO);
+  result = result && (git_result == 0 || git_result == 1);
+  if (git_result == 1)
+  {
+    git_result = git_repository_index(&index, srsGIT_REPO);
+    result = result && (git_result == 0);
+    if (!result)
+    {
+      const git_error *err = giterr_last();
+      if (err == NULL)
+      {
+        fprintf(stderr, "Error occurred, but giterr_last returned null...\n");
+      }
+      fprintf(stderr, "Could not open repository index: %s\n", err->message);
+      abort();
+    }
+    git_result = git_index_write_tree(&oid, index);
+    result = result && (git_result == 0);
+    if (!result)
+    {
+      fprintf(stderr, "Unable to write initial tree from index\n");
+      abort();
+    }
+    git_result = git_tree_lookup(&tree, srsGIT_REPO, &oid);
+    result = result && (git_result == 0);
+    if (!result)
+    {
+      fprintf(stderr, "Unable to lookup tree\n");
+      abort();
+    }
+  }
 
-  error = git_reference_name_to_id(&oid, srsGIT_REPO, "HEAD");
+  size_t count = git_index_entrycount(index);
+  printf("Index entry count: %zu\n", count);
+	printf("\n*Commit Writing*\n");
 
-  git_commit *parent = NULL;
-  error = git_commit_lookup(&parent, srsGIT_REPO, git_object_id(obj));
-
+	/**
+	 * Creating signatures for an authoring identity and time is simple.  You
+	 * will need to do this to specify who created a commit and when.  Default
+	 * values for the name and email should be found in the `user.name` and
+	 * `user.email` configuration options.  See the `config` section of this
+	 * example file to see how to access config values.
+	 */
   git_signature *me = NULL;
-  error = git_signature_now(&me, "Me", "me@example.com");
+  git_result = git_signature_now(&me, "Me", "me@example.com");
+  result = result && (git_result == 0);
+  if (!result)
+  {
+    fprintf(stderr, "failed to create signature\n");
+    abort();
+  }
+
+	/**
+	 * Commit objects need a tree to point to and optionally one or more
+	 * parents.  Here we're creating oid objects to create the commit with,
+	 * but you can also use
+	 */
+
+  /* git_result = git_reference_name_to_id(&oid, srsGIT_REPO, "HEAD"); */
+	git_result = git_tree_lookup(&tree, srsGIT_REPO, &oid);
+  result = result && (git_result == 0);
+  if (!result)
+  {
+    fprintf(stderr, "failed to lookup tree\n");
+    abort();
+  }
+  git_result = git_repository_head_unborn(srsGIT_REPO);
+  result = result && (git_result == 0 || git_result == 1);
+  if (git_result == 1)
+  {
+    parent = NULL;
+  }
+  else if (git_result == 0)
+  {
+    git_result = git_commit_lookup(&parent, srsGIT_REPO, &oid);
+    result = result && (git_result == 0);
+    if (!result)
+    {
+      const git_error *err = giterr_last();
+      if (err == NULL)
+      {
+        fprintf(stderr, "Error occurred, but giterr_last returned null...\n");
+      }
+      fprintf(stderr, "Could not lookup parent commit: %s\n", err->message);
+      abort();
+    }
+  }
+  else
+  {
+    fprintf(stderr, "Failed to check whether unborn\n");
+    abort();
+  }
 
   const git_commit *parents[] = {parent};
-
-  git_oid new_commit_id = 0;
-  error = git_commit_create(
-    &new_commit_id,
+	/**
+	 * Here we actually create the commit object with a single call with all
+	 * the values we need to create the commit.  The SHA key is written to the
+	 * `commit_id` variable here.
+	 */
+	git_result = git_commit_create(
+    &commit_id, /* out id */
     srsGIT_REPO,
-    "HEAD",                      /* name of ref to update */
-    me,                          /* author */
-    me,                          /* committer */
-    "UTF-8",                     /* message encoding */
-    message,  /* message */
-    tree,                        /* root tree */
-    2,                           /* parent count */
-    parents);                    /* parents */
+    "HEAD", /* name of ref to update */
+    me, me, /* author & committer */
+    "UTF-8",
+    message,
+    tree,
+    parent == NULL ? 0 : 1, parents);
+
+  result = result && (git_result == GIT_OK);
+  if (!result)
+  {
+    fprintf(stderr, "failed to lookup parent commit\n");
+    abort();
+  }
+
+	/**
+	 * Now we can take a look at the commit SHA we've generated.
+	 */
+	git_oid_fmt(oid_hex, &commit_id);
+  printf("New Commit: %s\n", oid_hex);
+
+  /* Cleanup */
+	git_tree_free(tree);
+  git_index_free(index);
+	git_commit_free(parent);
+	git_signature_free(me);
+  return result;
 }
 
 bool srsGit_Add(const char *path)
 {
-  int error;
-  git_index *idx = NULL;
-  error = git_repository_index(&idx, srsGIT_REPO);
-  error = git_index_add_bypath(idx, path);
+  bool result = true;
+  int git_result = 0;
+	git_oid oid;
+	git_tree *tree;
+	git_index *index;
+  if (srsGIT_REPO == NULL)
+  {
+    return false;
+  }
+  /* See if this is the first commit */
+  git_result = git_repository_head_unborn(srsGIT_REPO);
+  if (git_result == 1)
+  {
+    printf("Adding - Unborn HEAD\n");
+  }
+  git_result = git_repository_index(&index, srsGIT_REPO);
+  result = result && (git_result == 0);
+  if (!result)
+  {
+    fprintf(stderr, "Could not open repository index");
+    abort();
+  }
+  git_result = git_index_write_tree(&oid, index);
+  result = result && (git_result == 0);
+  if (!result)
+  {
+    fprintf(stderr, "Unable to write initial tree from index");
+    abort();
+  }
+  git_result = git_tree_lookup(&tree, srsGIT_REPO, &oid);
+  result = result && (git_result == 0);
+  if (!result)
+  {
+    fprintf(stderr, "Unable to lookup tree from oid");
+    abort();
+  }
+
+  const char *repo_path = srsGit_Repo_GetCurrent();
+  char fullpath[kiokuPATH_MAX+1];
+  kioku_path_getfull(path, fullpath, sizeof(fullpath));
+  int str_index = 0;
+  if (strncmp(repo_path, fullpath, strlen(repo_path)) < 0)
+  {
+    while (repo_path[str_index] == fullpath[str_index])
+    {
+      str_index++;
+    }
+  }
+  printf("Adding %s to %s\n", fullpath + str_index, repo_path);
+  git_result = git_index_add_bypath(index, fullpath + str_index);
+  result = result && (git_result == 0);
+  if (!result)
+  {
+    fprintf(stderr, "Unable to add %s to %s\n", fullpath + str_index, repo_path);
+    abort();
+  }
+  size_t count = git_index_entrycount(index);
+  printf("Index entry count: %zu\n", count);
+  /* Write the index so it doesn't show our added entry as untracked */
+  git_index_write(index);
+  git_index_free(index);
+	git_tree_free(tree);
+  assert(count == 1);
+  return result;
 }
 
