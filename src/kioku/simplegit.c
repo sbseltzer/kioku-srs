@@ -46,9 +46,12 @@ bool srsGit_IsRepo(const char *path)
 {
   /* Pass NULL for the output parameter to check for but not open the repo */
   bool result = false;
-  git_init_lib();
-  result = (git_repository_open_ext(NULL, path, GIT_REPOSITORY_OPEN_NO_SEARCH, NULL) == 0);
-  git_exit_lib();
+  srsGIT_INIT_LIB();
+  git_repository *repo = NULL;
+  int git_result = git_repository_open_ext(&repo, path, GIT_REPOSITORY_OPEN_NO_SEARCH, NULL);
+  result = (git_result == 0);
+  git_repository_free(repo);
+  srsGIT_EXIT_LIB();
   return result;
 }
 
