@@ -6,7 +6,10 @@
  * This C API abstracts the underlying JSON implementation by providing a suite of
  * structs and methods to build/inspect JSON API objects in a strongly typed manner.
  *
- * In general, values passed to these methods are copied to simplify memory management.
+ * Some general design decisions:
+ * Values passed to the API are copied to simplify memory management.
+ * It is comprised of opaque pointers to structs, which are just handles into a root object that holds all of the memory.
+ * Setters for any handle simply mutate the root object it is attached to.
  */
 
 #define srsJSON_KEY_ERROR "\"error\""
