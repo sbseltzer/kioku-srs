@@ -25,3 +25,9 @@
 [submodule "extern/libtap"]
 	path = extern/libtap
 	url = https://github.com/zorgnax/libtap.git
+[submodule "extern/libssh2"]
+	path = extern/libssh2
+	url = https://github.com/libssh2/libssh2.git
+[submodule "extern/zlib"]
+	path = extern/zlib
+	url = https://github.com/madler/zlib.git
