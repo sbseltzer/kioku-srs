@@ -193,13 +193,6 @@ bool srsGit_Commit(const char *message)
       fprintf(stderr, "Unable to write initial tree from index\n");
       abort();
     }
-    git_result = git_tree_lookup(&tree, srsGIT_REPO, &oid);
-    result = result && (git_result == 0);
-    if (!result)
-    {
-      fprintf(stderr, "Unable to lookup tree\n");
-      abort();
-    }
   }
 
   size_t count = git_index_entrycount(index);
