@@ -1,6 +1,10 @@
 #ifndef _KIOKU_SIMPLEGIT_H
 #define _KIOKU_SIMPLEGIT_H
 
+#include <kioku/decl.h>
+#include <kioku/types.h>
+#include <kioku/debug.h>
+
 typedef struct srsGIT_CREATE_OPTS_s {
   const char *first_file_name;
   const char *first_file_content;
@@ -15,5 +19,9 @@ typedef struct srsGIT_CREATE_OPTS_s {
  * \return Whether creation was successful.
  */
 kiokuAPI bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts);
+
+kiokuAPI bool srsGit_Commit(const char *path);
+
+kiokuAPI bool srsGit_Add(const char *message);
 
 #endif /* _KIOKU_SIMPLEGIT_H */
