@@ -12,6 +12,14 @@
 #define srsJSON_KEY_ERROR "\"error\""
 #define srsJSON_SCHEMA_ERROR  "{"srsJSON_KEY_ERROR": {}}"
 
+typedef enum srsJSON_PAGINATION_KEY_e
+{
+  srsJSON_PAGE_FIRST,
+  srsJSON_PAGE_LAST,
+  srsJSON_PAGE_NEXT,
+  srsJSON_PAGE_PREV,
+} srsJSON_PAGINATION_KEY;
+
 typedef struct srsJSON_API_s           srsJSON_API;
 typedef struct srsJSON_ERROR_s         srsJSON_ERROR;
 typedef struct srsJSON_LINKS_s         srsJSON_LINKS;
@@ -34,6 +42,7 @@ kiokuAPI bool srsJSON_Request_IsValidPointer(const srsJSON_REQUEST *request, con
 kiokuAPI bool srsJSON_Request_IsValidParameter(const srsJSON_REQUEST *request, const char *pointer);
 kiokuAPI bool srsJSON_Request_GetParameter(const srsJSON_REQUEST *request, const char *name, char *param_out, size_t nbytes);
 
+kiokuAPI srsJSON_RESPONSE *srsJSON_Response_Create(srsJSON_REQUEST *optional_request);
 kiokuAPI srsSIZE srsJSON_Response_Encode(const srsJSON_RESPONSE *response, char *data_out, srsSIZE nbytes);
 
 kiokuAPI bool srsJSON_Response_SetMetaData(srsJSON_RESPONSE *response, const char *member, const char *value);
@@ -64,7 +73,8 @@ kiokuAPI bool srsJSON_Resource_SetMetaData(srsJSON_RESOURCE *resource, const cha
 kiokuAPI srsJSON_LINKS *srsJSON_Response_AddLinks(srsJSON_RESPONSE *response);
 kiokuAPI bool srsJSON_Links_SetSelf(srsJSON_LINKS *links, const srsJSON_LINK *self);
 kiokuAPI bool srsJSON_Links_SetRelated(srsJSON_LINKS *links, const srsJSON_LINK *related);
-kiokuAPI bool srsJSON_Links_SetPagination(srsJSON_LINKS *links, const srsJSON_PAGINATION *pagination);
+kiokuAPI bool srsJSON_Links_SetLink(srsJSON_LINKS *links, const char *key, const srsJSON_LINK *link);
+kiokuAPI bool srsJSON_Links_SetPagination(srsJSON_LINKS *links, const srsJSON_PAGINATION_KEY key, const char *uri);
 
 kiokuAPI void srsJSON_FreeResponse(srsJSON_RESPONSE *response);
 kiokuAPI void srsJSON_FreeRequest(srsJSON_REQUEST *request);
