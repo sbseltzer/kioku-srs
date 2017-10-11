@@ -63,5 +63,13 @@
   #error Unsupported architecture
 #endif
 
+#ifdef kiokuOS_WINDOWS
+#define kiokuSTRING_LF "\r\n"
+#else
+#define kiokuSTRING_LF "\n"
+#endif
+
+#define kiokuCHAR_NULL '\0'
+
 #endif /* _KIOKU_DECL_H */
 
