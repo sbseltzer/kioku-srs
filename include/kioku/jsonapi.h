@@ -27,6 +27,7 @@ typedef struct srsJSON_LINK_s          srsJSON_LINK;
 typedef struct srsJSON_PAGINATION_s    srsJSON_PAGINATION;
 typedef struct srsJSON_INCLUDED_s      srsJSON_INCLUDED;
 typedef struct srsJSON_RESOURCE_s      srsJSON_RESOURCE;
+typedef struct srsJSON_RESOURCE_ID_s   srsJSON_RESOURCE_ID;
 typedef struct srsJSON_ATTRIBUTES_s    srsJSON_ATTRIBUTES;
 typedef struct srsJSON_RELATIONSHIPS_s srsJSON_RELATIONSHIPS;
 typedef struct srsJSON_REQUEST_s       srsJSON_REQUEST;
@@ -46,6 +47,12 @@ kiokuAPI srsJSON_RESPONSE *srsJSON_Response_Create(srsJSON_REQUEST *optional_req
 kiokuAPI srsSIZE srsJSON_Response_Encode(const srsJSON_RESPONSE *response, char *data_out, srsSIZE nbytes);
 
 kiokuAPI bool srsJSON_Response_SetMetaData(srsJSON_RESPONSE *response, const char *member, const char *value);
+
+kiokuAPI srsJSON_RESOURCE *srsJSON_Response_AddResource(srsJSON_RESPONSE *response);
+kiokuAPI bool srsJSON_Response_SetDataAsResource(srsJSON_RESPONSE *response, const srsJSON_RESOURCE *resource);
+kiokuAPI bool srsJSON_Response_SetDataAsResourceArray(srsJSON_RESPONSE *response, const srsJSON_RESOURCE *resource, size_t count);
+kiokuAPI bool srsJSON_Response_SetDataAsResourceID(srsJSON_RESPONSE *response, const srsJSON_RESOURCE *resource);
+kiokuAPI bool srsJSON_Response_SetDataAsResourceIDArray(srsJSON_RESPONSE *response, const srsJSON_RESOURCE *resource, size_t count);
 
 kiokuAPI srsJSON_API *srsJSON_Response_AddAPI(srsJSON_RESPONSE *response);
 kiokuAPI bool srsJSON_API_SetVersion(srsJSON_API *response, const char *version);
