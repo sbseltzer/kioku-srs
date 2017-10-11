@@ -42,6 +42,14 @@
 
 kiokuSTATIC_ASSERT(kiokuPATH_MAX > 0);
 
+/** Find the full path from a relative one, limiting the storage of it to nbytes.
+ * \param[in] relative The relative path to transform.
+ * \param[out] path_out The place to store the full string.
+ * \param[out] nbytes The maximum number of characters to store, including the null terminator.
+ * \return The number of characters that were needed for the full path, excluding the null terminator. Setting path_out to NULL or nbytes to 0 will still cause this to output how many characters were needed.
+ */
+kiokuAPI size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes);
+
 /** Find the first and last chars to use in path for trimming redundant chars on each end.
  * Up to one leading slash may remain.
  * No trailing slashes past a first leading slash may remain.
