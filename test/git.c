@@ -3,13 +3,17 @@
 #include "kioku/filesystem.h"
 
 /* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */
-TEST git_create_makes_a_repository(void) {
+TEST git_create_makes_a_repository(void)
+{
   #define REPO_NAME "repo"
   const char *writeme = "me\n";
   srsGIT_CREATE_OPTS opts = {"username", writeme, "Initial commit, dawg"};
   ASSERT(srsGit_Repo_Create(REPO_NAME, opts));
   ASSERT(kioku_filesystem_exists(REPO_NAME "/.git/"));
   ASSERT(kioku_filesystem_exists(REPO_NAME "/username"));
+  ASSERT(srsGit_IsRepo(REPO_NAME));
+
+  ASSERT_EQ_FMT(srsGit_InitCount(), 1, "Still has %d instances");
 
   char content[2086] = {0};
 
@@ -25,6 +29,10 @@ TEST git_create_makes_a_repository(void) {
   ASSERT_STRN_EQ(strstr(commitlog, "Me"), strstr(content, "Me"), strlen("Me <me@example.com>"));
   ASSERT_STR_EQ(strstr(commitlog, "commit"), strstr(content, "commit"));
 
+  ASSERT_EQ_FMT(srsGit_InitCount(), 1, "Still has %d instances");
+  ASSERT(srsGit_Shutdown());
+
+  ASSERT(srsGit_IsRepo(REPO_NAME));
   PASS();
 }
 
