@@ -18,6 +18,7 @@
 #define kiokuSTATIC_ASSERT(x) ((void)0)
 #endif
 
+#if 0
 #include <stdbool.h>
 #include <errno.h>
 inline void srsERRNO_WATCH()
@@ -29,5 +30,6 @@ inline bool srsERRNO_CAPTURE(int *capture, bool is_bad)
   *capture = errno;
   return is_bad;
 }
+#endif
 
 #endif /* _KIOKU_DEBUG_H */
