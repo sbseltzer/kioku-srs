@@ -8,11 +8,15 @@
 
 #if defined kiokuOS_WINDOWS /* OS check */
 
-#include <direct.h>
-#ifndef _MAX_PATH
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#if defined _MAX_PATH
+#define kiokuPATH_MAX _MAX_PATH
+#elif defined MAX_PATH
+#define kiokuPATH_MAX MAX_PATH
+#else
 #error Could not find macro for max path length!
 #endif
-#define kiokuPATH_MAX _MAX_PATH
 
 #elif defined kiokuOS_LINUX || defined kiokuOS_UNIX || defined kiokuOS_APPLE /* OS check */
 
