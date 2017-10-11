@@ -17,7 +17,32 @@ include_directories( include
                      ) 
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-#find_package(LibGit2 REQUIRED)
+
+##
+# Some platforms won't have the specific required version of libraries.
+# In those cases, a downloaded pre-built one will be used for compilation/packaging.
+# These could be served via Git-LFS from a subrepository.
+# Take a look at http://www.mantidproject.org/Building_with_CMake
+# Also look at how the Orx Project automates setup.
+##
+
+#find_package(ZLIB)
+if (NOT ZLIB_FOUND)
+#   add_subdirectory(extern/zlib)
+endif()
+
+#find_package(LibSSH2)
+if (NOT LIBSSH2_FOUND)
+#   add_subdirectory(extern/libssh2)
+endif()
+
+#find_package(LibGit2)
+if(NOT LIBGIT2_FOUND)
+#       add_subdirectory(extern/libgit2)
+       set(PC_LIBGIT2_INCLUDEDIR "${CMAKE_SOURCE_DIR}/extern/libgit2/include")
+       set(PC_LIBGIT2_LIBDIR "${CMAKE_SOURCE_DIR}/extern/libgit2/")
+#       find_package(LibGit2 REQUIRED)
+endif()
 #find_package(OpenSSL REQUIRED)
 #find_package(LibCURL REQUIRED)
 
