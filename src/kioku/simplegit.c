@@ -2,6 +2,7 @@
 #include "kioku/simplegit.h"
 #include "kioku/filesystem.h"
 #include "kioku/log.h"
+#include <string.h>
 
 static git_repository *srsGIT_REPO = NULL;
 static bool srsGIT_READY = false;
