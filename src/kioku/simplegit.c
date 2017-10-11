@@ -53,6 +53,7 @@ bool srsGit_Repo_Open(const char *path)
   return result;
 }
 
+#if 0
 bool srsGit_Repo_Clone(const char *path, const char *remote_url)
 {
   bool result = false;
@@ -62,6 +63,7 @@ bool srsGit_Repo_Clone(const char *path, const char *remote_url)
   result = error == GIT_OK;
   return result;
 }
+#endif
 
 bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
 {
