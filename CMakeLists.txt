@@ -11,6 +11,9 @@ list(APPEND CMAKE_PREFIX_PATH
             extern/libgit2
             extern/libgit2/Release
             extern/libgit2/Debug
+            extern/libgit2/build
+            extern/libgit2/build/Release
+            extern/libgit2/build/Debug
             extern/libgit2/src
             extern/libgit2/src/Release
             extern/libgit2/src/Debug
@@ -20,10 +23,21 @@ list(APPEND CMAKE_PREFIX_PATH
             extern/libssh2/src
             extern/libssh2/src/Release
             extern/libssh2/src/Debug
+            extern/libssh2/build
+            extern/libssh2/build/Release
+            extern/libssh2/build/Debug
+            extern/libssh2/build/src
+            extern/libssh2/src/build/Release
+            extern/libssh2/src/build/Debug
             )
+link_directories(${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug)
+
+#set(EMBED_SSH_PATH ${CMAKE_SOURCE_DIR}/extern/libssh2/)
+#add_subdirectory(${CMAKE_SOURCE_DIR}/extern/libgit2/)
 
 # Give this to find Libssh2Config.cmake
-set(Libssh2_DIR extern/libssh2/src)
+#set(Libssh2_DIR extern/libssh2/src)
+#set(Libssh2_DIR extern/libssh2/build/src)
 
 ##
 # Some platforms won't have the specific required version of libraries.
@@ -33,8 +47,8 @@ set(Libssh2_DIR extern/libssh2/src)
 # Also look at how the Orx Project automates setup.
 ##
 
-find_package(ZLIB)
-find_package(Libssh2 REQUIRED)
+#find_package(ZLIB)
+#find_package(Libssh2 1.8.1 REQUIRED)
 find_package(LibGit2 REQUIRED)
 
 #find_package(OpenSSL REQUIRED)
@@ -99,7 +113,7 @@ add_library( kioku SHARED src/kioku/log.c
                           src/kioku/server.c
                           extern/parson/parson.c
                           )
-target_link_libraries( kioku ssh2 git2 )
+target_link_libraries( kioku git2 )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
@@ -109,7 +123,7 @@ add_executable( kioku-server
                 extern/mongoose/mongoose.c
                 extern/parson/parson.c
                 )
-target_link_libraries( kioku-server kioku )
+target_link_libraries( kioku-server kioku git2 )
 add_dependencies( kioku-server kioku )
 
 # add_subdirectory(src)
