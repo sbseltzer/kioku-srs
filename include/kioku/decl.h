@@ -54,10 +54,11 @@
   /* ARM64 */                                                           \
   defined __aarch64__ ||                                                \
   /* Intel Itanium (IA-64) */                                           \
-  defined __ia64__  || defined _M_IA64 || defined __itanium__
+  defined __ia64__  || defined _M_IA64 || defined __itanium__ || 	\
+  defined _WIN64
   #define kiokuARCH_64BIT
 #elif /* 32-bit */ \
-  defined __i386__ || defined _M_IX86 || defined _X86_
+  defined __i386__ || defined _M_IX86 || defined _X86_ || _WIN32
   #define kiokuARCH_32BIT
 #else
   #error Unsupported architecture
