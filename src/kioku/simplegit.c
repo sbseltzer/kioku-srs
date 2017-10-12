@@ -199,6 +199,7 @@ bool srsGit_Commit(const char *message)
   }
 
   size_t count = git_index_entrycount(index);
+  /* \todo On windows VC %zu doesn't seem to be valid. Wrap or define the PRIs for it. */
   printf("Index entry count: %zu\n", count);
 	printf("\n*Commit Writing*\n");
 
