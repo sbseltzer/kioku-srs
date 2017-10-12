@@ -55,8 +55,6 @@ size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
     uint32_t i = 0;
     while (path[i] != kiokuCHAR_NULL)
     {
-      printf("Examining %c" kiokuSTRING_LF, path[i]);
-      fflush(stdout);
       if (path[i] == '\\')
       {
         path[i] = '/';
