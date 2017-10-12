@@ -26,8 +26,16 @@ TEST git_create_makes_a_repository(void)
 
   ASSERT(kioku_filesystem_getcontent(REPO_NAME "/.git/logs/HEAD", content, sizeof(content)));
   const char *commitlog = "Me <me@example.com> 1507741820 -0400  commit (initial): Initial commit, dawg\n";
-  ASSERT_STRN_EQ(strstr(commitlog, "Me"), strstr(content, "Me"), strlen("Me <me@example.com>"));
-  ASSERT_STR_EQ(strstr(commitlog, "commit"), strstr(content, "commit"));
+  const char *commitlog_me = strstr(commitlog, "Me");
+  const char *content_me = strstr(content, "Me");
+  ASSERT(commitlog_me != NULL);
+  ASSERT(content_me != NULL);
+  ASSERT_STRN_EQ(commitlog_me, content_me, strlen("Me <me@example.com>"));
+  const char *commitlog_commit = strstr(commitlog, "commit");
+  const char *content_commit = strstr(content, "commit");
+  ASSERT(commitlog_commit != NULL);
+  ASSERT(content_commit != NULL);
+  ASSERT_STR_EQ(commitlog_commit, content_commit);
 
   ASSERT_EQ_FMT(srsGit_InitCount(), 1, "Still has %d instances");
   ASSERT(srsGit_Shutdown());
