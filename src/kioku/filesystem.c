@@ -48,10 +48,21 @@ size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
      However, the two methods do have some differences. The fchdir() approach causes the program to restore a working directory even if it has been renamed in the meantime, whereas the chdir() approach restores to a directory with the same name as the original, even if the directories were renamed in the meantime.
      Since the fchdir() approach does not access parent directories, it can succeed when getcwd() would fail due to permissions problems.
      In applications conforming to earlier versions of this standard, it was not possible to use the fchdir() approach when the working directory is searchable but not readable, as the only way to open a directory was with O_RDONLY, whereas the getcwd() approach can succeed in this case. */
-  char cwd[kiokuPATH_MAX+1];
+  char cwd[kiokuPATH_MAX+1] = {0};
   path = getcwd(cwd, nbytes);
   if (path == cwd)
   {
+    uint32_t i = 0;
+    while (path[i] != kiokuCHAR_NULL)
+    {
+      printf("Examining %c" kiokuSTRING_LF, path[i]);
+      fflush(stdout);
+      if (path[i] == '\\')
+      {
+        path[i] = '/';
+      }
+      i++;
+    }
     while (*path == '.')
     {
       path++;
