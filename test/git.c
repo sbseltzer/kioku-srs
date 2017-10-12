@@ -24,7 +24,7 @@ TEST git_create_makes_a_repository(void)
   const char *headref = "ref: refs/heads/master\n";
   ASSERT_STR_EQ(headref, content);
 
-  kioku_filesystem_getcontent(REPO_NAME "/.git/logs/HEAD", content, sizeof(content));
+  ASSERT(kioku_filesystem_getcontent(REPO_NAME "/.git/logs/HEAD", content, sizeof(content)));
   const char *commitlog = "Me <me@example.com> 1507741820 -0400  commit (initial): Initial commit, dawg\n";
   ASSERT_STRN_EQ(strstr(commitlog, "Me"), strstr(content, "Me"), strlen("Me <me@example.com>"));
   ASSERT_STR_EQ(strstr(commitlog, "commit"), strstr(content, "commit"));
