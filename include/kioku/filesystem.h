@@ -40,6 +40,8 @@
 
 #endif /* OS check */
 
+#define kiokuCHAR_ISDIRSEP(x) (((x) == '/') || ((x) == '\\'))
+
 kiokuSTATIC_ASSERT(kiokuPATH_MAX > 0);
 
 /** Find the full path from a relative one, limiting the storage of it to nbytes.
