@@ -229,23 +229,26 @@ int32_t kioku_path_up_index(const char *path, int32_t start_index)
   if (kiokuCHAR_ISDIRSEP(path[result]))
   {
     /* March back to first non-separator */
-    while ((result >= 0) && !kiokuCHAR_ISDIRSEP(path[result]))
+    while ((result >= 0) && kiokuCHAR_ISDIRSEP(path[result]))
     {
       result--;
     }
   }
   /* March back to first separator to eliminate the file/dir we're on in the path. */
-  while ((result >= 0) && kiokuCHAR_ISDIRSEP(path[result]))
-  {
-    result--;
-  }
-  /* March back to next non-separator in case this path has redundant separators. */
   while ((result >= 0) && !kiokuCHAR_ISDIRSEP(path[result]))
   {
     result--;
   }
-  /* March forward by one so the string ends with a separator */
-  /* result++; */
+  /* March back to next non-separator in case this path has redundant separators. */
+  while ((result >= 0) && kiokuCHAR_ISDIRSEP(path[result]))
+  {
+    result--;
+  }
+  if ((result >= 0) && !kiokuCHAR_ISDIRSEP(path[result]))
+  {
+    /* March forward by one so the string ends with a separator */
+    result++;
+  }
   return result;
 }
 

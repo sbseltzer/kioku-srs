@@ -72,9 +72,12 @@ kiokuAPI int32_t kioku_path_concat(char *dest, size_t destsize, const char *path
 
 /** Get the index of the final directory separator in the specified path.
  * This is used to assist in traversing up a directory tree.
+ * Because returning 0, -1, and less that -1 mean different things, the proper way to utilize this iteratively is as follows:
+ *   for (i = strlen(path); i > -1; i = kioku_path_up_index(path, i)) { do stuff }
+ *   if (i < -1) { you likely passed in an improper path - handle case }
  * \param[in] path The path string to traverse. Must be null terminated.
  * \param[in] start_index The index to start traversing from. -1 means start from the end.
- * \return Index of last path separator. -1 if there are no separators left.
+ * \return Index of last path separator. -1 if path is NULL, path is empty, or if there are no separators left. If path length exceeds the size of a 32-bit integer (which is a remote possibility in the case of a non-null-terminated string, though frankly you should be checking your input), a value less than -1 will be returned.
  */
 kiokuAPI int32_t kioku_path_up_index(const char *path, int32_t start_index);
 
