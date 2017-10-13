@@ -53,6 +53,57 @@ void kioku_path_replace_separators(char *path, size_t nbytes)
   }
 }
 
+void kioku_path_resolve_relative(char *path, int32_t nbytes)
+{
+  size_t i = 0;
+  size_t offset = 0;
+  if ((path != NULL) && (nbytes > 0))
+  {
+    while ((path[i] != kiokuCHAR_NULL) && (i < nbytes))
+    {
+      if (path[i] == '.')
+      {
+        /* Starting with a relative dir simply returns - it's difficult (or impossible) to know what the correct conversion is */
+        if (i == 0)
+        {
+          break;
+        }
+        /* Okay, so we're at a relative "go-up" path and it's not at the very start of the string */
+        if (path[i+1] == '.')
+        {
+          /* \todo Handle case of invalid "...*" */
+          /* Go up one directory to eliminate the .. */
+          int32_t up = kioku_path_up_index(path, i);
+          /* Because we started at a finite int32_t, we should never end up in a situation where up_index returns less than -1 */
+          assert(up >= -1);
+          /* If we've hit no separators, it means we're at the beginning of the string, in which case which case can't resolve this path any further. */
+          if (up == -1)
+          {
+            
+          }
+          /* If we've hit the first char of the string, it means it's a root path, in which case we can't resolve any further */
+          else if (up == 0)
+          {
+            
+          }
+          if ((path[up] != '/') && (path[up] != '\\'))
+          {
+            
+          }
+          /* Go up another directory to eliminate the parent */
+          up = kioku_path_up_index(path, up);
+          i++; /* Increment forward so we know where to move back from */
+        }
+        else
+        {
+          /* Simple eliminate this part of the path. */
+
+        }
+      }
+      i++;
+    }
+  }
+}
 
 size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
 {
