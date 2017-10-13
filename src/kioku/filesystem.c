@@ -187,14 +187,65 @@ int32_t kioku_path_up_index(const char *path, int32_t start_index)
   {
     return result;
   }
-  size_t pathlen = strlen(path);
-  if (pathlen == 0)
+  if (*path == kiokuCHAR_NULL)
   {
     return result;
   }
-  assert((int32_t)pathlen < INT32_MAX);
-  /* March backward til it hits a separator. */
-  for (result = (int32_t)pathlen - 1; (result >= 0) && (path[result] != '/'); result--);
+  /* \todo Perhaps allow user to specify a string length, though start_index is probably sufficient for that purpose. */
+
+  /* A start index of 1 or less would always yield -1, but we'll enforce -1 as being the indicator for using the path string length. This is because a user could use this in a loop where they feed the return value of this function into itself, and not having a consistent number to check against could be confusing/dangerous. */
+  /* Example:       for (i = strlen(path); i > -1; i = kioku_path_up_index(path, i))
+     As opposed to: for (i = -1; i != -1; i = kioku_path_up_index(path, i))
+     If `i` starts at less than -1 and we assume it means "use path length", then in the unlikely case of a 32bit int not being able to contain a large size_t, the user could end up in an infinite loop by feeding the result of this function into itself.
+     */
+  if (start_index < -1)
+  {
+    return result;
+  }
+  else if (start_index == -1)
+  {
+    size_t length = strlen(path);
+    start_index = (int32_t)length;
+  }
+  /* Bounds check
+     These could only be violated if size_t is longer than the max int32 length and paths are able to exceed that.
+     Or if the path is not null terminated, strlen could return an erroneously long value, which could overflow start_index into negative bounds. */
+  /* \todo Test this */
+  if (start_index < 0 || start_index >= INT32_MAX)
+  {
+    result = INT32_MIN;
+    return result;
+  }
+  /* First eliminate dangling NULLs (if any) */
+  /* \todo Test this */
+  result = start_index;
+  while ((result >= 0) && (path[result] == kiokuCHAR_NULL))
+  {
+    result--;
+  }
+  /* Sanity check: If it hits the beginning of the string, it was apparently empty - this case should be captured above. */
+  assert(result >= 0);
+  /* If the path ends with a separator, we need to march back to the first non-separator before traversing to the parent. */
+  if (kiokuCHAR_ISDIRSEP(path[result]))
+  {
+    /* March back to first non-separator */
+    while ((result >= 0) && !kiokuCHAR_ISDIRSEP(path[result]))
+    {
+      result--;
+    }
+  }
+  /* March back to first separator to eliminate the file/dir we're on in the path. */
+  while ((result >= 0) && kiokuCHAR_ISDIRSEP(path[result]))
+  {
+    result--;
+  }
+  /* March back to next non-separator in case this path has redundant separators. */
+  while ((result >= 0) && !kiokuCHAR_ISDIRSEP(path[result]))
+  {
+    result--;
+  }
+  /* March forward by one so the string ends with a separator */
+  /* result++; */
   return result;
 }
 
