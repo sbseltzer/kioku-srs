@@ -371,6 +371,48 @@ TEST test_file_io(void)
   PASS();
 }
 
+/* \todo test whether start_index behaves properly for get up index */
+TEST test_resolve_relative(void)
+{
+  printf("Testing kioku_path_resolve_relative..." kiokuSTRING_LF);
+  struct path_pair_s {
+    const char in[kiokuPATH_MAX+1];
+    const char out[kiokuPATH_MAX+1];
+  } paths[] = {
+    {".", "."}, /* Maybe this should return "" */
+    {"..", ".."},
+    {"./", "./"}, /* Maybe this should return "" */
+    {"/.", "/"},
+    {"C:/.", "C:/"},
+    {"../", "../"},
+    {"/", "/"},
+    {"C:/", "C:/"},
+    {"/..", "/"}, /* Obviously cannot go up from a root path - however a user might make a mistake running this method on the second part of a concatenated path before concatenation. Maybe leave it as ASSERT_STR_EQ? */
+    {"C:/..", "C:/"}, /* In this case, a drive letter obviously cannot be part of the path, so this ASSERT_STR_EQ probably an OK conversion */
+    {"abc/.", "abc/"},
+    {"abc/..", ""}, /* Maybe return "." */
+    {"abc/../..", ".."},
+    {"/abc/..", "/"},
+    {"C:/abc/..", "C:/"},
+    {"/abc/../..", "/"}, /* As before, maybe leave it as "/.." */
+    {"C:/abc/../..", "C:/"}, /* As before, maybe leave it as "C:/.." */
+  };
+  size_t num_pairs = sizeof(paths);
+  size_t i;
+  for (i = 0; i < num_pairs; i++)
+  {
+    printf("Testing conversion of '%s' to '%s'"kiokuSTRING_LF, paths[i].in, paths[i].out);
+    char path[kiokuPATH_MAX+1] = {0};
+    strncpy(path, paths[i].in, kiokuPATH_MAX);
+    /* kioku_path_resolve_relative(path, sizeof(path)); */
+    /* ASSERT_STR_EQ(path, paths[i].out); */
+  }
+}
+TEST test_fullpath(void)
+{
+  printf("Testing kioku_path_getfull..." kiokuSTRING_LF);
+  /* ASSERT(); */
+}
 SUITE(test_filesystem) {
   RUN_TEST(test_up_path);
   printf(kiokuSTRING_LF);
