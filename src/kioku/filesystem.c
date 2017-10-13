@@ -35,6 +35,22 @@ static FILE *kioku_filesystem_open(const char *path, const char *mode)
 }
 
 /** \todo It may be a good idea to have a max path length and use a strnlen-like method. */
+void kioku_path_replace_separators(char *path, size_t nbytes)
+{
+  size_t i = 0;
+  if ((path != NULL) && (nbytes > 0))
+  {
+    while ((path[i] != kiokuCHAR_NULL) && (i < nbytes))
+    {
+      if (path[i] == '\\')
+      {
+        path[i] = '/';
+      }
+      i++;
+    }
+  }
+}
+
 
 size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
 {
@@ -52,19 +68,7 @@ size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
   path = getcwd(cwd, nbytes);
   if (path == cwd)
   {
-    uint32_t i = 0;
-    while (path[i] != kiokuCHAR_NULL)
-    {
-      if (path[i] == '\\')
-      {
-        path[i] = '/';
-      }
-      i++;
-    }
-    while (*path == '.')
-    {
-      path++;
-    }
+    kioku_path_replace_separators(path, sizeof(cwd));
     int32_t needed = kioku_path_concat(path_out, nbytes, path, relative);
     if (needed > 0)
     {
