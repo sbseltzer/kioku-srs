@@ -50,6 +50,7 @@ TEST test_up_path(void)
 
   index = kioku_path_up_index("/", -1);
   ASSERT(index == -1);
+  PASS();
 }
 
 TEST test_trim_path(void)
@@ -85,6 +86,7 @@ TEST test_trim_path(void)
   ASSERT(start == 2);
   ASSERT(end == start + 4);
   ASSERT(strncmp(path + start, "/path", end - start) == 0);
+  PASS();
 }
 
 #define DESTSIZE 16
@@ -219,6 +221,7 @@ TEST test_concat_path(void)
   ASSERT(got_len < 0);
   ASSERT(strcmp(dest, expected_path) != 0);
   ASSERT_STR_EQ(".", dest);
+  PASS();
 }
 
 TEST test_file_manage(void) {
