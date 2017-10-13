@@ -35,6 +35,8 @@ static FILE *kioku_filesystem_open(const char *path, const char *mode)
 }
 
 /** \todo It may be a good idea to have a max path length and use a strnlen-like method. */
+/** \todo implement a relative path resolver that eliminates . and .. - https://linux.die.net/man/3/realpath */
+
 void kioku_path_replace_separators(char *path, size_t nbytes)
 {
   size_t i = 0;
