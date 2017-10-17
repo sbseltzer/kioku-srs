@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript">
+     var srs = {
+       endpoint = undefined,
+       SetEndpoint : function(endpoint)
+       {
+         self.endpoint = endpoint;
+       },
+       GetNextCard : function()
+       {
+         // Not very robust concatenation here...
+         $.getJSON(self.endpoint + "/card/next", self.callbacks.PopulateCard);
+       },
+       callbacks : {
+         PopulateCard : function(card) {},
+         PopulateCard : function(card) {}
+       }
+     };
+    </script>
+    <script type="text/javascript" src="js/jquery-3.2.1.slim.min.js"></script>
+  </head>
+  <body>
+    <div id="card"></div>
+    <div id="buttons">
+      <button id="show"></button>
+      <div id="grades" style="display:none"></div>
+    </div>
+  </body>
+  <script>
+   srs.SetEndpoint("localhost:8000/api");
+   var current_card;
+   function populate_card(card)
+   {
+     current_card = card;
+     $("#card").html(card.content);
+     $("#show").toggle();
+     $("#grades").toggle();
+     for (var i = 0; i < card.buttons.length; i++) {
+       $("#grades").addChild(card.buttons[i]);
+     }
+   }
+   srs.callbacks.PopulateCard = populate_card;
+   srs.GetNextCard();
+   function show_answer()
+   {
+     $("#show").toggle();
+     $("#grades").toggle();
+   }
+   function grade_answer(grade)
+   {
+     $("#show").toggle();
+     $("#grades").toggle();
+     srs.GradeCard(current_card.id, grade);
+     srs.GetNextCard();
+   }
+  </script>
+</html>
