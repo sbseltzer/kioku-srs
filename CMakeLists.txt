@@ -95,6 +95,7 @@ add_library(lua5-3-4 SHARED extern/lua/ldblib.c
 include_directories( include
                      extern/mongoose
                      extern/parson
+                     extern/ims-json/src
                      extern/libgit2/include
                      extern/utf8.h
                      extern/lua
@@ -112,6 +113,7 @@ add_library( kioku SHARED src/kioku/log.c
                           src/kioku/rest.c
                           src/kioku/server.c
                           extern/parson/parson.c
+                          extern/ims-json/src/json.c
                           )
 target_link_libraries( kioku git2 )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
