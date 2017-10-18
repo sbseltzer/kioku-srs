@@ -12,16 +12,16 @@
        GetNextCard : function()
        {
          // Not very robust concatenation here...
-         $.get(self.endpoint + "/card/next", self.callbacks.PopulateCard, 'json');
+         $.get(self.endpoint + "/card/next", self.callbacks.OnGetNextCard, 'json');
        },
        GradeCard : function(id, grade)
        {
          // Not very robust concatenation here...
-         $.post(self.endpoint + "/card/grade", {card: id, grade: grade}, self.callbacks.GradeCard, 'json');
+         $.post(self.endpoint + "/card/grade", {card: id, grade: grade}, self.callbacks.OnGradeCard, 'json');
        },
        callbacks : {
-         PopulateCard : function(card) {},
-         PopulateCard : function(card) {}
+         OnGetNextCard : function(card) {},
+         OnGradeCard : function(card, answer) {}
        }
      };
     </script>
@@ -42,23 +42,37 @@
      $("#card").html(card.content);
      $("#show").toggle();
      $("#grades").toggle();
+     // The server provides the answer button info
+     // Ex: card.buttons = [{ name : "Good", grade : 3 }, ...]
+     // This is to make the API UI-agnostic and take the burden of localization away from the UI.
      for (var i = 0; i < card.buttons.length; i++) {
-       $("#grades").addChild(card.buttons[i]);
+       var button = $("<button></button>");
+       button.html(card.buttons[i].name);
+       button.attr("grade", card.buttons[i].grade);
+       button.click(grade_card);
+       $("#grades").addChild(button);
      }
    }
-   srs.callbacks.PopulateCard = populate_card;
+   srs.callbacks.OnGetNextCard = populate_card;
    srs.GetNextCard();
    function show_answer()
    {
      $("#show").toggle();
      $("#grades").toggle();
    }
-   function grade_answer(grade)
+   function grade_card(button)
    {
      $("#show").toggle();
      $("#grades").toggle();
+     var grade = button.attr("grade");
      srs.GradeCard(current_card.id, grade);
      srs.GetNextCard();
+   }
+   function on_grade_card(response)
+   {
+     if (response.error != undefined) {
+       alert(result.error.message);
+     }
    }
   </script>
 </html>
