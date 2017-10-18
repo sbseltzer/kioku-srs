@@ -17,7 +17,8 @@
        GetNextCard : function()
        {
          // Not very robust concatenation here...
-         $.get(self.endpoint + "/card/next", self.callbacks.OnGetNextCard, 'json');
+         $.get(srs.endpoint + "/card/next", srs.callbacks.OnGetNextCard, 'json')
+          .fail(function(){ srs.callbacks.OnGetNextCard(undefined); });
        },
        GradeCard : function(id, grade)
        {
@@ -39,9 +40,16 @@
    var current_card;
    function populate_card(card)
    {
+     if (card == undefined || card.error != undefined) {
+       $("#card").html("No card. Deck may be empty? Nothing scheduled? Perhaps there was an error");
+       $("#show").html("Try again?");
+       $("#show").click(srs.GetNextCard);
+       return;
+     }
      current_card = card;
      $("#card").html(card.front);
-     $("#show").toggle();
+     $("#show").html("Show Answer");
+     $("#show").click(show_answer);
      $("#grades").toggle();
      // The server provides the answer button info
      // Ex: card.buttons = [{ name : "Good", grade : 3 }, ...]
