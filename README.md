@@ -58,6 +58,8 @@ On the other hand, there is no precedent for this. Kioku does not have to implem
 - Can import from and export to major SRS solutions such as Anki and Mnemosyne.
 - Can be installed or run self-contained (e.g. flash drive).
 - Can be used for research purposes.
+- Unicode support
+- Localization support
 - Support LaTeX, HTML, CSS, Javascript, images, videos, sounds, and so on.
 
 ### Properties
