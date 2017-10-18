@@ -48,8 +48,8 @@ list(APPEND CMAKE_PREFIX_PATH
 #find_package(Libssh2 1.8.1 REQUIRED)
 #find_package(OpenSSL REQUIRED)
 #find_package(LibCURL REQUIRED)
+#find_package(LibGit2 REQUIRED)
 
-find_package(LibGit2 REQUIRED)
 
 add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             extern/lua/lgc.c
