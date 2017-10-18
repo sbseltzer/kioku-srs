@@ -15,7 +15,13 @@ include_directories( include
                      extern/tinydir
                      extern/libtap
                      extern/greatest
+                     extern/libssh2/include
                      ) 
+link_directories( deps/lib
+                  deps/bin
+                  extern/libssh2/src/Debug
+                  extern/libgit2/
+)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
@@ -37,7 +43,7 @@ if (NOT LIBSSH2_FOUND)
 #   add_subdirectory(extern/libssh2)
 endif()
 
-find_package(LibGit2)
+#find_package(LibGit2)
 if(NOT LIBGIT2_FOUND)
 #       add_subdirectory(extern/libgit2)
        set(PC_LIBGIT2_INCLUDEDIR "${CMAKE_SOURCE_DIR}/extern/libgit2/include")
@@ -93,7 +99,7 @@ add_library( kioku SHARED src/kioku/log.c
                           src/kioku/server.c
                           extern/parson/parson.c
                           )
-target_link_libraries( kioku git2 )
+target_link_libraries( kioku git2 ssh2 )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
