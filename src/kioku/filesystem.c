@@ -35,6 +35,75 @@ static FILE *kioku_filesystem_open(const char *path, const char *mode)
 }
 
 /** \todo It may be a good idea to have a max path length and use a strnlen-like method. */
+/** \todo implement a relative path resolver that eliminates . and .. - https://linux.die.net/man/3/realpath */
+
+void kioku_path_replace_separators(char *path, size_t nbytes)
+{
+  size_t i = 0;
+  if ((path != NULL) && (nbytes > 0))
+  {
+    while ((path[i] != kiokuCHAR_NULL) && (i < nbytes))
+    {
+      if (path[i] == '\\')
+      {
+        path[i] = '/';
+      }
+      i++;
+    }
+  }
+}
+
+void kioku_path_resolve_relative(char *path, int32_t nbytes)
+{
+  size_t i = 0;
+  size_t offset = 0;
+  if ((path != NULL) && (nbytes > 0))
+  {
+    while ((path[i] != kiokuCHAR_NULL) && (i < nbytes))
+    {
+      if (path[i] == '.')
+      {
+        /* Starting with a relative dir simply returns - it's difficult (or impossible) to know what the correct conversion is */
+        if (i == 0)
+        {
+          break;
+        }
+        /* Okay, so we're at a relative "go-up" path and it's not at the very start of the string */
+        if (path[i+1] == '.')
+        {
+          /* \todo Handle case of invalid "...*" */
+          /* Go up one directory to eliminate the .. */
+          int32_t up = kioku_path_up_index(path, i);
+          /* Because we started at a finite int32_t, we should never end up in a situation where up_index returns less than -1 */
+          assert(up >= -1);
+          /* If we've hit no separators, it means we're at the beginning of the string, in which case which case can't resolve this path any further. */
+          if (up == -1)
+          {
+            
+          }
+          /* If we've hit the first char of the string, it means it's a root path, in which case we can't resolve any further */
+          else if (up == 0)
+          {
+            
+          }
+          if ((path[up] != '/') && (path[up] != '\\'))
+          {
+            
+          }
+          /* Go up another directory to eliminate the parent */
+          up = kioku_path_up_index(path, up);
+          i++; /* Increment forward so we know where to move back from */
+        }
+        else
+        {
+          /* Simple eliminate this part of the path. */
+
+        }
+      }
+      i++;
+    }
+  }
+}
 
 size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
 {
@@ -48,24 +117,31 @@ size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
      However, the two methods do have some differences. The fchdir() approach causes the program to restore a working directory even if it has been renamed in the meantime, whereas the chdir() approach restores to a directory with the same name as the original, even if the directories were renamed in the meantime.
      Since the fchdir() approach does not access parent directories, it can succeed when getcwd() would fail due to permissions problems.
      In applications conforming to earlier versions of this standard, it was not possible to use the fchdir() approach when the working directory is searchable but not readable, as the only way to open a directory was with O_RDONLY, whereas the getcwd() approach can succeed in this case. */
-  char cwd[kiokuPATH_MAX+1];
+
+  /* Right now this is a troublesome implementation, as it allocates max path size even if the user specifies something lower. Unfortunately, getcwd doesn't provide a mechanism for knowing how much space is needed. */
+  /* getcwd is apparently deprecated for portability reasons, as noted here: https://linux.die.net/man/3/getcwd - supposedly the more reliable option to PATH_MAX is https://linux.die.net/man/3/pathconf on POSIX platforms, especially since PATH_MAX is not required to be a compile-time constant. */
+  /* Some platforms implement getcwd to malloc space when passed a null pointer. Both the Windows CRT _getcwd and the extension to the POSIX.1-2001 standard, Linux (libc4, libc5, glibc) implement it in this way. */
+  /* The WINAPI GetCurrentDirectory does return the required length if not long enough, which is basically what we want here. It's not threadsafe, but currenly Kioku does not attempt to be. https://msdn.microsoft.com/en-us/library/windows/desktop/aa364934(v=vs.85).aspx */
+  char cwd[kiokuPATH_MAX+1] = {0};
   path = getcwd(cwd, nbytes);
   if (path == cwd)
   {
-    while (*path == '.')
-    {
-      path++;
-    }
+    kioku_path_replace_separators(path, sizeof(cwd));
     int32_t needed = kioku_path_concat(path_out, nbytes, path, relative);
     if (needed > 0)
     {
       result = (size_t) needed;
     }
+    /* \todo resolve the relative paths to mimic the functionality of realpath and _fullpath */
+    /* result = kioku_path_resolve_relative(path_out, result); */
   }
 #if 0
+  /* Consider using realpath and _fullpath */
 #if kiokuOS_WINDOWS
   path = _fullpath(path_out, relative, nbytes);
-#else
+#elif _BSD_SOURCE || _XOPEN_SOURCE >= 500 || _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED
+  char full[kiokuPATH_MAX+1] = {0};
+  realpath(path, full);
 #endif
 #endif
   return result;
@@ -178,14 +254,68 @@ int32_t kioku_path_up_index(const char *path, int32_t start_index)
   {
     return result;
   }
-  size_t pathlen = strlen(path);
-  if (pathlen == 0)
+  if (*path == kiokuCHAR_NULL)
   {
     return result;
   }
-  assert((int32_t)pathlen < INT32_MAX);
-  /* March backward til it hits a separator. */
-  for (result = (int32_t)pathlen - 1; (result >= 0) && (path[result] != '/'); result--);
+  /* \todo Perhaps allow user to specify a string length, though start_index is probably sufficient for that purpose. */
+
+  /* A start index of 1 or less would always yield -1, but we'll enforce -1 as being the indicator for using the path string length. This is because a user could use this in a loop where they feed the return value of this function into itself, and not having a consistent number to check against could be confusing/dangerous. */
+  /* Example:       for (i = strlen(path); i > -1; i = kioku_path_up_index(path, i))
+     As opposed to: for (i = -1; i != -1; i = kioku_path_up_index(path, i))
+     If `i` starts at less than -1 and we assume it means "use path length", then in the unlikely case of a 32bit int not being able to contain a large size_t, the user could end up in an infinite loop by feeding the result of this function into itself.
+     */
+  if (start_index < -1)
+  {
+    return result;
+  }
+  else if (start_index == -1)
+  {
+    size_t length = strlen(path);
+    start_index = (int32_t)length;
+  }
+  /* Bounds check
+     These could only be violated if size_t is longer than the max int32 length and paths are able to exceed that.
+     Or if the path is not null terminated, strlen could return an erroneously long value, which could overflow start_index into negative bounds. */
+  /* \todo Test this */
+  if (start_index < 0 || start_index >= INT32_MAX)
+  {
+    result = INT32_MIN;
+    return result;
+  }
+  /* First eliminate dangling NULLs (if any) */
+  /* \todo Test this */
+  result = start_index;
+  while ((result >= 0) && (path[result] == kiokuCHAR_NULL))
+  {
+    result--;
+  }
+  /* Sanity check: If it hits the beginning of the string, it was apparently empty - this case should be captured above. */
+  assert(result >= 0);
+  /* If the path ends with a separator, we need to march back to the first non-separator before traversing to the parent. */
+  if (kiokuCHAR_ISDIRSEP(path[result]))
+  {
+    /* March back to first non-separator */
+    while ((result >= 0) && kiokuCHAR_ISDIRSEP(path[result]))
+    {
+      result--;
+    }
+  }
+  /* March back to first separator to eliminate the file/dir we're on in the path. */
+  while ((result >= 0) && !kiokuCHAR_ISDIRSEP(path[result]))
+  {
+    result--;
+  }
+  /* March back to next non-separator in case this path has redundant separators. */
+  while ((result >= 0) && kiokuCHAR_ISDIRSEP(path[result]))
+  {
+    result--;
+  }
+  if ((result >= 0) && !kiokuCHAR_ISDIRSEP(path[result]))
+  {
+    /* March forward by one so the string ends with a separator */
+    result++;
+  }
   return result;
 }
 

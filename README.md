@@ -4,11 +4,9 @@ A portable, versioned, distributed, self-hosted spaced repetition system (SRS) i
 
 ## Concept
 
-The idea is to have a decoupled framework that allows the user to sync using free hosting solutions, empower developers to easily implement clients and servers that can be mixed/matched, and empower server admins to deploy their own servers.
-
 ## Why?
 
-This is really born of my frustration with Anki (and other SRS solutions). Anki does its job wonderfully, but it's a nightmare to hack on.
+This is really born of my frustration with Anki (and other SRS solutions). Anki does its job wonderfully, but it's a nightmare to hack on. Mnemosyne's modding framework is a bit more thought out, but it suffers from a similar class of problems that Anki does.
 
 This section will review the main problems Kioku aims to solve.
 
@@ -86,17 +84,22 @@ Here are some libraries I'm thinking of using.
 - [libgit2](https://libgit2.github.com/) - This will be wrapped to create a filesystem database thingy. The rationale is for portable synchronization, file management, and deck version history.
 - [utf8.h](https://github.com/sheredom/utf8.h) - A portable single-header library for UTF-8 string functions.
 - [curl](https://github.com/curl/curl) - This one should be obvious.
-- [mbedtls](https://github.com/ARMmbed/mbedtls) - Appears to be the smallest, most portable SSL implementation, which would allow for HTTPS on mongoose.
+- [libssh2](https://github.com/libssh2/libssh2.git) - This is a dependency of libgit2.
+- [mbedtls](https://github.com/ARMmbed/mbedtls) - Appears to be the smallest, most portable SSL implementation, which would allow for HTTPS on mongoose, but libgit2 support is sparse.
 - [openssl](https://github.com/openssl/openssl) - More common/accepted. This is currently the only supported libgit2 SSL implementation (though there's a feature in progress).
 - [parson](https://github.com/kgabis/parson) - Simplistic C89 JSON parser.
 - [slre](https://github.com/cesanta/slre) - Super Light RegEx library. Portable. Gives a subset of Perl-style regex in C.
 - [generic-c-hashmap](https://github.com/Kijewski/generic-c-hashmap) - A portable generic easy-to-use hashmap in C. Header only. Very slick API.
-- [autoupdate](https://github.com/pmq20/libautoupdate) - A cross-platform in-place application updater in C.
+- [autoupdate](https://github.com/pmq20/libautoupdate) - A cross-platform in-place application updater in C. Mostly useful for inspiration.
 - [tinydir](https://github.com/cxong/tinydir) - A portable directory/file reader in a single header.
 - [sundown](https://github.com/vmg/sundown) - A portable, secure markdown processing library in C.
 - [uuid4](https://github.com/rxi/uuid4) - A tiny library for generating random Universally Unique IDs. Necessary for conforming to JSON API.
 
 #### Frontend
+- [Cordova](https://cordova.apache.org/) - This is what PhoneGap is based on. This would be good for making the fat clients.
+- [cordova-media-capture-plugin](https://github.com/apache/cordova-plugin-media-capture) - Might be best option for bringing media capture to mobile devices.
+- [RecordRTC](https://github.com/muaz-khan/RecordRTC) - Media capture for modern browsers.
+- [MediaStreamRecorder](https://github.com/streamproc/MediaStreamRecorder) - More media capture for modern browsers.
 - [markdown-it](https://github.com/markdown-it/markdown-it) - A Javascript Markdown parser.
 - [stackedit](https://github.com/benweet/stackedit) - An in-browser Markdown editor.
 - [katex](https://github.com/Khan/KaTeX) - Fast Javascript LaTeX generator.
@@ -125,6 +128,10 @@ These would be an immense help in giving users an opportunity to sync their data
 - [BitBucket API](https://developer.atlassian.com/bitbucket/api/2/reference/)
 
 ## Basic Architecture
+
+### Abstract
+
+The idea is to have a decoupled framework that allows the user to sync using free hosting solutions, empower developers to easily implement clients and servers that can be mixed/matched, and empower server admins to deploy their own servers.
 
 ### Components
 

@@ -4,26 +4,36 @@ project (kioku)
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-include_directories( include
-                     extern/mongoose
-                     extern/parson
-                     extern/libgit2/include
-                     extern/utf8.h
-                     extern/lua
-                     extern/generic-c-hashmap
-                     extern/tinydir
-                     extern/libtap
-                     extern/greatest
-                     extern/libssh2/include
-                     ) 
-link_directories( deps/lib
-                  deps/bin
-                  extern/libssh2/src/Debug
-                  extern/libgit2/
-)
+# Give this to get CMake to look for libraries built from source.
+list(APPEND CMAKE_PREFIX_PATH
+            extern/libgit2
+            extern/libgit2/Release
+            extern/libgit2/Debug
+            extern/libgit2/build
+            extern/libgit2/build/Release
+            extern/libgit2/build/Debug
+            extern/libgit2/src
+            extern/libgit2/src/Release
+            extern/libgit2/src/Debug
+            extern/libssh2
+            extern/libssh2/Release
+            extern/libssh2/Debug
+            extern/libssh2/src
+            extern/libssh2/src/Release
+            extern/libssh2/src/Debug
+            extern/libssh2/build
+            extern/libssh2/build/Release
+            extern/libssh2/build/Debug
+            extern/libssh2/build/src
+            extern/libssh2/src/build/Release
+            extern/libssh2/src/build/Debug
+            )
 
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+# Give this to find Libssh2Config.cmake
+#set(Libssh2_DIR extern/libssh2/src)
+#set(Libssh2_DIR extern/libssh2/build/src)
 
 ##
 # Some platforms won't have the specific required version of libraries.
@@ -34,24 +44,12 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 ##
 
 #find_package(ZLIB)
-if (NOT ZLIB_FOUND)
-#   add_subdirectory(extern/zlib)
-endif()
-
 #find_package(LibSSH2)
-if (NOT LIBSSH2_FOUND)
-#   add_subdirectory(extern/libssh2)
-endif()
-
-#find_package(LibGit2)
-if(NOT LIBGIT2_FOUND)
-#       add_subdirectory(extern/libgit2)
-       set(PC_LIBGIT2_INCLUDEDIR "${CMAKE_SOURCE_DIR}/extern/libgit2/include")
-       set(PC_LIBGIT2_LIBDIR "${CMAKE_SOURCE_DIR}/extern/libgit2/")
-#       find_package(LibGit2 REQUIRED)
-endif()
+#find_package(Libssh2 1.8.1 REQUIRED)
 #find_package(OpenSSL REQUIRED)
 #find_package(LibCURL REQUIRED)
+
+find_package(LibGit2 REQUIRED)
 
 add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             extern/lua/lgc.c
@@ -90,6 +88,23 @@ add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             extern/lua/lua.c
                             extern/lua/lundump.c
                             )
+
+link_directories( ${CMAKE_SOURCE_DIR}/extern/libssh2/src/Debug
+                  ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug
+                  )
+include_directories( include
+                     extern/mongoose
+                     extern/parson
+                     extern/libgit2/include
+                     extern/utf8.h
+                     extern/lua
+                     extern/generic-c-hashmap
+                     extern/tinydir
+                     extern/libtap
+                     extern/greatest
+                     extern/libssh2/include
+                     ) 
+
 add_library( kioku SHARED src/kioku/log.c
                           src/kioku/filesystem.c
                           src/kioku/simplegit.c
@@ -101,7 +116,6 @@ add_library( kioku SHARED src/kioku/log.c
                           )
 target_link_libraries( kioku git2 ssh2 )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
-
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable( kioku-server
@@ -109,7 +123,7 @@ add_executable( kioku-server
                 extern/mongoose/mongoose.c
                 extern/parson/parson.c
                 )
-target_link_libraries( kioku-server kioku )
+target_link_libraries( kioku-server kioku git2 )
 add_dependencies( kioku-server kioku )
 
 # add_subdirectory(src)
