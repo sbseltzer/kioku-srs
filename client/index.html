@@ -29,7 +29,7 @@
   <body>
     <div id="card"></div>
     <div id="buttons">
-      <button id="show"></button>
+      <button id="show">Show Answer</button>
       <div id="grades" style="display:none"></div>
     </div>
   </body>
@@ -39,7 +39,7 @@
    function populate_card(card)
    {
      current_card = card;
-     $("#card").html(card.content);
+     $("#card").html(card.front);
      $("#show").toggle();
      $("#grades").toggle();
      // The server provides the answer button info
@@ -57,6 +57,7 @@
    srs.GetNextCard();
    function show_answer()
    {
+     $("#card").html(card.back);
      $("#show").toggle();
      $("#grades").toggle();
    }
