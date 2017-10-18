@@ -4,36 +4,33 @@ project (kioku)
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 # Give this to get CMake to look for libraries built from source.
 list(APPEND CMAKE_PREFIX_PATH
-            extern/libgit2
-            extern/libgit2/Release
-            extern/libgit2/Debug
-            extern/libgit2/build
-            extern/libgit2/build/Release
-            extern/libgit2/build/Debug
-            extern/libgit2/src
-            extern/libgit2/src/Release
-            extern/libgit2/src/Debug
-            extern/libssh2
-            extern/libssh2/Release
-            extern/libssh2/Debug
-            extern/libssh2/src
-            extern/libssh2/src/Release
-            extern/libssh2/src/Debug
-            extern/libssh2/build
-            extern/libssh2/build/Release
-            extern/libssh2/build/Debug
-            extern/libssh2/build/src
-            extern/libssh2/src/build/Release
-            extern/libssh2/src/build/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libgit2
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/Release
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/build
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Release
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/src
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/src/Release
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/src/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libssh2
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/Release
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/src
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/Release
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/build
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Release
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/build/Release
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/build/Debug
             )
-link_directories(${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug)
-
-#set(EMBED_SSH_PATH ${CMAKE_SOURCE_DIR}/extern/libssh2/)
-#add_subdirectory(${CMAKE_SOURCE_DIR}/extern/libgit2/)
 
 # Give this to find Libssh2Config.cmake
 #set(Libssh2_DIR extern/libssh2/src)
@@ -48,11 +45,12 @@ link_directories(${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug)
 ##
 
 #find_package(ZLIB)
+#find_package(LibSSH2)
 #find_package(Libssh2 1.8.1 REQUIRED)
-find_package(LibGit2 REQUIRED)
-
 #find_package(OpenSSL REQUIRED)
 #find_package(LibCURL REQUIRED)
+#find_package(LibGit2 REQUIRED)
+
 
 add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             extern/lua/lgc.c
@@ -92,6 +90,9 @@ add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             extern/lua/lundump.c
                             )
 
+link_directories( ${CMAKE_SOURCE_DIR}/extern/libssh2/src/Debug
+                  ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug
+                  )
 include_directories( include
                      extern/mongoose
                      extern/parson
@@ -103,6 +104,7 @@ include_directories( include
                      extern/tinydir
                      extern/libtap
                      extern/greatest
+                     extern/libssh2/include
                      ) 
 
 add_library( kioku SHARED src/kioku/log.c
@@ -115,9 +117,8 @@ add_library( kioku SHARED src/kioku/log.c
                           extern/parson/parson.c
                           extern/ims-json/src/json.c
                           )
-target_link_libraries( kioku git2 )
+target_link_libraries( kioku git2 libssh2 )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
-
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable( kioku-server
