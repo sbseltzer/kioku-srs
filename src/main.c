@@ -1,6 +1,7 @@
 #include "kioku.h"
 #include "mongoose.h"
 #include "parson.h"
+#include "json.h"
 
 static const char *s_http_port = "8000";
 static struct mg_serve_http_opts s_http_server_opts;
@@ -113,6 +114,47 @@ static void handle_exit_call(struct mg_connection *nc, struct http_message *hm)
   rest_respond(nc, HTTP_OK, "%s", "{\"result\":\"OK\"}");
 }
 
+static void handle_GetVersion(jobj_t root, struct mg_connection *nc, struct http_message *hm)
+{
+  json_t jsn;
+  json_init(&jsn);
+  root = json_root_obj(&jsn);
+  {
+    jobj_t obj = jobj_add_obj(root, "jsonapi");
+    {
+      jobj_add_str(obj, "version", "1.0");
+    }
+    obj = jobj_add_obj(root, "meta");
+    {
+      jobj_add_str(obj, "impl", KIOKU_VERSION);
+    }
+    jarray_t array = jobj_add_array(root, "array");
+    {
+      jarray_add_bool(array, true);
+      jarray_add_bool(array, false);
+      jarray_add_nil(array);
+      jarray_add_num(array, 5.5);
+      jobj_t subobj = jarray_add_obj(array);
+      {
+        jobj_add_bool(subobj, "true", true);
+      }
+      jarray_t subarray = jarray_add_array(array);
+      {
+        jarray_add_num(subarray, 1);
+        jarray_add_num(subarray, 2);
+        jarray_add_num(subarray, 3);
+      }
+    }
+  }
+  json_destroy(&jsn);
+
+  double result = 0;
+  char buf[100] = {0};
+  memcpy(buf, hm->body.p,
+         sizeof(buf) - 1 < hm->body.len ? sizeof(buf) - 1 : hm->body.len);
+  fprintf(stderr, "Data: %s\n", buf);
+}
+
 static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
   struct http_message *hm = (struct http_message *) ev_data;
 
@@ -125,6 +167,23 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
       else if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "exit") == 0)
       {
         handle_exit_call(nc, hm);
+      }
+      else if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "version") == 0)
+      {
+        json_t jsn;
+        jerr_t jerr;
+        json_init(&jsn);
+        if (json_load_buf(&jsn, hm->body.p, hm->body.len, &jerr) != 0)
+        {
+          /* error!!! */
+          jerr_fprint(stderr, &jerr);
+        }
+        jobj_t root;
+        root = json_root_obj(&jsn);
+
+        handle_GetVersion(root, nc, hm);
+
+        json_destroy(&jsn);
       }
       else if (mg_vcmp(&hm->uri, "/printcontent") == 0)
       {
