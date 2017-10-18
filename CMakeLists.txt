@@ -124,6 +124,7 @@ else()
 endif (WIN32)
 target_link_libraries( kioku git2
                        ${LIBSSH_LIB}
+                       m # The math library is needed by ims-json. I'm thinking of submitting a PR for that an pre-C99 compatibility.
                        )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
