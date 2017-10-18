@@ -5,6 +5,10 @@
     <script type="text/javascript">
      var srs = {
        endpoint : undefined,
+       callbacks : {
+         OnGetNextCard : function(card) {alert(card);},
+         OnGradeCard : function(card, answer) {alert(card + " " + answer);}
+       },
        SetEndpoint : function(endpoint)
        {
          self.endpoint = endpoint;
@@ -19,10 +23,6 @@
          // Not very robust concatenation here...
          $.post(self.endpoint + "/card/grade", {card: id, grade: grade}, self.callbacks.OnGradeCard, 'json');
        },
-       callbacks : {
-         OnGetNextCard : function(card) {},
-         OnGradeCard : function(card, answer) {}
-       }
      };
     </script>
   </head>
