@@ -114,7 +114,7 @@ add_library( kioku SHARED src/kioku/log.c
                           src/kioku/server.c
                           extern/parson/parson.c
                           )
-target_link_libraries( kioku git2 ssh2 )
+target_link_libraries( kioku git2 libssh2 )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
