@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script type="text/javascript" src="js/jquery-3.2.1.slim.min.js"></script>
     <script type="text/javascript">
      var srs = {
        endpoint = undefined,
@@ -11,7 +12,12 @@
        GetNextCard : function()
        {
          // Not very robust concatenation here...
-         $.getJSON(self.endpoint + "/card/next", self.callbacks.PopulateCard);
+         $.get(self.endpoint + "/card/next", self.callbacks.PopulateCard, 'json');
+       },
+       GradeCard : function(id, grade)
+       {
+         // Not very robust concatenation here...
+         $.post(self.endpoint + "/card/grade", {card: id, grade: grade}, self.callbacks.GradeCard, 'json');
        },
        callbacks : {
          PopulateCard : function(card) {},
@@ -19,7 +25,6 @@
        }
      };
     </script>
-    <script type="text/javascript" src="js/jquery-3.2.1.slim.min.js"></script>
   </head>
   <body>
     <div id="card"></div>
