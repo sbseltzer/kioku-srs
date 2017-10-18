@@ -12,7 +12,7 @@
        },
        SetEndpoint : function(endpoint)
        {
-         self.endpoint = endpoint;
+         srs.endpoint = endpoint;
        },
        GetNextCard : function()
        {
@@ -23,7 +23,7 @@
        GradeCard : function(id, grade)
        {
          // Not very robust concatenation here...
-         $.post(self.endpoint + "/card/grade", {card: id, grade: grade}, self.callbacks.OnGradeCard, 'json');
+         $.post(srs.endpoint + "/card/grade", {card: id, grade: grade}, srs.callbacks.OnGradeCard, 'json');
        },
      };
     </script>
