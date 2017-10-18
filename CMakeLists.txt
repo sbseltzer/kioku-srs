@@ -4,31 +4,32 @@ project (kioku)
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 # Give this to get CMake to look for libraries built from source.
 list(APPEND CMAKE_PREFIX_PATH
-            extern/libgit2
-            extern/libgit2/Release
-            extern/libgit2/Debug
-            extern/libgit2/build
-            extern/libgit2/build/Release
-            extern/libgit2/build/Debug
-            extern/libgit2/src
-            extern/libgit2/src/Release
-            extern/libgit2/src/Debug
-            extern/libssh2
-            extern/libssh2/Release
-            extern/libssh2/Debug
-            extern/libssh2/src
-            extern/libssh2/src/Release
-            extern/libssh2/src/Debug
-            extern/libssh2/build
-            extern/libssh2/build/Release
-            extern/libssh2/build/Debug
-            extern/libssh2/build/src
-            extern/libssh2/src/build/Release
-            extern/libssh2/src/build/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libgit2
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/Release
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/build
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Release
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/src
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/src/Release
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/src/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libssh2
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/Release
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/src
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/Release
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/build
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Release
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/build/Release
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/build/Debug
             )
 
 # Give this to find Libssh2Config.cmake
