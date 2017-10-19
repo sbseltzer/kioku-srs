@@ -7,49 +7,37 @@
 #include "kioku/debug.h"
 
 #if defined kiokuOS_WINDOWS /* OS check */
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#if defined _MAX_PATH
-#define kiokuPATH_MAX _MAX_PATH
-#elif defined MAX_PATH
-#define kiokuPATH_MAX MAX_PATH
-#else
-#error Could not find macro for max path length!
-#endif
-
-#elif defined kiokuOS_APPLE
-/* https://stackoverflow.com/questions/7140575/mac-os-x-lion-what-is-the-max-path-length#16905266 */
-#include <sys/syslimits.h>
-
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+  #if defined _MAX_PATH
+    #define kiokuPATH_MAX (_MAX_PATH - 1)
+  #elif defined MAX_PATH
+    #define kiokuPATH_MAX (MAX_PATH - 1)
+  #else
+    #error Could not find macro for max path length!
+  #endif
+#elif defined kiokuOS_APPLE  /* OS check */
+  /* https://stackoverflow.com/questions/7140575/mac-os-x-lion-what-is-the-max-path-length#16905266 */
+  #include <sys/syslimits.h>
 #elif defined kiokuOS_LINUX || defined kiokuOS_UNIX /* OS check */
-#include <dirent.h>
-/* Linux defines PATH_MAX here */
-#include <linux/limits.h>
-/* Though POSIX 2008 defines PATH_MAX here */
-/** \todo Add an ifdef for posix vs linux */
-#include <limits.h>
-/* And yet some sources say it's in here */
-/* #include <sys/syslimits.h> */
-/* This page (in Japanese) lists many alternative defs: http://risky-safety.org/zinnia/doc/maxpath.html */
-#ifndef PATH_MAX
-#error Could not find macro for max path length!
-#endif
-#define kiokuPATH_MAX PATH_MAX
-
-#else /* OS check */
-
-#ifndef PATH_MAX
-#error Could not find macro for max path length!
-#endif
-
+  #include <dirent.h>
+  /* Linux defines PATH_MAX here */
+  #include <linux/limits.h>
+  /* Though POSIX 2008 defines PATH_MAX here */
+  /** \todo Add an ifdef for posix vs linux */
+  #include <limits.h>
+  /* And yet some sources say it's in here */
+  /* #include <sys/syslimits.h> */
 #endif /* OS check */
+
+#ifndef PATH_MAX
+  #error Could not find macro for max path length!
+#endif
+
+#define kiokuPATH_MAX (PATH_MAX - 1)
 
 #define kiokuCHAR_ISDIRSEP(x) (((x) == '/') || ((x) == '\\'))
 
-#ifdef kiokuPATH_MAX
-#define kiokuPATH_MAX (kiokuPATH_MAX - 1)
-#endif
 kiokuSTATIC_ASSERT(kiokuPATH_MAX > 0);
 
 /** Find the full path from a relative one, limiting the storage of it to nbytes.
