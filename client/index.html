@@ -8,22 +8,29 @@
        endpoint : undefined,
        callbacks : {
          OnGetNextCard : function(card) {alert(card);},
-         OnGradeCard : function(card, answer) {alert(card + " " + answer);}
+         OnGradeCard : function(card, answer) {alert(card + " " + answer);},
+         OnGetVersion : function(version_obj) {alert(version_obj == undefined ? "No version" : version_obj.version);}
        },
        SetEndpoint : function(endpoint)
        {
          srs.endpoint = endpoint;
        },
+       GetVersion : function()
+       {
+         // Not very robust concatenation here...
+         $.get(srs.endpoint + "version", srs.callbacks.OnGetVersion)
+          .fail(function(){ srs.callbacks.OnGetVersion(undefined); });
+       },
        GetNextCard : function()
        {
          // Not very robust concatenation here...
-         $.get(srs.endpoint + "/card/next", srs.callbacks.OnGetNextCard, 'json')
+         $.get(srs.endpoint + "card/next", srs.callbacks.OnGetNextCard, 'json')
           .fail(function(){ srs.callbacks.OnGetNextCard(undefined); });
        },
        GradeCard : function(id, grade)
        {
          // Not very robust concatenation here...
-         $.post(srs.endpoint + "/card/grade", {card: id, grade: grade}, srs.callbacks.OnGradeCard, 'json');
+         $.post(srs.endpoint + "card/grade", {card: id, grade: grade}, srs.callbacks.OnGradeCard, 'json');
        },
      };
     </script>
@@ -36,7 +43,8 @@
     </div>
   </body>
   <script>
-   srs.SetEndpoint("localhost:8000/api");
+   srs.SetEndpoint("http://localhost:8000/api/v1/");
+   srs.GetVersion();
    var current_card;
    function populate_card(card)
    {
