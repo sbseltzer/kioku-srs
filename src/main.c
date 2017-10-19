@@ -1,7 +1,7 @@
 #include "kioku.h"
 #include "mongoose.h"
 #include "parson.h"
-#include "json.h"
+/* #include "json.h" */
 
 static const char *s_http_port = "8000";
 static struct mg_serve_http_opts s_http_server_opts;
@@ -119,7 +119,7 @@ static void handle_GetVersion(struct mg_connection *nc, struct http_message *hm)
   JSON_Value *root_value = json_value_init_object();
   JSON_Object *root_object = json_value_get_object(root_value);
   char *serialized_string = NULL;
-  json_object_set_string(root_object, "version", KIOKU_VERSION);  json_t jsn;
+  json_object_set_string(root_object, "version", KIOKU_VERSION);
   serialized_string = json_serialize_to_string_pretty(root_value);
   const char *codestring = HTTP_OK;
   if (serialized_string == NULL)

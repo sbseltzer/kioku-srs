@@ -96,7 +96,7 @@ link_directories( ${CMAKE_SOURCE_DIR}/extern/libssh2/src/Debug
 include_directories( include
                      extern/mongoose
                      extern/parson
-                     extern/ims-json/src
+#                     extern/ims-json/src
                      extern/libgit2/include
                      extern/utf8.h
                      extern/lua
@@ -114,7 +114,7 @@ add_library( kioku SHARED src/kioku/log.c
                           src/kioku/controller.c
                           src/kioku/rest.c
                           src/kioku/server.c
-                          extern/ims-json/src/json.c
+#                          extern/ims-json/src/json.c
                           extern/parson/parson.c
                           )
 if (WIN32)
@@ -135,7 +135,7 @@ add_executable( kioku-server
                 src/main.c
                 extern/mongoose/mongoose.c
                 extern/parson/parson.c
-                extern/ims-json/src/json.c
+#                extern/ims-json/src/json.c
                 )
 target_link_libraries( kioku-server kioku git2 )
 add_dependencies( kioku-server kioku )
