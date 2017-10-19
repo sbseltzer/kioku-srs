@@ -55,6 +55,7 @@
        $("#show").click(srs.GetNextCard);
        return;
      }
+     console.log("Card ID: " + card.id);
      current_card = card;
      $("#card").html(card.front);
      $("#show").html("Show Answer");
