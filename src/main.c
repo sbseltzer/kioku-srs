@@ -23,61 +23,70 @@ static double sum_call(double n1, double n2)
   return n1 + n2;
 }
 
+static bool parse_request(struct http_message *hm, JSON_Value **root_value, JSON_Object **root_object, const char **error_msg)
+{
+  /* See if JSON value was provided as data */
+  *root_value = json_parse_string(hm->body.p);
+  *root_object = NULL;
+  *error_msg = NULL;
+  if (*root_value == NULL)
+  {
+    *error_msg = "JSON value not found";
+    return false;
+  }
+  /* See if it was provided as an object */
+  *root_object = json_value_get_object(*root_value);
+  if (*root_object == NULL)
+  {
+    *error_msg = "JSON root object not found";
+    return false;
+  }
+  return true;
+}
+static bool precheck_response(JSON_Value **root_value, JSON_Object **root_object, const char *error_msg)
+{
+  if (*root_value == NULL)
+  {
+    /* If it failed too early, initialize a fresh JSON object and set the error accordingly */
+    *root_value = json_value_init_object();
+    *root_object = json_value_get_object(*root_value);
+    json_object_set_string(*root_object, "error", error_msg);
+    return false;
+  }
+  return true;
+}
 /* Talk to this with `curl localhost:8000/api/v1/sum --data "{\"n1\": YOUR_N1_NUMBER, \"n2\": YOUR_N2_NUMBER}"` */
 static void handle_sum_call(struct mg_connection *nc, struct http_message *hm)
 {
   double result = 0;
-  char buf[100] = {0};
-  memcpy(buf, hm->body.p,
-         sizeof(buf) - 1 < hm->body.len ? sizeof(buf) - 1 : hm->body.len);
-  fprintf(stderr, "Data: %s\n", buf);
+  fprintf(stderr, "Data: %s\n", hm->body.p);
 
   /* See if JSON value was provided as data */
-  JSON_Value *root_value = json_parse_string(buf);
+  JSON_Value *root_value = NULL;
   JSON_Object *root_object = NULL;
   const char *error_msg = NULL;
   do {
-    if (root_value == NULL)
+    /* Make sure it fulfills basic requirements */
+    if (parse_request(hm, &root_value, &root_object, &error_msg))
     {
-      error_msg = "JSON value not found";
-      break;
-    }
-    /* See if it was provided as an object */
-    root_object = json_value_get_object(root_value);
-    if (root_object == NULL)
-    {
-      error_msg = "JSON root object not found";
-      break;
-    }
-    /* Check members */
-    if (!json_object_has_value_of_type(root_object, "n1", JSONNumber))
-    {
-      error_msg = "Expected JSON number 'n1'";
-      break;
-    }
-    if (!json_object_has_value_of_type(root_object, "n2", JSONNumber))
-    {
-      error_msg = "Expected JSON number 'n2'";
-      break;
+      /* Check members */
+      if (!json_object_has_value_of_type(root_object, "n1", JSONNumber))
+      {
+        error_msg = "Expected JSON number 'n1'";
+        break;
+      }
+      if (!json_object_has_value_of_type(root_object, "n2", JSONNumber))
+      {
+        error_msg = "Expected JSON number 'n2'";
+        break;
+      }
     }
   } while (0);
   /* Respond */
   const char *codestring = NULL;
-  if (error_msg != NULL)
+  if (!precheck_response(&root_value, &root_object, error_msg))
   {
-    if (root_value == NULL)
-    {
-      /* If it failed too early, initialize a fresh JSON object */
-      root_value = json_value_init_object();
-      root_object = json_value_get_object(root_value);
-    }
-    else
-    {
-      /* Otherwise, clear the existing one to reuse as the response */
-      json_object_clear(root_object);
-    }
     /* Construct result */
-    json_object_set_string(root_object, "error", error_msg);
     codestring = HTTP_BAD_REQUEST;
   }
   else
@@ -112,6 +121,58 @@ static void handle_exit_call(struct mg_connection *nc, struct http_message *hm)
   kill_me_now = true;
   kLOG_WRITE("%s", "Set kill flag");
   rest_respond(nc, HTTP_OK, "%s", "{\"result\":\"OK\"}");
+}
+
+static void handle_GetNextCard(struct mg_connection *nc, struct http_message *hm)
+{
+  JSON_Value *root_value = json_value_init_object();
+  JSON_Object *root_object = json_value_get_object(root_value);
+  JSON_Value *buttons_value = NULL;
+  JSON_Array *buttons = NULL;
+  JSON_Value *button_value = NULL;
+  JSON_Object *button = NULL;
+  {
+    json_object_set_string(root_object, "id", "0");
+    json_object_set_string(root_object, "front", "front text");
+    json_object_set_string(root_object, "back", "front text<br>back text which included the front text");
+    buttons_value = json_value_init_array();
+    buttons = json_value_get_array(buttons_value);
+    json_object_set_value(root_object, "buttons", buttons_value);
+    {
+      button_value = json_value_init_object();
+      button = json_value_get_object(button_value);
+      json_object_set_string(button, "title", "Again");
+      json_object_set_number(button, "grade", 1);
+      json_array_append_value(buttons, button_value);
+
+      button_value = json_value_init_object();
+      button = json_value_get_object(button_value);
+      json_object_set_string(button, "title", "Good");
+      json_object_set_number(button, "grade", 3);
+      json_array_append_value(buttons, button_value);
+
+      button_value = json_value_init_object();
+      button = json_value_get_object(button_value);
+      json_object_set_string(button, "title", "Easy");
+      json_object_set_number(button, "grade", 4);
+      json_array_append_value(buttons, button_value);
+    }
+  }
+
+  char *serialized_string = NULL;
+  serialized_string = json_serialize_to_string_pretty(root_value);
+  const char *codestring = HTTP_OK;
+  if (serialized_string == NULL)
+  {
+    codestring = HTTP_INTERNAL_ERROR;
+    rest_respond(nc, codestring, "%s", "{\"error\":\"failed to construct response\"}");
+  }
+  else
+  {
+    rest_respond(nc, codestring, "%s", serialized_string);
+    json_free_serialized_string(serialized_string);
+  }
+  json_value_free(root_value);
 }
 
 static void handle_GetVersion(struct mg_connection *nc, struct http_message *hm)
@@ -152,7 +213,7 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
       }
       else if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "card/next") == 0)
       {
-        /* handle_GetNextCard(root, nc, hm); */
+        handle_GetNextCard(nc, hm);
       }
       else if (mg_vcmp(&hm->uri, "/printcontent") == 0)
       {

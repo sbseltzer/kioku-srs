@@ -39,11 +39,12 @@
     <div id="card"></div>
     <div id="buttons">
       <button id="show">Show Answer</button>
-      <div id="grades" style="display:none"></div>
+      <div id="grades"></div>
     </div>
   </body>
   <script>
    srs.SetEndpoint("http://localhost:8000/api/v1/");
+   srs.callbacks.OnGetVersion = function(version_obj) {console.log(version_obj);}
    srs.GetVersion();
    var current_card;
    function populate_card(card)
@@ -64,17 +65,17 @@
      // This is to make the API UI-agnostic and take the burden of localization away from the UI.
      for (var i = 0; i < card.buttons.length; i++) {
        var button = $("<button></button>");
-       button.html(card.buttons[i].name);
+       button.html(card.buttons[i].title);
        button.attr("grade", card.buttons[i].grade);
        button.click(grade_card);
-       $("#grades").addChild(button);
+       $("#grades").append(button);
      }
    }
    srs.callbacks.OnGetNextCard = populate_card;
    srs.GetNextCard();
    function show_answer()
    {
-     $("#card").html(card.back);
+     $("#card").html(current_card.back);
      $("#show").toggle();
      $("#grades").toggle();
    }
@@ -82,7 +83,7 @@
    {
      $("#show").toggle();
      $("#grades").toggle();
-     var grade = button.attr("grade");
+     var grade = $(button).attr("grade");
      srs.GradeCard(current_card.id, grade);
      srs.GetNextCard();
    }
