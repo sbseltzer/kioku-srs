@@ -116,43 +116,7 @@ static void handle_exit_call(struct mg_connection *nc, struct http_message *hm)
 
 static void handle_GetVersion(jobj_t root, struct mg_connection *nc, struct http_message *hm)
 {
-  json_t jsn;
-  json_init(&jsn);
-  root = json_root_obj(&jsn);
-  {
-    jobj_t obj = jobj_add_obj(root, "jsonapi");
-    {
-      jobj_add_str(obj, "version", "1.0");
-    }
-    obj = jobj_add_obj(root, "meta");
-    {
-      jobj_add_str(obj, "impl", KIOKU_VERSION);
-    }
-    jarray_t array = jobj_add_array(root, "array");
-    {
-      jarray_add_bool(array, true);
-      jarray_add_bool(array, false);
-      jarray_add_nil(array);
-      jarray_add_num(array, 5.5);
-      jobj_t subobj = jarray_add_obj(array);
-      {
-        jobj_add_bool(subobj, "true", true);
-      }
-      jarray_t subarray = jarray_add_array(array);
-      {
-        jarray_add_num(subarray, 1);
-        jarray_add_num(subarray, 2);
-        jarray_add_num(subarray, 3);
-      }
-    }
-  }
-  json_destroy(&jsn);
-
-  double result = 0;
-  char buf[100] = {0};
-  memcpy(buf, hm->body.p,
-         sizeof(buf) - 1 < hm->body.len ? sizeof(buf) - 1 : hm->body.len);
-  fprintf(stderr, "Data: %s\n", buf);
+  jobj_add_str(root, "version", KIOKU_VERSION);
 }
 
 static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
