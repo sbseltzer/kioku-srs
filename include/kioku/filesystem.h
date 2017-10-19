@@ -18,15 +18,20 @@
 #error Could not find macro for max path length!
 #endif
 
-#elif defined kiokuOS_LINUX || defined kiokuOS_UNIX || defined kiokuOS_APPLE /* OS check */
-
-#if defined kiokuOS_APPLE
+#elif defined kiokuOS_APPLE
 /* https://stackoverflow.com/questions/7140575/mac-os-x-lion-what-is-the-max-path-length#16905266 */
 #include <sys/syslimits.h>
-#else
-#include <dirent.h>
-#endif
 
+#elif defined kiokuOS_LINUX || defined kiokuOS_UNIX /* OS check */
+#include <dirent.h>
+/* Linux defines PATH_MAX here */
+#include <linux/limits.h>
+/* Though POSIX 2008 defines PATH_MAX here */
+/** \todo Add an ifdef for posix vs linux */
+#include <limits.h>
+/* And yet some sources say it's in here */
+/* #include <sys/syslimits.h> */
+/* This page (in Japanese) lists many alternative defs: http://risky-safety.org/zinnia/doc/maxpath.html */
 #ifndef PATH_MAX
 #error Could not find macro for max path length!
 #endif
