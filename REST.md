@@ -2,9 +2,23 @@
 This segment will keep track of the critical path.
 
 ## Types / Concepts
+
+### Card
+
+Has an ID indicated by it's unique path within the model. It's content has a front and back section.
+
+Cards have a schedule, represented by a versioned file that only contains the next time for it to be viewed.
+
+Cards also have varying grades associated with them. In other SRS applications, this is more-or-less determined by some metric of card maturity. In Anki, this means one with an interval of more than 21 days. In the case of Kioku, this could be influenced by a variety of factors, but for now it will mimic Anki.
+
+To support this flexibility, the grade buttons are data-oriented and served by the REST API along with other card data. This makes the Kioku REST API related to card viewing, arguably the most important feature, interface-agnostic.
+
 ## REST API
 
 ### GetNextCard
+Description:  
+Gets the next scheduled card data for display.
+
 Input:
 ```
 GET <endpoint uri>/card/next
@@ -27,6 +41,9 @@ Outputs:
 ```
 
 ### GradeCard
+Description:  
+Instructs server how to grade the card. The server will apply the grade, update the schedule, and version the changes accordingly.
+
 Input:
 ```
 POST <endpoint uri>/card/grade
