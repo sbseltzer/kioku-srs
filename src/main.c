@@ -114,9 +114,22 @@ static void handle_exit_call(struct mg_connection *nc, struct http_message *hm)
   rest_respond(nc, HTTP_OK, "%s", "{\"result\":\"OK\"}");
 }
 
-static void handle_GetVersion(jobj_t root, struct mg_connection *nc, struct http_message *hm)
+static void handle_GetVersion(struct mg_connection *nc, struct http_message *hm)
 {
-  jobj_add_str(root, "version", KIOKU_VERSION);
+  JSON_Value *root_value = json_value_init_object();
+  JSON_Object *root_object = json_value_get_object(root_value);
+  char *serialized_string = NULL;
+  json_object_set_string(root_object, "version", KIOKU_VERSION);  json_t jsn;
+  serialized_string = json_serialize_to_string_pretty(root_value);
+  const char *codestring = HTTP_OK;
+  if (serialized_string == NULL)
+  {
+    codestring = HTTP_INTERNAL_ERROR;
+    serialized_string = "{\"error\":\"failed to construct response\"}";
+  }
+  rest_respond(nc, codestring, "%s", serialized_string);
+  json_free_serialized_string(serialized_string);
+  json_value_free(root_value);
 }
 
 static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
@@ -124,6 +137,7 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
 
   switch (ev) {
     case MG_EV_HTTP_REQUEST:
+    {
       if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "sum") == 0)
       {
         handle_sum_call(nc, hm); /* Handle RESTful call */
@@ -134,20 +148,11 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
       }
       else if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "version") == 0)
       {
-        json_t jsn;
-        jerr_t jerr;
-        json_init(&jsn);
-        if (json_load_buf(&jsn, hm->body.p, hm->body.len, &jerr) != 0)
-        {
-          /* error!!! */
-          jerr_fprint(stderr, &jerr);
-        }
-        jobj_t root;
-        root = json_root_obj(&jsn);
-
-        handle_GetVersion(root, nc, hm);
-
-        json_destroy(&jsn);
+        handle_GetVersion(nc, hm);
+      }
+      else if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "card/next") == 0)
+      {
+        /* handle_GetNextCard(root, nc, hm); */
       }
       else if (mg_vcmp(&hm->uri, "/printcontent") == 0)
       {
@@ -159,6 +164,7 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
         mg_serve_http(nc, hm, s_http_server_opts); /* Serve static content */
       }
       break;
+    }
     default:
       break;
   }
