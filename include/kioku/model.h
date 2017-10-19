@@ -9,6 +9,10 @@
 #define KIOKU_MODEL_USERLIST_NAME "users.json"
 #endif
 
+#define srsMODEL_CARD_ID_MAX 256
+
+kiokuAPI bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t card_id_buf_size);
+
 bool kioku_model_init(uint32_t argc, char **argv);
 void kioku_model_exit();
 
