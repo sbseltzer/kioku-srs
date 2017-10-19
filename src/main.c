@@ -125,42 +125,47 @@ static void handle_exit_call(struct mg_connection *nc, struct http_message *hm)
 
 static void handle_GetNextCard(struct mg_connection *nc, struct http_message *hm)
 {
-  JSON_Value *root_value = json_value_init_object();
-  JSON_Object *root_object = json_value_get_object(root_value);
-  JSON_Value *buttons_value = NULL;
-  JSON_Array *buttons = NULL;
-  JSON_Value *button_value = NULL;
-  JSON_Object *button = NULL;
-  {
-    json_object_set_string(root_object, "id", "0");
-    json_object_set_string(root_object, "front", "front text");
-    json_object_set_string(root_object, "back", "front text<br>back text which included the front text");
-    buttons_value = json_value_init_array();
-    buttons = json_value_get_array(buttons_value);
-    json_object_set_value(root_object, "buttons", buttons_value);
-    {
-      button_value = json_value_init_object();
-      button = json_value_get_object(button_value);
-      json_object_set_string(button, "title", "Again");
-      json_object_set_number(button, "grade", 1);
-      json_array_append_value(buttons, button_value);
-
-      button_value = json_value_init_object();
-      button = json_value_get_object(button_value);
-      json_object_set_string(button, "title", "Good");
-      json_object_set_number(button, "grade", 3);
-      json_array_append_value(buttons, button_value);
-
-      button_value = json_value_init_object();
-      button = json_value_get_object(button_value);
-      json_object_set_string(button, "title", "Easy");
-      json_object_set_number(button, "grade", 4);
-      json_array_append_value(buttons, button_value);
-    }
-  }
-
   char *serialized_string = NULL;
-  serialized_string = json_serialize_to_string_pretty(root_value);
+  JSON_Value *root_value = NULL;
+  JSON_Object *root_object = NULL;
+  char card_id[srsMODEL_CARD_ID_MAX] = {0};
+  if (srsModel_Card_GetNextID("deck-test/", card_id, sizeof(card_id)))
+  {
+    root_value = json_value_init_object();
+    root_object = json_value_get_object(root_value);
+    JSON_Value *buttons_value = NULL;
+    JSON_Array *buttons = NULL;
+    JSON_Value *button_value = NULL;
+    JSON_Object *button = NULL;
+    {
+      json_object_set_string(root_object, "id", card_id);
+      json_object_set_string(root_object, "front", "front text");
+      json_object_set_string(root_object, "back", "front text<br>back text which included the front text");
+      buttons_value = json_value_init_array();
+      buttons = json_value_get_array(buttons_value);
+      json_object_set_value(root_object, "buttons", buttons_value);
+      {
+        button_value = json_value_init_object();
+        button = json_value_get_object(button_value);
+        json_object_set_string(button, "title", "Again");
+        json_object_set_number(button, "grade", 1);
+        json_array_append_value(buttons, button_value);
+
+        button_value = json_value_init_object();
+        button = json_value_get_object(button_value);
+        json_object_set_string(button, "title", "Good");
+        json_object_set_number(button, "grade", 3);
+        json_array_append_value(buttons, button_value);
+
+        button_value = json_value_init_object();
+        button = json_value_get_object(button_value);
+        json_object_set_string(button, "title", "Easy");
+        json_object_set_number(button, "grade", 4);
+        json_array_append_value(buttons, button_value);
+      }
+    }
+    serialized_string = json_serialize_to_string_pretty(root_value);
+  }
   const char *codestring = HTTP_OK;
   if (serialized_string == NULL)
   {
