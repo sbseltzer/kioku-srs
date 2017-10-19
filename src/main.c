@@ -13,7 +13,7 @@ static bool kill_me_now = false;
 #define rest_respond(connection, codestring, format, ...)               \
   do {                                                                  \
     fprintf(stderr, format "\r\n", __VA_ARGS__);                        \
-    mg_printf(connection, "HTTP/1.1 %s\r\nTransfer-Encoding: chunked\r\n\r\n", codestring); \
+    mg_printf(connection, "HTTP/1.1 %s\r\nTransfer-Encoding: chunked\r\nAccess-Control-Allow-Origin: *\r\nContent-Type: application/json\r\n\r\n", codestring); \
     mg_printf_http_chunk(connection, format, __VA_ARGS__);              \
     mg_send_http_chunk(connection, "", 0); /* Send empty chunk, the end of response */ \
   } while(0)
