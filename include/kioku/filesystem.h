@@ -6,6 +6,8 @@
 #include "kioku/log.h"
 #include "kioku/debug.h"
 
+#include <stdio.h> /* FILE, fopen, fclose, fgets */
+
 #if defined kiokuOS_WINDOWS /* OS check */
   #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
@@ -148,4 +150,7 @@ kiokuAPI bool kioku_filesystem_setcontent(const char *filepath, const char *cont
  * \return Whether successful
  */
 kiokuAPI bool kioku_filesystem_getcontent(const char *filepath, char *content_out, size_t count);
+
+kiokuAPI FILE *kioku_filesystem_open(const char *path, const char *mode);
+
 #endif /* _KIOKU_FILESYSTEM_H */

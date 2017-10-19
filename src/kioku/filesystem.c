@@ -3,7 +3,6 @@
 #include "kioku/log.h"
 #include "tinydir.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -23,7 +22,7 @@
 
 /* \todo Perhaps have a method called by an init that dynamically finds a "true" max path length */
 
-static FILE *kioku_filesystem_open(const char *path, const char *mode)
+FILE *kioku_filesystem_open(const char *path, const char *mode)
 {
 #ifdef kiokuOS_WINDOWS
   FILE *fp = NULL;
