@@ -114,6 +114,8 @@ add_library( kioku SHARED src/kioku/log.c
                           src/kioku/controller.c
                           src/kioku/rest.c
                           src/kioku/server.c
+                          extern/ims-json/src/json.c
+                          extern/parson/parson.c
                           )
 if (WIN32)
    set(LIBSSH_LIB libssh2)
