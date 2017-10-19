@@ -55,6 +55,7 @@ static bool precheck_response(JSON_Value **root_value, JSON_Object **root_object
   }
   return true;
 }
+
 /* Talk to this with `curl localhost:8000/api/v1/sum --data "{\"n1\": YOUR_N1_NUMBER, \"n2\": YOUR_N2_NUMBER}"` */
 static void handle_sum_call(struct mg_connection *nc, struct http_message *hm)
 {
