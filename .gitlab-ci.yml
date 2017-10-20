@@ -6,6 +6,7 @@ stages:
 
 build_image:
   image: docker:git
+  stage: build
   services:
   - docker:dind
   script:
