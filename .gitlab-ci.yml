@@ -46,9 +46,11 @@ build:
     - git submodule update --init extern/tinydir
     - git submodule update --init extern/lua
     - mkdir build
+    - ls extern/libgit2/build/
     - cp extern/libgit2/build/*.so build/
     - cd build
     - cmake ..
+    - ls
     - make
     - CTEST_OUTPUT_ON_FAILURE=1 make test
   only:
