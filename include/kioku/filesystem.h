@@ -166,17 +166,18 @@ kiokuAPI const char *srsDir_GetCurrent();
 
 /** Set the Current Working Directory (CWD)
  * This will clear the Directory Stack.
- * \param[in] path Directory path (can be relative) to change to. The string will be copied.
- * \return The copied null-terminated string of the new CWD. Do not attempt to free it, as it is memory-managed. NULL is returned if the path is invalid.
+ * \param[in] path Directory path (can be relative) to change to. It will not be stored.
+ * \return The null-terminated string of the new CWD. Do not attempt to free it, as it is memory-managed. NULL is returned if the path is invalid.
  */
 kiokuAPI const char *srsDir_SetCurrent(const char *path);
 
 /** Push a new Current Working Directory (CWD) onto the Directory Stack, changing to it.
  * If the stack exceeds its limit (as defined by srsFILESYSTEM_DIRSTACK_MAX), it will be lost.
+ * \param[in] path Directory path (can be relative) to change to. It will not be stored.
  * \param[in] lost A place to store the path that was lost in the case the user exceeds the max directory stack size. If this is NULL, the bottom of the stack can be silently lost.
- * \return The copied null-terminated string of the newly pushed CWD. Do not attempt to free it, as it is memory-managed. NULL is returned if the path is invalid.
+ * \return The null-terminated string of the new CWD. Do not attempt to free it, as it is memory-managed. NULL is returned if the path is invalid.
  */
-kiokuAPI const char *srsDir_PushCurrent(const char **lost);
+kiokuAPI const char *srsDir_PushCurrent(const char *path, const char **lost);
 
 /** Pop the Current Working Directory (CWD) from the Directory Stack, changing to the new top CWD if available.
  * If the previous new top is no longer valid, this function will repeat until either a valid one is found, or no CWDs are left on the stack.
