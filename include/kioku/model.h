@@ -22,11 +22,11 @@
 /**
  * Get the next card ID for a deck.
  * @param[in] deck_path Path to the deck to get the next card ID of.
- * @param[out] card_id_buf Place to store the ID string. Must be large enough to include a null-terminator.
- * @param[in] card_id_buf_size Size of the buffer, including the null terminator.
- * @return Whether the card ID could be stored. False could indicate a bad parameter, an invalid deck, a deck with no next card, or a buffer that's not large enough according to the specified size.
+ * @param[out] card_id_out Place to store the ID string. Must be large enough to include a null-terminator.
+ * @param[in] card_id_out_size Size of the buffer, including the null terminator.
+ * @return Whether the card ID could be stored. False could indicate a bad parameter, an invalid deck, a deck with no next card, or a buffer that's not large enough according to the specified size. @todo Failure ambiguity is a design flaw. For now the user is expected to use @ref srsMODEL_CARD_ID_MAX to protect themselves.
  */
-kiokuAPI bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t card_id_buf_size);
+kiokuAPI bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_out, size_t card_id_out_size);
 
 bool kioku_model_init(uint32_t argc, char **argv);
 void kioku_model_exit();
