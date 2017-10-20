@@ -20,6 +20,16 @@
 #include <unistd.h>
 #endif
 
+/** Explanation of the directory stack implementation
+ * The top of the stack can have valid entries after it.
+ * When a push would cause the max size to be overrun, no element shifting takes place.
+ * Instead, the first element is overwritten and the index for the top is moved.
+ * When subsequent pops take place such that the stack index would drop below zero, it wraps around to the first non-NULL element starting from the end of the stack array.
+ * Similarly, if a subsequent pop causes the index to point to a NULL element, it will step back till a non-NULL element is found, or until it would drop below zero, in which case the stack is considered empty.
+ */
+static uint32_t directory_stack_top_index = 0;
+static char *directory_stack[srsFILESYSTEM_DIRSTACK_MAX] = {NULL};
+
 /* \todo Perhaps have a method called by an init that dynamically finds a "true" max path length */
 
 FILE *kioku_filesystem_open(const char *path, const char *mode)
