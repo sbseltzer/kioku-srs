@@ -6,7 +6,6 @@
 #include "parson.h"
 #include "hashmap.h"
 #include "utf8.h"
-#include "tinydir.h"
 
 static bool kioku_model_load_userlist()
 {
