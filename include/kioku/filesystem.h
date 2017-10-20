@@ -32,11 +32,13 @@
   /* #include <sys/syslimits.h> */
 #endif /* OS check */
 
-#ifndef PATH_MAX
-  #error Could not find macro for max path length!
+#ifndef kiokuPATH_MAX
+  #ifdef PATH_MAX
+    #define kiokuPATH_MAX PATH_MAX - 1
+  #else
+    #error Could not find macro for max path length!
+  #endif
 #endif
-
-#define kiokuPATH_MAX (PATH_MAX - 1)
 
 #define kiokuCHAR_ISDIRSEP(x) (((x) == '/') || ((x) == '\\'))
 
