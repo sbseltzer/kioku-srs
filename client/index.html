@@ -49,6 +49,7 @@
    var current_card;
    function populate_card(card)
    {
+     $("#show").show();
      if (card == undefined || card.error != undefined) {
        $("#card").html("No card. Deck may be empty? Nothing scheduled? Perhaps there was an error");
        $("#show").html("Try again?");
@@ -60,31 +61,29 @@
      $("#card").html(card.front);
      $("#show").html("Show Answer");
      $("#show").click(show_answer);
-     $("#grades").toggle();
-     // The server provides the answer button info
-     // Ex: card.buttons = [{ name : "Good", grade : 3 }, ...]
-     // This is to make the API UI-agnostic and take the burden of localization away from the UI.
-     for (var i = 0; i < card.buttons.length; i++) {
-       var button = $("<button></button>");
-       button.html(card.buttons[i].title);
-       button.attr("grade", card.buttons[i].grade);
-       button.click(grade_card);
-       $("#grades").append(button);
-     }
    }
    srs.callbacks.OnGetNextCard = populate_card;
    srs.GetNextCard();
    function show_answer()
    {
+     $("#show").hide();
      $("#card").html(current_card.back);
-     $("#show").toggle();
-     $("#grades").toggle();
+     // The server provides the answer button info
+     // Ex: card.buttons = [{ name : "Good", grade : 3 }, ...]
+     // This is to make the API UI-agnostic and take the burden of localization away from the UI.
+     $("#grades").html("");
+     for (var i = 0; i < current_card.buttons.length; i++) {
+       var button = $("<button></button>");
+       button.html(current_card.buttons[i].title);
+       button.attr("grade", current_card.buttons[i].grade);
+       button.click(grade_card);
+       $("#grades").append(button);
+     }
    }
    function grade_card(button)
    {
-     $("#show").toggle();
-     $("#grades").toggle();
      var grade = $(button).attr("grade");
+     $("#grades").html("");
      srs.GradeCard(current_card.id, grade);
      srs.GetNextCard();
    }
