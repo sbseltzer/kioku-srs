@@ -10,6 +10,7 @@ build_image:
   services:
   - docker:dind
   script:
+    - cd docker
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
     - docker build -t registry.gitlab.com/seltzer/kioku-srs/build .
 #   - docker run registry.gitlab.com/seltzer/kioku-srs/build /script/to/run/tests
