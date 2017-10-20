@@ -1,4 +1,8 @@
 image: registry.gitlab.com/seltzer/kioku-srs/build:latest
+stages:
+  - deps
+  - build
+  - docs
 
 build_image:
   image: docker:git
@@ -13,20 +17,13 @@ build_image:
   only:
     - docker
 
-docs:
-  script:
-    - doxygen
-  artifacts:
-    paths:
-      - doc
-
 deps:
+  stage: deps
   script:
     - git submodule update --init
-    - kiokudir = `pwd`
     - cd extern/libgit2
     - mkdir build && cd build
-    - cmake .. -DEMBED_SSH_PATH=$kiokudir/extern/libssh2/
+    - cmake .. -DEMBED_SSH_PATH=../../libssh2/
     - make
   only:
     - master
@@ -35,6 +32,7 @@ deps:
       - extern/libgit2/build
 
 build:
+  stage: build
   script:
     - git submodule update --init
     - mkdir build
@@ -48,3 +46,13 @@ build:
   artifacts:
     paths:
       - build/
+
+docs:
+  stage: docs
+  script:
+    - doxygen
+  artifacts:
+    paths:
+      - doc
+  only:
+    - master
