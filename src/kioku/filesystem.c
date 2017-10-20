@@ -29,6 +29,7 @@
  */
 static uint32_t directory_stack_top_index = 0;
 static char *directory_stack[srsFILESYSTEM_DIRSTACK_MAX] = {NULL};
+static char *directory_current = NULL;
 
 /* \todo Perhaps have a method called by an init that dynamically finds a "true" max path length */
 
