@@ -26,7 +26,7 @@ deps:
     - git submodule update --init extern/libssh2
     - cd extern/libgit2
     - mkdir build && cd build
-    - cmake .. -DEMBED_SSH_PATH=../../libssh2/ -DBUILD_CLAR=OFF
+    - cmake .. -DEMBED_SSH_PATH=$CI_PROJECT_DIR/extern/libssh2/ -DBUILD_CLAR=OFF
     - make
   only:
     - master
