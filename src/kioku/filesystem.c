@@ -55,7 +55,7 @@ const char *srsDir_SetCurrent(const char *path)
   directory_stack_top_index = 0;
   for (directory_stack_top_index = 0; directory_stack_top_index < srsFILESYSTEM_DIRSTACK_MAX; directory_stack_top_index++)
   {
-    if (directory_stack_top_index != NULL)
+    if (directory_stack[directory_stack_top_index] != NULL)
     {
       /* Only free the stack entry if it isn't the current directory */
       if (directory_stack[directory_stack_top_index] != directory_current)
