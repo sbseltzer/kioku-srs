@@ -1,7 +1,6 @@
 #include "kioku/types.h"
 #include "kioku/filesystem.h"
 #include "kioku/log.h"
-#include "tinydir.h"
 
 #include <stdlib.h>
 #include <string.h>
