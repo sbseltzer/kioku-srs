@@ -31,7 +31,7 @@ deps:
     - master
   artifacts:
     paths:
-      - extern/libgit2/build
+      - extern/libgit2/
 
 build:
   stage: build
