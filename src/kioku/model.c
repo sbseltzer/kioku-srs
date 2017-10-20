@@ -1,3 +1,4 @@
+#include "kioku/simplegit.h"
 #include "kioku/model.h"
 #include "kioku/filesystem.h"
 
@@ -158,12 +159,49 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   return true;
 }
 
-bool kioku_deck_open(const char *path)
+bool srsModel_Deck_Open(const char *path)
 {
   bool result = false;
-  /* if (!kioku_model_isrepo(path)) */
-  /* { */
-  /*   kioku_model_init_repo(&repo, path); */
-  /* } */
+  /* See if path can be opened as a git repository */
+  result = srsGit_Repo_Open(path);
+  if (!result)
+  {
+    return result;
+  }
+  char concatpath[kiokuPATH_MAX+1] = {0};
+  int32_t needed = kioku_path_concat(concatpath, sizeof(concatpath), path, ".deck");
+  assert(needed > 0);
+  assert(needed <= sizeof(concatpath));
+  result = kioku_filesystem_exists(concatpath);
+  if (!result)
+  {
+    return result;
+  }
+  int32_t filelen = kioku_filesystem_getlen(concatpath);
+  result = (filelen < 0);
+  if (!result)
+  {
+    return result;
+  }
+  char *content = NULL;
+  do {
+    content = malloc(filelen + 1);
+    result = kioku_filesystem_getcontent(concatpath, content, filelen + 1);
+    if (!result)
+    {
+      break;
+    }
+    printf(".deck: %s"kiokuSTRING_LF, content);
+    result = strncmp(content, "YES THIS IS A DECK", strlen("YES THIS IS A DECK")) == 0;
+    if (!result)
+    {
+      break;
+    }
+    printf("It is a deck"kiokuSTRING_LF);
+  } while (0);
+  if (content != NULL)
+  {
+    free(content);
+  }
   return result;
 }
