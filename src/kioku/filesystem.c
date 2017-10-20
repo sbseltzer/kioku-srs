@@ -8,7 +8,7 @@
 #ifdef kiokuOS_WINDOWS
 #include <direct.h>
 #include <io.h>
-/* Microsoft (correctly) refuses to recognize strdup as being ISO C compliant,
+/* Microsoft (correctly) refuses to recognize a number of functions as being ISO C compliant,
    despite being part of POSIX, and recommends its own standard-compliant name. */
 #define strdup _strdup
 #define rmdir _rmdir
