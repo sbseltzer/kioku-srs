@@ -21,7 +21,8 @@ build_image:
 deps:
   stage: deps
   script:
-    - git submodule update --init
+    - git submodule update --init extern/libgit2
+    - git submodule update --init extern/libssh2
     - cd extern/libgit2
     - mkdir build && cd build
     - cmake .. -DEMBED_SSH_PATH=../../libssh2/
