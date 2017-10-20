@@ -54,7 +54,7 @@ void kioku_path_replace_separators(char *path, size_t nbytes)
 
 void kioku_path_resolve_relative(char *path, int32_t nbytes)
 {
-  size_t i = 0;
+  int32_t i = 0;
   size_t offset = 0;
   if ((path != NULL) && (nbytes > 0))
   {
