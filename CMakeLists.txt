@@ -118,14 +118,14 @@ add_library( kioku SHARED src/kioku/log.c
                           extern/parson/parson.c
                           )
 if (WIN32)
-   set(LIBSSH_LIB libssh2)
+#   set(LIBSSH_LIB libssh2)
    set(MATH_LIB "")
 else()
-   set(LIBSSH_LIB ssh2)
+#   set(LIBSSH_LIB ssh2)
    set(MATH_LIB m)
 endif (WIN32)
 target_link_libraries( kioku git2
-                       ${LIBSSH_LIB}
+#                       ${LIBSSH_LIB}
                        ${MATH_LIB} # The math library is needed by ims-json. I'm thinking of submitting a PR for that and pre-C99 compatibility.
                        )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
