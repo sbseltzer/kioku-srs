@@ -174,7 +174,7 @@ kiokuAPI const char *srsDir_SetCurrent(const char *path);
 /** Push a new Current Working Directory (CWD) onto the Directory Stack, changing to it.
  * If the stack exceeds its limit (as defined by srsFILESYSTEM_DIRSTACK_MAX), it will be lost.
  * \param[in] path Directory path (can be relative) to change to. It will not be stored.
- * \param[in] lost A place to store the path that was lost in the case the user exceeds the max directory stack size. If this is NULL, the bottom of the stack can be silently lost.
+ * \param[in] lost A place to store the path that was lost in the case the user exceeds the max directory stack size. If this is non-NULL and the stored value is non-NULL, it is up to the user to free the value stored. If this is NULL, the bottom of the stack can be silently lost and the memory will be automatically freed.
  * \return The null-terminated string of the new CWD. Do not attempt to free it, as it is memory-managed. NULL is returned if the path is invalid.
  */
 kiokuAPI const char *srsDir_PushCurrent(const char *path, const char **lost);
