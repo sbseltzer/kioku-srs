@@ -40,7 +40,7 @@ static size_t file_read_line(char *linebuf, size_t linebuf_size, int32_t linenum
     }
   }
   size_t stored = 0;
-  for (ch = fgetc(fp); (stored < linebuf_size-1) && (ch != '\r') && (ch != '\n') && (ch != EOF); ch = fgetc(fp))
+  for (; (stored < linebuf_size-1) && (ch != '\r') && (ch != '\n') && (ch != EOF); ch = fgetc(fp))
   {
     linebuf[stored] = (char) ch;
     stored++;
