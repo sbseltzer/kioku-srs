@@ -1,3 +1,10 @@
+/**
+ * @addtogroup Declarations
+ *
+ * Declarations used by the rest of the project.
+ *
+ * @{
+ */
 #ifndef _KIOKU_DECL_H
 #define _KIOKU_DECL_H
 
@@ -74,3 +81,4 @@
 
 #endif /* _KIOKU_DECL_H */
 
+/** @} */

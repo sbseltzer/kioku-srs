@@ -1,3 +1,11 @@
+/**
+ * @addtogroup Debug
+ *
+ * Module with utilities for sanity checking and other debugging features.
+ *
+ * @{
+ */
+
 #ifndef _KIOKU_DEBUG_H
 #define _KIOKU_DEBUG_H
 
@@ -33,3 +41,5 @@ inline bool srsERRNO_CAPTURE(int *capture, bool is_bad)
 #endif
 
 #endif /* _KIOKU_DEBUG_H */
+
+/** @} */

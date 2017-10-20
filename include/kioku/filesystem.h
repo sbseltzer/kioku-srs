@@ -1,3 +1,12 @@
+/**
+ * @addtogroup Filesystem
+ *
+ * Filesystem module
+ * Module that handles file system access
+ *
+ * @{
+ */
+
 #ifndef _KIOKU_FILESYSTEM_H
 #define _KIOKU_FILESYSTEM_H
 
@@ -195,3 +204,5 @@ kiokuAPI const char *srsDir_PushCurrent(const char *path, char **lost);
 kiokuAPI const char *srsDir_PopCurrent();
 
 #endif /* _KIOKU_FILESYSTEM_H */
+
+/** @} */

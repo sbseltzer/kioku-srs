@@ -1,3 +1,21 @@
+/**
+ * @addtogroup Kioku
+ *
+ * One module to rule them all...
+ *
+ * @{
+ */
+
+/*! \mainpage Kioku Overview
+ *
+ * The low-level API for interfacing with Kioku, a portable SRS framework.
+ *
+ * You may wish to use this for...
+ *
+ * 1. Binding the Kioku API to another language (such as Lua, Python, Javascript, etc.)
+ * 2. Implementing a RESTful server for arbitrary clients to interface with.
+ * 3. Implementing a self-contained client (for the brave).
+ */
 #ifndef _KIOKU_H
 #define _KIOKU_H
 
@@ -13,3 +31,5 @@
 #include "kioku/rest.h"
 
 #endif /* _KIOKU_H */
+
+/** @} */

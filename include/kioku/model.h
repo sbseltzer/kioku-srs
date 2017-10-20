@@ -1,3 +1,11 @@
+/**
+ * @addtogroup Model
+ *
+ * Manages the Kioku data model.
+ *
+ * @{
+ */
+
 #ifndef _KIOKU_MODEL_H
 #define _KIOKU_MODEL_H
 
@@ -28,3 +36,5 @@ bool kioku_deck_commit();
 bool kioku_deck_delete();
 
 #endif /* _KIOKU_MODEL_H */
+
+/** @} */

@@ -1,4 +1,10 @@
-/* Basic logger */
+/**
+ * @addtogroup Log
+ *
+ * A basic logger
+ *
+ * @{
+ */
 #ifndef _KIOKU_LOG_H
 #define _KIOKU_LOG_H
 
@@ -36,4 +42,7 @@ kiokuAPI void kioku_log_Exit();
     fprintf(stderr, "\r\n");                                        \
     kLOG_WRITE(__VA_ARGS__);                                   \
   } while (0)
+
 #endif /* _KIOKU_LOG_H */
+
+/** @} */
