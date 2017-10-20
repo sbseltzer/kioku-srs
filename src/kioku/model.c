@@ -41,7 +41,7 @@ static size_t file_read_line(char *linebuf, size_t linebuf_size, int32_t linenum
     }
   }
   size_t stored = 0;
-  for (ch = fgetc(fp); (stored < linebuf_size-1) && (ch != '\r') && (ch != '\n') && (ch != EOF); ch = fgetc(fp))
+  for (; (stored < linebuf_size-1) && (ch != '\r') && (ch != '\n') && (ch != EOF); ch = fgetc(fp))
   {
     linebuf[stored] = (char) ch;
     stored++;
@@ -74,6 +74,7 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   /* Convert .at content to integer */
   int64_t index = 0;
   char *end = NULL;
+  /** \todo From this point forward the code gets aggressively error-checky, and a lot of it has to do with integer conversion. See if this can be simplified without sacrificing safety. */
   if (sizeof(index) >= sizeof(long long int))
   {
     index = strtoll(atindex, &end, 10);
@@ -102,6 +103,11 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   {
     return result;
   }
+  if (index > INT32_MAX || index < 1)
+  {
+    srsLOG_ERROR("Line number is out of range for line search."kiokuSTRING_LF);
+    return false;
+  }
   result = (end != NULL);
   if (!result)
   {
@@ -111,7 +117,7 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   result = (index >= 0);
   if (!result)
   {
-    srsLOG_ERROR("Result of strtol/strtoll was invalid: index = %ld"kiokuSTRING_LF, index);
+    srsLOG_ERROR("Result of strtol/strtoll was invalid: index = %d"kiokuSTRING_LF, (int32_t)index);
     return result;
   }
   /* Check the result of integer conversion */
@@ -147,8 +153,8 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
     srsLOG_ERROR("Oversized string: %zu > %zu"kiokuSTRING_LF, card_id_buf_size, sizeof(linedata));
     return false;
   }
-  size_t stored = file_read_line(linedata, sizeof(linedata), index, file_path);
-  srsLOG_NOTIFY("%ld line: %s"kiokuSTRING_LF, index, linedata);
+  size_t stored = file_read_line(linedata, sizeof(linedata), (int32_t)index, file_path);
+  srsLOG_NOTIFY("%ld line: %s"kiokuSTRING_LF, (int32_t)index, linedata);
   if (card_id_buf_size < stored)
   {
     srsLOG_ERROR("Insufficient string size: %zu < %zu"kiokuSTRING_LF, card_id_buf_size, stored);

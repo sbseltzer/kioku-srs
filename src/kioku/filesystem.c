@@ -20,6 +20,99 @@
 #include <unistd.h>
 #endif
 
+/** Explanation of the directory stack implementation
+ * The top of the stack can have valid entries after it.
+ * When a push would cause the max size to be overrun, no element shifting takes place.
+ * Instead, the first element is overwritten and the index for the top is moved.
+ * When subsequent pops take place such that the stack index would drop below zero, it wraps around to the first non-NULL element starting from the end of the stack array.
+ * Similarly, if a subsequent pop causes the index to point to a NULL element, it will step back till a non-NULL element is found, or until it would drop below zero, in which case the stack is considered empty.
+ */
+static uint32_t directory_stack_top_index = 0;
+static char *directory_stack[srsFILESYSTEM_DIRSTACK_MAX] = {NULL};
+static char *directory_current = NULL;
+
+const char *srsDir_GetCurrent()
+{
+  if (directory_current == NULL)
+  {
+    directory_current = malloc(kiokuPATH_MAX);
+    if (directory_current != NULL)
+    {
+      char *cwd = getcwd(directory_current, kiokuPATH_MAX);
+      if (cwd != directory_current || cwd == NULL)
+      {
+        free(directory_current);
+        directory_current = NULL;
+      }
+    }
+  }
+  /* \todo Consider doing a realloc to save a little heap space */
+  return directory_current;
+}
+
+const char *srsDir_SetCurrent(const char *path)
+{
+  /* Clear stack */
+  directory_stack_top_index = 0;
+  for (directory_stack_top_index = 0; directory_stack_top_index < srsFILESYSTEM_DIRSTACK_MAX; directory_stack_top_index++)
+  {
+    if (directory_stack_top_index != NULL)
+    {
+      /* Only free the stack entry if it isn't the current directory */
+      if (directory_stack[directory_stack_top_index] != directory_current)
+      {
+        free(directory_stack[directory_stack_top_index]);
+      }
+      /* Nullify it regardless */
+      directory_stack[directory_stack_top_index] = NULL;
+    }
+  }
+  directory_stack_top_index = 0;
+  /* Free the current directory */
+  if (directory_current != NULL)
+  {
+    free(directory_current);
+    directory_current = NULL;
+  }
+  /* Attempt to change the directory, and if it succeeds cause the current directory to be reallocated */
+  if (chdir(path) == 0)
+  {
+    return srsDir_GetCurrent();
+  }
+  /* Failure to do the actual directory changing returns NULL */
+  return NULL;
+}
+
+const char *srsDir_PushCurrent(const char *path, char **lost)
+{
+  if (chdir(path) == 0)
+  {
+    free(directory_current);
+    directory_current = NULL;
+    const char *cwd = srsDir_GetCurrent();
+    /** \todo Check result of srsDir_GetCurrent */
+    if (directory_stack[directory_stack_top_index] != NULL)
+    {
+      if (lost != NULL)
+      {
+        *lost = directory_stack[directory_stack_top_index];
+      }
+      else
+      {
+        free(directory_stack[directory_stack_top_index]);
+      }
+    }
+    directory_stack[directory_stack_top_index] = strdup(cwd);
+    /** \todo Check result of strdup */
+    directory_stack_top_index++;
+    if (directory_stack_top_index >= srsFILESYSTEM_DIRSTACK_MAX)
+    {
+      directory_stack_top_index = 0;
+    }
+  }
+  return NULL;
+}
+
 /* \todo Perhaps have a method called by an init that dynamically finds a "true" max path length */
 
 FILE *kioku_filesystem_open(const char *path, const char *mode)
@@ -54,7 +147,7 @@ void kioku_path_replace_separators(char *path, size_t nbytes)
 
 void kioku_path_resolve_relative(char *path, int32_t nbytes)
 {
-  size_t i = 0;
+  int32_t i = 0;
   size_t offset = 0;
   if ((path != NULL) && (nbytes > 0))
   {
