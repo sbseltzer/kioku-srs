@@ -32,8 +32,8 @@
   #include <sys/syslimits.h>
 #elif defined kiokuOS_LINUX || defined kiokuOS_UNIX /* OS check */
   #include <dirent.h>
-  /* Linux defines PATH_MAX here */
-  #include <linux/limits.h>
+  /* Linux supposedly defines PATH_MAX here */
+  /* #include <linux/limits.h> */
   /* Though POSIX 2008 defines PATH_MAX here */
   /** @todo Add an ifdef for posix vs linux */
   #include <limits.h>
