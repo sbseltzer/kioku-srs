@@ -147,3 +147,4 @@ enable_testing()
 
 add_test(NAME TestFileSystem COMMAND filesystem)
 add_test(NAME TestGit COMMAND git)
+add_test(NAME TestModel COMMAND model)

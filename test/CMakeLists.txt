@@ -8,5 +8,6 @@ endmacro(make_test)
 
 make_test(filesystem filesystem.c kioku)
 make_test(git git.c kioku)
+make_test(model model.c kioku)
 
 add_definitions(-DBUILDDIR="${CMAKE_CURRENT_BINARY_DIR}")
