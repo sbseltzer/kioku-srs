@@ -42,6 +42,15 @@
 
 kiokuSTATIC_ASSERT(kiokuPATH_MAX > 0);
 
+/** Initialize filesystem module state.
+ * \return Whether all went ok.
+ */
+kiokuAPI bool srsFileSystem_Init();
+
+/** Cleanup filesystem module state.
+ * \return Whether all went ok.
+ */
+kiokuAPI bool srsFileSystem_Exit();
 /** Find the full path from a relative one, limiting the storage of it to nbytes.
  * \param[in] relative The relative path to transform.
  * \param[out] path_out The place to store the full string.
