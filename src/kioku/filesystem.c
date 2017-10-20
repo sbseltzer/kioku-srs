@@ -82,6 +82,37 @@ const char *srsDir_SetCurrent(const char *path)
   /* Failure to do the actual directory changing returns NULL */
   return NULL;
 }
+
+const char *srsDir_PushCurrent(const char *path, char **lost)
+{
+  if (chdir(path) == 0)
+  {
+    free(directory_current);
+    directory_current = NULL;
+    const char *cwd = srsDir_GetCurrent();
+    /** \todo Check result of srsDir_GetCurrent */
+    if (directory_stack[directory_stack_top_index] != NULL)
+    {
+      if (lost != NULL)
+      {
+        *lost = directory_stack[directory_stack_top_index];
+      }
+      else
+      {
+        free(directory_stack[directory_stack_top_index]);
+      }
+    }
+    directory_stack[directory_stack_top_index] = strdup(cwd);
+    /** \todo Check result of strdup */
+    directory_stack_top_index++;
+    if (directory_stack_top_index >= srsFILESYSTEM_DIRSTACK_MAX)
+    {
+      directory_stack_top_index = 0;
+    }
+  }
+  return NULL;
+}
+
 /* \todo Perhaps have a method called by an init that dynamically finds a "true" max path length */
 
 FILE *kioku_filesystem_open(const char *path, const char *mode)
