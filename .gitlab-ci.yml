@@ -1,0 +1,52 @@
+image: registry.gitlab.com/seltzer/kioku-srs/build:latest
+
+build_image:
+  image: docker:git
+  services:
+  - docker:dind
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - docker build -t registry.gitlab.com/seltzer/kioku-srs/build .
+#   - docker run registry.gitlab.com/seltzer/kioku-srs/build /script/to/run/tests
+    - docker push registry.gitlab.com/seltzer/kioku-srs/build:latest
+# Don't build this unless we've got it on the docker branch - this is just to prevent it from building every time on master.
+  only:
+    - docker
+
+docs:
+  script:
+    - doxygen
+  artifacts:
+    paths:
+      - doc
+
+deps:
+  stage: deps
+  script:
+    - git submodule update --init
+    - kiokudir = `pwd`
+    - cd extern/libgit2
+    - mkdir build && cd build
+    - cmake .. -DEMBED_SSH_PATH=$kiokudir/extern/libssh2/
+    - make
+  only:
+    - master
+  artifacts:
+    paths:
+      - extern/libgit2/build
+
+build:
+  stage: build
+  script:
+    - git submodule update --init
+    - mkdir build
+    - cp extern/libgit2/build/*.so build/
+    - cd build
+    - cmake ..
+    - make
+    - CTEST_OUTPUT_ON_FAILURE=1 make test
+  only:
+    - master
+  artifacts:
+    paths:
+      - build/
