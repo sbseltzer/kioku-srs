@@ -36,7 +36,14 @@ deps:
 build:
   stage: build
   script:
-    - git submodule update --init
+    - git submodule update --init extern/mongoose
+    - git submodule update --init extern/greatest
+    - git submodule update --init extern/generic-c-hashmap
+    - git submodule update --init extern/utf8.h
+    - git submodule update --init extern/parson
+    - git submodule update --init extern/ims-json
+    - git submodule update --init extern/tinydir
+    - git submodule update --init extern/lua
     - mkdir build
     - cp extern/libgit2/build/*.so build/
     - cd build
