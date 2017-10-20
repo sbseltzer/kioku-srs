@@ -51,6 +51,23 @@ static size_t file_read_line(char *linebuf, size_t linebuf_size, int32_t linenum
   return stored;
 }
 
+bool srsModel_Card_GetPath(const char *deck_path, const char *card_id, char *path_out, size_t path_size)
+{
+  int32_t needed = kioku_path_concat(path_out, path_size, deck_path, card_id);
+  const char *ext = ".txt";
+  size_t extsize = strlen(ext) + 1;
+  if (needed <= 0)
+  {
+    return false;
+  }
+  if ((size_t)needed + extsize + 1 > path_size)
+  {
+    return false;
+  }
+  strncpy(&path_out[needed], ext, extsize);
+  return true;
+}
+
 bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t card_id_buf_size)
 {
   bool result = false;
