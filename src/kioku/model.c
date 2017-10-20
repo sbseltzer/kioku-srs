@@ -73,6 +73,7 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   /* Convert .at content to integer */
   int64_t index = 0;
   char *end = NULL;
+  /** \todo From this point forward the code gets aggressively error-checky, and a lot of it has to do with integer conversion. See if this can be simplified without sacrificing safety. */
   if (sizeof(index) >= sizeof(long long int))
   {
     index = strtoll(atindex, &end, 10);
