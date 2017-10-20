@@ -31,6 +31,57 @@ static uint32_t directory_stack_top_index = 0;
 static char *directory_stack[srsFILESYSTEM_DIRSTACK_MAX] = {NULL};
 static char *directory_current = NULL;
 
+const char *srsDir_GetCurrent()
+{
+  if (directory_current == NULL)
+  {
+    directory_current = malloc(kiokuPATH_MAX);
+    if (directory_current != NULL)
+    {
+      char *cwd = getcwd(directory_current, kiokuPATH_MAX);
+      if (cwd != directory_current || cwd == NULL)
+      {
+        free(directory_current);
+        directory_current = NULL;
+      }
+    }
+  }
+  /* \todo Consider doing a realloc to save a little heap space */
+  return directory_current;
+}
+
+const char *srsDir_SetCurrent(const char *path)
+{
+  /* Clear stack */
+  directory_stack_top_index = 0;
+  for (directory_stack_top_index = 0; directory_stack_top_index < srsFILESYSTEM_DIRSTACK_MAX; directory_stack_top_index++)
+  {
+    if (directory_stack_top_index != NULL)
+    {
+      /* Only free the stack entry if it isn't the current directory */
+      if (directory_stack[directory_stack_top_index] != directory_current)
+      {
+        free(directory_stack[directory_stack_top_index]);
+      }
+      /* Nullify it regardless */
+      directory_stack[directory_stack_top_index] = NULL;
+    }
+  }
+  directory_stack_top_index = 0;
+  /* Free the current directory */
+  if (directory_current != NULL)
+  {
+    free(directory_current);
+    directory_current = NULL;
+  }
+  /* Attempt to change the directory, and if it succeeds cause the current directory to be reallocated */
+  if (chdir(path) == 0)
+  {
+    return srsDir_GetCurrent();
+  }
+  /* Failure to do the actual directory changing returns NULL */
+  return NULL;
+}
 /* \todo Perhaps have a method called by an init that dynamically finds a "true" max path length */
 
 FILE *kioku_filesystem_open(const char *path, const char *mode)
