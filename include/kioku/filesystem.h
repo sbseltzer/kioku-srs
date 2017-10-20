@@ -177,7 +177,7 @@ kiokuAPI const char *srsDir_SetCurrent(const char *path);
  * \param[in] lost A place to store the path that was lost in the case the user exceeds the max directory stack size. If this is non-NULL and the stored value is non-NULL, it is up to the user to free the value stored. If this is NULL, the bottom of the stack can be silently lost and the memory will be automatically freed.
  * \return The null-terminated string of the new CWD. Do not attempt to free it, as it is memory-managed. NULL is returned if the path is invalid.
  */
-kiokuAPI const char *srsDir_PushCurrent(const char *path, const char **lost);
+kiokuAPI const char *srsDir_PushCurrent(const char *path, char **lost);
 
 /** Pop the Current Working Directory (CWD) from the Directory Stack, changing to the new top CWD if available.
  * If the previous new top is no longer valid, this function will repeat until either a valid one is found, or no CWDs are left on the stack.
