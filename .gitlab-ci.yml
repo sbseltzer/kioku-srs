@@ -21,7 +21,6 @@ docs:
       - doc
 
 deps:
-  stage: deps
   script:
     - git submodule update --init
     - kiokudir = `pwd`
@@ -36,7 +35,6 @@ deps:
       - extern/libgit2/build
 
 build:
-  stage: build
   script:
     - git submodule update --init
     - mkdir build
