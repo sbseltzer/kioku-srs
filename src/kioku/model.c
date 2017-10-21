@@ -83,6 +83,7 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   /* Get content from .at file */
   char atindex[16] = {0};
   result = kioku_filesystem_getcontent(file_path, atindex, sizeof(atindex));
+  srsLOG_NOTIFY(".at = %s", atindex);
   if (!result)
   {
     return result;
@@ -121,7 +122,7 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   }
   if (index > INT32_MAX || index < 1)
   {
-    srsLOG_ERROR("Line number is out of range for line search."kiokuSTRING_LF);
+    srsLOG_ERROR("Line number is out of range for line search (%d)"kiokuSTRING_LF, (int32_t) index);
     return false;
   }
   result = (end != NULL);
