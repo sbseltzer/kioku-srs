@@ -177,6 +177,7 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
     srsLOG_ERROR("Insufficient string size: %zu < %zu"kiokuSTRING_LF, card_id_buf_size, stored);
     return false;
   }
+  /** @todo Should I check srsMODEL_CARD_ID_MAX agains the card_id_buf_size? Does it make sense to let the user choose something larger? */
   /* The reading to temp buffer and copying and such is probably redundant at the moment */
   strncpy(card_id_buf, linedata, stored);
   return true;
