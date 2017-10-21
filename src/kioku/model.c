@@ -165,11 +165,6 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
     return result;
   }
   char linedata[srsMODEL_CARD_ID_MAX] = {0};
-  if (card_id_buf_size > sizeof(linedata))
-  {
-    srsLOG_ERROR("Oversized string: %zu > %zu"kiokuSTRING_LF, card_id_buf_size, sizeof(linedata));
-    return false;
-  }
   size_t stored = file_read_line(linedata, sizeof(linedata), (int32_t)index, file_path);
   srsLOG_NOTIFY("%ld line: %s"kiokuSTRING_LF, (int32_t)index, linedata);
   if (card_id_buf_size < stored)
