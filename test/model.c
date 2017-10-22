@@ -74,6 +74,7 @@ TEST test_card_getnextid(void)
 /* Suites can group multiple tests with common setup. */
 SUITE(the_suite) {
   RUN_TEST(test_card_getpath);
+  RUN_TEST(test_card_getnextid);
 }
 
 /* Add definitions that need to be in the test runner's main file. */
