@@ -50,7 +50,7 @@ TEST test_card_getnextid(void)
   ASSERT(createdeck());
   char path[kiokuPATH_MAX + 1] = {0};
   kioku_filesystem_setcontent("deck-test/.at", "0");
-  ASSERT(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
+  ASSERT_FALSE(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
 
   kioku_filesystem_setcontent("deck-test/.at", "1");
   ASSERT(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
