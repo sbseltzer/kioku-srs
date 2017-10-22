@@ -38,6 +38,7 @@ static bool deletecards()
 /* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */
 TEST test_card_getpath(void)
 {
+  deletedeck();
   ASSERT(createdeck());
 
   /* ASSERT_FALSE(srsModel_Card_GetPath("deck-test", 0)); */
@@ -60,6 +61,7 @@ TEST test_card_getpath(void)
 }
 TEST test_card_getnextid(void)
 {
+  deletedeck();
   ASSERT(createdeck());
   char path[kiokuPATH_MAX + 1] = {0};
   kioku_filesystem_setcontent("deck-test/.at", "0");
