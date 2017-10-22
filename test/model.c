@@ -59,11 +59,14 @@ TEST test_card_getpath(void)
   ASSERT(deletedeck());
   PASS();
 }
+
 TEST test_card_getnextid(void)
 {
   deletedeck();
   ASSERT(createdeck());
+
   char path[kiokuPATH_MAX + 1] = {0};
+
   kioku_filesystem_setcontent("deck-test/.at", "0");
   ASSERT_FALSE(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
 
@@ -82,6 +85,7 @@ TEST test_card_getnextid(void)
   kioku_filesystem_setcontent("deck-test/.at", "4");
   ASSERT(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
   ASSERT_STR_EQ("a", path);
+
   ASSERT(deletedeck());
   PASS();
 }
