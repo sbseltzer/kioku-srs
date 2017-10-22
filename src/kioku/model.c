@@ -47,7 +47,7 @@ static size_t file_read_line(char *linebuf, size_t linebuf_size, int32_t linenum
   }
   linebuf[stored] = '\0';
   fclose(fp);
-  return stored;
+  return stored + 1;
 }
 
 bool srsModel_Card_GetPath(const char *deck_path, const char *card_id, char *path_out, size_t path_size)
