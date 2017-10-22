@@ -70,6 +70,9 @@ TEST test_card_getnextid(void)
   kioku_filesystem_setcontent("deck-test/.at", "0");
   ASSERT_FALSE(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
 
+  kioku_filesystem_setcontent("deck-test/.at", "-1");
+  ASSERT_FALSE(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
+
   kioku_filesystem_setcontent("deck-test/.at", "1");
   ASSERT(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
   ASSERT_STR_EQ("ab", path);
