@@ -41,6 +41,19 @@ TEST test_card_getpath(void)
   ASSERT(createdeck());
 
   /* ASSERT_FALSE(srsModel_Card_GetPath("deck-test", 0)); */
+  char path[kiokuPATH_MAX] = {0};
+
+#define deckpath "deck-test/"
+#define ext ".txt"
+
+  srsModel_Card_GetPath(deckpath, "a", path, sizeof(path));
+  ASSERT_STR_EQ(deckpath "a" ext, path);
+
+  srsModel_Card_GetPath("deck-test", "ab", path, sizeof(path));
+  ASSERT_STR_EQ(deckpath "ab" ext, path);
+
+  srsModel_Card_GetPath("deck-test", "abcdef", path, sizeof(path));
+  ASSERT_STR_EQ(deckpath "abcdef" ext, path);
 
   ASSERT(deletedeck());
   PASS();
