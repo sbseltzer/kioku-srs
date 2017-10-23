@@ -1,5 +1,6 @@
 image: registry.gitlab.com/seltzer/kioku-srs/linux:latest
 stages:
+  - submodules
   - deps
   - build
   - docs
@@ -28,23 +29,19 @@ build_image:
   only:
     - docker
 
-deps:
-  stage: deps
+submodules-deps:
+  stage: submodules
   script:
     - git submodule update --init extern/libgit2
     - git submodule update --init extern/libssh2
-    - cd extern/libgit2
-    - mkdir build && cd build
-    - cmake .. -DEMBED_SSH_PATH=$CI_PROJECT_DIR/extern/libssh2/ -DBUILD_CLAR=OFF
-    - make
   only:
     - master
   artifacts:
     paths:
-      - extern/libgit2/
+      - extern/
 
-build:
-  stage: build
+submodules-build:
+  stage: submodules
   script:
     - git submodule update --init extern/mongoose
     - git submodule update --init extern/greatest
@@ -54,22 +51,88 @@ build:
     - git submodule update --init extern/ims-json
     - git submodule update --init extern/tinydir
     - git submodule update --init extern/lua
-    - mkdir build
-    - ls extern/libgit2/build/
-    - cp extern/libgit2/build/*.so build/
-    - cd build
-    - cmake ..
-    - ls
-    - make
-    - CTEST_OUTPUT_ON_FAILURE=1 make test
   only:
     - master
   artifacts:
     paths:
-      - build/
+      - extern/
+
+deps-gcc:
+  stage: deps
+  dependencies:
+    - submodules-deps
+  script:
+    - cd extern/libgit2
+    - mkdir $CI_JOB_NAME && cd $CI_JOB_NAME
+    - cmake .. -DEMBED_SSH_PATH=$CI_PROJECT_DIR/extern/libssh2/ -DBUILD_CLAR=OFF
+    - make
+  artifacts:
+    paths:
+      - extern/
+
+build-gcc:
+  stage: build
+  dependencies:
+    - deps-gcc
+    - submodules-build
+  script:
+    - mkdir $CI_JOB_NAME && cd $CI_JOB_NAME
+    - cp $CI_PROJECT_DIR/extern/libgit2/build-gcc/*.so .
+    - cmake ..
+    - make
+    - CTEST_OUTPUT_ON_FAILURE=1 make test
+    # todo: Do both 64 & 32 bit builds
+  only:
+    - master
+  artifacts:
+    paths:
+      - $CI_JOB_NAME/
+
+deps-mingw:
+  stage: deps
+  image: registry.gitlab.com/seltzer/kioku-srs/mingw:latest
+  dependencies:
+    - submodules-deps
+  script:
+    - cd extern/libgit2
+    - mkdir $CI_JOB_NAME-64 && cd $CI_JOB_NAME-64
+    - cmake .. -G"MinGW Makefiles" -DCMAKE_{C,CXX}_FLAGS=-m64 -DEMBED_SSH_PATH=$CI_PROJECT_DIR/extern/libssh2/ -DBUILD_CLAR=OFF
+    - mingw32-make
+    - cd ../
+    - mkdir $CI_JOB_NAME-32 && cd $CI_JOB_NAME-32
+    - cmake .. -G"MinGW Makefiles" -DCMAKE_{C,CXX}_FLAGS=-m32 -DEMBED_SSH_PATH=$CI_PROJECT_DIR/extern/libssh2/ -DBUILD_CLAR=OFF
+    - mingw32-make
+  artifacts:
+    paths:
+      - extern/
+
+build-mingw:
+  stage: build
+  image: tkelman/docker-mingw
+  dependencies:
+    - deps-mingw
+    - submodules-build
+  script:
+    - mkdir $CI_JOB_NAME-64 && cd $CI_JOB_NAME-64
+    - cp $CI_PROJECT_DIR/extern/libgit2/build-mingw-64/* .
+    - cmake .. -G"MinGW Makefiles" -DCMAKE_{C,CXX}_FLAGS=-m64
+    - mingw32-make
+    - cd ..
+    - mkdir $CI_JOB_NAME-32 && cd $CI_JOB_NAME-32
+    - cp $CI_PROJECT_DIR/extern/libgit2/build-mingw-32/* .
+    - cmake .. -G"MinGW Makefiles" -DCMAKE_{C,CXX}_FLAGS=-m32
+    - mingw32-make
+  only:
+    - master
+  artifacts:
+    paths:
+      - $CI_JOB_NAME-64/
+      - $CI_JOB_NAME-32/
+
 
 docs:
   stage: docs
+  image: registry.gitlab.com/seltzer/kioku-srs/doxygen:latest
   script:
     - doxygen
   artifacts:
