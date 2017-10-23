@@ -327,17 +327,90 @@ TEST test_file_manage(void) {
   PASS();
 }
 
+TEST test_file_readlinenumber(void)
+{
+  printf("Testing line number reading..."kiokuSTRING_LF);
+  const char *forms[] = {
+    "\n",                       /*  1 */
+    "%s\n",                     /*  2 */
+    "%s\r\n",                   /*  3 */
+    "%s\n",                     /*  4 */
+    "\n",                       /*  5 */
+    "%s\r\n",                   /*  6 */
+    "%s\n",                     /*  7 */
+    "%s\n",                     /*  8 */
+    "%s\n",                     /*  9 */
+    "\r%s\n",                   /* 10 */
+    "%s\r\n",                   /* 11 */
+    "\r\n",                     /* 12 */
+    "%s\n",                     /* 13 */
+    "%s\n",                     /* 14 */
+    "\n"                        /* 15 */
+  };
+  const char *lines[] = {
+    "", /*  1 */
+    "duckmeat",                 /*  2 */
+    "stuff",                    /*  3 */
+    "and",                      /*  4 */
+    "", /*  5 */
+    "with other",               /*  6 */
+    "words",                    /*  7 */
+    "and such",                 /*  8 */
+    "...",                      /*  9 */
+    "but it's not over yet",    /* 10 */
+    "still 5 lines to go",      /* 11 */
+    "", /* 12 */
+    "and now 3 including this", /* 13 */
+    "and now 2"                 /* 14 */
+    "", /* 15 */
+  };
+
+  char filebuf[2000] = {0};
+  int32_t written = 0;
+  size_t index;
+  printf("There are %u lines"kiokuSTRING_LF, sizeof(lines));
+  size_t numlines = sizeof(lines) / sizeof(*lines);
+  for (index = 0; index < numlines; index++)
+  {
+    written += sprintf(filebuf + written, forms[index], lines[index]);
+  }
+  printf("File content: %s"kiokuSTRING_LF, filebuf);
+
+  const char *multilinefile = "./testlines";
+  kioku_filesystem_delete(multilinefile);
+  ASSERT(kioku_filesystem_create(multilinefile));
+  ASSERT(kioku_filesystem_setcontent(multilinefile, filebuf));
+  char linebuf[256] = {0};
+  for (index = 0; index < numlines; index++)
+  {
+    written = srsFile_ReadLineByNumber(multilinefile, index + 1, linebuf, sizeof(linebuf));
+    ASSERT(written >= 0);
+    ASSERT_EQ(written, strlen(lines[index]));
+    /* @todo test line length with sparce CRs (need lines WITH sparce CRs first)*/
+    /* @todo test line output */
+  }
+  /* @todo test invalid file */
+  /* @todo test invalid line numbers */
+
+  /* Cleanup */
+  kioku_filesystem_delete(multilinefile);
+  PASS();
+}
+
 TEST test_file_io(void)
 {
   printf("Testing file io functions"kiokuSTRING_LF);
   char buffer[255] = {0};
+  printf("\tTesting getlen edges..."kiokuSTRING_LF);
   ASSERT(kioku_filesystem_getlen(NULL) == -1);
   ASSERT(kioku_filesystem_getlen("invalid/file/path.txt") == -1);
   ASSERT(kioku_filesystem_getlen(".") == -1);
 
+  printf("\tTesting setcontent edges..."kiokuSTRING_LF);
   ASSERT(kioku_filesystem_setcontent(NULL, "test") == false);
   ASSERT(kioku_filesystem_setcontent(".", "test") == false);
 
+  printf("\tTesting getcontent edges..."kiokuSTRING_LF);
   ASSERT(kioku_filesystem_getcontent(NULL, NULL, 0) == false);
   ASSERT(kioku_filesystem_getcontent(".", NULL, 0) == false);
   ASSERT(kioku_filesystem_getcontent("invalid/file/path.txt", buffer, sizeof(buffer)) == false);
@@ -347,15 +420,18 @@ TEST test_file_io(void)
 
   kioku_filesystem_delete(filepath);
 
+  printf("\tTesting setcontent/getlen..."kiokuSTRING_LF);
   ASSERT(kioku_filesystem_setcontent(filepath, content) == false);
   kioku_filesystem_create(filepath);
   ASSERT(kioku_filesystem_setcontent(filepath, content));
   ASSERT(kioku_filesystem_getlen(filepath) == strlen(content));
 
+  printf("\tTesting getcontent..."kiokuSTRING_LF);
   ASSERT(kioku_filesystem_getcontent(filepath, buffer, sizeof(buffer)));
   ASSERT(strlen(buffer) == strlen(content));
   ASSERT_STR_EQ(buffer, content);
 
+  printf("\tTesting setcontent/getcontent..."kiokuSTRING_LF);
   content = "some totally different text";
   ASSERT(kioku_filesystem_setcontent(filepath, content));
   ASSERT(kioku_filesystem_getcontent(filepath, buffer, sizeof(buffer)));
@@ -417,6 +493,8 @@ TEST test_fullpath(void)
   /* ASSERT(); */
 }
 SUITE(test_filesystem) {
+  RUN_TEST(test_file_readlinenumber);
+  printf(kiokuSTRING_LF);
   RUN_TEST(test_up_path);
   printf(kiokuSTRING_LF);
   RUN_TEST(test_trim_path);
