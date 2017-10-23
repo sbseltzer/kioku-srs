@@ -23,33 +23,6 @@ static bool kioku_model_load_userlist()
   return true;
 }
 
-static size_t file_read_line(char *linebuf, size_t linebuf_size, int32_t linenum, const char *path)
-{
-  FILE *fp = kioku_filesystem_open(path, "r");
-  int ch = EOF;
-  if (linenum < 1)
-  {
-    return 0;
-  }
-  int i = 1;
-  for (ch = fgetc(fp); (i < linenum) && (ch != EOF); ch = fgetc(fp))
-  {
-    if (ch == '\n')
-    {
-      i++;
-    }
-  }
-  size_t stored = 0;
-  for (; (stored < linebuf_size-1) && (ch != '\r') && (ch != '\n') && (ch != EOF); ch = fgetc(fp))
-  {
-    linebuf[stored] = (char) ch;
-    stored++;
-  }
-  linebuf[stored] = '\0';
-  fclose(fp);
-  return stored;
-}
-
 bool srsModel_Card_GetPath(const char *deck_path, const char *card_id, char *path_out, size_t path_size)
 {
   int32_t needed = kioku_path_concat(path_out, path_size, deck_path, card_id);
@@ -83,6 +56,7 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   /* Get content from .at file */
   char atindex[16] = {0};
   result = kioku_filesystem_getcontent(file_path, atindex, sizeof(atindex));
+  srsLOG_NOTIFY(".at = %s", atindex);
   if (!result)
   {
     return result;
@@ -121,7 +95,7 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   }
   if (index > INT32_MAX || index < 1)
   {
-    srsLOG_ERROR("Line number is out of range for line search."kiokuSTRING_LF);
+    srsLOG_ERROR("Line number is out of range for line search (%d)"kiokuSTRING_LF, (int32_t) index);
     return false;
   }
   result = (end != NULL);
@@ -164,21 +138,25 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
     return result;
   }
   char linedata[srsMODEL_CARD_ID_MAX] = {0};
-  if (card_id_buf_size > sizeof(linedata))
+  int32_t linelen = srsFile_ReadLineByNumber(file_path, (uint32_t)index, linedata, sizeof(linedata));
+  if (linelen < 0)
   {
-    srsLOG_ERROR("Oversized string: %zu > %zu"kiokuSTRING_LF, card_id_buf_size, sizeof(linedata));
-    return false;
+    srsLOG_ERROR("%ld line invalid"kiokuSTRING_LF, (int32_t)index);
   }
-  size_t stored = file_read_line(linedata, sizeof(linedata), (int32_t)index, file_path);
   srsLOG_NOTIFY("%ld line: %s"kiokuSTRING_LF, (int32_t)index, linedata);
-  if (card_id_buf_size < stored)
+  if (card_id_buf_size < linelen + 1)
   {
-    srsLOG_ERROR("Insufficient string size: %zu < %zu"kiokuSTRING_LF, card_id_buf_size, stored);
+    srsLOG_ERROR("Insufficient string size: %zu < %zu"kiokuSTRING_LF, card_id_buf_size, linelen);
     return false;
   }
+  /** @todo Should I check srsMODEL_CARD_ID_MAX agains the card_id_buf_size? Does it make sense to let the user choose something larger? */
   /* The reading to temp buffer and copying and such is probably redundant at the moment */
-  strncpy(card_id_buf, linedata, stored);
-  return true;
+  result = (linelen > 0);
+  if (result)
+  {
+    strncpy(card_id_buf, linedata, linelen + 1);
+  }
+  return result;
 }
 
 bool srsModel_Deck_Open(const char *path)

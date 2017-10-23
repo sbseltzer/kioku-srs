@@ -38,19 +38,40 @@ static bool deletecards()
 /* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */
 TEST test_card_getpath(void)
 {
+  deletedeck();
   ASSERT(createdeck());
 
   /* ASSERT_FALSE(srsModel_Card_GetPath("deck-test", 0)); */
+  char path[kiokuPATH_MAX] = {0};
+
+#define deckpath "deck-test/"
+#define ext ".txt"
+
+  srsModel_Card_GetPath(deckpath, "a", path, sizeof(path));
+  ASSERT_STR_EQ(deckpath "a" ext, path);
+
+  srsModel_Card_GetPath("deck-test", "ab", path, sizeof(path));
+  ASSERT_STR_EQ(deckpath "ab" ext, path);
+
+  srsModel_Card_GetPath("deck-test", "abcdef", path, sizeof(path));
+  ASSERT_STR_EQ(deckpath "abcdef" ext, path);
 
   ASSERT(deletedeck());
   PASS();
 }
+
 TEST test_card_getnextid(void)
 {
+  deletedeck();
   ASSERT(createdeck());
+
   char path[kiokuPATH_MAX + 1] = {0};
+
   kioku_filesystem_setcontent("deck-test/.at", "0");
-  ASSERT(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
+  ASSERT_FALSE(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
+
+  kioku_filesystem_setcontent("deck-test/.at", "-1");
+  ASSERT_FALSE(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
 
   kioku_filesystem_setcontent("deck-test/.at", "1");
   ASSERT(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
@@ -67,6 +88,10 @@ TEST test_card_getnextid(void)
   kioku_filesystem_setcontent("deck-test/.at", "4");
   ASSERT(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
   ASSERT_STR_EQ("a", path);
+
+  kioku_filesystem_setcontent("deck-test/.at", "7");
+  ASSERT_FALSE(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
+
   ASSERT(deletedeck());
   PASS();
 }
@@ -74,6 +99,7 @@ TEST test_card_getnextid(void)
 /* Suites can group multiple tests with common setup. */
 SUITE(the_suite) {
   RUN_TEST(test_card_getpath);
+  RUN_TEST(test_card_getnextid);
 }
 
 /* Add definitions that need to be in the test runner's main file. */

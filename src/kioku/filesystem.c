@@ -618,3 +618,41 @@ bool kioku_filesystem_getcontent(const char *filepath, char *content_out, size_t
   fclose(fp);
   return result;
 }
+
+int32_t srsFile_ReadLineByNumber(const char *path, uint32_t linenum, char *linebuf, size_t linebuf_size)
+{
+  FILE *fp = kioku_filesystem_open(path, "r");
+  linebuf[0] = '\0';
+  if (fp == NULL)
+  {
+    return -1;
+  }
+  int ch = EOF;
+  int i = 1;
+  /* Seek to the line */
+  for (ch = fgetc(fp); (i < linenum) && (ch != EOF); ch = fgetc(fp))
+  {
+    if (ch == '\n')
+    {
+      i++;
+    }
+  }
+  /* If we reached the end of file, it means the line number was greater than the number of lines in the file */
+  if (ch == EOF)
+  {
+    return -1;
+  }
+  /* Read the line into the buffer up to buffer size excluding null terminator, and stripping carriage returns. */
+  size_t linelen = 0;
+  for (; (linelen < linebuf_size-1) && (ch != '\n') && (ch != EOF); ch = fgetc(fp))
+  {
+    if (ch != '\r')
+    {
+      linebuf[linelen] = (char) ch;
+      linelen++;
+    }
+  }
+  linebuf[linelen] = '\0';
+  fclose(fp);
+  return linelen;
+}

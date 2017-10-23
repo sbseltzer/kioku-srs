@@ -224,6 +224,18 @@ kiokuAPI const char *srsDir_PushCurrent(const char *path, char **lost);
  */
 kiokuAPI const char *srsDir_PopCurrent();
 
+/**
+ * Read a line by it's number from the specified file into a buffer.
+ * The content of the buffer will be the specified line (if it exists) with all newlines and carriage returns stripped.
+ * 
+ * @param[in] path The filepath.
+ * @param[in] linenum The line number to seek to before reading. @todo Perhaps have a seek to line number function?
+ * @param[out] linebuf The buffer to write the line to.
+ * @param[in] linebuf_size The available size of the buffer, including null terminator.
+ * @return The number of characters written to the buffer, excluding the null terminator. If the file cannot be opened or line does not exist, it will return -1 and the linebuf will be empty.
+ */
+kiokuAPI int32_t srsFile_ReadLineByNumber(const char *path, uint32_t linenum, char *linebuf, size_t linebuf_size);
+
 #endif /* _KIOKU_FILESYSTEM_H */
 
 /**
