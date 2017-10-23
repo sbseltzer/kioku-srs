@@ -23,33 +23,6 @@ static bool kioku_model_load_userlist()
   return true;
 }
 
-static size_t file_read_line(char *linebuf, size_t linebuf_size, int32_t linenum, const char *path)
-{
-  FILE *fp = kioku_filesystem_open(path, "r");
-  int ch = EOF;
-  if (linenum < 1)
-  {
-    return 0;
-  }
-  int i = 1;
-  for (ch = fgetc(fp); (i < linenum) && (ch != EOF); ch = fgetc(fp))
-  {
-    if (ch == '\n')
-    {
-      i++;
-    }
-  }
-  size_t linelen = 0;
-  for (; (linelen < linebuf_size-1) && (ch != '\r') && (ch != '\n') && (ch != EOF); ch = fgetc(fp))
-  {
-    linebuf[linelen] = (char) ch;
-    linelen++;
-  }
-  linebuf[linelen] = '\0';
-  fclose(fp);
-  return linelen;
-}
-
 bool srsModel_Card_GetPath(const char *deck_path, const char *card_id, char *path_out, size_t path_size)
 {
   int32_t needed = kioku_path_concat(path_out, path_size, deck_path, card_id);
@@ -165,7 +138,11 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
     return result;
   }
   char linedata[srsMODEL_CARD_ID_MAX] = {0};
-  size_t linelen = file_read_line(linedata, sizeof(linedata), (int32_t)index, file_path);
+  int32_t linelen = srsFile_ReadLineByNumber(file_path, (uint32_t)index, linedata, sizeof(linedata));
+  if (linelen < 0)
+  {
+    srsLOG_ERROR("%ld line invalid"kiokuSTRING_LF, (int32_t)index);
+  }
   srsLOG_NOTIFY("%ld line: %s"kiokuSTRING_LF, (int32_t)index, linedata);
   if (card_id_buf_size < linelen + 1)
   {
