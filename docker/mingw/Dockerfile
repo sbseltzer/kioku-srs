@@ -5,6 +5,6 @@ FROM debian:stretch
 
 RUN apt-get update -q && \
     DEBIAN_FRONTEND=noninteractive apt-get install -qy --no-install-recommends \
-      ca-certificates git build-essential cmake3 mingw-w64 && \
+      ca-certificates git build-essential cmake mingw-w64 && \
       cmake --version && \
       apt-get clean && rm -rf /var/lib/apt
