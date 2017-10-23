@@ -39,15 +39,15 @@ static size_t file_read_line(char *linebuf, size_t linebuf_size, int32_t linenum
       i++;
     }
   }
-  size_t stored = 0;
-  for (; (stored < linebuf_size-1) && (ch != '\r') && (ch != '\n') && (ch != EOF); ch = fgetc(fp))
+  size_t linelen = 0;
+  for (; (linelen < linebuf_size-1) && (ch != '\r') && (ch != '\n') && (ch != EOF); ch = fgetc(fp))
   {
-    linebuf[stored] = (char) ch;
-    stored++;
+    linebuf[linelen] = (char) ch;
+    linelen++;
   }
-  linebuf[stored] = '\0';
+  linebuf[linelen] = '\0';
   fclose(fp);
-  return stored + 1;
+  return linelen;
 }
 
 bool srsModel_Card_GetPath(const char *deck_path, const char *card_id, char *path_out, size_t path_size)
