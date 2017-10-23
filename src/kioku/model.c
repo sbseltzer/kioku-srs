@@ -165,17 +165,21 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
     return result;
   }
   char linedata[srsMODEL_CARD_ID_MAX] = {0};
-  size_t stored = file_read_line(linedata, sizeof(linedata), (int32_t)index, file_path);
+  size_t linelen = file_read_line(linedata, sizeof(linedata), (int32_t)index, file_path);
   srsLOG_NOTIFY("%ld line: %s"kiokuSTRING_LF, (int32_t)index, linedata);
-  if (card_id_buf_size < stored)
+  if (card_id_buf_size < linelen + 1)
   {
-    srsLOG_ERROR("Insufficient string size: %zu < %zu"kiokuSTRING_LF, card_id_buf_size, stored);
+    srsLOG_ERROR("Insufficient string size: %zu < %zu"kiokuSTRING_LF, card_id_buf_size, linelen);
     return false;
   }
   /** @todo Should I check srsMODEL_CARD_ID_MAX agains the card_id_buf_size? Does it make sense to let the user choose something larger? */
   /* The reading to temp buffer and copying and such is probably redundant at the moment */
-  strncpy(card_id_buf, linedata, stored);
-  return true;
+  result = (linelen > 0);
+  if (result)
+  {
+    strncpy(card_id_buf, linedata, linelen + 1);
+  }
+  return result;
 }
 
 bool srsModel_Deck_Open(const char *path)
