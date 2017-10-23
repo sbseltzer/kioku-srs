@@ -30,6 +30,16 @@ static uint32_t directory_stack_top_index = 0;
 static char *directory_stack[srsFILESYSTEM_DIRSTACK_MAX] = {NULL};
 static char *directory_current = NULL;
 
+char *srsDir_GetCurrentInternal(char *buf, size_t bufsize)
+{
+  char *cwd = getcwd(buf, bufsize);
+  if (cwd != buf || cwd == NULL)
+  {
+    return NULL;
+  }
+  return cwd;
+}
+
 const char *srsDir_GetCurrent()
 {
   if (directory_current == NULL)
@@ -37,7 +47,7 @@ const char *srsDir_GetCurrent()
     directory_current = malloc(kiokuPATH_MAX);
     if (directory_current != NULL)
     {
-      char *cwd = getcwd(directory_current, kiokuPATH_MAX);
+      char *cwd = srsDir_GetCurrentInternal(directory_current, kiokuPATH_MAX);
       if (cwd != directory_current || cwd == NULL)
       {
         free(directory_current);

@@ -196,6 +196,15 @@ kiokuAPI FILE *kioku_filesystem_open(const char *path, const char *mode);
 
 /**
  * Get the Current Working Directory (CWD)
+ * Essentially a getcwd wrapper.
+ * @param[out] buf Buffer to store directory path in.
+ * @param[in] bufsize Size of buf including space for null terminator.
+ * @return Returns buf if successful - NULL if not.
+ */
+kiokuAPI char *srsDir_GetCurrentInternal(char *buf, size_t bufsize);
+
+/**
+ * Get the Current Working Directory (CWD)
  * @return Null-terminated string. Do not attempt to free it, as it is memory-managed. NULL is returned if the last known CWD has become invalid.
  */
 kiokuAPI const char *srsDir_GetCurrent();
