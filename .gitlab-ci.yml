@@ -63,7 +63,6 @@ deps-gcc:
     - submodules-deps
   script:
     - cd extern/libgit2
-    - mkdir $CI_JOB_NAME && cd $CI_JOB_NAME
     - cmake . -G"Unix Makefiles" -DEMBED_SSH_PATH=$CI_PROJECT_DIR/extern/libssh2/ -DBUILD_CLAR=OFF
     - make
   only:
@@ -79,7 +78,7 @@ build-gcc:
     - submodules-build
   script:
     - mkdir $CI_JOB_NAME && cd $CI_JOB_NAME
-    - cp $CI_PROJECT_DIR/extern/libgit2/build-gcc/*.so .
+    - cp $CI_PROJECT_DIR/extern/libgit2/*.so .
     - cmake .. -G"Unix Makefiles"
     - make
     - CTEST_OUTPUT_ON_FAILURE=1 make test
