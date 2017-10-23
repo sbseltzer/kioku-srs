@@ -66,6 +66,8 @@ deps-gcc:
     - mkdir $CI_JOB_NAME && cd $CI_JOB_NAME
     - cmake .. -DEMBED_SSH_PATH=$CI_PROJECT_DIR/extern/libssh2/ -DBUILD_CLAR=OFF
     - make
+  only:
+    - master
   artifacts:
     paths:
       - extern/
@@ -102,6 +104,8 @@ deps-mingw:
     - mkdir $CI_JOB_NAME-32 && cd $CI_JOB_NAME-32
     - cmake .. -G"MinGW Makefiles" -DCMAKE_{C,CXX}_FLAGS=-m32 -DEMBED_SSH_PATH=$CI_PROJECT_DIR/extern/libssh2/ -DBUILD_CLAR=OFF
     - mingw32-make
+  only:
+    - master
   artifacts:
     paths:
       - extern/
