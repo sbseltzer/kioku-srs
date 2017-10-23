@@ -355,7 +355,7 @@ TEST test_file_readlinenumber(void)
     "", /*  5 */
     "with other",               /*  6 */
     "words",                    /*  7 */
-    "and such",                 /*  8 */
+    "and\r\r\r such",           /*  8 */
     "...",                      /*  9 */
     "but it's not over yet",    /* 10 */
     "still 5 lines to go",      /* 11 */
@@ -363,6 +363,23 @@ TEST test_file_readlinenumber(void)
     "and now 3 including this", /* 13 */
     "and now 2"                 /* 14 */
     "", /* 15 */
+  };
+  const char *lines_out[] = {
+    lines[0],                   /*  1 */
+    lines[1],                   /*  2 */
+    lines[2],                   /*  3 */
+    lines[3],                   /*  4 */
+    lines[4],                   /*  5 */
+    lines[5],                   /*  6 */
+    lines[6],                   /*  7 */
+    "and such",                 /*  8 */
+    lines[8],                   /*  9 */
+    lines[9],                   /* 10 */
+    lines[10],                  /* 11 */
+    lines[11],                  /* 12 */
+    lines[12],                  /* 13 */
+    lines[13],                  /* 14 */
+    lines[14],                  /* 15 */
   };
 
   char filebuf[2000] = {0};
@@ -385,14 +402,19 @@ TEST test_file_readlinenumber(void)
   {
     written = srsFile_ReadLineByNumber(multilinefile, index + 1, linebuf, sizeof(linebuf));
     ASSERT(written >= 0);
-    ASSERT_EQ(written, strlen(lines[index]));
-    /* @todo test line length with sparce CRs (need lines WITH sparce CRs first)*/
+    /* Some lines have a number of CRs that are skipped and therefore reduce the length. */
+    ASSERT_EQ(strlen(lines_out[index]), written);
+    ASSERT_STR_EQ(lines_out[index], linebuf);
     /* @todo test line output */
   }
-  /* @todo test invalid file */
-  /* @todo test invalid line numbers */
+  /* Test invalid line numbers */
+  ASSERT_EQ(-1, srsFile_ReadLineByNumber(multilinefile, 0, linebuf, sizeof(linebuf)));
+  ASSERT_EQ(-1, srsFile_ReadLineByNumber(multilinefile, 9000, linebuf, sizeof(linebuf)));
+  /* Test missing file */
+  ASSERT_EQ(-1, srsFile_ReadLineByNumber("missing", 1, linebuf, sizeof(linebuf)));
 
   /* Cleanup */
+
   kioku_filesystem_delete(multilinefile);
   PASS();
 }
