@@ -1,4 +1,4 @@
-image: registry.gitlab.com/seltzer/kioku-srs/build:latest
+image: registry.gitlab.com/seltzer/kioku-srs/linux:latest
 stages:
   - deps
   - build
@@ -10,11 +10,20 @@ build_image:
   services:
   - docker:dind
   script:
-    - cd docker
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
-    - docker build -t registry.gitlab.com/seltzer/kioku-srs/build .
+    - echo "Building linux image"
+    - cd $CI_PROJECT_DIR/linux
+    - docker build -t registry.gitlab.com/seltzer/kioku-srs/linux .
+    - docker push registry.gitlab.com/seltzer/kioku-srs/linux:latest
+    - echo "Building mingw image"
+    - cd $CI_PROJECT_DIR/mingw
+    - docker build -t registry.gitlab.com/seltzer/kioku-srs/mingw .
+    - docker push registry.gitlab.com/seltzer/kioku-srs/mingw:latest
+    - echo "Building doxygen image"
+    - cd $CI_PROJECT_DIR/doxygen
+    - docker build -t registry.gitlab.com/seltzer/kioku-srs/doxygen .
+    - docker push registry.gitlab.com/seltzer/kioku-srs/doxygen:latest
 #   - docker run registry.gitlab.com/seltzer/kioku-srs/build /script/to/run/tests
-    - docker push registry.gitlab.com/seltzer/kioku-srs/build:latest
 # Don't build this unless we've got it on the docker branch - this is just to prevent it from building every time on master.
   only:
     - docker
