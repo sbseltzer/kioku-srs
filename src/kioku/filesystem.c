@@ -621,9 +621,16 @@ bool kioku_filesystem_getcontent(const char *filepath, char *content_out, size_t
 
 int32_t srsFile_ReadLineByNumber(const char *path, uint32_t linenum, char *linebuf, size_t linebuf_size)
 {
-  FILE *fp = kioku_filesystem_open(path, "r");
+  /* Null terminate so falure results in empty string */
   linebuf[0] = '\0';
+  FILE *fp = kioku_filesystem_open(path, "r");
+  /* Must be valid file */
   if (fp == NULL)
+  {
+    return -1;
+  }
+  /* Must be valid line number */
+  if (linenum < 1)
   {
     return -1;
   }
