@@ -16,16 +16,13 @@ build_image:
     - cd $CI_PROJECT_DIR/docker/linux
     - docker build -t registry.gitlab.com/seltzer/kioku-srs/linux .
     - docker push registry.gitlab.com/seltzer/kioku-srs/linux:latest
-    - echo "Building mingw image"
-    - cd $CI_PROJECT_DIR/docker/mingw
-    - docker build -t registry.gitlab.com/seltzer/kioku-srs/mingw .
-    - docker push registry.gitlab.com/seltzer/kioku-srs/mingw:latest
     - echo "Building doxygen image"
     - cd $CI_PROJECT_DIR/docker/doxygen
     - docker build -t registry.gitlab.com/seltzer/kioku-srs/doxygen .
     - docker push registry.gitlab.com/seltzer/kioku-srs/doxygen:latest
-#   - docker run registry.gitlab.com/seltzer/kioku-srs/build /script/to/run/tests
-# Don't build this unless we've got it on the docker branch - this is just to prevent it from building every time on master.
+    # todo run tests
+    # docker run registry.gitlab.com/seltzer/kioku-srs/build /script/to/run/tests
+  # Don't build this unless we've got it on the docker branch - this is just to prevent it from building every time on master.
   only:
     - docker
 
@@ -88,71 +85,6 @@ build-gcc:
   artifacts:
     paths:
       - $CI_JOB_NAME/
-
-deps-mingw32:
-  stage: deps
-  image: registry.gitlab.com/seltzer/kioku-srs/mingw:latest
-  dependencies:
-    - submodules-deps
-  script:
-    - cd extern/libgit2
-    - cmake . -G"Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=$CI_PROJECT_DIR/cross/toolchain-mingw32.cmake -DEMBED_SSH_PATH=$CI_PROJECT_DIR/extern/libssh2/ -DBUILD_CLAR=OFF
-    - make
-  only:
-    - master
-  artifacts:
-    paths:
-      - extern/
-
-deps-mingw64:
-  stage: deps
-  image: registry.gitlab.com/seltzer/kioku-srs/mingw:latest
-  dependencies:
-    - submodules-deps
-  script:
-    - cd extern/libgit2
-    - cmake . -G"Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=$CI_PROJECT_DIR/cross/toolchain-mingw64.cmake -DEMBED_SSH_PATH=$CI_PROJECT_DIR/extern/libssh2/ -DBUILD_CLAR=OFF
-    - make
-  only:
-    - master
-  artifacts:
-    paths:
-      - extern/
-
-build-mingw32:
-  stage: build
-  image: registry.gitlab.com/seltzer/kioku-srs/mingw:latest
-  dependencies:
-    - deps-mingw32
-    - submodules-build
-  script:
-    - mkdir $CI_JOB_NAME && cd $CI_JOB_NAME
-    - cp $CI_PROJECT_DIR/extern/libgit2/*.dll .
-    - cmake .. -G"Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=$CI_PROJECT_DIR/cross/toolchain-mingw32.cmake 
-    - make
-  only:
-    - master
-  artifacts:
-    paths:
-      - $CI_JOB_NAME/
-
-build-mingw64:
-  stage: build
-  image: registry.gitlab.com/seltzer/kioku-srs/mingw:latest
-  dependencies:
-    - deps-mingw64
-    - submodules-build
-  script:
-    - mkdir $CI_JOB_NAME && cd $CI_JOB_NAME
-    - cp $CI_PROJECT_DIR/extern/libgit2/*.dll .
-    - cmake .. -G"Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=$CI_PROJECT_DIR/cross/toolchain-mingw64.cmake 
-    - make
-  only:
-    - master
-  artifacts:
-    paths:
-      - $CI_JOB_NAME/
-
 
 docs:
   stage: docs
