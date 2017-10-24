@@ -634,6 +634,7 @@ int32_t srsFile_ReadLineByNumber(const char *path, uint32_t linenum, char *lineb
   /* Initialize results */
   int32_t result = -1;
   size_t linelen = 0;
+  FILE *fp = NULL;
   /* Must be valid line number */
   if (linenum < 1)
   {
@@ -650,10 +651,11 @@ int32_t srsFile_ReadLineByNumber(const char *path, uint32_t linenum, char *lineb
     goto cleanup;
   }
   /* Attempt to open file */
-  FILE *fp = kioku_filesystem_open(path, "r");
+  fp = kioku_filesystem_open(path, "r");
   /* Must be valid file */
   if (fp == NULL)
   {
+    srsLOG_ERROR("Failed to open %s for line reading", path);
     goto cleanup;
   }
   int ch = EOF;
