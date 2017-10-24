@@ -9,6 +9,12 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Mo
 
 # Give this to get CMake to look for libraries built from source.
 list(APPEND CMAKE_PREFIX_PATH
+            ${CMAKE_SOURCE_DIR}/
+            ${CMAKE_SOURCE_DIR}/Release
+            ${CMAKE_SOURCE_DIR}/Debug
+            ${CMAKE_SOURCE_DIR}/build
+            ${CMAKE_SOURCE_DIR}/build/Release
+            ${CMAKE_SOURCE_DIR}/build/Debug
             ${CMAKE_SOURCE_DIR}/extern/libgit2
             ${CMAKE_SOURCE_DIR}/extern/libgit2/Release
             ${CMAKE_SOURCE_DIR}/extern/libgit2/Debug
