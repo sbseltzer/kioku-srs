@@ -20,8 +20,10 @@ static bool kill_me_now = false;
 
 static bool parse_request(struct http_message *hm, JSON_Value **root_value, JSON_Object **root_object, const char **error_msg)
 {
+  char buf[1024] = {0};
+  memcpy(buf, hm->body.p, sizeof(buf) - 1 < hm->body.len ? sizeof(buf) - 1 : hm->body.len);
   /* See if JSON value was provided as data */
-  *root_value = json_parse_string(hm->body.p);
+  *root_value = json_parse_string(buf);
   *root_object = NULL;
   *error_msg = NULL;
   if (*root_value == NULL)
