@@ -68,6 +68,7 @@ static void handle_GetNextCard(struct mg_connection *nc, struct http_message *hm
   JSON_Object *root_object = NULL;
   char *serialized_string = NULL;
   const char *deck_path = NULL;
+  /** @todo Change this to use the HTTP parameters as opposed to parsing HTTP body */
   if (parse_request(hm, &root_value, &root_object, &error_msg))
   {
     deck_path = json_object_get_string(root_object, "deck");
