@@ -43,16 +43,16 @@ A jump point is preferable as it's more flexible and does not add a new stack fr
 ### Handling/Preventing Failure
 Functions that can fail in non-critical ways should strive to suggest only one way of recovering from a failure. They must provide some mechanism to help the user prevent failure. This encourages the user to lean toward preventative strategies.
 
-All API functions must provide a means for the user to be intelligent about their input quality. This can be achieved by providing a mechanism for determining their specific requirements, or providing a static mechanism that gives a near-guarantee for perfect input.
+All API functions must provide or have a means for the user to be intelligent about their input quality.
 
 #### Example: Buffer Size
 
 One common scenario is the user not providing enough memory to a buffer that they pass to the API to be filled. They have 3 choices:
 1. Respond by retrying with more memory until it succeeds.
 1. Use the API to determine how much they need so they can provide perfect input.
-1. Provide input that is as perfect as possible to begin with. The library must provided a static way of informing what "perfect as possible" is. In this case the unlikely failure takes on a critical nature. This is where a user may choose to bail.
+1. Provide input that is as perfect as possible to begin with. The library must provided a consistent way of informing what "perfect as possible" is. In this case the unlikely failure takes on a critical nature. This is where a user may choose to bail.
 
-The later two, being prevention-based strategies, are by far preferable. For large values (we'll say greater than a kibibyte) the second option is preferred. Otherwise the third is best. One or both may be provided. An example would be path concatenation. There is a definitive max path size that could be used, but frankly, that could be much longer than is necessary (or safe in the likely case of stack allocation).
+The later two, being prevention-based strategies, are by far preferable. For large values (we'll say greater than a kibibyte) the second option is preferred. Otherwise the third is best. One or both may be provided. An example would be path concatenation. There is a supposed max path size that can be used, but frankly, that can be incorrect and/or dangerous to use (in the case of an unexpectedly large stack allocation).
 
 In general, the top level user will only care about binary outcomes (success/failure). As such, complex failure scenarios (such as filesystem operations) have two options.
 1. Provide a mechanism for inspecting failure in greater detail.
