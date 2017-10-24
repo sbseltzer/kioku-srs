@@ -61,4 +61,3 @@ In general, the top level user will only care about binary outcomes (success/fai
 Which is chosen does not much matter.
 
 ### Logging
-If failures are generalized to 
