@@ -32,11 +32,13 @@ There are two kinds of failure class. Critical and non-critical.
 1. Non-Critical Failure. This is recoverable, and often preventable. It is up to the user how to handle this, but the API must clearly specify what manner to detect with.
 
 ### Bailing
-Bailing must always trigger a helpful log message and output to stderr before bailing.
+Bailing is something that is often meant to result in program termination because recovery is infeasible. Bailing must always trigger a helpful log message and output to stderr before bailing.
 
 Bailing should not necessarily abort. Since the API is meant to be used by a server, it's important to give the server a chance to clean up it's resources so relaunching doesn't have resource acquisition problems. There are two options:
 1. Give the user a jump point.
 1. Give the user a callback setter.
+
+A jump point is preferable as it's more flexible and does not add a new stack frame (as far as I'm aware).
 
 ### Handling/Preventing Failure
 Functions that can fail in non-critical ways should strive to suggest only one way of recovering from a failure. They must provide some mechanism to help the user prevent failure. This encourages the user to lean toward preventative strategies.
