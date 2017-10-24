@@ -60,9 +60,24 @@ static void handle_exit_call(struct mg_connection *nc, struct http_message *hm)
 
 static void handle_GetNextCard(struct mg_connection *nc, struct http_message *hm)
 {
-  char *serialized_string = NULL;
+  const char *error_msg = NULL;
+  const char *codestring = HTTP_OK;
   JSON_Value *root_value = NULL;
   JSON_Object *root_object = NULL;
+  char *serialized_string = NULL;
+  const char *deck_path = NULL;
+  if (parse_request(hm, &root_value, &root_object, &error_msg))
+  {
+    deck_path = json_object_get_string(root_object, "deck");
+  }
+  if (deck_path == NULL)
+  {
+    goto respond;
+  }
+  if (!kioku_filesystem_isdir(deck_path))
+  {
+    goto respond;
+  }
   char card_id[srsMODEL_CARD_ID_MAX] = {0};
   if (srsModel_Card_GetNextID("deck-test/", card_id, sizeof(card_id)))
   {
@@ -101,8 +116,18 @@ static void handle_GetNextCard(struct mg_connection *nc, struct http_message *hm
     }
     serialized_string = json_serialize_to_string_pretty(root_value);
   }
-  const char *codestring = HTTP_OK;
-  if (serialized_string == NULL)
+respond:
+  if (deck_path == NULL)
+  {
+    codestring = HTTP_BAD_REQUEST;
+    rest_respond(nc, codestring, "%s", "{\"error\":\"No deck specified!\"}");
+  }
+  else if (!kioku_filesystem_isdir(deck_path))
+  {
+    codestring = HTTP_BAD_REQUEST;
+    rest_respond(nc, codestring, "%s", "{\"error\":\"Specified deck does not exist!\"}");
+  }
+  else if (serialized_string == NULL)
   {
     codestring = HTTP_INTERNAL_ERROR;
     rest_respond(nc, codestring, "%s", "{\"error\":\"failed to construct response\"}");
