@@ -76,7 +76,7 @@ build-gcc:
     - submodules-build
   script:
     - mkdir build && cd build
-    - cp $CI_PROJECT_DIR/extern/libgit2/*.so .
+    - cp $CI_PROJECT_DIR/extern/libgit2/*.so* .
     - test -f libgit2.so
     - cmake .. -G"Unix Makefiles"
     - make
