@@ -2,6 +2,22 @@
 
 This document outlines some guiding principles for development.
 
+## Goto
+
+This codebase makes use of the `goto` statement. This is to promote code clarity and robustness. This may seem counterintuitive to the uninitiated, who have been taught that `goto` is evil. In reality, `goto` is something that good programmers use for good reasons. Philosophically, bad programmers produce bad code regardless of what language features are made available to them. Good programmers produce good code by knowing how to apply the language features available to them, and `goto` is one such feature. Being afraid of it does not mean you're a bad programmer - it simply means you've been indoctrinated by a swath of outdated opinions, likely purveyed by college professors, based on research papers that are no longer applicable to real-world use. Many arguments against it are dependent on contrived examples/anti-patterns that no competent programmer would ever use.
+
+To put this into perspective, both the Linux kernel and libgit2 (upon which this project depends) use `goto` quite liberally. Linus Torvalds even promotes its use. An excellent discussion can be found [here](https://web.archive.org/web/20051128093253/http://kerneltrap.org/node/553/2131), which explains the rationale and positive aspects of `goto` in the kernel much better than I could. There's still contention and disagreement on this, but I've come around to the opinion that it is a wise choice.
+
+Many people go to great lengths to avoid it's use while preserving its utility with convoluted and sometimes wasteful workarounds that ironically *reduce* code clarity and open themselves up to more future maintenance.
+
+Since not everyone is as experienced in the safe use of `goto`, including myself, there are three rules for applying it in this codebase.
+
+1. Labels MUST only be declared within top function scope (i.e. outside of control structures such as `for` and `if`, but within the confines of a function).
+2. Jumps to labels MUST only go forward in execution - never backward.
+3. All symbols referenced *past* the label MUST be declared and initialized *before* the first possible jump to it.
+
+These are some very tight restrictions on its use that help keep the codebase clean and readable. If you follow these rules, you will rarely end up in a situation where `goto` hurts more than helps. As always, clarity is key.
+
 ## User Input
 
 ## Support Functions
