@@ -18,11 +18,6 @@ static bool kill_me_now = false;
     mg_send_http_chunk(connection, "", 0); /* Send empty chunk, the end of response */ \
   } while(0)
 
-static double sum_call(double n1, double n2)
-{
-  return n1 + n2;
-}
-
 static bool parse_request(struct http_message *hm, JSON_Value **root_value, JSON_Object **root_object, const char **error_msg)
 {
   /* See if JSON value was provided as data */
@@ -54,67 +49,6 @@ static bool precheck_response(JSON_Value **root_value, JSON_Object **root_object
     return false;
   }
   return true;
-}
-
-/* Talk to this with `curl localhost:8000/api/v1/sum --data "{\"n1\": YOUR_N1_NUMBER, \"n2\": YOUR_N2_NUMBER}"` */
-static void handle_sum_call(struct mg_connection *nc, struct http_message *hm)
-{
-  double result = 0;
-  fprintf(stderr, "Data: %s\n", hm->body.p);
-
-  /* See if JSON value was provided as data */
-  JSON_Value *root_value = NULL;
-  JSON_Object *root_object = NULL;
-  const char *error_msg = NULL;
-  do {
-    /* Make sure it fulfills basic requirements */
-    if (parse_request(hm, &root_value, &root_object, &error_msg))
-    {
-      /* Check members */
-      if (!json_object_has_value_of_type(root_object, "n1", JSONNumber))
-      {
-        error_msg = "Expected JSON number 'n1'";
-        break;
-      }
-      if (!json_object_has_value_of_type(root_object, "n2", JSONNumber))
-      {
-        error_msg = "Expected JSON number 'n2'";
-        break;
-      }
-    }
-  } while (0);
-  /* Respond */
-  const char *codestring = NULL;
-  if (!precheck_response(&root_value, &root_object, error_msg))
-  {
-    /* Construct result */
-    codestring = HTTP_BAD_REQUEST;
-  }
-  else
-  {
-    /* Perform method */
-    double n1 = json_object_get_number(root_object, "n1");
-    double n2 = json_object_get_number(root_object, "n2");
-    result = sum_call(n1, n2);
-    /* Clear the request object to reuse as the response */
-    json_object_clear(root_object);
-    /* Construct result */
-    json_object_set_number(root_object, "result", result);
-    codestring = HTTP_OK;
-  }
-  /* Serialize and respond */
-  char result_buffer[32] = {0};
-  if (json_serialize_to_buffer(root_value, result_buffer, sizeof(result_buffer)) == JSONFailure)
-  {
-    rest_respond(nc, HTTP_INTERNAL_ERROR, "{\"error\":\"Failed to serialize result @%s:%u\"}", __FILE__, __LINE__);
-    kLOG_WRITE("Buffer was not long enough (%zu < %zu)", sizeof(result_buffer), json_serialization_size(root_value));
-  }
-  else
-  {
-    rest_respond(nc, codestring, "%s", result_buffer);
-  }
-  /* Cleanup */
-  json_value_free(root_value);
 }
 
 static void handle_exit_call(struct mg_connection *nc, struct http_message *hm)
@@ -205,11 +139,7 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
   switch (ev) {
     case MG_EV_HTTP_REQUEST:
     {
-      if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "sum") == 0)
-      {
-        handle_sum_call(nc, hm); /* Handle RESTful call */
-      }
-      else if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "exit") == 0)
+      if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "exit") == 0)
       {
         handle_exit_call(nc, hm);
       }
