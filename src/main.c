@@ -18,15 +18,12 @@ static bool kill_me_now = false;
     mg_send_http_chunk(connection, "", 0); /* Send empty chunk, the end of response */ \
   } while(0)
 
-static double sum_call(double n1, double n2)
-{
-  return n1 + n2;
-}
-
 static bool parse_request(struct http_message *hm, JSON_Value **root_value, JSON_Object **root_object, const char **error_msg)
 {
+  char buf[1024] = {0};
+  memcpy(buf, hm->body.p, sizeof(buf) - 1 < hm->body.len ? sizeof(buf) - 1 : hm->body.len);
   /* See if JSON value was provided as data */
-  *root_value = json_parse_string(hm->body.p);
+  *root_value = json_parse_string(buf);
   *root_object = NULL;
   *error_msg = NULL;
   if (*root_value == NULL)
@@ -56,67 +53,6 @@ static bool precheck_response(JSON_Value **root_value, JSON_Object **root_object
   return true;
 }
 
-/* Talk to this with `curl localhost:8000/api/v1/sum --data "{\"n1\": YOUR_N1_NUMBER, \"n2\": YOUR_N2_NUMBER}"` */
-static void handle_sum_call(struct mg_connection *nc, struct http_message *hm)
-{
-  double result = 0;
-  fprintf(stderr, "Data: %s\n", hm->body.p);
-
-  /* See if JSON value was provided as data */
-  JSON_Value *root_value = NULL;
-  JSON_Object *root_object = NULL;
-  const char *error_msg = NULL;
-  do {
-    /* Make sure it fulfills basic requirements */
-    if (parse_request(hm, &root_value, &root_object, &error_msg))
-    {
-      /* Check members */
-      if (!json_object_has_value_of_type(root_object, "n1", JSONNumber))
-      {
-        error_msg = "Expected JSON number 'n1'";
-        break;
-      }
-      if (!json_object_has_value_of_type(root_object, "n2", JSONNumber))
-      {
-        error_msg = "Expected JSON number 'n2'";
-        break;
-      }
-    }
-  } while (0);
-  /* Respond */
-  const char *codestring = NULL;
-  if (!precheck_response(&root_value, &root_object, error_msg))
-  {
-    /* Construct result */
-    codestring = HTTP_BAD_REQUEST;
-  }
-  else
-  {
-    /* Perform method */
-    double n1 = json_object_get_number(root_object, "n1");
-    double n2 = json_object_get_number(root_object, "n2");
-    result = sum_call(n1, n2);
-    /* Clear the request object to reuse as the response */
-    json_object_clear(root_object);
-    /* Construct result */
-    json_object_set_number(root_object, "result", result);
-    codestring = HTTP_OK;
-  }
-  /* Serialize and respond */
-  char result_buffer[32] = {0};
-  if (json_serialize_to_buffer(root_value, result_buffer, sizeof(result_buffer)) == JSONFailure)
-  {
-    rest_respond(nc, HTTP_INTERNAL_ERROR, "{\"error\":\"Failed to serialize result @%s:%u\"}", __FILE__, __LINE__);
-    kLOG_WRITE("Buffer was not long enough (%zu < %zu)", sizeof(result_buffer), json_serialization_size(root_value));
-  }
-  else
-  {
-    rest_respond(nc, codestring, "%s", result_buffer);
-  }
-  /* Cleanup */
-  json_value_free(root_value);
-}
-
 static void handle_exit_call(struct mg_connection *nc, struct http_message *hm)
 {
   kill_me_now = true;
@@ -126,9 +62,25 @@ static void handle_exit_call(struct mg_connection *nc, struct http_message *hm)
 
 static void handle_GetNextCard(struct mg_connection *nc, struct http_message *hm)
 {
-  char *serialized_string = NULL;
+  const char *error_msg = NULL;
+  const char *codestring = HTTP_OK;
   JSON_Value *root_value = NULL;
   JSON_Object *root_object = NULL;
+  char *serialized_string = NULL;
+  const char *deck_path = NULL;
+  /** @todo Change this to use the HTTP parameters as opposed to parsing HTTP body */
+  if (parse_request(hm, &root_value, &root_object, &error_msg))
+  {
+    deck_path = json_object_get_string(root_object, "deck");
+  }
+  if (deck_path == NULL)
+  {
+    goto respond;
+  }
+  if (!kioku_filesystem_isdir(deck_path))
+  {
+    goto respond;
+  }
   char card_id[srsMODEL_CARD_ID_MAX] = {0};
   if (srsModel_Card_GetNextID("deck-test/", card_id, sizeof(card_id)))
   {
@@ -167,8 +119,18 @@ static void handle_GetNextCard(struct mg_connection *nc, struct http_message *hm
     }
     serialized_string = json_serialize_to_string_pretty(root_value);
   }
-  const char *codestring = HTTP_OK;
-  if (serialized_string == NULL)
+respond:
+  if (deck_path == NULL)
+  {
+    codestring = HTTP_BAD_REQUEST;
+    rest_respond(nc, codestring, "%s", "{\"error\":\"No deck specified!\"}");
+  }
+  else if (!kioku_filesystem_isdir(deck_path))
+  {
+    codestring = HTTP_BAD_REQUEST;
+    rest_respond(nc, codestring, "%s", "{\"error\":\"Specified deck does not exist!\"}");
+  }
+  else if (serialized_string == NULL)
   {
     codestring = HTTP_INTERNAL_ERROR;
     rest_respond(nc, codestring, "%s", "{\"error\":\"failed to construct response\"}");
@@ -205,11 +167,7 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
   switch (ev) {
     case MG_EV_HTTP_REQUEST:
     {
-      if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "sum") == 0)
-      {
-        handle_sum_call(nc, hm); /* Handle RESTful call */
-      }
-      else if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "exit") == 0)
+      if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "exit") == 0)
       {
         handle_exit_call(nc, hm);
       }

@@ -631,18 +631,30 @@ bool kioku_filesystem_getcontent(const char *filepath, char *content_out, size_t
 
 int32_t srsFile_ReadLineByNumber(const char *path, uint32_t linenum, char *linebuf, size_t linebuf_size)
 {
-  /* Null terminate so falure results in empty string */
-  linebuf[0] = '\0';
+  /* Initialize results */
+  int32_t result = -1;
+  size_t linelen = 0;
+  /* Must be valid line number */
+  if (linenum < 1)
+  {
+    goto cleanup;
+  }
+  /* Must be valid buffer */
+  if (linebuf == NULL)
+  {
+    goto cleanup;
+  }
+  /* Must be valid buffer size */
+  if (linebuf_size == 0)
+  {
+    goto cleanup;
+  }
+  /* Attempt to open file */
   FILE *fp = kioku_filesystem_open(path, "r");
   /* Must be valid file */
   if (fp == NULL)
   {
-    return -1;
-  }
-  /* Must be valid line number */
-  if (linenum < 1)
-  {
-    return -1;
+    goto cleanup;
   }
   int ch = EOF;
   int i = 1;
@@ -657,10 +669,9 @@ int32_t srsFile_ReadLineByNumber(const char *path, uint32_t linenum, char *lineb
   /* If we reached the end of file, it means the line number was greater than the number of lines in the file */
   if (ch == EOF)
   {
-    return -1;
+    goto cleanup;
   }
   /* Read the line into the buffer up to buffer size excluding null terminator, and stripping carriage returns. */
-  size_t linelen = 0;
   for (; (linelen < linebuf_size-1) && (ch != '\n') && (ch != EOF); ch = fgetc(fp))
   {
     if (ch != '\r')
@@ -669,7 +680,20 @@ int32_t srsFile_ReadLineByNumber(const char *path, uint32_t linenum, char *lineb
       linelen++;
     }
   }
-  linebuf[linelen] = '\0';
-  fclose(fp);
-  return linelen;
+  /* No freaking way will this be greater than maximum int32... unless it is. That would be bad. */
+  assert(linelen <= INT32_MAX);
+  result = (int32_t) linelen;
+  /* Perform cleanup */
+cleanup:
+  /* Don't null-terminate an ostensibly zero-sized buffer. */
+  if ((linebuf != NULL) && (linebuf_size > 0))
+  {
+    linebuf[linelen] = '\0';
+  }
+  /* Don't close an invalid file handle */
+  if (fp != NULL)
+  {
+    fclose(fp);
+  }
+  return result;
 }

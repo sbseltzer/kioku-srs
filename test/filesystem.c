@@ -412,6 +412,10 @@ TEST test_file_readlinenumber(void)
   ASSERT_EQ(-1, srsFile_ReadLineByNumber(multilinefile, 9000, linebuf, sizeof(linebuf)));
   /* Test missing file */
   ASSERT_EQ(-1, srsFile_ReadLineByNumber("missing", 1, linebuf, sizeof(linebuf)));
+  /* Test invalid buffer */
+  ASSERT_EQ(-1, srsFile_ReadLineByNumber(multilinefile, 1, NULL, sizeof(linebuf)));
+  /* Test invalid buffer size */
+  ASSERT_EQ(-1, srsFile_ReadLineByNumber(multilinefile, 1, linebuf, 0));
 
   /* Cleanup */
 
