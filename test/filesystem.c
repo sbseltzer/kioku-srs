@@ -561,6 +561,7 @@ TEST test_dir_traversal(void)
     cwd = srsDir_SetCurrent(original_path);
     ASSERT(cwd != NULL);
     srsLOG_NOTIFY(cwd);
+    strcpy(path, cwd);
   }
 
   /* Test pushing several directories */
