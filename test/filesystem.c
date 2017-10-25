@@ -476,7 +476,7 @@ TEST test_file_io(void)
   PASS();
 }
 
-/* \todo test whether start_index behaves properly for get up index */
+/** @todo test whether start_index behaves properly for get up index */
 TEST test_resolve_relative(void)
 {
   printf("Testing kioku_path_resolve_relative..." kiokuSTRING_LF);
