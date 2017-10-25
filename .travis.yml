@@ -1,10 +1,9 @@
 language: c
+os: osx
 compiler:
   - gcc
 
-build:
-  os: osx
-  script:
-    - echo "Hello, Travis CI"
-    - ci/linux/build-deps.sh
-    - ci/linux/build.sh
+script:
+ - echo "Hello, Travis CI"
+ - ci/linux/build-deps.sh
+ - ci/linux/build.sh
