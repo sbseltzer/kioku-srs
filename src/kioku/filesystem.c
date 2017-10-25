@@ -45,7 +45,7 @@ bool srsDir_SetSystemCWD(const char *buf)
   return (chdir(buf) == 0);
 }
 
-const char *srsDir_GetCurrent()
+const char *srsDir_GetCWD()
 {
   if (directory_current == NULL)
   {
@@ -64,7 +64,7 @@ const char *srsDir_GetCurrent()
   return directory_current;
 }
 
-const char *srsDir_SetCurrent(const char *path)
+const char *srsDir_SetCWD(const char *path)
 {
   /* Clear stack */
   for (directory_stack_top_index = 0; directory_stack_top_index < srsFILESYSTEM_DIRSTACK_SIZE; directory_stack_top_index++)
@@ -81,7 +81,7 @@ const char *srsDir_SetCurrent(const char *path)
     }
   }
   directory_stack_top_index = -1;
-  /* Free the current directory so our next call to srsDir_GetCurrent regenerates it */
+  /* Free the current directory so our next call to srsDir_GetCWD regenerates it */
   if (directory_current != NULL)
   {
     free(directory_current);
@@ -90,25 +90,25 @@ const char *srsDir_SetCurrent(const char *path)
   /* Attempt to change the directory, and if it succeeds cause the current directory to be reallocated */
   if ((path != NULL) && srsDir_SetSystemCWD(path))
   {
-    return srsDir_GetCurrent();
+    return srsDir_GetCWD();
   }
   /* Failure to do the actual directory changing returns NULL */
   return NULL;
 }
 
-const char *srsDir_PushCurrent(const char *path, char **lost)
+const char *srsDir_PushCWD(const char *path, char **lost)
 {
   const char *cwd = NULL;
   if ((path != NULL) && srsDir_SetSystemCWD(path))
   {
-    /* Free the current directory so our next call to srsDir_GetCurrent regenerates it */
+    /* Free the current directory so our next call to srsDir_GetCWD regenerates it */
     if (directory_current != NULL)
     {
       free(directory_current);
       directory_current = NULL;
     }
-    cwd = srsDir_GetCurrent();
-    /** @todo Check result of srsDir_GetCurrent */
+    cwd = srsDir_GetCWD();
+    /** @todo Check result of srsDir_GetCWD */
     /* Increment the stack index (if the stack is empty, this should end up at zero) */
     directory_stack_top_index++;
     assert(directory_stack_top_index >= 0);
@@ -137,7 +137,7 @@ const char *srsDir_PushCurrent(const char *path, char **lost)
   return cwd;
 }
 
-bool srsDir_PopCurrent(char **popped)
+bool srsDir_PopCWD(char **popped)
 {
   char *pop_me = NULL;
   int32_t current_index = directory_stack_top_index;

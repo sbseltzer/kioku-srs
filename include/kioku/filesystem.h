@@ -215,7 +215,7 @@ kiokuAPI bool srsDir_SetSystemCWD(const char *path);
  * Get the Current Working Directory (CWD)
  * @return Null-terminated string. Do not attempt to free it, as it is memory-managed. NULL is returned if the last known CWD has become invalid.
  */
-kiokuAPI const char *srsDir_GetCurrent();
+kiokuAPI const char *srsDir_GetCWD();
 
 /**
  * Set the Current Working Directory (CWD)
@@ -223,7 +223,7 @@ kiokuAPI const char *srsDir_GetCurrent();
  * @param[in] path Directory path (can be relative) to change to. It will not be stored.
  * @return The null-terminated string of the new CWD. Do not attempt to free it, as it is memory-managed. NULL is returned if the path is invalid.
  */
-kiokuAPI const char *srsDir_SetCurrent(const char *path);
+kiokuAPI const char *srsDir_SetCWD(const char *path);
 
 /**
  * Push a new Current Working Directory (CWD) onto the Directory Stack, changing to it.
@@ -232,7 +232,7 @@ kiokuAPI const char *srsDir_SetCurrent(const char *path);
  * @param[out] lost A place to store the path that was lost in the case the user exceeds the max directory stack size. If this is non-NULL and the stored value is non-NULL, it is up to the user to free the value stored. If this is NULL, the bottom of the stack can be silently lost and the memory will be automatically freed.
  * @return The null-terminated string of the new CWD. Do not attempt to free it, as it is memory-managed. NULL is returned if the path is invalid.
  */
-kiokuAPI const char *srsDir_PushCurrent(const char *path, char **lost);
+kiokuAPI const char *srsDir_PushCWD(const char *path, char **lost);
 
 /**
  * Pop the Current Working Directory (CWD) from the Directory Stack, changing to the new top CWD if available.
@@ -240,7 +240,7 @@ kiokuAPI const char *srsDir_PushCurrent(const char *path, char **lost);
  * @param[out] popped A place to store the null-terminated string of the popped CWD. If non-NULL, it will not be freed and it is up to the user to do so. Otherwise it will be automatically freed.
  * @return Whether an entry was popped.
  */
-kiokuAPI bool srsDir_PopCurrent(char **popped);
+kiokuAPI bool srsDir_PopCWD(char **popped);
 
 /**
  * Read a line by it's number from the specified file into a buffer.
