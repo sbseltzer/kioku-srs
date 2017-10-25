@@ -94,6 +94,7 @@ const char *srsDir_SetCurrent(const char *path)
 
 const char *srsDir_PushCurrent(const char *path, char **lost)
 {
+  const char *cwd = NULL;
   if ((path != NULL) && (chdir(path) == 0))
   {
     if (directory_current != NULL)
@@ -101,7 +102,7 @@ const char *srsDir_PushCurrent(const char *path, char **lost)
       free(directory_current);
       directory_current = NULL;
     }
-    const char *cwd = srsDir_GetCurrent();
+    cwd = srsDir_GetCurrent();
     /** @todo Check result of srsDir_GetCurrent */
     if (directory_stack[directory_stack_top_index] != NULL)
     {
@@ -122,7 +123,7 @@ const char *srsDir_PushCurrent(const char *path, char **lost)
       directory_stack_top_index = 0;
     }
   }
-  return NULL;
+  return cwd;
 }
 
 const char *srsDir_PopCurrent(const char *path)
