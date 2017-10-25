@@ -126,13 +126,16 @@ const char *srsDir_PushCurrent(const char *path, char **lost)
   return cwd;
 }
 
-const char *srsDir_PopCurrent(const char *path)
+const char *srsDir_PopCurrent()
 {
   const char *result = NULL;
-  if (path == NULL || *path == '\0')
+  /* See if there's anything left to pop */
+  if (directory_stack[directory_stack_top_index] == NULL)
   {
+    /** @todo Unsure if this is the right behaviour */
     goto finish;
   }
+  /* Wrap around? */
   if (directory_stack_top_index == 0)
   {
     uint32_t i = 0;
