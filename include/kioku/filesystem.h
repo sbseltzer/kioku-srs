@@ -245,7 +245,6 @@ kiokuAPI bool srsDir_PopCWD(char **popped);
 /**
  * Read a line by it's number from the specified file into a buffer.
  * The content of the buffer will be the specified line (if it exists) with all newlines and carriage returns stripped.
- * 
  * @param[in] path The filepath.
  * @param[in] linenum The line number to seek to before reading. Line numbers start at 1. @todo Perhaps have a seek to line number function?
  * @param[out] linebuf The buffer to write the line to.
