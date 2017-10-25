@@ -166,6 +166,8 @@ add_subdirectory(test)
 
 enable_testing()
 
+#set( CTEST_MEMORYCHECK_COMMAND valgrind )
+#set( CTEST_MEMORYCHECK_COMMAND_OPTIONS "--tool=callgrind -v" )
 add_test(NAME TestFileSystem COMMAND filesystem)
 add_test(NAME TestGit COMMAND git)
 add_test(NAME TestModel COMMAND model)
