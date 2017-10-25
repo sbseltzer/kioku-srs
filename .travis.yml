@@ -1,3 +1,6 @@
 os: osx
+language: c
 script:
   - echo "Hello, Travis CI"
+  - ci/linux/build-deps.sh
+  - ci/linux/build.sh
