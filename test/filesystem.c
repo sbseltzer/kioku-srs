@@ -564,18 +564,26 @@ TEST test_dir_traversal(void)
     strcpy(path, cwd);
   }
 
-  /* Test pushing several directories */
+  /* Test push/pop */
   {
-    /* Go up */
-    cwd = srsDir_PushCurrent("..", NULL);
+    /* Pop without anything on the stack */
+    cwd = srsDir_PopCurrent();
+    ASSERT(cwd == NULL);
+    /* Ensure that pop didn't change the CWD */
+    cwd = srsDir_GetCurrent();
     ASSERT(cwd != NULL);
-    srsLOG_NOTIFY(cwd);
+    ASSERT_STR_EQ(path, cwd);
+    /* Calculate next expected directory change */
     up_index = kioku_path_up_index(cwd, -1);
     ASSERT(up_index > 0);
     strcpy(path, cwd);
     path[up_index] = '\0';
+    /* Go up one directory via push */
+    cwd = srsDir_PushCurrent("..", NULL);
+    ASSERT(cwd != NULL);
+    srsLOG_NOTIFY(cwd);
     ASSERT_STR_EQ(path, cwd);
-    /* Go up */
+    /* Go up another directory via push*/
     cwd = srsDir_PushCurrent("..", NULL);
     ASSERT(cwd != NULL);
     srsLOG_NOTIFY(cwd);
