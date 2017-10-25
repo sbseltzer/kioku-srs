@@ -143,9 +143,8 @@ const char *srsDir_PopCurrent()
     {
     }
   }
-  /* directory_stack_top_index */
 
-  finish:
+finish:
   return result;
 }
 
