@@ -518,6 +518,75 @@ TEST test_fullpath(void)
   printf("Testing kioku_path_getfull..." kiokuSTRING_LF);
   /* ASSERT(); */
 }
+
+TEST test_dir_traversal(void)
+{
+  srsLOG_NOTIFY("Testing dir traversal");
+  char original_path[kiokuPATH_MAX] = {0};
+  char path[kiokuPATH_MAX] = {0};
+  const char *cwd = NULL;
+  int32_t up_index = -1;
+
+  /* Test basic getting of CWD */
+  {
+    cwd = srsDir_GetCurrent();
+    ASSERT(cwd != NULL);
+    strcpy(original_path, cwd);
+    srsLOG_NOTIFY(cwd);
+  }
+  /* Get the expected parent directory */
+  {
+    up_index = kioku_path_up_index(cwd, -1);
+    ASSERT(up_index > 0);
+    strcpy(path, cwd);
+    path[up_index] = '\0';
+  }
+  /* Test result of going up one directory */
+  {
+    cwd = srsDir_SetCurrent("..");
+    ASSERT(cwd != NULL);
+    srsLOG_NOTIFY(cwd);
+    ASSERT_STR_EQ(path, cwd);
+  }
+  /* Test getting the current directory against the return value of setting it */
+  {
+    cwd = srsDir_GetCurrent();
+    ASSERT(cwd != NULL);
+    ASSERT_STR_EQ(path, cwd);
+  }
+  /** @todo Test going deeper */
+
+  /* Reset directory */
+  {
+    cwd = srsDir_SetCurrent(original_path);
+    ASSERT(cwd != NULL);
+    srsLOG_NOTIFY(cwd);
+  }
+
+  /* Test pushing several directories */
+  {
+    /* Go up */
+    cwd = srsDir_PushCurrent("..", NULL);
+    ASSERT(cwd != NULL);
+    srsLOG_NOTIFY(cwd);
+    up_index = kioku_path_up_index(cwd, -1);
+    ASSERT(up_index > 0);
+    strcpy(path, cwd);
+    path[up_index] = '\0';
+    ASSERT_STR_EQ(path, cwd);
+    /* Go up */
+    cwd = srsDir_PushCurrent("..", NULL);
+    ASSERT(cwd != NULL);
+    srsLOG_NOTIFY(cwd);
+    ASSERT(strcmp(path, cwd) != 0); /** @todo Use a < or > here as appropriate. */
+  }
+
+  /* Test popping several directories */
+  /* Test whether setting directory clears the stack */
+
+  PASS();
+}
+
 SUITE(test_filesystem) {
   RUN_TEST(test_file_readlinenumber);
   printf(kiokuSTRING_LF);
@@ -530,6 +599,8 @@ SUITE(test_filesystem) {
   RUN_TEST(test_file_manage);
   printf(kiokuSTRING_LF);
   RUN_TEST(test_file_io);
+  printf(kiokuSTRING_LF);
+  RUN_TEST(test_dir_traversal);
 }
 /* Add definitions that need to be in the test runner's main file. */
 GREATEST_MAIN_DEFS();
