@@ -106,10 +106,18 @@ add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             )
 
 link_directories(
-  ${CMAKE_SOURCE_DIR}/extern/libgit2/Debug
   ${CMAKE_SOURCE_DIR}/extern/libgit2
-  ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug
+  ${CMAKE_SOURCE_DIR}/extern/libgit2/Debug
+  ${CMAKE_SOURCE_DIR}/extern/libgit2/Release
   ${CMAKE_SOURCE_DIR}/extern/libgit2/build
+  ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug
+  ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Release
+  ${CMAKE_SOURCE_DIR}/extern/libssh2
+  ${CMAKE_SOURCE_DIR}/extern/libssh2/Debug
+  ${CMAKE_SOURCE_DIR}/extern/libssh2/Release
+  ${CMAKE_SOURCE_DIR}/extern/libssh2/build
+  ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Debug
+  ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Release
 )
 
 include_directories( include
