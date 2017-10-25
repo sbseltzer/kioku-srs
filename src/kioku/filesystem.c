@@ -125,6 +125,26 @@ const char *srsDir_PushCurrent(const char *path, char **lost)
   return NULL;
 }
 
+const char *srsDir_PopCurrent(const char *path)
+{
+  const char *result = NULL;
+  if (path == NULL || *path == '\0')
+  {
+    goto finish;
+  }
+  if (directory_stack_top_index == 0)
+  {
+    uint32_t i = 0;
+    for (i = srsFILESYSTEM_DIRSTACK_MAX; i > 0; i--)
+    {
+    }
+  }
+  /* directory_stack_top_index */
+
+  finish:
+  return result;
+}
+
 /** @todo Perhaps have a method called by an init that dynamically finds a "true" max path length */
 
 FILE *kioku_filesystem_open(const char *path, const char *mode)
