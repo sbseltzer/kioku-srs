@@ -59,7 +59,7 @@ On the other hand, there is no precedent for this. Kioku does not have to implem
 - Can be installed or run self-contained (e.g. flash drive).
 - Can be used for research purposes.
 - Unicode support
-- Localization support
+- [Localization support](https://msdn.microsoft.com/en-us/library/aa241727(v=vs.60).aspx)
 - Support LaTeX, HTML, CSS, Javascript, images, videos, sounds, and so on.
 
 ### Properties
