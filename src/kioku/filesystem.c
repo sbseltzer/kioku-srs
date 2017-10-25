@@ -55,7 +55,7 @@ const char *srsDir_GetCurrent()
       }
     }
   }
-  /** \todo Consider doing a realloc to save a little heap space */
+  /** @todo Consider doing a realloc to save a little heap space */
   return directory_current;
 }
 
@@ -99,7 +99,7 @@ const char *srsDir_PushCurrent(const char *path, char **lost)
     free(directory_current);
     directory_current = NULL;
     const char *cwd = srsDir_GetCurrent();
-    /** \todo Check result of srsDir_GetCurrent */
+    /** @todo Check result of srsDir_GetCurrent */
     if (directory_stack[directory_stack_top_index] != NULL)
     {
       if (lost != NULL)
@@ -112,7 +112,7 @@ const char *srsDir_PushCurrent(const char *path, char **lost)
       }
     }
     directory_stack[directory_stack_top_index] = strdup(cwd);
-    /** \todo Check result of strdup */
+    /** @todo Check result of strdup */
     directory_stack_top_index++;
     if (directory_stack_top_index >= srsFILESYSTEM_DIRSTACK_MAX)
     {
@@ -122,7 +122,7 @@ const char *srsDir_PushCurrent(const char *path, char **lost)
   return NULL;
 }
 
-/** \todo Perhaps have a method called by an init that dynamically finds a "true" max path length */
+/** @todo Perhaps have a method called by an init that dynamically finds a "true" max path length */
 
 FILE *kioku_filesystem_open(const char *path, const char *mode)
 {
@@ -135,8 +135,8 @@ FILE *kioku_filesystem_open(const char *path, const char *mode)
   return fp;
 }
 
-/** \todo It may be a good idea to have a max path length and use a strnlen-like method. */
-/** \todo implement a relative path resolver that eliminates . and .. - https://linux.die.net/man/3/realpath */
+/** @todo It may be a good idea to have a max path length and use a strnlen-like method. */
+/** @todo implement a relative path resolver that eliminates . and .. - https://linux.die.net/man/3/realpath */
 
 void kioku_path_replace_separators(char *path, size_t nbytes)
 {
@@ -172,7 +172,7 @@ void kioku_path_resolve_relative(char *path, int32_t nbytes)
         /* Okay, so we're at a relative "go-up" path and it's not at the very start of the string */
         if (path[i+1] == '.')
         {
-          /* \todo Handle case of invalid "...*" */
+          /* @todo Handle case of invalid "...*" */
           /* Go up one directory to eliminate the .. */
           int32_t up = kioku_path_up_index(path, i);
           /* Because we started at a finite int32_t, we should never end up in a situation where up_index returns less than -1 */
@@ -210,7 +210,7 @@ size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
 {
   size_t result = 0;
   char *path = NULL;
-  /** \todo mitigate max path length using the getcwd and chdir method described below for all platforms */
+  /** @todo mitigate max path length using the getcwd and chdir method described below for all platforms */
   /* QUOTH THE SPEC: http://pubs.opengroup.org/onlinepubs/9699919799/functions/getcwd.html
      If the pathname obtained from getcwd() is longer than {PATH_MAX} bytes, it could produce an [ENAMETOOLONG] error if passed to chdir().
      Therefore, in order to return to that directory it may be necessary to break the pathname into sections shorter than {PATH_MAX} bytes and call chdir() on each section in turn (the first section being an absolute pathname and subsequent sections being relative pathnames).
@@ -233,7 +233,7 @@ size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
     {
       result = (size_t) needed;
     }
-    /** \todo resolve the relative paths to mimic the functionality of realpath and _fullpath */
+    /** @todo resolve the relative paths to mimic the functionality of realpath and _fullpath */
     /* result = kioku_path_resolve_relative(path_out, result); */
   }
 #if 0
@@ -359,7 +359,7 @@ int32_t kioku_path_up_index(const char *path, int32_t start_index)
   {
     return result;
   }
-  /** \todo Perhaps allow user to specify a string length, though start_index is probably sufficient for that purpose. */
+  /** @todo Perhaps allow user to specify a string length, though start_index is probably sufficient for that purpose. */
 
   /* A start index of 1 or less would always yield -1, but we'll enforce -1 as being the indicator for using the path string length. This is because a user could use this in a loop where they feed the return value of this function into itself, and not having a consistent number to check against could be confusing/dangerous. */
   /* Example:       for (i = strlen(path); i > -1; i = kioku_path_up_index(path, i))
@@ -378,14 +378,14 @@ int32_t kioku_path_up_index(const char *path, int32_t start_index)
   /* Bounds check
      These could only be violated if size_t is longer than the max int32 length and paths are able to exceed that.
      Or if the path is not null terminated, strlen could return an erroneously long value, which could overflow start_index into negative bounds. */
-  /** \todo Test this */
+  /** @todo Test this */
   if (start_index < 0 || start_index >= INT32_MAX)
   {
     result = INT32_MIN;
     return result;
   }
   /* First eliminate dangling NULLs (if any) */
-  /** \todo Test this */
+  /** @todo Test this */
   result = start_index;
   while ((result >= 0) && (path[result] == kiokuCHAR_NULL))
   {
