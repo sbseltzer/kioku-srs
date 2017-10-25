@@ -94,10 +94,13 @@ const char *srsDir_SetCurrent(const char *path)
 
 const char *srsDir_PushCurrent(const char *path, char **lost)
 {
-  if (chdir(path) == 0)
+  if ((path != NULL) && (chdir(path) == 0))
   {
-    free(directory_current);
-    directory_current = NULL;
+    if (directory_current != NULL)
+    {
+      free(directory_current);
+      directory_current = NULL;
+    }
     const char *cwd = srsDir_GetCurrent();
     /** @todo Check result of srsDir_GetCurrent */
     if (directory_stack[directory_stack_top_index] != NULL)
