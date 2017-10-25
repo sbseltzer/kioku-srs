@@ -66,7 +66,6 @@ list(APPEND CMAKE_PREFIX_PATH
 #find_package(LibCURL REQUIRED)
 #find_package(LibGit2 REQUIRED)
 
-
 add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             extern/lua/lgc.c
                             extern/lua/llex.c
@@ -123,7 +122,6 @@ link_directories(
 include_directories( include
                      extern/mongoose
                      extern/parson
-#                     extern/ims-json/src
                      extern/libgit2/include
                      extern/utf8.h
                      extern/lua
@@ -141,19 +139,16 @@ add_library( kioku SHARED src/kioku/log.c
                           src/kioku/controller.c
                           src/kioku/rest.c
                           src/kioku/server.c
-#                          extern/ims-json/src/json.c
                           extern/parson/parson.c
                           )
-if (WIN32)
-#   set(LIBSSH_LIB libssh2)
-   set(MATH_LIB "")
-else()
-#   set(LIBSSH_LIB ssh2)
-   set(MATH_LIB m)
-endif (WIN32)
+#if (WIN32)
+#  set(LIBSSH_LIB libssh2)
+#else()
+#  set(LIBSSH_LIB ssh2)
+#endif (WIN32)
+
 target_link_libraries( kioku git2
-#                       ${LIBSSH_LIB}
-                       ${MATH_LIB} # The math library is needed by ims-json. I'm thinking of submitting a PR for that and pre-C99 compatibility.
+#                      ${LIBSSH_LIB}
                        )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
@@ -162,7 +157,6 @@ add_executable( kioku-server
                 src/main.c
                 extern/mongoose/mongoose.c
                 extern/parson/parson.c
-#                extern/ims-json/src/json.c
                 )
 target_link_libraries( kioku-server kioku git2 )
 add_dependencies( kioku-server kioku )

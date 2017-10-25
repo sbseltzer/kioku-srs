@@ -45,7 +45,6 @@ submodules-build:
     - git submodule update --init extern/generic-c-hashmap
     - git submodule update --init extern/utf8.h
     - git submodule update --init extern/parson
-    - git submodule update --init extern/ims-json
     - git submodule update --init extern/tinydir
     - git submodule update --init extern/lua
   only:
