@@ -2,10 +2,10 @@
 # Initialize variables
 start_dir=$PWD
 result=0
-: ${lib_ext:="so"}
+: ${lib_ext:="a"}
 : ${TRAVIS_BUILD_DIR:=$start_dir}
 build_dir=$TRAVIS_BUILD_DIR
-build_type="Unix Makefiles"
+build_type="Xcode"
 
 echo "Start dir: $start_dir"
 echo "Build dir: $build_dir"
