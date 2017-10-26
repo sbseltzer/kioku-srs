@@ -2,6 +2,12 @@
 
 A portable, versioned, distributed, self-hosted spaced repetition system (SRS) inspired by Anki and backed by Git.
 
+## Build Status
+
+Travis CI: [![Travis CI Build Status](https://travis-ci.org/seltzy/kioku-srs.svg?branch=master)](https://travis-ci.org/seltzy/kioku-srs)
+
+Gitlab CI: [![GitLab CI Build Status](https://gitlab.com/seltzer/kioku-srs/badges/master/build.svg)](https://gitlab.com/seltzer/kioku-srs/commits/master) 
+
 Developers and people who just want to build this should just skip to the build section at the end of the readme.
 
 ## What's an SRS?
