@@ -10,28 +10,29 @@ cd kioku-srs
 
 ## Linux, OSX, and Windows (sort of)
 
-Here's how to build on Linux. This assumes you have git and cmake installed.
+Here's how to build in Unix-like environements. This assumes you have `git` and `cmake` installed and in your `PATH`.
 
-The following should work out of the box on Unix-like platforms so long as git and cmake are installed. On Windows, I've only tested with Visual Studio 2013 installed and from a Git Bash terminal. You will need CMake installed and added to your `PATH` environment variable.
+The following should work out of the box on Unix-like platforms so long as `git` and `cmake` are installed. On Windows, I've only tested with Visual Studio 2013 installed and from a Git Bash terminal. You will need CMake installed and added to your `PATH` environment variable.
 
 Starting from the cloned repository...
 
-If you're on Linux, use the convenient building scripts which are also used in the Continuous Integration (CI). This should work for Windows as described above, but that is currently untested.
+If you're on Linux, use the convenient building scripts which are also used in the Continuous Integration (CI). This should work for Windows as described above, but that is currently untested. Make sure you run these from the root of the project folder (where the [README](README.md) is).
 ```
 ./ci/linux/build-deps.sh
 ./ci/linux/build.sh
 ```
 There is also a counterpart for OSX.
 ```
-source ci/osx/build-deps.sh
-source ci/osx/build.sh
+./ci/osx/build-deps.sh
+./ci/osx/build.sh
 ```
-The results will be in the `build` folder.
+The results will be in the `build` folder. If you do encounter problems, please report it. These should automagically take care of the entire build process provided you have the required programs installed.
 
 ## Dependencies
 
 ### Currently Required
-All required libraries are included as submodules in the [extern](extern/) folder. Not all of these are in active use yet, but are expected to be.
+All required dependencies are included as submodules in the [extern](extern/) folder. Not all of these are in active use yet, but are expected to be. Most of them are just code that's directly included in Kioku, but a couple are libraries. Thankfully, the build scripts should prevent you from having any linker errors.
+
 - [mongoose](https://github.com/cesanta/mongoose) - Portable embedded webserver and network stack.
 - [libgit2](https://libgit2.github.com/) - This will be wrapped to create a filesystem database thingy. The rationale is for portable synchronization, file management, and deck version history.
 - [libssh2](https://github.com/libssh2/libssh2.git) - This is a dependency of libgit2.
