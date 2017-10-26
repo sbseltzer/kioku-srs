@@ -29,13 +29,15 @@ This section will review the main problems Kioku aims to solve.
 
 ### Portability
 
-When talking about portability in the software world, we mean "how many machines does this run on?"
+When talking about portability in the software world, we mean "how many different kinds of devices can this run on?"
 
-There are two kinds of portability here. Application Portability, and Addon Portability. Kioku concerns itself with both.
+That is, can it work on Windows, OSX/iOS, Android, and various flavours of Linux? Which versions of those can it run on? Which compilers can build the application? Are any of them missing features? These are valuable questions to ask as a programmer if you want a broad user-base. Portable applications are made deliberately from the start. Rarely can an unportable application suddenly become portable without a great deal of effort. Programs written in high-level languages like Java and Python can help with this (which is what Anki and Mnemosyne do), but this can have substantial quirks when it comes to implementing a UI. They're also generally more CPU/Memory intense, which is not good for servers or constrained mobile devices.
 
-Anki and Mnemosyne are fairly portable to most Desktop and Mobile environments. The desktop apps have some problems with IMEs (foreign keyboard emulators) that stem from using Python/Qt, and the mobile apps suffer from the lack of addons and interface features.
+There are also two kinds of portability here. Application Portability and Addon Portability. Unlike most other SRS applications, Kioku concerns itself with both.
 
-Kioku proposes a design with full portability in mind, even if it doesn't happen all at once. If everything is done right, someone could trivially modify Kioku to run in embedded Linux terminal, if they're brave enough to implement that. It's designed more with web browsers in mind, but Kioku aims to facilitate creating other interfaces, even if their feature set is limited by comparison.
+Anki and Mnemosyne are fairly portable to most Desktop and Mobile environments. The desktop apps have some problems with IMEs (foreign keyboard emulators) that stem from using Python/Qt, and the mobile apps suffer from the lack of addons and interface features. There's also more maintenance overhead with the mobile applications due to the lack of a unified codebase.
+
+Kioku proposes a design with full portability in mind, even if it doesn't happen all at once. Features added to desktop versions should easily port to the mobile versions. If everything is done right, someone could trivially modify Kioku to run in an embedded Linux terminal, that is if they're brave enough to implement that. It's designed more with web browsers in mind, but Kioku aims to facilitate creating other interfaces, even if their feature set is limited by comparison.
 
 ### Hackability
 
