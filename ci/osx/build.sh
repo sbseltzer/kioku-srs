@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 # Initialize variables
 start_dir=$PWD
 result=0

@@ -71,7 +71,7 @@ build-gcc:
     - deps-gcc
     - submodules-build
   script:
-    - ci/linux/build.sh
+    - source ci/linux/build.sh
     # todo: Do both 64 & 32 bit builds
   only:
     - master
