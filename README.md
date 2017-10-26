@@ -83,22 +83,27 @@ This project uses CMake. This is for portability reasons. You will need it in or
 
 Start by cloning. This should work on Unix-like systems and Git Bash for Windows.
 ```bash
-git clone --recursive https://git@github.com/seltzer/kioku-srs.git
+git clone --recursive https://github.com/seltzy/kioku-srs.git
 cd kioku-srs
 ```
 Here's how to build on Linux. This assumes you have git and cmake installed.
 The following should work out of the box on Unix-like platforms so long as git and cmake are installed. On Windows, I've only tested with Visual Studio 2013 installed and from a Git Bash terminal. You will need CMake installed and added to your `PATH` environment variable.
 
 Starting from the cloned repository...
-```bash
-mkdir build
-cd build
-cmake ..
-cmake --build .
-ctest
-```
 
-## Libraries
+If you're on Linux, use the convenient building scripts which are also used in the Continuous Integration (CI). This should work for Windows as described above, but that is currently untested.
+```
+./ci/linux/build-deps.sh
+./ci/linux/build.sh
+```
+There is also a counterpart for OSX.
+```
+source ci/osx/build-deps.sh
+source ci/osx/build.sh
+```
+The results will be in the `build` folder.
+
+## Dependencies
 
 ### Currently Required
 All required libraries are included as submodules in the [extern](extern/) folder. Not all of these are in active use yet, but are expected to be.
