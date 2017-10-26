@@ -2,6 +2,8 @@
 
 A portable, versioned, distributed, self-hosted spaced repetition system (SRS) inspired by Anki and backed by Git.
 
+Developers and people who just want to build this should just skip to the build section at the end of the readme.
+
 ## What's an SRS?
 
 SRS stands for Spaced Repetition System. Many people simplify it to "smart flashcards", but frankly, that does not do it justice. SRS is based upon the Spacing Effect, where there is constantly changing optimal interval of time between exposing yourself to information for the purpose of long-term retention. SRS uses an algorithm that finds the optimal spacing based on your ability to recall the information you're testing yourself on. Testing is sort of a bad word for this, as it's really more like exposing and pressing a button based on whether you remembered or not. To utilize an SRS properly, there should be very little thought involved when recalling. You either remember well or you don't. It's not so much a "test" in that sense; it's a "rep" as if you were lifting a small weight.
