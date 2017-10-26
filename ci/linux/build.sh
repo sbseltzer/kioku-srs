@@ -34,4 +34,4 @@ else
     result=$?
 fi
 cd $start_dir
-return $result
+exit $result

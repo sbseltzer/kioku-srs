@@ -5,5 +5,5 @@ compiler:
 
 script:
  - echo "Hello, Travis CI"
- - source ci/osx/build-deps.sh
- - source ci/osx/build.sh
+ - ci/osx/build-deps.sh
+ - ci/osx/build.sh

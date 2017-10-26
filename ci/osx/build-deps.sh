@@ -47,4 +47,4 @@ elif ! test -f $build_dir/extern/libgit2/build/libgit2.$lib_ext ; then
     result=1
 fi
 cd $start_dir
-return $result
+exit $result
