@@ -129,6 +129,7 @@ include_directories( include
                      extern/tinydir
                      extern/libtap
                      extern/greatest
+                     extern/libssh2/src/
                      extern/libssh2/include
                      ) 
 
