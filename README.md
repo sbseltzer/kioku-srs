@@ -40,9 +40,9 @@ Kioku aims to make modding possible in any language, so long as it can be bound 
 
 No other SRS, so far as I'm aware at the time of writing this, supports full revision history. That is, every file has a history of changes that can be rolled-back to at any time. It's like having an infinite undo/redo button for everything. Most SRS applications support backups and learning history, but arbitrary files cannot be versioned. Worse yet, in Anki it is impossible to implement your own without potentially compromising database integrity. Not good.
 
-With Kioku being backed by Git, every action has a chance to be versioned right off the bat. Every. Single. Action. If your computer crashes in the middle of editing a card and Git is set up to ammend your changes to it as you write (and commit when you save), there's a very likelihood of losing ANY work.
+With Kioku being backed by Git, every action has a chance to be versioned right off the bat. Every. Single. Action. If your computer crashes in the middle of editing a card and Git is set up to amend your changes to it as you write (and commit when you save), there's a very low likelihood of losing ANY work.
 
-Being flatfile based, you also stand little chance of ending up in a corrupted state. Database (particularly SQLite) backed solutions are vulnerable to this. They mitigate it by saving compressed backups. A Git repository serves this purpose intrinsically.
+Being flatfile based, you also stand little chance of ending up in a corrupted state. Applications backed by a database (particularly SQLite) are vulnerable to this. They tend to mitigate it by saving compressed backups. A Git repository serves this purpose intrinsically.
 
 ### User Freedom
 
