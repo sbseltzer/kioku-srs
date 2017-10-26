@@ -33,7 +33,7 @@ mkdir build
 # Attempt to go to build dir and clear it out if it has anything in it.
 cd build && rm -rf *
 # Build the project
-PKG_CONFIG_PATH=$build_dir/extern/libssh2/build/src cmake .. -G"$build_type" -DBUILD_CLAR=OFF -DLIBSSH2_INCLUDE_DIRS=$build_dir/extern/libssh2/include:$build_dir/extern/libssh2/build/src -DBUILD_SHARED_LIBS=ON
+PKG_CONFIG_PATH=$build_dir/extern/libssh2/build/src cmake .. -G"$build_type" -DBUILD_CLAR=OFF -DLIBSSH2_INCLUDE_DIRS:PATH="$build_dir/extern/libssh2/include:$build_dir/extern/libssh2/build/src" -DBUILD_SHARED_LIBS=ON
 cmake --build .
 ls
 
