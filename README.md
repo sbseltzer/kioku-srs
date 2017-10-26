@@ -8,7 +8,7 @@ Travis CI: [![Travis CI Build Status](https://travis-ci.org/seltzy/kioku-srs.svg
 
 Gitlab CI: [![GitLab CI Build Status](https://gitlab.com/seltzer/kioku-srs/badges/master/build.svg)](https://gitlab.com/seltzer/kioku-srs/commits/master) 
 
-Developers and people who just want to build this should just skip to the build section at the end of the readme.
+If you wish to build this yourself, see [BUILDING.md](BUILDING.md).
 
 ## What's an SRS?
 
@@ -57,89 +57,4 @@ If a user wants to use alternative syncing mechanisms, they can implement or dow
 Something no other SRS has done yet is deck/template collaboration. Being able to fork decks and contribute to them is something that Git can facilitate. Still, this is not a simple problem to solve. Particularly when it comes to users who have forked a deck and want to stay up-to-date with them. This becomes difficult (or perhaps impossible) if the user makes their own modifications to the deck content, which is something that should be encouraged.
 
 On the other hand, there is no precedent for this. Kioku does not have to implement this perfectly. It can simply facilitate it and improve in future iterations.
-
-## Building
-
-This project uses CMake. This is for portability reasons. You will need it in order to build.
-
-Start by cloning. This should work on Unix-like systems and Git Bash for Windows.
-```bash
-git clone --recursive https://github.com/seltzy/kioku-srs.git
-cd kioku-srs
-```
-Here's how to build on Linux. This assumes you have git and cmake installed.
-The following should work out of the box on Unix-like platforms so long as git and cmake are installed. On Windows, I've only tested with Visual Studio 2013 installed and from a Git Bash terminal. You will need CMake installed and added to your `PATH` environment variable.
-
-Starting from the cloned repository...
-
-If you're on Linux, use the convenient building scripts which are also used in the Continuous Integration (CI). This should work for Windows as described above, but that is currently untested.
-```
-./ci/linux/build-deps.sh
-./ci/linux/build.sh
-```
-There is also a counterpart for OSX.
-```
-source ci/osx/build-deps.sh
-source ci/osx/build.sh
-```
-The results will be in the `build` folder.
-
-## Dependencies
-
-### Currently Required
-All required libraries are included as submodules in the [extern](extern/) folder. Not all of these are in active use yet, but are expected to be.
-- [mongoose](https://github.com/cesanta/mongoose) - Portable embedded webserver and network stack.
-- [libgit2](https://libgit2.github.com/) - This will be wrapped to create a filesystem database thingy. The rationale is for portable synchronization, file management, and deck version history.
-- [libssh2](https://github.com/libssh2/libssh2.git) - This is a dependency of libgit2.
-- [utf8.h](https://github.com/sheredom/utf8.h) - A portable single-header library for UTF-8 string functions.
-- [intern](https://github.com/chriso/intern) - A simple string interning library.
-- [parson](https://github.com/kgabis/parson) - Simplistic C89 JSON parser.
-- [greatest](https://github.com/silentbicycle/greatest) - Header-only unit testing.
-- [lua](https://lua.org) - I'm thinking of using this as a portable dynamic loader for backend tasks. This would also make it easier to embed with things like PHP. It could also serve as a nice configuration language, providing similar value to JSON.
-- [tinydir](https://github.com/cxong/tinydir) - A portable directory/file reader in a single header.
-- [generic-c-hashmap](https://github.com/Kijewski/generic-c-hashmap) - A portable generic easy-to-use hashmap in C. Header only. Very slick API.
-
-### Possible Future Dependencies
-
-Here are other libraries I'm thinking of using in the future. Sorted by use-case.
-
-#### Backend
-- [curl](https://github.com/curl/curl) - This one should be obvious.
-- [mbedtls](https://github.com/ARMmbed/mbedtls) - Appears to be the smallest, most portable SSL implementation, which would allow for HTTPS on mongoose, but libgit2 support is sparse.
-- [openssl](https://github.com/openssl/openssl) - More common/accepted. This is currently the only supported libgit2 SSL implementation (though there's a feature in progress).
-- [slre](https://github.com/cesanta/slre) - Super Light RegEx library. Portable. Gives a subset of Perl-style regex in C.
-- [autoupdate](https://github.com/pmq20/libautoupdate) - A cross-platform in-place application updater in C. Mostly useful for inspiration.
-- [sundown](https://github.com/vmg/sundown) - A portable, secure markdown processing library in C.
-- [uuid4](https://github.com/rxi/uuid4) - A tiny library for generating random Universally Unique IDs. Necessary for conforming to JSON API.
-
-#### Frontend
-- [Cordova](https://cordova.apache.org/) - This is what PhoneGap is based on. This would be good for making the fat clients.
-- [cordova-media-capture-plugin](https://github.com/apache/cordova-plugin-media-capture) - Might be best option for bringing media capture to mobile devices.
-- [RecordRTC](https://github.com/muaz-khan/RecordRTC) - Media capture for modern browsers.
-- [MediaStreamRecorder](https://github.com/streamproc/MediaStreamRecorder) - More media capture for modern browsers.
-- [markdown-it](https://github.com/markdown-it/markdown-it) - A Javascript Markdown parser.
-- [stackedit](https://github.com/benweet/stackedit) - An in-browser Markdown editor.
-- [katex](https://github.com/Khan/KaTeX) - Fast Javascript LaTeX generator.
-- [quill](https://quilljs.com/docs/formats/#inline) - Portable in-browser rich text editor. Actually comes with a formula module powered by KaTeX.
-
-#### Scripting
-- [v7](https://github.com/cesanta/v7) - Embedded Portable Javascript engine with Lua-like binding API. V7 is recently deprecated, but has a much broader feature set. mJS is so stripped down that it doesn't even look like JS.
-- [pypy](http://doc.pypy.org/en/latest/embedding.html) - This seems to be a good sandboxed, portable, embedded python solution.
-- [lunatic-python](https://labix.org/lunatic-python) - This looks very promising as a best-of-both-worlds thing.
-- [luagit2](https://github.com/libgit2/luagit2) - Lua bindings for libgit2. Why not?
-- [luacurl](http://luacurl.luaforge.net/) - Platform independent, apparently. Very simple looking.
-
-#### Misc Server Stuff
-- [hotel](https://github.com/typicode/hotel) - This looks promising for developing a client or server.
-- [php-src](https://github.com/php/php-src) - The PHP source code for compiling the interpreter and CGI.
-- [php-lua](https://github.com/laruence/php-lua) - A PHP PECL package for embedding a Lua interpreter in PHP.
-
-It's worth noting that anything with a viral license is not a problem so long as it is wrapped appropriately. The end-goal is to have some reusable interfaces so that Kioku can be an SRS implementation framework.
-
-### Companion APIs
-These would be an immense help in giving users an opportunity to sync their data to private and public sources without needing to know how to create and manage Git repositories.
-
-- [GitLab API](http://doc.gitlab.com/ce/api/)
-- [GitHub API](https://developer.github.com/v3/)
-- [BitBucket API](https://developer.atlassian.com/bitbucket/api/2/reference/)
 
