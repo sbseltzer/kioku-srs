@@ -29,17 +29,21 @@ This section will review the main problems Kioku aims to solve.
 
 ### Portability
 
+When talking about portability in the software world, we mean "how many machines does this run on?"
+
 There are two kinds of portability here. Application Portability, and Addon Portability. Kioku concerns itself with both.
 
-Anki and Mnemosyne are fairly portable to most Desktop and Mobile environments. The desktop apps have some problems that stem from using Python/Qt, and the mobile apps ultimately suffer from the lack of Addons and interface features.
+Anki and Mnemosyne are fairly portable to most Desktop and Mobile environments. The desktop apps have some problems with IMEs (foreign keyboard emulators) that stem from using Python/Qt, and the mobile apps suffer from the lack of addons and interface features.
 
-Kioku proposes a decoupled architecture and choice of technology that's designed with full portability in mind, even if it doesn't happen all at once. If everything is done right, someone could trivially modify Kioku to run in embedded Linux terminal, if you're brave enough to implement that. It's going to be designed more with web browsers in mind, but Kioku aims to facilitate creating other interfaces, even if their feature set is smaller.
+Kioku proposes a design with full portability in mind, even if it doesn't happen all at once. If everything is done right, someone could trivially modify Kioku to run in embedded Linux terminal, if they're brave enough to implement that. It's designed more with web browsers in mind, but Kioku aims to facilitate creating other interfaces, even if their feature set is limited by comparison.
 
 ### Hackability
 
-Anki's modding framework is extremely permissive, but not very well thought out. Mnemosyne doesn't appear to have a very active modding community in the way Anki does. Both require use of Python and neither are portable to mobile or web platforms.
+This will be a boon for developers and users who wish to extend Kioku's behaviour.
 
-Kioku aims to make modding possible in any language, so long as it can be bound to C/C++ and support an HTTP client stack.
+Anki's modding framework is extremely permissive, but not very well thought out. The reliance on Python and Qt makes addons clunky and unintuitive. Mnemosyne doesn't appear to have a very active modding community in the way that Anki does, and there is no convenient way for users to find them. Both require the use of Python and neither are portable to mobile or web platforms.
+
+Kioku aims to make modding possible in any language, so long as it can be executed from C/C++ and support an HTTP client stack. Every supported platform that the Kioku backend can run on will have some kind of scripting available.
 
 ### Progress is Sacred
 
@@ -53,9 +57,11 @@ Being flatfile based, you also stand little chance of ending up in a corrupted s
 
 Mnemosyne did something right by providing sync options and self-hosting. Anki not so much, but it has made progress.
 
-Kioku aims to make SRS implementation easy. If DuoLingo decided one day to use it as their internal backbone, they could.
+If a user wants to use alternative syncing mechanisms, they can implement or download an addon that facilitates that. Same can be said for *The Algorithm*. More importantly, these kinds of modifications will be portable, unlike the other SRS applications.
 
-If a user wants to use alternative syncing mechanisms, they can implement or download an addon that facilitates that. Same can be said for *The Algorithm*.
+Kioku aims to improve usability for power-users. One thing that annoys me in particular is when the data in your SRS (i.e. cards, decks, templates) are either not available on the filesystem because they're packed in a database, or are unsafe to edit directly for integrity reasons.
+
+Kioku also aims to make SRS implementation easy for developers. If DuoLingo decided one day to use it as their internal backbone, they could.
 
 ### Collaborative Learning
 
