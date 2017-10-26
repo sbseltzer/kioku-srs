@@ -29,6 +29,7 @@ build_image:
 submodules-deps:
   stage: submodules
   script:
+    - rm -rf .git/modules
     - git submodule update --init extern/libgit2
     - git submodule update --init extern/libssh2
   only:
