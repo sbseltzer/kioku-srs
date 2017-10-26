@@ -35,7 +35,8 @@ submodules-deps:
     - master
   artifacts:
     paths:
-      - extern/
+      - extern/libgit2
+      - extern/libssh2
 
 submodules-build:
   stage: submodules
@@ -51,7 +52,10 @@ submodules-build:
     - master
   artifacts:
     paths:
-      - extern/
+      - extern/mongoose
+      - extern/greatest
+      - extern/parson
+      - extern/lua
 
 deps-gcc:
   stage: deps
@@ -63,7 +67,10 @@ deps-gcc:
     - master
   artifacts:
     paths:
-      - extern/
+      - extern/libssh2/build
+      - extern/libssh2/include
+      - extern/libgit2/build
+      - extern/libgit2/include
 
 build-gcc:
   stage: build
