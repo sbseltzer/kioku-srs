@@ -2,7 +2,7 @@
 # Initialize variables
 start_dir=$PWD
 result=0
-: ${lib_ext:="so"}
+: ${lib_ext:="a"}
 : ${TRAVIS_BUILD_DIR:=$start_dir}
 build_dir=$TRAVIS_BUILD_DIR
 build_type="Unix Makefiles"
