@@ -15,15 +15,15 @@ git clone --recursive https://github.com/seltzy/kioku-srs.git
 cd kioku-srs
 ```
 
-## Linux, OSX, and Windows (sort of)
+## Build Scripts for Linux, OSX, and Windows
 
 Here's how to build in Unix-like environements. This assumes you have `git` and `cmake` installed and in your `PATH`.
 
-The following should work out of the box on Unix-like platforms so long as `git` and `cmake` are installed. On Windows, I've only tested with Visual Studio 2013 installed and from a Git Bash terminal. You will need CMake installed and added to your `PATH` environment variable.
+The following should work out of the box on Unix-like platforms so long as `git` and `cmake` are installed. You will need CMake installed and added to your `PATH` environment variable (this is mostly pertinent on Windows).
 
-Starting from the cloned repository...
+Starting from the root of your cloned repository...
 
-If you're on Linux, use the convenient building scripts which are also used in the Continuous Integration (CI). This should work for Windows as described above, but that is currently untested. Make sure you run these from the root of the project folder (where the [README](README.md) is).
+If you're on Linux, use the convenient building scripts which are also used in the Continuous Integration (CI).
 ```
 ./ci/linux/build-deps.sh
 ./ci/linux/build.sh
@@ -33,6 +33,12 @@ There is also a counterpart for OSX.
 ./ci/osx/build-deps.sh
 ./ci/osx/build.sh
 ```
+There is also a counterpart for Windows (assuming you have both Visual Studio 2013 installed and CMake in your `PATH`).
+```
+./ci/windows/build-deps.bat
+./ci/windows/build.bat
+```
+
 The results will be in the `build` folder. If you do encounter problems, please report it. These should automagically take care of the entire build process provided you have the required programs installed.
 
 ## Dependencies
