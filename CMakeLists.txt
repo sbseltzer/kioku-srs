@@ -62,9 +62,32 @@ list(APPEND CMAKE_PREFIX_PATH
 #find_package(ZLIB)
 #find_package(LibSSH2)
 #find_package(Libssh2 1.8.1 REQUIRED)
-#find_package(OpenSSL REQUIRED)
-#find_package(LibCURL REQUIRED)
 #find_package(LibGit2 REQUIRED)
+find_package(Pthreads)
+find_package(OpenSSL)
+find_package(LibCURL)
+
+# We build libssh2 from source, so simply take care of some Windows naming weirdness.
+if (WIN32)
+  set(LIBSSH_LIB libssh2)
+else()
+  set(LIBSSH_LIB ssh2)
+endif (WIN32)
+
+set (KIOKU_LIBS git2 http-parser ${LIBSSH_LIB})
+
+if (PTHREADS_FOUND)
+   include_directories( ${Pthreads_INCLUDE_DIRS} )
+   list( APPEND KIOKU_LIBS ${Pthreads_LIBRARIES} )
+endif()
+if (LIBCURL_FOUND)
+   include_directories( ${LIBCURL_INCLUDE_DIR} )
+   list( APPEND KIOKU_LIBS ${LIBCURL_LIBRARY} )
+endif()
+if (OPENSSL_FOUND)
+   include_directories( ${OPENSSL_INCLUDE_DIR} )
+   list( APPEND KIOKU_LIBS ${OPENSSL_LIBRARIES} )
+endif()
 
 add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             extern/lua/lgc.c
@@ -147,7 +170,9 @@ add_library( kioku SHARED src/kioku/log.c
                           src/kioku/server.c
                           extern/parson/parson.c
                           )
-# Taken from https://github.com/commontk/Log4Qt/blob/patched/CMakeLists.txt#L116
+
+target_link_libraries( kioku ${KIOKU_LIBS} )
+# Edited from https://github.com/commontk/Log4Qt/blob/patched/CMakeLists.txt#L116
 if (NOT MSVC)
    include(CheckCCompilerFlag)
    CHECK_C_COMPILER_FLAG("-fPIC" HAS_FPIC)
@@ -156,19 +181,6 @@ if (NOT MSVC)
    ENDIF()
 endif ()
 
-if (WIN32)
-  set(LIBSSH_LIB libssh2)
-else()
-  set(LIBSSH_LIB ssh2)
-endif (WIN32)
-
-target_link_libraries( kioku git2 
-                       ${LIBSSH_LIB}
-                       ssl
-                       pthread
-                       curl
-                       http-parser
-                       )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
