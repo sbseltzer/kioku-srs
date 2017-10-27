@@ -117,6 +117,9 @@ link_directories(
   ${CMAKE_SOURCE_DIR}/extern/libssh2/build
   ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Debug
   ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Release
+  ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src
+  ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src/Debug
+  ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src/Release
 )
 
 include_directories( include
@@ -133,6 +136,7 @@ include_directories( include
                      extern/libssh2/include
                      ) 
 
+# Taken from https://github.com/commontk/Log4Qt/blob/patched/CMakeLists.txt#L116
 add_library( kioku SHARED src/kioku/log.c
                           src/kioku/filesystem.c
                           src/kioku/simplegit.c
@@ -142,14 +146,19 @@ add_library( kioku SHARED src/kioku/log.c
                           src/kioku/server.c
                           extern/parson/parson.c
                           )
-#if (WIN32)
-#  set(LIBSSH_LIB libssh2)
-#else()
-#  set(LIBSSH_LIB ssh2)
-#endif (WIN32)
+SET_TARGET_PROPERTIES(kioku PROPERTIES COMPILE_FLAGS "-fPIC")
 
-target_link_libraries( kioku git2
-#                      ${LIBSSH_LIB}
+if (WIN32)
+  set(LIBSSH_LIB libssh2)
+else()
+  set(LIBSSH_LIB ssh2)
+endif (WIN32)
+
+target_link_libraries( kioku git2 
+                       ${LIBSSH_LIB}
+                       ssl
+                       pthread
+                       curl
                        )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
