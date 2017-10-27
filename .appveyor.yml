@@ -6,6 +6,7 @@ configuration: Release
 
 # scripts to run before build
 before_build:
+  - git submodule update --init
   - ci\\windows\\build-deps.bat
   - ci\\windows\\build.bat
 
