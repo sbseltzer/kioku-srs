@@ -32,7 +32,7 @@ if not "%errorlevel%"=="0" (
       cd %build_dir%
    )
 )
-cmake --build .
+cmake --build . --config %build_conf%
 ls src
 
 rem BUILD LIBGIT2
@@ -47,7 +47,7 @@ rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build
 rem Build the project
 cmake .. -G"%build_type%" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=%shared% -DLIBSSH2_FOUND=YES -DLIBSSH2_INCLUDE_DIRS:PATH=%build_dir%\extern\libssh2\include;%build_dir%\extern\libssh2\build\src -DLIBSSH2_LIBRARY_DIRS:PATH=%build_dir%\extern\libssh2\build\src\%build_conf% -DLIBSSH2_LIBRARIES=libssh2.%lib_ext%
-cmake --build .
+cmake --build . --config %build_conf%
 ls
 
 rem Check whether the libraries were built

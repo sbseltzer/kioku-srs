@@ -43,7 +43,7 @@ if not "%errorlevel%"=="0" (
       cd %build_dir%
    )
 )
-cmake --build .
+cmake --build . --config %build_conf%
 set CTEST_OUTPUT_ON_FAILURE=1
 set result=
 ctest -C"%build_conf%"
