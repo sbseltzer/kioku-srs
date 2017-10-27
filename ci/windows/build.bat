@@ -26,7 +26,16 @@ rem elif ! test -f libssh2.%lib_ext% ; then
 rem     printf '%s\n' 'Build: Failed to copy libssh2!' >&2
 rem     result=1
 rem else
+:try_cmake_gen
 cmake .. -G"%build_type%"
+if NOT EXIST CMakeCache.txt {
+   set try_build_type=Visual Studio 12 2013 Win64
+   if "%build_type%" NEQ "%try_build_type%" {
+      set build_type=%try_build_type%
+      goto try_cmake_gen
+   }
+}
+
 cmake --build .
 set CTEST_OUTPUT_ON_FAILURE=1
 set result=
