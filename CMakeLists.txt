@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 2.6)
 
-project (kioku)
+project (kioku C)
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -138,7 +138,6 @@ include_directories( include
                      extern/libgit2/deps/http_parser/
                      ) 
 
-# Taken from https://github.com/commontk/Log4Qt/blob/patched/CMakeLists.txt#L116
 add_library( kioku SHARED src/kioku/log.c
                           src/kioku/filesystem.c
                           src/kioku/simplegit.c
@@ -148,7 +147,14 @@ add_library( kioku SHARED src/kioku/log.c
                           src/kioku/server.c
                           extern/parson/parson.c
                           )
-SET_TARGET_PROPERTIES(kioku PROPERTIES COMPILE_FLAGS "-fPIC")
+# Taken from https://github.com/commontk/Log4Qt/blob/patched/CMakeLists.txt#L116
+if (NOT MSVC)
+   include(CheckCCompilerFlag)
+   CHECK_C_COMPILER_FLAG("-fPIC" HAS_FPIC)
+   IF( HAS_FPIC AND CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+       SET_TARGET_PROPERTIES(kioku PROPERTIES COMPILE_FLAGS "-fPIC")
+   ENDIF()
+endif ()
 
 if (WIN32)
   set(LIBSSH_LIB libssh2)
