@@ -2,16 +2,20 @@
 
 This project uses CMake. This is for portability reasons. You will need it in order to build.
 
-I'll be the first to admit that this build system is messy and inelegant, but it works, and that's what's important. Part of this comes from inexperience with leveraging CMake. Another part of this comes from inexperience building such a library with complex dependencies. And finally, the last part comes from my desire to keep things portable and consistent, which sometimes means not having the most optimal solution for each platform in the interest of minimizing maintenance.
+## Build Strategy
 
-If you are experienced in doing this and see it as a kluge, please, for the love of all that is good, tell me what I'm doing wrong and/or submit a PR. A big part of what makes this project special for me is that it's a learning experience.
+I'll be the first to admit that this build system is messy and inelegant, but it's easy to use and it works, and that's what's important. Part of this comes from my inexperience with leveraging CMake. Another part of this comes from my inexperience building a library with such complex dependencies. And finally, the last part comes from my desire to keep things portable and relatively consistent, which sometimes means not having the most optimal solution for each platform.
+
+If you are experienced in doing this and see it as a kluge, please, for the love of all that is good, tell me what I'm doing wrong and how I can improve it. If you're an especially kind person, submit a PR.
 
 Anyhow, for the time being, the dependencies such as `libgit2` and `libssh2` are built as static libraries with PIC (where applicable). This is because...  
 1. It's easier.
-2. They are uncommon on most systems (even Linux), so the costs of *not* making them dynamic libraries is virtually non-existent.
+2. They are uncommon on most systems (even Linux), so the costs of *not* making them dynamic libraries is less awful.
 3. This is the most feasible solution for OSX, and consistency is a good thing.
 
-Kioku itself, however, is built as a shared library. This is the reason we build the dependencies as static libraries with PIC. This is because Kioku has a number of unit tests that all link to it, so building those with static linkage would take more build time and disk space.
+Kioku itself, however, is primarily built as a shared library. This is the reason we build the dependencies as static libraries with PIC. This is because Kioku has a number of unit tests that all link to it, so building those with static linkage would take more build time and disk space.
+
+This does make the Kioku shared library quite large. On my Ubuntu 14.04 x64 it's about 3MB. Although I haven't the data to back it up, it's probably not much larger than the cumulative of libgit2, libssh2, and libkioku as shared libraries. This is already a (mostly) necessary evil on macOS platforms. I'd still like to add the option to compile everything as a shared library, though. It's pretty easy to facilitate such builds on Windows and Linux, and I've proven that it can work in previous revisions. I've changed from that methodology for the time being in the interest of consistency.
 
 ## Getting started
 
