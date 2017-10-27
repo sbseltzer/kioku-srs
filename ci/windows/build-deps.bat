@@ -30,7 +30,7 @@ mkdir build
 rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build && rm -rf *
 rem Build the project
-PKG_CONFIG_PATH=%build_dir%\\extern\\libssh2\\build\\src cmake .. -G"%build_type%" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=ON
+cmake .. -G"%build_type%" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=OFF
 cmake --build .
 ls
 
