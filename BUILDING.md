@@ -2,12 +2,16 @@
 
 This project uses CMake. This is for portability reasons. You will need it in order to build.
 
-For the time being, the dependencies such as `libgit2` and `libssh2` are built as static libraries. This is because...  
+I'll be the first to admit that this build system is messy and inelegant, but it works, and that's what's important. Part of this comes from inexperience with leveraging CMake. Another part of this comes from inexperience building such a library with complex dependencies. And finally, the last part comes from my desire to keep things portable and consistent, which sometimes means not having the most optimal solution for each platform in the interest of minimizing maintenance.
+
+If you are experienced in doing this and see it as a kluge, please, for the love of all that is good, tell me what I'm doing wrong and/or submit a PR. A big part of what makes this project special for me is that it's a learning experience.
+
+Anyhow, for the time being, the dependencies such as `libgit2` and `libssh2` are built as static libraries with PIC (where applicable). This is because...  
 1. It's easier.
 2. They are uncommon on most systems (even Linux), so the costs of *not* making them dynamic libraries is virtually non-existent.
 3. This is the most feasible solution for OSX, and consistency is a good thing.
 
-Kioku itself, however, is built as a shared library. This is because Kioku has a number of unit tests that all link to it, so building those with static linkage would take more build time and disk space.
+Kioku itself, however, is built as a shared library. This is the reason we build the dependencies as static libraries with PIC. This is because Kioku has a number of unit tests that all link to it, so building those with static linkage would take more build time and disk space.
 
 ## Getting started
 
