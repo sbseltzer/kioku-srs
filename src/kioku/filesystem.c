@@ -274,7 +274,6 @@ void kioku_path_resolve_relative(char *path, int32_t nbytes)
 size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
 {
   size_t result = 0;
-  char *path = NULL;
   /** @todo mitigate max path length using the getcwd and chdir method described below for all platforms */
   /* QUOTH THE SPEC: http://pubs.opengroup.org/onlinepubs/9699919799/functions/getcwd.html
      If the pathname obtained from getcwd() is longer than {PATH_MAX} bytes, it could produce an [ENAMETOOLONG] error if passed to chdir().
@@ -288,23 +287,30 @@ size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
   /* getcwd is apparently deprecated for portability reasons, as noted here: https://linux.die.net/man/3/getcwd - supposedly the more reliable option to PATH_MAX is https://linux.die.net/man/3/pathconf on POSIX platforms, especially since PATH_MAX is not required to be a compile-time constant. */
   /* Some platforms implement getcwd to malloc space when passed a null pointer. Both the Windows CRT _getcwd and the extension to the POSIX.1-2001 standard, Linux (libc4, libc5, glibc) implement it in this way. */
   /* The WINAPI GetCurrentDirectory does return the required length if not long enough, which is basically what we want here. It's not threadsafe, but currenly Kioku does not attempt to be. https://msdn.microsoft.com/en-us/library/windows/desktop/aa364934(v=vs.85).aspx */
-  char cwd[kiokuPATH_MAX+1] = {0};
-  path = getcwd(cwd, nbytes);
-  if (path == cwd)
+  /* Consider using realpath and _fullpath */
+#ifdef kiokuOS_WINDOWS
+  const char *path = _fullpath(path_out, relative, nbytes);
+  if (path != NULL)
   {
-    kioku_path_replace_separators(path, sizeof(cwd));
+    result = strlen(path) + 1;
+    kioku_path_replace_separators(path_out, result);
+  }
+#else
+  const char *cwd = srsDir_GetCWD();
+  if (cwd != NULL)
+  {
+    char *path = strdup(path);
+    kioku_path_replace_separators(path, strlen(path) + 1);
     int32_t needed = kioku_path_concat(path_out, nbytes, path, relative);
     if (needed > 0)
     {
       result = (size_t) needed;
     }
+    free(path);
     /** @todo resolve the relative paths to mimic the functionality of realpath and _fullpath */
     /* result = kioku_path_resolve_relative(path_out, result); */
   }
 #if 0
-  /* Consider using realpath and _fullpath */
-#if kiokuOS_WINDOWS
-  path = _fullpath(path_out, relative, nbytes);
 #elif _BSD_SOURCE || _XOPEN_SOURCE >= 500 || _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED
   char full[kiokuPATH_MAX+1] = {0};
   realpath(path, full);
