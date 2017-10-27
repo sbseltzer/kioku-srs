@@ -2,14 +2,14 @@
 image: Visual Studio 2017
 
 # build Configuration, i.e. Debug, Release, etc.
-configuration: Debug
+configuration: Release
 
 # scripts to run before build
 before_build:
   - git submodule update --init
-  - ci\\windows\\build-deps.bat
-  - ci\\windows\\build.bat
+  - ci\windows\build-deps.bat
+  - ci\windows\build.bat
 
 build:
   parallel: true                   # enable MSBuild parallel builds
-  project: build\\kioku.sln        # path to Visual Studio solution or project
+  project: build\kioku.sln        # path to Visual Studio solution or project

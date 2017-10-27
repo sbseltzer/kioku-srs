@@ -3,7 +3,7 @@ set build_dir=%CD%
 set result=0
 set lib_ext=lib
 set build_type=Visual Studio 15 2017 Win64
-set build_conf=Debug
+set build_conf=Release
 
 echo "Start Directory: %build_dir%"
 echo "Build Type: %build_type%"
