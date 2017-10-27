@@ -610,6 +610,7 @@ TEST test_dir_traversal(void)
 
   /* Test popping several directories */
   /* Test whether setting directory clears the stack */
+  /* Test pushing several cycles beyond stack limit and then popping them all */
 
   PASS();
 }
