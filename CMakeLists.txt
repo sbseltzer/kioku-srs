@@ -171,15 +171,7 @@ add_library( kioku SHARED src/kioku/log.c
                           extern/parson/parson.c
                           )
 
-target_link_libraries( kioku ${KIOKU_LIBS} )
-# Edited from https://github.com/commontk/Log4Qt/blob/patched/CMakeLists.txt#L116
-if (NOT MSVC)
-   include(CheckCCompilerFlag)
-   CHECK_C_COMPILER_FLAG("-fPIC" HAS_FPIC)
-   IF( HAS_FPIC AND CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
-       SET_TARGET_PROPERTIES(kioku PROPERTIES COMPILE_FLAGS "-fPIC")
-   ENDIF()
-else()
+if( MSVC )
 # For now, we will always link statically to the CRT
   set(STATIC_CRT ON)
 # Shamelessly copied from libgit2
@@ -190,6 +182,15 @@ else()
 		SET(CRT_FLAG_DEBUG "/MDd")
 		SET(CRT_FLAG_RELEASE "/MD")
 	ENDIF()
+endif ()
+target_link_libraries( kioku ${KIOKU_LIBS} )
+# Edited from https://github.com/commontk/Log4Qt/blob/patched/CMakeLists.txt#L116
+if (NOT MSVC)
+   include(CheckCCompilerFlag)
+   CHECK_C_COMPILER_FLAG("-fPIC" HAS_FPIC)
+   IF( HAS_FPIC AND CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+       SET_TARGET_PROPERTIES(kioku PROPERTIES COMPILE_FLAGS "-fPIC")
+   ENDIF()
 endif ()
 
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
