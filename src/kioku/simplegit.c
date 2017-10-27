@@ -308,8 +308,8 @@ bool srsGit_Add(const char *path)
   bool result = true;
   int git_result = 0;
 	git_oid oid;
-	git_tree *tree;
-	git_index *index;
+	git_tree *tree = NULL;
+	git_index *index = NULL;
 
   srsGIT_INIT_LIB();
 
@@ -324,7 +324,7 @@ bool srsGit_Add(const char *path)
     printf("Adding - Unborn HEAD\n");
   }
   git_result = git_repository_index(&index, srsGIT_REPO);
-  result = result && (git_result == 0);
+  result = result && (git_result == 0) && (index != NULL);
   if (!result)
   {
     fprintf(stderr, "Could not open repository index");
@@ -338,7 +338,7 @@ bool srsGit_Add(const char *path)
     abort();
   }
   git_result = git_tree_lookup(&tree, srsGIT_REPO, &oid);
-  result = result && (git_result == 0);
+  result = result && (git_result == 0) && (tree != NULL);
   if (!result)
   {
     fprintf(stderr, "Unable to lookup tree from oid");
@@ -348,6 +348,7 @@ bool srsGit_Add(const char *path)
   const char *repo_path = srsGit_Repo_GetCurrent();
   char fullpath[kiokuPATH_MAX] = {0};
   size_t fullpath_len = kioku_path_getfull(path, fullpath, sizeof(fullpath));
+  assert(fullpath_len > 0);
   size_t str_index = 0;
   printf("Checking %s against %s for relative path\n", fullpath, repo_path);
   if (strncmp(repo_path, fullpath, strlen(repo_path)) < 0)
@@ -357,12 +358,13 @@ bool srsGit_Add(const char *path)
       str_index++;
     }
   }
-  printf("Adding %s to %s\n", fullpath + str_index, repo_path);
-  git_result = git_index_add_bypath(index, fullpath + str_index);
+  printf("Adding %s to %s\n", &fullpath[str_index], repo_path);
+  git_result = git_index_add_bypath(index, &fullpath[str_index]);
+  printf("Inspecting result\n");
   result = result && (git_result == 0);
   if (!result)
   {
-    fprintf(stderr, "Unable to add %s to %s\n", fullpath + str_index, repo_path);
+    fprintf(stderr, "Unable to add %s to %s\n", &fullpath[str_index], repo_path);
     abort();
   }
   size_t count = git_index_entrycount(index);
