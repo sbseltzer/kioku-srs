@@ -18,7 +18,15 @@ rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build 
 rm -rf *
 rem Build the project
+:try_cmake_gen
 cmake .. -G"%build_type%" -DBUILD_SHARED_LIBS=OFF
+if NOT EXIST CMakeCache.txt {
+   set try_build_type=Visual Studio 12 2013 Win64
+   if "%build_type%" NEQ "%try_build_type%" {
+      set build_type=%try_build_type%
+      goto try_cmake_gen
+   }
+}
 cmake --build .
 ls src
 
