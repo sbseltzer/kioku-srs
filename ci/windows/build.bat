@@ -26,8 +26,8 @@ if NOT EXIST libssh2.%lib_ext% (
    set result=1
    goto end
 )
-if NOT EXIST libgit2.%lib_ext% (
-   echo Build: Failed to build libssh2!
+if NOT EXIST git2.%lib_ext% (
+   echo Build: Failed to build libgit2!
    set result=1
    goto end
 )
