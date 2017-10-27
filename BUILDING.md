@@ -23,7 +23,7 @@ Here's how to build in Unix-like environements. This assumes you have `git` and 
 
 The following should work out of the box on Unix-like platforms so long as `git` and `cmake` are installed. You will need CMake installed and added to your `PATH` environment variable (this is mostly pertinent on Windows).
 
-Starting from the root of your cloned repository...
+Starting from the root of your cloned repository, run the build scripts. These could take a while to complete.
 
 If you're on Linux, use the convenient building scripts which are also used in the Continuous Integration (CI).
 ```
