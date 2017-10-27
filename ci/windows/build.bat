@@ -10,12 +10,13 @@ echo "Start Directory: %build_dir%"
 echo "Build Type: %build_type%"
 
 rem Delete CMake generated files that could screw up CMake output location
-rm -rf CMakeFiles CMakeCache.txt
+mv build build.old
+mv CMakeFiles CMakeFiles.old
+call "cmd /c start rm -rf build.old CMakeFiles.old CMakeCache.txt"
 rem Attempt to create build dir
 mkdir build
 rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build
-rm -rf *
 rem Copy libraries over (uncomment if/when we enable building of shared libraries)
 copy /V /B /Y /Z %build_dir%\extern\libssh2\build\src\*.%lib_ext%* .
 copy /V /B /Y /Z %build_dir%\extern\libgit2\build\*.%lib_ext%* .

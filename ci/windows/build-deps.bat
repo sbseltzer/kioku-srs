@@ -12,12 +12,13 @@ echo "Build Type: %build_type%"
 rem BUILD LIBSSH2
 cd %build_dir%\extern\libssh2
 rem Cleanup directory just in case there's something funky left behind
-rm -rf CMakeFiles CMakeCache.txt
+mv build build.old
+mv CMakeFiles CMakeFiles.old
+call "cmd /c start rm -rf build.old CMakeFiles.old CMakeCache.txt"
 rem Attempt to create build dir
 mkdir build
 rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build 
-rm -rf *
 rem Build the project
 :try_cmake_gen
 cmake .. -G"%build_type%" -DBUILD_SHARED_LIBS=%shared% -DBUILD_EXAMPLES=OFF
@@ -37,12 +38,13 @@ ls src
 rem BUILD LIBGIT2
 cd %build_dir%\extern\libgit2
 rem Delete CMake generated files that could screw up CMake output location
-rm -rf CMakeFiles CMakeCache.txt
+mv build build.old
+mv CMakeFiles CMakeFiles.old
+call "cmd /c start rm -rf build.old CMakeFiles.old CMakeCache.txt"
 rem Attempt to create build dir
 mkdir build
 rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build
-rm -rf *
 rem Build the project
 cmake .. -G"%build_type%" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=%shared% -DLIBSSH2_FOUND=YES -DLIBSSH2_INCLUDE_DIRS:PATH=%build_dir%\extern\libssh2\include;%build_dir%\extern\libssh2\build\src -DLIBSSH2_LIBRARY_DIRS:PATH=%build_dir%\extern\libssh2\build\src\%build_conf% -DLIBSSH2_LIBRARIES=libssh2.%lib_ext%
 cmake --build .
