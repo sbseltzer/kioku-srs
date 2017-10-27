@@ -179,6 +179,17 @@ if (NOT MSVC)
    IF( HAS_FPIC AND CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
        SET_TARGET_PROPERTIES(kioku PROPERTIES COMPILE_FLAGS "-fPIC")
    ENDIF()
+else()
+# For now, we will always link statically to the CRT
+  set(STATIC_CRT ON)
+# Shamelessly copied from libgit2
+	IF (STATIC_CRT)
+		SET(CRT_FLAG_DEBUG "/MTd")
+		SET(CRT_FLAG_RELEASE "/MT")
+	ELSE()
+		SET(CRT_FLAG_DEBUG "/MDd")
+		SET(CRT_FLAG_RELEASE "/MD")
+	ENDIF()
 endif ()
 
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
