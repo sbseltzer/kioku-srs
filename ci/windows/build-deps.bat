@@ -1,11 +1,10 @@
 rem Initialize variables
-set start_dir=%CD%
+set build_dir=%CD%
 set result=0
 set lib_ext="lib"
-
 set build_type="Visual Studio 12 2013 Win32"
 
-echo "Start Directory: %start_dir%"
+echo "Start Directory: %build_dir%"
 echo "Build Type: %build_type%"
 
 rem BUILD LIBSSH2
@@ -44,5 +43,5 @@ rem elif ! test -f %build_dir%\\extern\\libgit2\\build\\libgit2.%lib_ext% ; then
 rem     printf '%s\n' 'Build: Failed to build libgit2!' >&2
 rem     result=1
 rem fi
-cd %start_dir%
-exit %result%
+cd %build_dir%
+exit /b %result%

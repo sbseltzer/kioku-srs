@@ -6,9 +6,9 @@ configuration: Debug
 
 # scripts to run before build
 before_build:
-  - ci\\win32\\build-deps.bat
-  - ci\\win32\\build.bat
+  - ci\\windows\\build-deps.bat
+  - ci\\windows\\build.bat
 
 build:
-  parallel: true                  # enable MSBuild parallel builds
+  parallel: true                   # enable MSBuild parallel builds
   project: build\\kioku.sln        # path to Visual Studio solution or project
