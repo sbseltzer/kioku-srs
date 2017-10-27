@@ -3,6 +3,9 @@ os: osx
 compiler:
   - gcc
 
+before_install:
+  - if [ "$TRAVIS_OS_NAME" == "osx" ];then brew install libgcrypt; fi
+
 script:
  - echo "Hello, Travis CI"
  - ci/osx/build-deps.sh
