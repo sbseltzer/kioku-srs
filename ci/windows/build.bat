@@ -28,14 +28,16 @@ rem     result=1
 rem else
 :try_cmake_gen
 cmake .. -G"%build_type%"
-if NOT EXIST CMakeCache.txt {
+if not "%errorlevel%"=="0" (
+   rm -rf *
    set try_build_type=Visual Studio 12 2013 Win64
-   if "%build_type%" NEQ "%try_build_type%" {
+   if not "%build_type%"=="%try_build_type%" (
       set build_type=%try_build_type%
       goto try_cmake_gen
-   }
-}
-
+   ) else (
+      cd %build_dir%
+   )
+)
 cmake --build .
 set CTEST_OUTPUT_ON_FAILURE=1
 set result=
