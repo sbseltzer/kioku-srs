@@ -346,7 +346,7 @@ bool srsGit_Add(const char *path)
   }
 
   const char *repo_path = srsGit_Repo_GetCurrent();
-  char fullpath[kiokuPATH_MAX+1];
+  char fullpath[kiokuPATH_MAX] = {0};
   size_t fullpath_len = kioku_path_getfull(path, fullpath, sizeof(fullpath));
   size_t str_index = 0;
   if (strncmp(repo_path, fullpath, strlen(repo_path)) < 0)
