@@ -19,7 +19,6 @@ rm -rf *
 rem Build the project
 cmake .. -G"%build_type%" -DBUILD_SHARED_LIBS=OFF
 cmake --build .
-cmake --build . --target install
 ls src
 
 rem BUILD LIBGIT2
