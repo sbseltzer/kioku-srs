@@ -61,6 +61,8 @@ All required dependencies are included as submodules in the [extern](extern/) fo
 
 ## More on Windows
 
+For [archived releases of Visual Studio](https://my.visualstudio.com/downloads/featured) (which you might need for a stable MSBuild) you will need to get a free [Developer Essentials](https://my.visualstudio.com/subscriptions) subscription.
+
 God I hate compiling/linking on Windows. After much fighting and mangling of CMakeLists, I have the following process that works on my machine.
 
 On Windows in terminal, starting from kioku-srs root directory. I used Git Bash with things like cmake and MSBuild in my PATH. This is currently only tested on Windows 7.
