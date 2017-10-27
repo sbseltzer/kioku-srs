@@ -310,11 +310,6 @@ size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
     /** @todo resolve the relative paths to mimic the functionality of realpath and _fullpath */
     /* result = kioku_path_resolve_relative(path_out, result); */
   }
-#if 0
-#elif _BSD_SOURCE || _XOPEN_SOURCE >= 500 || _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED
-  char full[kiokuPATH_MAX+1] = {0};
-  realpath(path, full);
-#endif
 #endif
   return result;
 }
