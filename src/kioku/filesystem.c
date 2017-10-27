@@ -299,7 +299,7 @@ size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
   const char *cwd = srsDir_GetCWD();
   if (cwd != NULL)
   {
-    char *path = strdup(path);
+    char *path = strdup(cwd);
     kioku_path_replace_separators(path, strlen(path) + 1);
     int32_t needed = kioku_path_concat(path_out, nbytes, path, relative);
     if (needed > 0)
