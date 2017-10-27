@@ -17,9 +17,9 @@ rem Attempt to create build dir
 mkdir build
 rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build
-rem Copy libraries over (uncomment if/when we enable building of shared libraries)
-copy /V /B /Y /Z %build_dir%\extern\libssh2\build\src\*.%lib_ext%* .
-copy /V /B /Y /Z %build_dir%\extern\libgit2\build\*.%lib_ext%* .
+rem Copy libraries over
+copy /V /B /Y /Z %build_dir%\extern\libssh2\build\src\%build_conf%\*.%lib_ext%* .
+copy /V /B /Y /Z %build_dir%\extern\libgit2\build\%build_conf%\*.%lib_ext%* .
 rem Check whether the libraries were built
 if NOT EXIST libssh2.%lib_ext% (
    echo Build: Failed to build libssh2!
