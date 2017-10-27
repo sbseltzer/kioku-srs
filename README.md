@@ -6,13 +6,13 @@ A portable, versioned, distributed, self-hosted Spaced Repetition System (SRS) i
 
 This section is for developers. If you wish to build this yourself, see [BUILDING.md](BUILDING.md).
 
-**Gitlab CI:**  
+**Gitlab CI:**&nbsp;&nbsp;Linux  
 [![View GitLab CI Build Status](https://gitlab.com/seltzer/kioku-srs/badges/master/build.svg)](https://gitlab.com/seltzer/kioku-srs/commits/master) 
 
-**AppVeyor:**  
+**AppVeyor:**&nbsp;&nbsp;Windows  
 [![View AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/kpkdyp27m3fes3jd/branch/master?svg=true)](https://ci.appveyor.com/project/seltzy/kioku-srs/branch/master)
 
-**Travis CI:**  
+**Travis CI:**&nbsp;&nbsp;OSX  
 [![View Travis CI Build Status](https://travis-ci.org/seltzy/kioku-srs.svg?branch=master)](https://travis-ci.org/seltzy/kioku-srs)
 
 ## What's an SRS?
