@@ -17,7 +17,21 @@ rem Attempt to create build dir
 mkdir build
 rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build
+:try_cmake_gen
+cmake .. -G"%build_type%"
+if not "%errorlevel%"=="0" (
+   rm -rf *
+   set try_build_type=Visual Studio 12 2013 Win64
+   if not "%build_type%"=="%try_build_type%" (
+      set build_type=%try_build_type%
+      goto try_cmake_gen
+   ) else (
+      goto end
+   )
+)
+cmake --build . --config %build_conf%
 rem Copy libraries over
+cd %build_conf%
 copy /V /B /Y /Z %build_dir%\extern\libssh2\build\src\%build_conf%\*.%lib_ext%* .
 copy /V /B /Y /Z %build_dir%\extern\libgit2\build\%build_conf%\*.%lib_ext%* .
 rem Check whether the libraries were built
@@ -31,19 +45,6 @@ if NOT EXIST git2.%lib_ext% (
    set result=1
    goto end
 )
-:try_cmake_gen
-cmake .. -G"%build_type%"
-if not "%errorlevel%"=="0" (
-   rm -rf *
-   set try_build_type=Visual Studio 12 2013 Win64
-   if not "%build_type%"=="%try_build_type%" (
-      set build_type=%try_build_type%
-      goto try_cmake_gen
-   ) else (
-      cd %build_dir%
-   )
-)
-cmake --build . --config %build_conf%
 set CTEST_OUTPUT_ON_FAILURE=1
 ctest -C %build_conf%
 set result=%errorlevel%
