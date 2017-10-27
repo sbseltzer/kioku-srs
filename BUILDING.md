@@ -9,6 +9,8 @@ For the time being, the dependencies such as `libgit2` and `libssh2` are built a
 
 Kioku itself, however, is built as a shared library. This is because Kioku has a number of unit tests that all link to it, so building those with static linkage would take more build time and disk space.
 
+## Getting started
+
 Start by cloning. This should work on Unix-like systems and Git Bash for Windows. All required dependencies are submodules, and will be included when you clone unless you forget the `--recursive` flag.
 ```bash
 git clone --recursive https://github.com/seltzy/kioku-srs.git
