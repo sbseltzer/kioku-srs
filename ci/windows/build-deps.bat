@@ -51,12 +51,12 @@ cmake --build . --config %build_conf%
 ls
 
 rem Check whether the libraries were built
-if NOT EXIST %build_dir%\extern\libssh2\build\src\libssh2.%lib_ext% (
+if NOT EXIST %build_dir%\extern\libssh2\build\src\%build_conf%\libssh2.%lib_ext% (
    echo Build: Failed to build libssh2!
    set result=1
 )
-if NOT EXIST %build_dir%\extern\libgit2\build\libgit2.%lib_ext% (
-   echo Build: Failed to build libssh2!
+if NOT EXIST %build_dir%\extern\libgit2\build\%build_conf%\libgit2.%lib_ext% (
+   echo Build: Failed to build libgit2!
    set result=1
 )
 cd %build_dir%
