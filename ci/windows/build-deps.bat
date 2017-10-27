@@ -1,10 +1,20 @@
 rem Initialize variables
 set build_dir=%CD%
 set result=0
-set build_type=Visual Studio 15 2017 Win64
-set build_conf=Release
-set shared=ON
-set lib_ext=dll
+IF [%build_type%] == [] (
+  set build_type=Visual Studio 15 2017 Win64
+)
+IF [%build_conf%] == [] (
+  set build_conf=Release
+)
+IF [%shared%] == [] (
+  set shared=ON
+)
+IF "%shared%" == "ON" (
+  set lib_ext=dll
+) ELSE (
+  set lib_exit=lib
+)
 
 echo "Start Directory: %build_dir%"
 echo "Build Type: %build_type%"
