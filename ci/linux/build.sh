@@ -3,6 +3,7 @@
 start_dir=$PWD
 result=0
 # : ${lib_ext:="so"}
+: ${build_conf:="Release"}
 : ${TRAVIS_BUILD_DIR:=$start_dir}
 build_dir=$TRAVIS_BUILD_DIR
 build_type="Unix Makefiles"
@@ -29,8 +30,8 @@ cd build && make clean && rm -rf *
 #     result=1
 # else
 cmake .. -G"$build_type"
-cmake --build .
-CTEST_OUTPUT_ON_FAILURE=1 ctest
+cmake --build . --config $build_conf
+CTEST_OUTPUT_ON_FAILURE=1 ctest -C $build_conf
 result=$?
 # fi
 cd $start_dir
