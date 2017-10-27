@@ -111,6 +111,7 @@ link_directories(
   ${CMAKE_SOURCE_DIR}/extern/libgit2/build
   ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug
   ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Release
+  ${CMAKE_SOURCE_DIR}/extern/libgit2/build/deps/http-parser
   ${CMAKE_SOURCE_DIR}/extern/libssh2
   ${CMAKE_SOURCE_DIR}/extern/libssh2/Debug
   ${CMAKE_SOURCE_DIR}/extern/libssh2/Release
@@ -134,6 +135,7 @@ include_directories( include
                      extern/greatest
                      extern/libssh2/src/
                      extern/libssh2/include
+                     extern/libgit2/deps/http_parser/
                      ) 
 
 # Taken from https://github.com/commontk/Log4Qt/blob/patched/CMakeLists.txt#L116
@@ -159,6 +161,7 @@ target_link_libraries( kioku git2
                        ssl
                        pthread
                        curl
+                       http-parser
                        )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
