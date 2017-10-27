@@ -16,7 +16,7 @@ mkdir build
 rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build && make clean && rm -rf *
 rem Build the project
-cmake .. -G"%build_type%" -DCMAKE_INSTALL_PREFIX:PATH=%build_dir%\\extern\\libssh2\\build\\src -DBUILD_SHARED_LIBS=ON
+cmake .. -G"%build_type%" -DCMAKE_INSTALL_PREFIX:PATH=%build_dir%\\extern\\libssh2\\build\\src -DBUILD_SHARED_LIBS=OFF
 cmake --build .
 cmake --build . --target install
 ls src
