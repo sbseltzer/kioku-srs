@@ -3,6 +3,7 @@ set build_dir=%CD%
 set result=0
 set lib_ext=lib
 set build_type=Visual Studio 15 2017 Win64
+set build_conf=Debug
 
 echo "Start Directory: %build_dir%"
 echo "Build Type: %build_type%"
@@ -29,7 +30,7 @@ cmake .. -G"%build_type%"
 cmake --build .
 set CTEST_OUTPUT_ON_FAILURE=1
 set result=
-ctest -C "Debug"
+ctest -C"%build_conf%"
 rem fi
 cd %build_dir%
 exit /b %result%
