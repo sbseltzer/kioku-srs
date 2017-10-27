@@ -10,7 +10,6 @@ echo "Build Type: %build_type%"
 rem BUILD LIBSSH2
 cd %build_dir%\\extern\\libssh2
 rem Cleanup directory just in case there's something funky left behind
-make clean
 rm -rf CMakeFiles CMakeCache.txt
 rem Attempt to create build dir
 mkdir build
