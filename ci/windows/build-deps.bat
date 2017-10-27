@@ -55,7 +55,7 @@ if NOT EXIST %build_dir%\extern\libssh2\build\src\%build_conf%\libssh2.%lib_ext%
    echo Build: Failed to build libssh2!
    set result=1
 )
-if NOT EXIST %build_dir%\extern\libgit2\build\%build_conf%\libgit2.%lib_ext% (
+if NOT EXIST %build_dir%\extern\libgit2\build\%build_conf%\git2.%lib_ext% (
    echo Build: Failed to build libgit2!
    set result=1
 )
