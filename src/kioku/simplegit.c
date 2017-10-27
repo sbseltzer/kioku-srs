@@ -349,6 +349,7 @@ bool srsGit_Add(const char *path)
   char fullpath[kiokuPATH_MAX] = {0};
   size_t fullpath_len = kioku_path_getfull(path, fullpath, sizeof(fullpath));
   size_t str_index = 0;
+  printf("Checking %s against %s for relative path\n", fullpath, repo_path);
   if (strncmp(repo_path, fullpath, strlen(repo_path)) < 0)
   {
     while ((repo_path[str_index] == fullpath[str_index]) && (str_index < fullpath_len))
