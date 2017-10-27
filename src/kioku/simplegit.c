@@ -365,7 +365,6 @@ bool srsGit_Add(const char *path)
   if (!result)
   {
     fprintf(stderr, "Unable to add %s to %s\n", &fullpath[str_index], repo_path);
-    abort();
   }
   size_t count = git_index_entrycount(index);
   printf("Index entry count: %zu\n", count);
