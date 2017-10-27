@@ -45,6 +45,7 @@ if NOT EXIST git2.%lib_ext% (
    set result=1
    goto end
 )
+cd ..
 set CTEST_OUTPUT_ON_FAILURE=1
 ctest -C %build_conf%
 set result=%errorlevel%
