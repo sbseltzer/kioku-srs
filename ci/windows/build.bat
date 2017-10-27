@@ -2,7 +2,7 @@ rem Initialize variables
 set build_dir=%CD%
 set result=0
 set lib_ext=lib
-set build_type=Visual Studio 12 2013 Win32
+set build_type=Visual Studio 15 2017 Win64
 
 echo "Start Directory: %build_dir%"
 echo "Build Type: %build_type%"
