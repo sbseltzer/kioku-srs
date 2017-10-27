@@ -14,9 +14,9 @@ mkdir build
 rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build
 rm -rf *
-rem Copy libraries over
-cp %build_dir%\\extern\\libssh2\\build\\src\\*.%lib_ext%* .
-cp %build_dir%\\extern\\libgit2\\build\\*.%lib_ext%* .
+rem Copy libraries over (uncomment if/when we enable building of shared libraries)
+rem copy /V /B /Y /Z %build_dir%\\extern\\libssh2\\build\\src\\*.%lib_ext%* .
+rem copy /V /B /Y /Z %build_dir%\\extern\\libgit2\\build\\*.%lib_ext%* .
 rem Check whether they were copied
 rem if ! test -f libgit2.%lib_ext% ; then
 rem     printf '%s\n' 'Build: Failed to copy libgit2!' >&2
