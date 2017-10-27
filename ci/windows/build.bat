@@ -1,9 +1,10 @@
 rem Initialize variables
 set build_dir=%CD%
 set result=0
-set lib_ext=lib
 set build_type=Visual Studio 15 2017 Win64
 set build_conf=Release
+set shared=ON
+set lib_ext=dll
 
 echo "Start Directory: %build_dir%"
 echo "Build Type: %build_type%"
@@ -16,16 +17,19 @@ rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build
 rm -rf *
 rem Copy libraries over (uncomment if/when we enable building of shared libraries)
-rem copy /V /B /Y /Z %build_dir%\\extern\\libssh2\\build\\src\\*.%lib_ext%* .
-rem copy /V /B /Y /Z %build_dir%\\extern\\libgit2\\build\\*.%lib_ext%* .
-rem Check whether they were copied
-rem if ! test -f libgit2.%lib_ext% ; then
-rem     printf '%s\n' 'Build: Failed to copy libgit2!' >&2
-rem     result=1
-rem elif ! test -f libssh2.%lib_ext% ; then
-rem     printf '%s\n' 'Build: Failed to copy libssh2!' >&2
-rem     result=1
-rem else
+copy /V /B /Y /Z %build_dir%\extern\libssh2\build\src\*.%lib_ext%* .
+copy /V /B /Y /Z %build_dir%\extern\libgit2\build\*.%lib_ext%* .
+rem Check whether the libraries were built
+if NOT EXIST libssh2.%lib_ext% (
+   echo Build: Failed to build libssh2!
+   set result=1
+   goto end
+)
+if NOT EXIST libgit2.%lib_ext% (
+   echo Build: Failed to build libssh2!
+   set result=1
+   goto end
+)
 :try_cmake_gen
 cmake .. -G"%build_type%"
 if not "%errorlevel%"=="0" (
@@ -42,6 +46,6 @@ cmake --build .
 set CTEST_OUTPUT_ON_FAILURE=1
 set result=
 ctest -C"%build_conf%"
-rem fi
+:end
 cd %build_dir%
 exit /b %result%

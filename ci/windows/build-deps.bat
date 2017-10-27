@@ -1,9 +1,10 @@
 rem Initialize variables
 set build_dir=%CD%
 set result=0
-set lib_ext=lib
 set build_type=Visual Studio 15 2017 Win64
 set build_conf=Release
+set shared=ON
+set lib_ext=dll
 
 echo "Start Directory: %build_dir%"
 echo "Build Type: %build_type%"
@@ -19,7 +20,7 @@ cd build
 rm -rf *
 rem Build the project
 :try_cmake_gen
-cmake .. -G"%build_type%" -DBUILD_SHARED_LIBS=OFF -DBUILD_EXAMPLES=OFF
+cmake .. -G"%build_type%" -DBUILD_SHARED_LIBS=%shared% -DBUILD_EXAMPLES=OFF
 if not "%errorlevel%"=="0" (
    rm -rf *
    set try_build_type=Visual Studio 12 2013 Win64
@@ -43,17 +44,18 @@ rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build
 rm -rf *
 rem Build the project
-cmake .. -G"%build_type%" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=OFF -DLIBSSH2_FOUND=YES -DLIBSSH2_INCLUDE_DIRS:PATH=%build_dir%\extern\libssh2\include;%build_dir%\extern\libssh2\build\src -DLIBSSH2_LIBRARY_DIRS:PATH=%build_dir%\extern\libssh2\build\src\%build_conf% -DLIBSSH2_LIBRARIES=libssh2.%lib_ext%
+cmake .. -G"%build_type%" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=%shared% -DLIBSSH2_FOUND=YES -DLIBSSH2_INCLUDE_DIRS:PATH=%build_dir%\extern\libssh2\include;%build_dir%\extern\libssh2\build\src -DLIBSSH2_LIBRARY_DIRS:PATH=%build_dir%\extern\libssh2\build\src\%build_conf% -DLIBSSH2_LIBRARIES=libssh2.%lib_ext%
 cmake --build .
 ls
 
 rem Check whether the libraries were built
-rem if ! test -f %build_dir%\extern\libssh2\build\src\libssh2.%lib_ext% ; then
-rem     printf '%s\n' 'Build: Failed to build libssh2!' >&2
-rem     result=1
-rem elif ! test -f %build_dir%\extern\libgit2\build\libgit2.%lib_ext% ; then
-rem     printf '%s\n' 'Build: Failed to build libgit2!' >&2
-rem     result=1
-rem fi
+if NOT EXIST %build_dir%\extern\libssh2\build\src\libssh2.%lib_ext% (
+   echo Build: Failed to build libssh2!
+   set result=1
+)
+if NOT EXIST %build_dir%\extern\libgit2\build\libgit2.%lib_ext% (
+   echo Build: Failed to build libssh2!
+   set result=1
+)
 cd %build_dir%
 exit /b %result%
