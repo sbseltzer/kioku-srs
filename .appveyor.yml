@@ -13,3 +13,7 @@ before_build:
 build:
   parallel: true                   # enable MSBuild parallel builds
   project: build\kioku.sln        # path to Visual Studio solution or project
+
+test_script:
+  - cd build
+  - ctest -C Release
