@@ -26,11 +26,11 @@
  * When subsequent pops take place such that the stack index would drop below zero, it wraps around to the first non-NULL element starting from the end of the stack array.
  * Similarly, if a subsequent pop causes the index to point to a NULL element, it will step back till a non-NULL element is found, or until it would drop below zero, in which case the stack is considered empty.
  */
-static uint32_t directory_stack_top_index = 0;
-static char *directory_stack[srsFILESYSTEM_DIRSTACK_MAX] = {NULL};
+static int32_t directory_stack_top_index = 0;
+static char *directory_stack[srsFILESYSTEM_DIRSTACK_SIZE] = {NULL};
 static char *directory_current = NULL;
 
-char *srsDir_GetCurrentInternal(char *buf, size_t bufsize)
+char *srsDir_GetSystemCWD(char *buf, size_t bufsize)
 {
   char *cwd = getcwd(buf, bufsize);
   if (cwd != buf || cwd == NULL)
@@ -40,14 +40,19 @@ char *srsDir_GetCurrentInternal(char *buf, size_t bufsize)
   return cwd;
 }
 
-const char *srsDir_GetCurrent()
+bool srsDir_SetSystemCWD(const char *buf)
+{
+  return (chdir(buf) == 0);
+}
+
+const char *srsDir_GetCWD()
 {
   if (directory_current == NULL)
   {
     directory_current = malloc(kiokuPATH_MAX);
     if (directory_current != NULL)
     {
-      char *cwd = srsDir_GetCurrentInternal(directory_current, kiokuPATH_MAX);
+      char *cwd = srsDir_GetSystemCWD(directory_current, kiokuPATH_MAX);
       if (cwd != directory_current || cwd == NULL)
       {
         free(directory_current);
@@ -59,11 +64,10 @@ const char *srsDir_GetCurrent()
   return directory_current;
 }
 
-const char *srsDir_SetCurrent(const char *path)
+const char *srsDir_SetCWD(const char *path)
 {
   /* Clear stack */
-  directory_stack_top_index = 0;
-  for (directory_stack_top_index = 0; directory_stack_top_index < srsFILESYSTEM_DIRSTACK_MAX; directory_stack_top_index++)
+  for (directory_stack_top_index = 0; directory_stack_top_index < srsFILESYSTEM_DIRSTACK_SIZE; directory_stack_top_index++)
   {
     if (directory_stack[directory_stack_top_index] != NULL)
     {
@@ -76,76 +80,111 @@ const char *srsDir_SetCurrent(const char *path)
       directory_stack[directory_stack_top_index] = NULL;
     }
   }
-  directory_stack_top_index = 0;
-  /* Free the current directory */
+  directory_stack_top_index = -1;
+  /* Free the current directory so our next call to srsDir_GetCWD regenerates it */
   if (directory_current != NULL)
   {
     free(directory_current);
     directory_current = NULL;
   }
   /* Attempt to change the directory, and if it succeeds cause the current directory to be reallocated */
-  if (chdir(path) == 0)
+  if ((path != NULL) && srsDir_SetSystemCWD(path))
   {
-    return srsDir_GetCurrent();
+    return srsDir_GetCWD();
   }
   /* Failure to do the actual directory changing returns NULL */
   return NULL;
 }
 
-const char *srsDir_PushCurrent(const char *path, char **lost)
+const char *srsDir_PushCWD(const char *path, char **lost)
 {
   const char *cwd = NULL;
-  if ((path != NULL) && (chdir(path) == 0))
+  if ((path != NULL) && srsDir_SetSystemCWD(path))
   {
+    /* Free the current directory so our next call to srsDir_GetCWD regenerates it */
     if (directory_current != NULL)
     {
       free(directory_current);
       directory_current = NULL;
     }
-    cwd = srsDir_GetCurrent();
-    /** @todo Check result of srsDir_GetCurrent */
+    cwd = srsDir_GetCWD();
+    /** @todo Check result of srsDir_GetCWD */
+    /* Increment the stack index (if the stack is empty, this should end up at zero) */
+    directory_stack_top_index++;
+    assert(directory_stack_top_index >= 0);
+    /* Wrap around the stack if needed */
+    if (directory_stack_top_index >= srsFILESYSTEM_DIRSTACK_SIZE)
+    {
+      directory_stack_top_index = 0;
+    }
+    /* Figure out if we're losing a stack entry */
     if (directory_stack[directory_stack_top_index] != NULL)
     {
       if (lost != NULL)
       {
+        /* Give user back the lost entry for inspection, and they will need to free it */
         *lost = directory_stack[directory_stack_top_index];
       }
       else
       {
+        /* The user doesn't want lost entries back - free it */
         free(directory_stack[directory_stack_top_index]);
       }
     }
     directory_stack[directory_stack_top_index] = strdup(cwd);
     /** @todo Check result of strdup */
-    directory_stack_top_index++;
-    if (directory_stack_top_index >= srsFILESYSTEM_DIRSTACK_MAX)
-    {
-      directory_stack_top_index = 0;
-    }
   }
   return cwd;
 }
 
-const char *srsDir_PopCurrent()
+bool srsDir_PopCWD(char **popped)
 {
-  const char *result = NULL;
+  char *pop_me = NULL;
+  int32_t current_index = directory_stack_top_index;
   /* See if there's anything left to pop */
-  if (directory_stack[directory_stack_top_index] == NULL)
+  if ((current_index >= 0) && (directory_stack[current_index] != NULL))
   {
-    /** @todo Unsure if this is the right behaviour */
-    goto finish;
+    pop_me = directory_stack[current_index];
   }
-  /* Wrap around? */
-  if (directory_stack_top_index == 0)
+  /* Figure out what the next index will be */
+  /* Decrement index */
+  int32_t next_index = directory_stack_top_index - 1;
+  /* Wrap around if needed */
+  if (next_index < 0)
   {
-    uint32_t i = 0;
-    for (i = srsFILESYSTEM_DIRSTACK_MAX; i > 0; i--)
+    next_index = srsFILESYSTEM_DIRSTACK_SIZE - 1;
+  }
+  /* Decrement down the stack until a non-NULL entry is reached or until the bottom is hit (which indicates an empty stack) */
+  while ((next_index > 0) && (directory_stack[next_index] == NULL))
+  {
+    next_index--;
+  }
+  assert(next_index < srsFILESYSTEM_DIRSTACK_SIZE);
+  /* Attempt to change to the new directory */
+  if ((next_index >= 0) && (directory_stack[next_index] != NULL))
+  {
+    if (!srsDir_SetSystemCWD(directory_stack[next_index]))
     {
+      srsLOG_ERROR("Unable to pop directory to %s", directory_stack[next_index]);
     }
   }
-
-finish:
-  return result;
+  /* Just in case nothing is found, start by initializing the output value to NULL */
+  if (popped != NULL)
+  {
+    /* The user wanted the entry, so output it (if any) rather than freeing it */
+    *popped = pop_me;
+  }
+  else
+  {
+    /* The user didn't want the popped entry, so free it (if any) */
+    if (pop_me != NULL)
+    {
+      free(pop_me);
+      directory_stack[current_index] = NULL;
+    }
+  }
+  directory_stack_top_index = next_index;
+  return (pop_me != NULL);
 }
 
 /** @todo Perhaps have a method called by an init that dynamically finds a "true" max path length */

@@ -29,13 +29,15 @@ build_image:
 submodules-deps:
   stage: submodules
   script:
+    - rm -rf .git/modules extern/*
     - git submodule update --init extern/libgit2
     - git submodule update --init extern/libssh2
   only:
     - master
   artifacts:
     paths:
-      - extern/
+      - extern/libgit2
+      - extern/libssh2
 
 submodules-build:
   stage: submodules
@@ -45,29 +47,33 @@ submodules-build:
     - git submodule update --init extern/generic-c-hashmap
     - git submodule update --init extern/utf8.h
     - git submodule update --init extern/parson
-    - git submodule update --init extern/ims-json
     - git submodule update --init extern/tinydir
     - git submodule update --init extern/lua
   only:
     - master
   artifacts:
     paths:
-      - extern/
+      - extern/mongoose
+      - extern/greatest
+      - extern/parson
+      - extern/lua
+      - extern/generic-c-hashmap
+      - extern/utf8.h
 
 deps-gcc:
   stage: deps
   dependencies:
     - submodules-deps
   script:
-    - cd extern/libgit2
-    - cmake . -G"Unix Makefiles" -DEMBED_SSH_PATH=$CI_PROJECT_DIR/extern/libssh2/ -DBUILD_CLAR=OFF
-    - make
-    - test -f libgit2.so
+    - ci/linux/build-deps.sh
   only:
     - master
   artifacts:
     paths:
-      - extern/
+      - extern/libssh2/build
+      - extern/libssh2/include
+      - extern/libgit2/build
+      - extern/libgit2/include
 
 build-gcc:
   stage: build
@@ -75,12 +81,7 @@ build-gcc:
     - deps-gcc
     - submodules-build
   script:
-    - mkdir build && cd build
-    - cp $CI_PROJECT_DIR/extern/libgit2/*.so* .
-    - test -f libgit2.so
-    - cmake .. -G"Unix Makefiles"
-    - make
-    - CTEST_OUTPUT_ON_FAILURE=1 make test
+    - ci/linux/build.sh
     # todo: Do both 64 & 32 bit builds
   only:
     - master

@@ -9,33 +9,42 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Mo
 
 # Give this to get CMake to look for libraries built from source.
 list(APPEND CMAKE_PREFIX_PATH
-            ${CMAKE_SOURCE_DIR}/
-            ${CMAKE_SOURCE_DIR}/Release
-            ${CMAKE_SOURCE_DIR}/Debug
+            ${CMAKE_SOURCE_DIR}
             ${CMAKE_SOURCE_DIR}/build
-            ${CMAKE_SOURCE_DIR}/build/Release
-            ${CMAKE_SOURCE_DIR}/build/Debug
             ${CMAKE_SOURCE_DIR}/extern/libgit2
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/Release
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/Debug
             ${CMAKE_SOURCE_DIR}/extern/libgit2/build
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Release
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug
             ${CMAKE_SOURCE_DIR}/extern/libgit2/src
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/src/Release
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/src/Debug
             ${CMAKE_SOURCE_DIR}/extern/libssh2
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/Release
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/Debug
             ${CMAKE_SOURCE_DIR}/extern/libssh2/src
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/Release
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/Debug
             ${CMAKE_SOURCE_DIR}/extern/libssh2/build
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Release
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Debug
             ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/build/Release
+            )
+
+# These will only help builds look for the libraries, but DOES NOT necessarily make builds use that configuration.
+# For Visual Studio builds, one must also set the configuration at build time, and must have done it for all dependencies.
+# https://stackoverflow.com/questions/19024259/how-to-change-the-build-type-to-release-mode-in-cmake#20423820
+# TODO: Figure out a convenient strategy for disambiguating debug/release builds. I'm thinking do what Orx does and add a 'd' to the library name for debug.
+list(APPEND CMAKE_PREFIX_PATH
+            ${CMAKE_SOURCE_DIR}/Debug
+            ${CMAKE_SOURCE_DIR}/build/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/src/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/Debug
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Debug
             ${CMAKE_SOURCE_DIR}/extern/libssh2/src/build/Debug
+            )
+list(APPEND CMAKE_PREFIX_PATH
+            ${cmake_source_dir}/Release
+            ${CMAKE_SOURCE_DIR}/build/Release
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/Release
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Release
+            ${CMAKE_SOURCE_DIR}/extern/libgit2/src/Release
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/Release
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/Release
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Release
+            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/build/Release
             )
 
 # Give this to find Libssh2Config.cmake
@@ -56,7 +65,6 @@ list(APPEND CMAKE_PREFIX_PATH
 #find_package(OpenSSL REQUIRED)
 #find_package(LibCURL REQUIRED)
 #find_package(LibGit2 REQUIRED)
-
 
 add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             extern/lua/lgc.c
@@ -97,16 +105,23 @@ add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             )
 
 link_directories(
-  ${CMAKE_SOURCE_DIR}/extern/libgit2/Debug
   ${CMAKE_SOURCE_DIR}/extern/libgit2
-  ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug
+  ${CMAKE_SOURCE_DIR}/extern/libgit2/Debug
+  ${CMAKE_SOURCE_DIR}/extern/libgit2/Release
   ${CMAKE_SOURCE_DIR}/extern/libgit2/build
+  ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug
+  ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Release
+  ${CMAKE_SOURCE_DIR}/extern/libssh2
+  ${CMAKE_SOURCE_DIR}/extern/libssh2/Debug
+  ${CMAKE_SOURCE_DIR}/extern/libssh2/Release
+  ${CMAKE_SOURCE_DIR}/extern/libssh2/build
+  ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Debug
+  ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Release
 )
 
 include_directories( include
                      extern/mongoose
                      extern/parson
-#                     extern/ims-json/src
                      extern/libgit2/include
                      extern/utf8.h
                      extern/lua
@@ -114,6 +129,7 @@ include_directories( include
                      extern/tinydir
                      extern/libtap
                      extern/greatest
+                     extern/libssh2/src/
                      extern/libssh2/include
                      ) 
 
@@ -124,19 +140,16 @@ add_library( kioku SHARED src/kioku/log.c
                           src/kioku/controller.c
                           src/kioku/rest.c
                           src/kioku/server.c
-#                          extern/ims-json/src/json.c
                           extern/parson/parson.c
                           )
-if (WIN32)
-#   set(LIBSSH_LIB libssh2)
-   set(MATH_LIB "")
-else()
-#   set(LIBSSH_LIB ssh2)
-   set(MATH_LIB m)
-endif (WIN32)
+#if (WIN32)
+#  set(LIBSSH_LIB libssh2)
+#else()
+#  set(LIBSSH_LIB ssh2)
+#endif (WIN32)
+
 target_link_libraries( kioku git2
-#                       ${LIBSSH_LIB}
-                       ${MATH_LIB} # The math library is needed by ims-json. I'm thinking of submitting a PR for that and pre-C99 compatibility.
+#                      ${LIBSSH_LIB}
                        )
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
@@ -145,7 +158,6 @@ add_executable( kioku-server
                 src/main.c
                 extern/mongoose/mongoose.c
                 extern/parson/parson.c
-#                extern/ims-json/src/json.c
                 )
 target_link_libraries( kioku-server kioku git2 )
 add_dependencies( kioku-server kioku )
@@ -155,6 +167,8 @@ add_subdirectory(test)
 
 enable_testing()
 
+#set( CTEST_MEMORYCHECK_COMMAND valgrind )
+#set( CTEST_MEMORYCHECK_COMMAND_OPTIONS "--tool=callgrind -v" )
 add_test(NAME TestFileSystem COMMAND filesystem)
 add_test(NAME TestGit COMMAND git)
 add_test(NAME TestModel COMMAND model)

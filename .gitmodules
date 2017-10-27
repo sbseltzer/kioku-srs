@@ -10,9 +10,6 @@
 [submodule "extern/lua"]
 	path = extern/lua
 	url = https://github.com/lua/lua.git
-[submodule "extern/mbedtls"]
-	path = extern/mbedtls
-	url = https://github.com/ARMmbed/mbedtls.git
 [submodule "extern/parson"]
 	path = extern/parson
 	url = https://github.com/kgabis/parson.git
@@ -25,12 +22,6 @@
 [submodule "extern/libssh2"]
 	path = extern/libssh2
 	url = https://github.com/libssh2/libssh2.git
-[submodule "extern/zlib"]
-	path = extern/zlib
-	url = https://github.com/madler/zlib.git
 [submodule "extern/greatest"]
 	path = extern/greatest
 	url = https://github.com/silentbicycle/greatest.git
-[submodule "extern/ims-json"]
-	path = extern/ims-json
-	url = https://github.com/inmotionsoftware/ims-json.git

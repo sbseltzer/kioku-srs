@@ -1,0 +1,14 @@
+# Build worker image (VM template)
+image: Visual Studio 2013
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration: Debug
+
+# scripts to run before build
+before_build:
+  - ci\\win32\\build-deps.bat
+  - ci\\win32\\build.bat
+
+build:
+  parallel: true                  # enable MSBuild parallel builds
+  project: build\\kioku.sln        # path to Visual Studio solution or project

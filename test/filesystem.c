@@ -529,7 +529,7 @@ TEST test_dir_traversal(void)
 
   /* Test basic getting of CWD */
   {
-    cwd = srsDir_GetCurrent();
+    cwd = srsDir_GetCWD();
     ASSERT(cwd != NULL);
     strcpy(original_path, cwd);
     srsLOG_NOTIFY(cwd);
@@ -543,14 +543,14 @@ TEST test_dir_traversal(void)
   }
   /* Test result of going up one directory */
   {
-    cwd = srsDir_SetCurrent("..");
+    cwd = srsDir_SetCWD("..");
     ASSERT(cwd != NULL);
     srsLOG_NOTIFY(cwd);
     ASSERT_STR_EQ(path, cwd);
   }
   /* Test getting the current directory against the return value of setting it */
   {
-    cwd = srsDir_GetCurrent();
+    cwd = srsDir_GetCWD();
     ASSERT(cwd != NULL);
     ASSERT_STR_EQ(path, cwd);
   }
@@ -558,7 +558,7 @@ TEST test_dir_traversal(void)
 
   /* Reset directory */
   {
-    cwd = srsDir_SetCurrent(original_path);
+    cwd = srsDir_SetCWD(original_path);
     ASSERT(cwd != NULL);
     srsLOG_NOTIFY(cwd);
     strcpy(path, cwd);
@@ -567,10 +567,9 @@ TEST test_dir_traversal(void)
   /* Test push/pop */
   {
     /* Pop without anything on the stack */
-    cwd = srsDir_PopCurrent();
-    ASSERT(cwd == NULL);
+    ASSERT_FALSE(srsDir_PopCWD(NULL));
     /* Ensure that pop didn't change the CWD */
-    cwd = srsDir_GetCurrent();
+    cwd = srsDir_GetCWD();
     ASSERT(cwd != NULL);
     ASSERT_STR_EQ(path, cwd);
     /* Calculate next expected directory change */
@@ -579,22 +578,34 @@ TEST test_dir_traversal(void)
     strcpy(path, cwd);
     path[up_index] = '\0';
     /* Go up one directory via push */
-    cwd = srsDir_PushCurrent("..", NULL);
+    cwd = srsDir_PushCWD("..", NULL);
     ASSERT(cwd != NULL);
-    srsLOG_NOTIFY(cwd);
     ASSERT_STR_EQ(path, cwd);
     /* Go up another directory via push*/
-    cwd = srsDir_PushCurrent("..", NULL);
+    cwd = srsDir_PushCWD("..", NULL);
     ASSERT(cwd != NULL);
     srsLOG_NOTIFY(cwd);
     ASSERT(strcmp(path, cwd) != 0); /** @todo Use a < or > here as appropriate. */
-    /** @todo Go back */
-    #if 0
-    cwd = srsDir_PopCurrent();
-    ASSERT(cwd != NULL);
+    /* Go back */
+    char *popped;
+    ASSERT(srsDir_PopCWD(&popped));
+    ASSERT(popped != NULL);
+    srsLOG_NOTIFY("Popped: %s", popped);
+    ASSERT_STR_EQ(popped, cwd);
+    /* Calculate what the directory should have changed to */
+    cwd = srsDir_GetCWD();
     srsLOG_NOTIFY(cwd);
-    ASSERT_STR_EQ(path, cwd);
-    #endif
+    free(popped);
+    ASSERT(srsDir_PopCWD(&popped));
+    ASSERT(popped != NULL);
+    srsLOG_NOTIFY("Popped: %s", popped);
+    free(popped);
+    cwd = srsDir_GetCWD();
+    srsLOG_NOTIFY(cwd);
+    ASSERT_FALSE(srsDir_PopCWD(&popped));
+    ASSERT(popped == NULL);
+    cwd = srsDir_GetCWD();
+    srsLOG_NOTIFY(cwd);
   }
 
   /* Test popping several directories */

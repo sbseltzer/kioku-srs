@@ -11,6 +11,7 @@
 
 #include <inttypes.h>
 #include <stdbool.h>
+#include <limits.h>
 
 #endif /* _KIOKU_TYPES_H */
 
