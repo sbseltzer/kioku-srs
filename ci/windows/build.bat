@@ -25,7 +25,7 @@ rem elif ! test -f libssh2.%lib_ext% ; then
 rem     printf '%s\n' 'Build: Failed to copy libssh2!' >&2
 rem     result=1
 rem else
-cmake .. -G"$build_type"
+cmake .. -G"%build_type%"
 cmake --build .
 set CTEST_OUTPUT_ON_FAILURE=1
 set result=
