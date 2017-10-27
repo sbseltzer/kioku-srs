@@ -171,18 +171,6 @@ add_library( kioku SHARED src/kioku/log.c
                           extern/parson/parson.c
                           )
 
-if( MSVC )
-# For now, we will always link statically to the CRT
-  set(STATIC_CRT ON)
-# Shamelessly copied from libgit2
-	IF (STATIC_CRT)
-		SET(CRT_FLAG_DEBUG "/MTd")
-		SET(CRT_FLAG_RELEASE "/MT")
-	ELSE()
-		SET(CRT_FLAG_DEBUG "/MDd")
-		SET(CRT_FLAG_RELEASE "/MD")
-	ENDIF()
-endif ()
 target_link_libraries( kioku ${KIOKU_LIBS} )
 # Edited from https://github.com/commontk/Log4Qt/blob/patched/CMakeLists.txt#L116
 if (NOT MSVC)
