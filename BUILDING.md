@@ -2,6 +2,13 @@
 
 This project uses CMake. This is for portability reasons. You will need it in order to build.
 
+For the time being, the dependencies such as `libgit2` and `libssh2` are built as static libraries. This is because...  
+1. It's easier.
+2. They are uncommon on most systems (even Linux), so the costs of *not* making them dynamic libraries is virtually non-existent.
+3. This is the most feasible solution for OSX, and consistency is a good thing.
+
+Kioku itself, however, is built as a shared library. This is because Kioku has a number of unit tests that all link to it, so building those with static linkage would take more build time and disk space.
+
 Start by cloning. This should work on Unix-like systems and Git Bash for Windows. All required dependencies are submodules, and will be included when you clone unless you forget the `--recursive` flag.
 ```bash
 git clone --recursive https://github.com/seltzy/kioku-srs.git
