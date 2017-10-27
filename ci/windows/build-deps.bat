@@ -14,7 +14,8 @@ rm -rf CMakeFiles CMakeCache.txt
 rem Attempt to create build dir
 mkdir build
 rem Attempt to go to build dir and clear it out if it has anything in it.
-cd build && make clean && rm -rf *
+cd build 
+rm -rf *
 rem Build the project
 cmake .. -G"%build_type%" -DCMAKE_INSTALL_PREFIX:PATH=%build_dir%\\extern\\libssh2\\build\\src -DBUILD_SHARED_LIBS=OFF
 cmake --build .
@@ -28,7 +29,8 @@ rm -rf CMakeFiles CMakeCache.txt
 rem Attempt to create build dir
 mkdir build
 rem Attempt to go to build dir and clear it out if it has anything in it.
-cd build && rm -rf *
+cd build
+rm -rf *
 rem Build the project
 cmake .. -G"%build_type%" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=OFF
 cmake --build .
