@@ -42,6 +42,7 @@ submodules-deps:
 submodules-build:
   stage: submodules
   script:
+    - rm -rf .git/modules extern/*
     - git submodule update --init extern/mongoose
     - git submodule update --init extern/greatest
     - git submodule update --init extern/generic-c-hashmap
