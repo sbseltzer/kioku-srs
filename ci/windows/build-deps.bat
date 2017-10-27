@@ -17,7 +17,7 @@ rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build 
 rm -rf *
 rem Build the project
-cmake .. -G"%build_type%" -DCMAKE_INSTALL_PREFIX:PATH=%build_dir%\\extern\\libssh2\\build\\src -DBUILD_SHARED_LIBS=OFF
+cmake .. -G"%build_type%" -DBUILD_SHARED_LIBS=OFF
 cmake --build .
 cmake --build . --target install
 ls src
@@ -32,7 +32,7 @@ rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build
 rm -rf *
 rem Build the project
-cmake .. -G"%build_type%" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=OFF
+cmake .. -G"%build_type%" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=OFF -DSTATIC_CRT=ON -DSTDCALL=ON -DLIBSSH2_FOUND=YES -DLIBSSH2_INCLUDE_DIRS:PATH=%build_dir%\\extern\\libssh2\\include:%build_dir%\\extern\\libssh2\\build\\src -DLIBSSH2_LIBRARY_DIRS:PATH=%build_dir%\\extern\\libssh2\\build\\src -DLIBSSH2_LIBRARIES=libssh2.%lib_ext%
 cmake --build .
 ls
 
