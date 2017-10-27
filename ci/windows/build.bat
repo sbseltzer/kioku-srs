@@ -47,6 +47,9 @@ cmake --build . --config %build_conf%
 set CTEST_OUTPUT_ON_FAILURE=1
 ctest -C %build_conf%
 set result=%errorlevel%
+if not "%result%"=="0" (
+   type Testing\Temporary\LastTest.log
+)
 :end
 cd %build_dir%
 exit /b %result%
