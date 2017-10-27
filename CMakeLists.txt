@@ -19,34 +19,6 @@ list(APPEND CMAKE_PREFIX_PATH
             ${CMAKE_SOURCE_DIR}/extern/libssh2/build
             ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src
             )
-
-# These will only help builds look for the libraries, but DOES NOT necessarily make builds use that configuration.
-# For Visual Studio builds, one must also set the configuration at build time, and must have done it for all dependencies.
-# https://stackoverflow.com/questions/19024259/how-to-change-the-build-type-to-release-mode-in-cmake#20423820
-# TODO: Figure out a convenient strategy for disambiguating debug/release builds. I'm thinking do what Orx does and add a 'd' to the library name for debug.
-list(APPEND CMAKE_PREFIX_PATH
-            ${CMAKE_SOURCE_DIR}/Debug
-            ${CMAKE_SOURCE_DIR}/build/Debug
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/Debug
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/src/Debug
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/Debug
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/Debug
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Debug
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/build/Debug
-            )
-list(APPEND CMAKE_PREFIX_PATH
-            ${cmake_source_dir}/Release
-            ${CMAKE_SOURCE_DIR}/build/Release
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/Release
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Release
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/src/Release
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/Release
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/Release
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Release
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/src/build/Release
-            )
-
 # Give this to find Libssh2Config.cmake
 #set(Libssh2_DIR extern/libssh2/src)
 #set(Libssh2_DIR extern/libssh2/build/src)
@@ -129,21 +101,11 @@ add_library(lua5-3-4 SHARED extern/lua/ldblib.c
 
 link_directories(
   ${CMAKE_SOURCE_DIR}/extern/libgit2
-  ${CMAKE_SOURCE_DIR}/extern/libgit2/Debug
-  ${CMAKE_SOURCE_DIR}/extern/libgit2/Release
   ${CMAKE_SOURCE_DIR}/extern/libgit2/build
-  ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Debug
-  ${CMAKE_SOURCE_DIR}/extern/libgit2/build/Release
   ${CMAKE_SOURCE_DIR}/extern/libgit2/build/deps/http-parser
   ${CMAKE_SOURCE_DIR}/extern/libssh2
-  ${CMAKE_SOURCE_DIR}/extern/libssh2/Debug
-  ${CMAKE_SOURCE_DIR}/extern/libssh2/Release
   ${CMAKE_SOURCE_DIR}/extern/libssh2/build
-  ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Debug
-  ${CMAKE_SOURCE_DIR}/extern/libssh2/build/Release
   ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src
-  ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src/Debug
-  ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src/Release
 )
 
 include_directories( include
