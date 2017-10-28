@@ -40,7 +40,7 @@ if test "x$build_shared" = "xON"; then
       result=1
   fi
 fi
-cmake .. -G"$build_type"
+cmake .. -G"$build_type" -DBUILD_SHARED_LIBS=$build_shared
 cmake --build . --config $build_conf
 CTEST_OUTPUT_ON_FAILURE=1 ctest -C $build_conf
 result=$?
