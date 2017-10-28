@@ -66,6 +66,10 @@ deps-gcc:
   dependencies:
     - submodules-deps
   script:
+    - export clean_first=no
+    - export build_shared=ON
+    - ci/linux/build-deps.sh
+    - export build_shared=OFF
     - ci/linux/build-deps.sh
   only:
     - master
@@ -82,6 +86,10 @@ build-gcc:
     - deps-gcc
     - submodules-build
   script:
+    - export clean_first=no
+    - export build_shared=ON
+    - ci/linux/build.sh
+    - export build_shared=OFF
     - ci/linux/build.sh
     # todo: Do both 64 & 32 bit builds
   only:
