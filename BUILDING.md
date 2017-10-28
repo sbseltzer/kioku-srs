@@ -8,14 +8,12 @@ I'll be the first to admit that this build system is messy and inelegant, but it
 
 If you are experienced in doing this and see it as a kluge, please, for the love of all that is good, tell me what I'm doing wrong and how I can improve it. If you're an especially kind person, submit a PR.
 
-Anyhow, for the time being, the dependencies such as `libgit2` and `libssh2` are built as static libraries with PIC (where applicable). This is because...  
-1. It's easier.
-2. They are uncommon on most systems (even Linux), so the costs of *not* making them dynamic libraries is less awful.
-3. This is the most feasible solution for OSX, and consistency is a good thing.
+### Dynamic vs Static Libraries
+- Windows always uses DLLs moved to the same directory as their executable. I have had a great deal of trouble linking them to Kioku statically. It has something to do with my MSVC builds where standard libraries are not playing nice with static linkage. Something somewhere is linking to them dynamically on static builds, which causes symbol conflicts. I'd like to get this fixed some day.
+- Apple platforms always use static libraries. This is the recommended configuration. I'm not too familiar with why that is, but my understanding is it doesn't deal with shared libraries in the same way Windows/Linux does, and for some reason this can make them more complex to deploy.
+- Linux can be built as dynamic or static. Hooray!
 
-Kioku itself, however, is primarily built as a shared library. This is the reason we build the dependencies as static libraries with PIC. This is because Kioku has a number of unit tests that all link to it, so building those with static linkage would take more build time and disk space.
-
-This does make the Kioku shared library quite large. On my Ubuntu 14.04 x64 it's about 3MB. Although I haven't the data to back it up, it's probably not much larger than the cumulative of libgit2, libssh2, and libkioku as shared libraries. This is already a (mostly) necessary evil on macOS platforms. I'd still like to add the option to compile everything as a shared library, though. It's pretty easy to facilitate such builds on Windows and Linux, and I've proven that it can work in previous revisions. I've changed from that methodology for the time being in the interest of consistency.
+Static builds make the Kioku library quite large. On my Ubuntu 14.04 x64 it's about 3MB. Although I haven't the data to back it up, it's probably not much larger than the cumulative of libgit2, libssh2, and libkioku as shared libraries. This is already a (mostly) necessary evil on macOS platforms.
 
 ## Getting started
 
