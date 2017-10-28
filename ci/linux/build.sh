@@ -3,6 +3,7 @@
 start_dir=$PWD
 result=0
 : ${build_conf:="Release"}
+: ${clean_first:="yes"}
 : ${TRAVIS_BUILD_DIR:=$start_dir}
 build_dir=$TRAVIS_BUILD_DIR
 build_type="Unix Makefiles"
@@ -16,15 +17,16 @@ fi
 echo "Start dir: $start_dir"
 echo "Build dir: $build_dir"
 
-# Delete CMake generated files that could screw up CMake output location
-make clean
-rm -rf CMakeFiles CMakeCache.txt
-# Attempt to create build dir
+# Delete CMake generated files that could screw up the build
+if "x$clean_first" == "xyes" ; then
+    make clean
+    rm -rf CMakeFiles CMakeCache.txt build/
+fi
 mkdir build
-# Attempt to go to build dir and clear it out if it has anything in it.
-cd build && make clean && rm -rf *
-# Copy libraries over
+cd build
+
 if ! "x$build_shared" == "xON"; then
+  # Copy libraries over
   cp $build_dir/extern/libssh2/build/src/*.$lib_ext* .
   cp $build_dir/extern/libgit2/build/*.$lib_ext* .
   #Check whether they were copied

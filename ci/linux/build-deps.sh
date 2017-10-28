@@ -2,39 +2,49 @@
 # Initialize variables
 start_dir=$PWD
 result=0
-: ${lib_ext:="a"}
 : ${build_conf:="Release"}
+: ${clean_first:="yes"}
 : ${TRAVIS_BUILD_DIR:=$start_dir}
 build_dir=$TRAVIS_BUILD_DIR
 build_type="Unix Makefiles"
-build_shared=OFF
+: ${build_shared:=ON}
+if ! "x$build_shared" == "xON"; then
+    lib_ext="so"
+else
+    lib_ext="a"
+fi
 
 echo "Start dir: $start_dir"
 echo "Build dir: $build_dir"
 
-# BUILD LIBSSH2
+##### BUILD LIBSSH2
 cd $build_dir/extern/libssh2
-# Cleanup directory just in case there's something funky left behind
-make clean
-rm -rf CMakeFiles CMakeCache.txt
-# Attempt to create build dir
+
+# Delete CMake generated files that could screw up the build
+if "x$clean_first" == "xyes" ; then
+    make clean
+    rm -rf CMakeFiles CMakeCache.txt build/
+fi
 mkdir build
-# Attempt to go to build dir and clear it out if it has anything in it.
-cd build && make clean && rm -rf *
+cd build
+
 # Build the project
 cmake .. -G"$build_type" -DCMAKE_CXXFLAGS="-fPIC" -DCMAKE_C_FLAGS="-fPIC" -DCMAKE_INSTALL_PREFIX:PATH=$build_dir/extern/libssh2/build/src -DBUILD_SHARED_LIBS=$build_shared
 cmake --build . --config $build_conf
 cmake --build . --target install
 ls src
 
-# BUILD LIBGIT2
+##### BUILD LIBGIT2
 cd $build_dir/extern/libgit2
-# Delete CMake generated files that could screw up CMake output location
-rm -rf CMakeFiles CMakeCache.txt
-# Attempt to create build dir
+
+# Delete CMake generated files that could screw up the build
+if "x$clean_first" == "xyes" ; then
+    make clean
+    rm -rf CMakeFiles CMakeCache.txt build/
+fi
 mkdir build
-# Attempt to go to build dir and clear it out if it has anything in it.
-cd build && rm -rf *
+cd build
+
 # Build the project
 PKG_CONFIG_PATH=$build_dir/extern/libssh2/build/src cmake .. -G"$build_type" -DCMAKE_CXXFLAGS="-fPIC" -DCMAKE_C_FLAGS="-fPIC" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=$build_shared
 cmake --build . --config $build_conf
