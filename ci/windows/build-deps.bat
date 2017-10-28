@@ -39,11 +39,18 @@ if not "%errorlevel%"=="0" (
       set build_type=%try_build_type%
       goto try_cmake_gen
    ) else (
-      cd %build_dir%
+      goto end
    )
 )
 cmake --build . --config %build_conf%
 ls src
+
+rem Check whether the libraries were built
+if NOT EXIST %build_dir%\extern\libssh2\build\src\%build_conf%\libssh2.%lib_ext% (
+   echo Build: Failed to build libssh2!
+   set result=1
+   goto end
+)
 
 rem BUILD LIBGIT2
 cd %build_dir%\extern\libgit2
@@ -61,13 +68,12 @@ cmake --build . --config %build_conf%
 ls
 
 rem Check whether the libraries were built
-if NOT EXIST %build_dir%\extern\libssh2\build\src\%build_conf%\libssh2.%lib_ext% (
-   echo Build: Failed to build libssh2!
-   set result=1
-)
 if NOT EXIST %build_dir%\extern\libgit2\build\%build_conf%\git2.%lib_ext% (
    echo Build: Failed to build libgit2!
    set result=1
+   goto end
 )
+
+:end
 cd %build_dir%
 exit /b %result%
