@@ -9,7 +9,7 @@ I'll be the first to admit that this build system is messy and inelegant, but it
 If you are experienced in doing this and see it as a kluge, please, for the love of all that is good, tell me what I'm doing wrong and how I can improve it. If you're an especially kind person, submit a PR.
 
 ### Dynamic vs Static Libraries
-- Windows always uses DLLs moved to the same directory as their executable. I have had a great deal of trouble linking them to Kioku statically. It has something to do with my MSVC builds where standard libraries are not playing nice with static linkage. Something somewhere is linking to them dynamically on static builds, which causes symbol conflicts. I'd like to get this fixed some day.
+- Windows always uses DLLs moved to the same directory as their executable. I have had a great deal of trouble linking them to Kioku statically.
 - Apple platforms always use static libraries. This is the recommended configuration. I'm not too familiar with why that is, but my understanding is it doesn't deal with shared libraries in the same way Windows/Linux does, and for some reason this can make them more complex to deploy.
 - Linux can be built as dynamic or static. Hooray!
 
@@ -69,26 +69,9 @@ All required dependencies are included as submodules in the [extern](extern/) fo
 
 For [archived releases of Visual Studio](https://my.visualstudio.com/downloads/featured) (which you might need for a stable MSBuild) you will need to get a free [Developer Essentials](https://my.visualstudio.com/subscriptions) subscription.
 
-God I hate compiling/linking on Windows. After much fighting and mangling of CMakeLists, I have the following process that works on my machine.
-
-On Windows in terminal, starting from kioku-srs root directory. I used Git Bash with things like cmake and MSBuild in my PATH. This is currently only tested on Windows 7.
-```
-git submodule update --init
-mkdir build
-mkdir extern/libgit2/build
-cd extern/libgit2/build
-cmake .. -G "Visual Studio 12 2013 Win64" -DEMBED_SSH_PATH=/full/path/to/kioku/directory/extern/libssh2/
-MSBuild.exe *sln
-cd ../../../build
-cmake -G "Visual Studio 12 2013 Win64" ..
-MSBuild.exe *sln
-cp ../extern/libgit2/Debug/* Debug/
-```
-
-Some problems I ran into:
-1. Building kioku and its deps 32 bit, but VC linking against 64 bit Windows DLLs. This is why I explicitly specify a 64 bit build on my 64 bit Windows 7 machine.
+1. As noted before, I have not found a way to link static libraries on Windows. It has something to do with my MSVC builds where standard libraries are not playing nice with static linkage. Something somewhere is linking to them dynamically on static builds, which causes symbol conflicts. I'd like to get this fixed some day.
 1. Failing to link at run time in Debug builds for VS2015 due to one Windows DLL not being redistributable. Not sure why this is. This is ultimately why the above explicitly states VS2013.
-1. I had a lot of issues getting libgit2 to find libssh2, so I set the `-DEMBED_SSH_PATH` to compile it directly into the libgit2 binary. This may be an optimal approach since many platforms don't distribute libssh2 by default. I haven't yet linked libssh2 with openssl which is likely desirable, so that may present issues.
+1. It seems libgit2 has a bug where it segfaults in `srsGit_Add` on Release builds. At the moment I can only get Debug builds to pass that particular unit test.
 
 # Possible Future Dependencies
 
