@@ -8,7 +8,7 @@ result=0
 build_dir=$TRAVIS_BUILD_DIR
 build_type="Unix Makefiles"
 : ${build_shared:=ON}
-if ! "x$build_shared" == "xON"; then
+if test "x$build_shared" = "xON"; then
     lib_ext="so"
 else
     lib_ext="a"
@@ -18,14 +18,16 @@ echo "Start dir: $start_dir"
 echo "Build dir: $build_dir"
 
 # Delete CMake generated files that could screw up the build
-if "x$clean_first" == "xyes" ; then
+if test "x$clean_first" = "xyes"; then
     make clean
     rm -rf CMakeFiles CMakeCache.txt build/
 fi
 mkdir build
 cd build
 
-if ! "x$build_shared" == "xON"; then
+rm *.so*
+rm *.a
+if test "x$build_shared" = "xON"; then
   # Copy libraries over
   cp $build_dir/extern/libssh2/build/src/*.$lib_ext* .
   cp $build_dir/extern/libgit2/build/*.$lib_ext* .
