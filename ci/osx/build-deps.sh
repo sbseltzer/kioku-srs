@@ -43,7 +43,7 @@ ls
 if ! test -f $build_dir/extern/libssh2/build/src/lib/libssh2.$lib_ext ; then
     printf '%s\n' 'Build: Failed to build libssh2!' >&2
     result=1
-elif ! test -f $build_dir/extern/libgit2/build/$build_conf/$build_conf/libgit2.$lib_ext ; then
+elif ! test -f $build_dir/extern/libgit2/build/$build_conf/libgit2.$lib_ext ; then
     printf '%s\n' 'Build: Failed to build libgit2!' >&2
     result=1
 fi
