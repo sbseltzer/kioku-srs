@@ -43,6 +43,7 @@ find_package(ZLIB)
 find_package(OpenSSL)
 find_package(LibCURL)
 find_package(Libgcrypt)
+find_package(Iconv)
 
 # We build libssh2 from source, so simply take care of some Windows naming weirdness.
 if (WIN32)
@@ -79,6 +80,19 @@ endif()
 if (OPENSSL_FOUND)
    include_directories( ${OPENSSL_INCLUDE_DIR} )
    list( APPEND KIOKU_LIBS ${OPENSSL_LIBRARIES} )
+endif()
+if (ICONV_FOUND)
+   include_directories( ${ICONV_INCLUDE_DIR} )
+   list( APPEND KIOKU_LIBS ${ICONV_LIBRARIES} )
+endif()
+
+# On OSX, this answer helped me: https://stackoverflow.com/questions/27662321/how-to-include-c-static-libraries-in-cmake-project-on-mac-os-x
+if (APPLE)
+   find_library(corefoundation_lib CoreFoundation)
+   find_library(cfnetwork_lib CFNetwork)
+   
+   list( APPEND KIOKU_LIBS ${corefoundation_lib} )
+   list( APPEND KIOKU_LIBS ${cfnetwork_lib} )
 endif()
 
 add_library(lua5-3-4 SHARED extern/lua/ldblib.c
