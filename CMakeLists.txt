@@ -9,6 +9,8 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/extern/libgit2/cmake/Modules/")
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/extern/libssh2/cmake/")
 
 # Give this to get CMake to look for libraries built from source.
 list(APPEND CMAKE_PREFIX_PATH
@@ -40,6 +42,7 @@ find_package(ZLIB)
 #find_package(LibGit2 REQUIRED)
 find_package(OpenSSL)
 find_package(LibCURL)
+find_package(Libgcrypt)
 
 # We build libssh2 from source, so simply take care of some Windows naming weirdness.
 if (WIN32)
@@ -66,6 +69,12 @@ endif()
 if (LIBCURL_FOUND)
    include_directories( ${LIBCURL_INCLUDE_DIR} )
    list( APPEND KIOKU_LIBS ${LIBCURL_LIBRARY} )
+endif()
+# TODO: Not really sure what the best way is to ensure we link to the right libgcrypt for our other deps to work
+# See how libssh2 gets it's crypto backend in extern/libssh2/src/CMakeLists.txt
+# This only seems to be necessary on macOS for some reason
+if(LIBGCRYPT_FOUND)
+   list( APPEND KIOKU_LIBS ${LIBGCRYPT_LIBRARIES} )
 endif()
 if (OPENSSL_FOUND)
    include_directories( ${OPENSSL_INCLUDE_DIR} )
