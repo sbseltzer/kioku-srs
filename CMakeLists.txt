@@ -195,7 +195,7 @@ add_executable( kioku-server
                 extern/mongoose/mongoose.c
                 extern/parson/parson.c
                 )
-target_link_libraries( kioku-server kioku git2 )
+target_link_libraries( kioku-server kioku ${KIOKU_LIBS})
 add_dependencies( kioku-server kioku )
 
 # add_subdirectory(src)
