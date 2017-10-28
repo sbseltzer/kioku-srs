@@ -18,7 +18,7 @@ rm -rf CMakeFiles CMakeCache.txt
 mkdir build
 # Attempt to go to build dir and clear it out if it has anything in it.
 cd build && make clean && rm -rf *
-cmake .. -G"$build_type"
+cmake .. -G"$build_type" -DBUILD_SHARED_LIBS=OFF
 cmake --build . --config $build_conf
 CTEST_OUTPUT_ON_FAILURE=1 ctest -C $build_conf
 result=$?

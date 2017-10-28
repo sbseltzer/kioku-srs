@@ -21,7 +21,7 @@ mkdir build
 # Attempt to go to build dir and clear it out if it has anything in it.
 cd build && make clean && rm -rf *
 # Build the project
-cmake .. -G"$build_type" -DCMAKE_CXXFLAGS="-fPIC" -DCMAKE_C_FLAGS="-fPIC" -DCMAKE_INSTALL_PREFIX:PATH=$build_dir/extern/libssh2/build/src/ -DBUILD_SHARED_LIBS=OFF
+cmake .. -G"$build_type" -DCMAKE_CXXFLAGS="-fPIC" -DCMAKE_C_FLAGS="-fPIC" -DCMAKE_INSTALL_PREFIX:PATH=$build_dir/extern/libssh2/build/src -DBUILD_SHARED_LIBS=OFF
 cmake --build . --config $build_conf
 cmake --build . --target install
 ls src
