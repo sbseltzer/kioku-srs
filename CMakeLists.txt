@@ -34,7 +34,7 @@ list(APPEND CMAKE_PREFIX_PATH
 # Also look at how the Orx Project automates setup.
 ##
 
-#find_package(ZLIB)
+find_package(ZLIB)
 #find_package(LibSSH2)
 #find_package(Libssh2 1.8.1 REQUIRED)
 #find_package(LibGit2 REQUIRED)
@@ -51,6 +51,10 @@ endif (WIN32)
 
 set (KIOKU_LIBS git2 ${LIBSSH_LIB})
 
+if (ZLIB_FOUND)
+   include_directories( ${ZLIB_INCLUDE_DIRS} )
+   list( APPEND KIOKU_LIBS ${ZLIB_LIBRARIES} )
+endif()
 if (PTHREADS_FOUND)
    include_directories( ${Pthreads_INCLUDE_DIRS} )
    list( APPEND KIOKU_LIBS ${Pthreads_LIBRARIES} )
