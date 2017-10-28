@@ -1,13 +1,13 @@
 rem Initialize variables
 set build_dir=%CD%
 set result=0
-IF [%build_type%] == [] (
+IF "%build_type%" == "" (
   set build_type=Visual Studio 15 2017 Win64
 )
-IF [%build_conf%] == [] (
+IF "%build_conf%" == "" (
   set build_conf=Release
 )
-IF [%shared%] == [] (
+IF "%shared%" == "" (
   set shared=ON
 )
 IF "%shared%" == "ON" (
