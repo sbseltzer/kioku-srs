@@ -17,4 +17,4 @@ build:
 
 test_script:
   - cd build
-  - ctest -C Release
+  - ctest -C %CONFIGURATION%
