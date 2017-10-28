@@ -74,7 +74,6 @@ deps-gcc:
       - extern/libssh2/build
       - extern/libssh2/include
       - extern/libgit2/build
-      - extern/libgit2/deps
       - extern/libgit2/include
 
 build-gcc:

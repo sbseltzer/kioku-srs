@@ -46,7 +46,7 @@ else()
   set(LIBSSH_LIB ssh2)
 endif (WIN32)
 
-set (KIOKU_LIBS git2 http-parser ${LIBSSH_LIB})
+set (KIOKU_LIBS git2 ${LIBSSH_LIB})
 
 if (PTHREADS_FOUND)
    include_directories( ${Pthreads_INCLUDE_DIRS} )
@@ -102,7 +102,6 @@ add_library(lua5-3-4 SHARED extern/lua/ldblib.c
 link_directories(
   ${CMAKE_SOURCE_DIR}/extern/libgit2
   ${CMAKE_SOURCE_DIR}/extern/libgit2/build
-  ${CMAKE_SOURCE_DIR}/extern/libgit2/build/deps/http-parser
   ${CMAKE_SOURCE_DIR}/extern/libssh2
   ${CMAKE_SOURCE_DIR}/extern/libssh2/build
   ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src
