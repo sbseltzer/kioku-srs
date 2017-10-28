@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 
 project (kioku C)
 
+OPTION (BUILD_SHARED_LIBS "Build Shared Library (OFF for Static - Unix-like systems only)" ON)
+
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
@@ -122,7 +124,22 @@ include_directories( include
                      extern/libgit2/deps/http_parser/
                      ) 
 
-add_library( kioku SHARED src/kioku/log.c
+target_link_libraries( kioku ${KIOKU_LIBS} )
+# Edited from https://github.com/commontk/Log4Qt/blob/patched/CMakeLists.txt#L116
+if (NOT MSVC)
+   include(CheckCCompilerFlag)
+   if (BUILD_SHARED_LIBS)
+      set(LIBRARY_TYPE SHARED)
+      CHECK_C_COMPILER_FLAG("-fPIC" HAS_FPIC)
+      IF( HAS_FPIC AND CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+          SET_TARGET_PROPERTIES(kioku PROPERTIES COMPILE_FLAGS "-fPIC")
+      ENDIF()
+   else()
+      set(LIBRARY_TYPE STATIC)
+   endif()
+endif ()
+
+add_library( kioku ${LIBRARY_TYPE} src/kioku/log.c
                           src/kioku/filesystem.c
                           src/kioku/simplegit.c
                           src/kioku/model.c
@@ -131,16 +148,6 @@ add_library( kioku SHARED src/kioku/log.c
                           src/kioku/server.c
                           extern/parson/parson.c
                           )
-
-target_link_libraries( kioku ${KIOKU_LIBS} )
-# Edited from https://github.com/commontk/Log4Qt/blob/patched/CMakeLists.txt#L116
-if (NOT MSVC)
-   include(CheckCCompilerFlag)
-   CHECK_C_COMPILER_FLAG("-fPIC" HAS_FPIC)
-   IF( HAS_FPIC AND CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
-       SET_TARGET_PROPERTIES(kioku PROPERTIES COMPILE_FLAGS "-fPIC")
-   ENDIF()
-endif ()
 
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
