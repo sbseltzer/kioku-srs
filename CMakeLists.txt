@@ -30,17 +30,41 @@ list(APPEND CMAKE_PREFIX_PATH
 
 ##
 # Some platforms won't have the specific required version of libraries.
-# In those cases, a downloaded pre-built one will be used for compilation/packaging.
+# In those cases, a downloaded pre-built one could be used for compilation/packaging.
 # These could be served via Git-LFS from a subrepository.
 # Take a look at http://www.mantidproject.org/Building_with_CMake
 # Also look at how the Orx Project automates setup.
 ##
 
+# libgit2 does this - could help with linking maybe
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	SET( USE_ICONV ON )
+	FIND_PACKAGE(Security)
+	FIND_PACKAGE(CoreFoundation REQUIRED)
+ENDIF()
+IF (SECURITY_FOUND)
+	LIST(APPEND KIOKU_INCLUDES ${SECURITY_INCLUDE_DIR})
+ENDIF ()
+
+CHECK_LIBRARY_EXISTS("${SECURITY_DIRS}" SSLCreateContext "Security/SecureTransport.h" HAVE_NEWER_SECURITY)
+  IF (HAVE_NEWER_SECURITY)
+    MESSAGE("-- Found Security ${SECURITY_DIRS}")
+    #LIST(APPEND KIOKU_PC_LIBS "-framework Security")
+    LIST(APPEND KIOKU_LIBS ${SECURITY_DIRS})
+  ELSE()
+    MESSAGE("-- Security framework is too old, falling back to OpenSSL")
+    find_package(OpenSSL)
+    IF (OPENSSL_FOUND)
+	     LIST(APPEND KIOKU_INCLUDES ${OPENSSL_INCLUDE_DIR})
+	     LIST(APPEND KIOKU_LIBS ${OPENSSL_LIBRARIES})
+    ENDIF()
+  ENDIF()
+ENDIF()
+
 find_package(ZLIB)
 #find_package(LibSSH2)
 #find_package(Libssh2 1.8.1 REQUIRED)
 #find_package(LibGit2 REQUIRED)
-find_package(OpenSSL)
 find_package(LibCURL)
 find_package(Libgcrypt)
 find_package(Iconv)
