@@ -15,7 +15,7 @@ git:
   submodules: false
 
 before_install:
-  - if [ "$TRAVIS_OS_NAME" == "osx" ];then brew update; brew install libgcrypt; brew install openssl; brew link openssl --force; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ];then brew update; brew install libgcrypt; fi
   - git submodule update --init
 
 script:
