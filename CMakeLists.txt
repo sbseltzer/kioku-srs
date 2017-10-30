@@ -59,16 +59,6 @@ else()
   list( APPEND KIOKU_LIBS ${LIBSSH_LIB} )
 endif()
 
-find_package(ZLIB)
-find_package(LibCURL)
-find_package(Libgcrypt)
-find_package(Iconv)
-find_package(Pthreads)
-find_package(Threads)
-
-PKG_CHECK_MODULES(CURL libcurl)
-PKG_CHECK_MODULES(OPENSSL openssl)
-
 PKG_CHECK_MODULES(LIBGIT2 libgit2)
 # PkgConfig won't find it on Windows and such, so assume it was built from source and just add it
 if (NOT LIBGIT2_FOUND)
@@ -86,33 +76,47 @@ if (LIBGIT2_FOUND)
    list( APPEND KIOKU_LIBS ${LIBSSH_LIB} )
 endif()
 
+find_package(ZLIB)
 if (ZLIB_FOUND)
    include_directories( ${ZLIB_INCLUDE_DIRS} )
    list( APPEND KIOKU_LIBS ${ZLIB_LIBRARIES} )
 endif()
+
+find_package(Pthreads)
 if (Pthreads_FOUND)
    include_directories( ${Pthreads_INCLUDE_DIRS} )
    list( APPEND KIOKU_LIBS ${Pthreads_LIBRARIES} )
 endif()
+
+find_package(Threads)
 if (Threads_FOUND)
    list( APPEND KIOKU_LIBS ${CMAKE_THREAD_LIBS_INIT} )
 endif()
+
+find_package(LibCURL)
+PKG_CHECK_MODULES(CURL libcurl)
 if (LIBCURL_FOUND)
    include_directories( ${LIBCURL_INCLUDE_DIR} )
    list( APPEND KIOKU_LIBS ${LIBCURL_LIBRARY} )
 endif()
+
 # TODO: Not really sure what the best way is to ensure we link to the right libgcrypt for our other deps to work
 # See how libssh2 gets it's crypto backend in extern/libssh2/src/CMakeLists.txt
 # This only seems to be necessary on macOS for some reason
+find_package(Libgcrypt)
 if(LIBGCRYPT_FOUND)
    list( APPEND KIOKU_LIBS ${LIBGCRYPT_LIBRARIES} )
 endif()
+
+PKG_CHECK_MODULES(OPENSSL openssl)
 if (OPENSSL_FOUND)
    include_directories( ${OPENSSL_INCLUDE_DIR} )
    list( APPEND KIOKU_LIBS ${OPENSSL_LIBRARIES} )
    list( APPEND KIOKU_LIBS ${OPENSSL_SSL_LIBRARY} )
    list( APPEND KIOKU_LIBS ${OPENSSL_CRYPTO_LIBRARY} )
 endif()
+ 
+find_package(Iconv)
 if (ICONV_FOUND)
    include_directories( ${ICONV_INCLUDE_DIR} )
    list( APPEND KIOKU_LIBS ${ICONV_LIBRARIES} )
