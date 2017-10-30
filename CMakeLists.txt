@@ -62,8 +62,6 @@ else()
   else()
     set(LIBSSH_LIB ssh2)
   endif (WIN32)
-  link_directories( ${CMAKE_SOURCE_DIR}/extern/install/lib )
-  include_directories( ${CMAKE_SOURCE_DIR}/extern/install/include )
   list( APPEND KIOKU_LIBS ${LIBSSH_LIB} )
 endif()
 
@@ -142,6 +140,10 @@ if (APPLE)
    list( APPEND KIOKU_LIBS ${corefoundation_lib} )
    list( APPEND KIOKU_LIBS ${cfnetwork_lib} )
 endif()
+
+# These extra link directories act as a fallback for our dependencies that are compiled from source.
+link_directories( ${CMAKE_SOURCE_DIR}/extern/install/lib )
+include_directories( ${CMAKE_SOURCE_DIR}/extern/install/include )
 
 add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             extern/lua/lgc.c

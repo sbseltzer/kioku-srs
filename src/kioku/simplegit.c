@@ -26,6 +26,17 @@ inline uint32_t srsGIT_EXIT_LIB()
   assert(result >= 0);
   return result;
 }
+inline void srsGIT_DEBUG_ERROR()
+{
+  const git_error *err = giterr_last();
+  if (err == NULL)
+  {
+    srsLOG_ERROR("Error occurred, but giterr_last returned null...\n");
+    abort();
+  }
+  srsLOG_ERROR("Git Error %d: %s\n", err->klass, err->message);
+  abort();
+}
 
 uint32_t srsGit_InitCount()
 {
@@ -60,7 +71,14 @@ bool srsGit_IsRepo(const char *path)
   git_repository *repo = NULL;
   int git_result = git_repository_open_ext(&repo, path, GIT_REPOSITORY_OPEN_NO_SEARCH, NULL);
   result = (git_result == 0);
-  git_repository_free(repo);
+  if (!result)
+  {
+    srsGIT_DEBUG_ERROR();
+  }
+  if (repo != NULL)
+  {
+    git_repository_free(repo);
+  }
   srsGIT_EXIT_LIB();
   return result;
 }
@@ -96,11 +114,16 @@ bool srsGit_Repo_Open(const char *path)
   }
   if (!result)
   {
+    srsGIT_EXIT_LIB();
     return result;
   }
 
   int git_result = git_repository_open(&srsGIT_REPO, path);
   result = (srsGIT_REPO != NULL);
+  if (!result)
+  {
+    srsGIT_EXIT_LIB();
+  }
   /* We do not call srsGIT_EXIT_LIB here because we want the user to be able to continue using the repository */
   return result;
 }
@@ -131,6 +154,7 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   int git_result = git_repository_init_ext(&srsGIT_REPO, path, &gitinitopts);
   if (git_result != 0)
   {
+    srsGIT_DEBUG_ERROR();
     srsGIT_EXIT_LIB();
     return result;
   }
@@ -138,6 +162,7 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   int32_t pathlen = kioku_path_concat(NULL, 0, path, opts.first_file_name);
   if (pathlen <= 0)
   {
+    srsLOG_ERROR("Couldn't calculate pathlength for %s", opts.first_file_name);
     srsGIT_EXIT_LIB();
     return result;
   }
@@ -190,13 +215,7 @@ bool srsGit_Commit(const char *message)
   result = result && (git_result == 0);
   if (!result)
   {
-    const git_error *err = giterr_last();
-    if (err == NULL)
-    {
-      fprintf(stderr, "Error occurred, but giterr_last returned null...\n");
-      abort();
-    }
-    fprintf(stderr, "Could not open repository index: %s\n", err->message);
+    srsGIT_DEBUG_ERROR();
     abort();
   }
 
@@ -209,6 +228,7 @@ bool srsGit_Commit(const char *message)
     result = result && (git_result == 0);
     if (!result)
     {
+      srsGIT_DEBUG_ERROR();
       fprintf(stderr, "Unable to write initial tree from index\n");
       abort();
     }
