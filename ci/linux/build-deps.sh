@@ -34,7 +34,7 @@ mkdir build
 cd build
 
 # Build the project
-cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=$build_shared -DBUILD_EXAMPLES_OFF -DCMAKE_BUILD_TYPE=$build_conf
+cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=$build_shared -DBUILD_EXAMPLES=OFF -DCMAKE_BUILD_TYPE=$build_conf
 cmake --build . --config $build_conf
 cmake --build . --target install
 ls $install_prefix
