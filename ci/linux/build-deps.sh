@@ -9,6 +9,7 @@ build_dir=$TRAVIS_BUILD_DIR
 build_type="Unix Makefiles"
 : ${build_shared:=ON}
 : ${install_prefix:="$build_dir/extern/install"}
+rm -rf $install_prefix
 mkdir $install_prefix
 fpic_flags="-DCMAKE_CXXFLAGS=-fPIC -DCMAKE_C_FLAGS=-fPIC"
 
@@ -50,7 +51,7 @@ mkdir build
 cd build
 
 # Build the project
-PKG_CONFIG_PATH=$install_prefix/lib/pkgconfig cmake .. -G"$build_type" $fpic_flags -DBUILD_SHARED_LIBS=$build_shared -DBUILD_CLAR=OFF
+PKG_CONFIG_PATH=$install_prefix/lib/pkgconfig cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=$build_shared -DBUILD_CLAR=OFF
 cmake --build . --config $build_conf
 cmake --build . --target install
 ls $install_prefix

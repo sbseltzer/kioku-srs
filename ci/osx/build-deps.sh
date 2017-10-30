@@ -8,6 +8,7 @@ result=0
 build_dir=$TRAVIS_BUILD_DIR
 build_type="Xcode"
 : ${install_prefix:="$build_dir/extern/install"}
+rm -rf $install_prefix
 mkdir $install_prefix
 fpic_flags="-DCMAKE_CXXFLAGS=-fPIC -DCMAKE_C_FLAGS=-fPIC"
 
