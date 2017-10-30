@@ -42,8 +42,8 @@ if not "%errorlevel%"=="0" (
 cmake --build . --config %build_conf%
 rem Copy libraries over
 cd %build_conf%
-copy /V /B /Y /Z %build_dir%\extern\libssh2\build\src\%build_conf%\*.%lib_ext%* .
-copy /V /B /Y /Z %build_dir%\extern\libgit2\build\%build_conf%\*.%lib_ext%* .
+copy /V /B /Y /Z %build_dir%\extern\install\bin\*.%lib_ext%* .
+copy /V /B /Y /Z %build_dir%\extern\install\bin\*.%lib_ext%* .
 rem Check whether the libraries were built
 if NOT EXIST libssh2.%lib_ext% (
    echo Build: Failed to build libssh2!
