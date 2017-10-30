@@ -14,8 +14,18 @@ static int srsGIT_READY = 0;
  *  - https://git-scm.com/book/be/v2/Appendix-B%3A-Embedding-Git-in-your-Applications-Libgit2
  */
 
-#define srsGIT_INIT_LIB() assert((srsGIT_READY = git_libgit2_init()) > 0)
-#define srsGIT_EXIT_LIB() assert((srsGIT_READY = git_libgit2_shutdown()) >= 0)
+inline uint32_t srsGIT_INIT_LIB()
+{
+  uint32_t result = (srsGIT_READY = git_libgit2_init());
+  assert(result > 0);
+  return result;
+}
+inline uint32_t srsGIT_EXIT_LIB()
+{
+  uint32_t result = (srsGIT_READY = git_libgit2_shutdown());
+  assert(result >= 0);
+  return result;
+}
 
 uint32_t srsGit_InitCount()
 {
@@ -118,11 +128,17 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   srsGIT_INIT_LIB();
 
   gitinitopts.flags = GIT_REPOSITORY_INIT_MKPATH;
-  git_repository_init_ext(&srsGIT_REPO, path, &gitinitopts);
+  int git_result = git_repository_init_ext(&srsGIT_REPO, path, &gitinitopts);
+  if (git_result != 0)
+  {
+    srsGIT_EXIT_LIB();
+    return result;
+  }
 
   int32_t pathlen = kioku_path_concat(NULL, 0, path, opts.first_file_name);
   if (pathlen <= 0)
   {
+    srsGIT_EXIT_LIB();
     return result;
   }
   fullpath = malloc(pathlen + 1);
@@ -146,7 +162,6 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
     printf("Running commit...\n");
     result = srsGit_Commit(opts.first_commit_message);
   }
-  result = srsGit_Add(fullpath);
   free(fullpath);
 
   /* We do not call srsGIT_EXIT_LIB here because we want the user to be able to continue using the repository */
@@ -163,11 +178,12 @@ bool srsGit_Commit(const char *message)
 	git_commit *parent;
 	char oid_hex[GIT_OID_HEXSZ+1] = { 0 };
 	git_index *index;
-  srsGIT_INIT_LIB();
   if (srsGIT_REPO == NULL)
   {
     return false;
   }
+
+  srsGIT_INIT_LIB();
 
   /* Try to open the index */
   git_result = git_repository_index(&index, srsGIT_REPO);
