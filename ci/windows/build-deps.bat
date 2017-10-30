@@ -23,6 +23,9 @@ rem )
 echo "Start Directory: %build_dir%"
 echo "Build Type: %build_type%"
 
+rem Remove install dir.
+rm -rf %build_dir%\extern\install
+
 rem BUILD LIBSSH2
 cd %build_dir%\extern\libssh2
 rem Cleanup directory just in case there's something funky left behind
@@ -53,7 +56,7 @@ ls src
 ls %build_dir%\extern\install
 
 rem Check whether the libraries were built
-if NOT EXIST %build_dir%\extern\libssh2\build\src\%build_conf%\libssh2.%lib_ext% (
+if NOT EXIST %build_dir%\extern\install\bin\libssh2.%lib_ext% (
    echo Build: Failed to build libssh2!
    set result=1
    goto end
@@ -78,7 +81,7 @@ ls
 ls %build_dir%\extern\install
 
 rem Check whether the libraries were built
-if NOT EXIST %build_dir%\extern\libgit2\build\%build_conf%\git2.%lib_ext% (
+if NOT EXIST %build_dir%\extern\install\bin\git2.%lib_ext% (
    echo Build: Failed to build libgit2!
    set result=1
    goto end
