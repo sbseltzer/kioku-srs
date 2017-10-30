@@ -36,35 +36,16 @@ list(APPEND CMAKE_PREFIX_PATH
 # Also look at how the Orx Project automates setup.
 ##
 
-# libgit2 does this - could help with linking maybe
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-	SET( USE_ICONV ON )
-	FIND_PACKAGE(Security)
-	FIND_PACKAGE(CoreFoundation REQUIRED)
-ENDIF()
-IF (SECURITY_FOUND)
-	LIST(APPEND KIOKU_INCLUDES ${SECURITY_INCLUDE_DIR})
-ENDIF ()
-
-CHECK_LIBRARY_EXISTS("${SECURITY_DIRS}" SSLCreateContext "Security/SecureTransport.h" HAVE_NEWER_SECURITY)
-  IF (HAVE_NEWER_SECURITY)
-    MESSAGE("-- Found Security ${SECURITY_DIRS}")
-    #LIST(APPEND KIOKU_PC_LIBS "-framework Security")
-    LIST(APPEND KIOKU_LIBS ${SECURITY_DIRS})
-  ELSE()
-    MESSAGE("-- Security framework is too old, falling back to OpenSSL")
-    find_package(OpenSSL)
-    IF (OPENSSL_FOUND)
-	     LIST(APPEND KIOKU_INCLUDES ${OPENSSL_INCLUDE_DIR})
-	     LIST(APPEND KIOKU_LIBS ${OPENSSL_LIBRARIES})
-    ENDIF()
-  ENDIF()
-ENDIF()
+INCLUDE(FindPkgConfig)
 
 find_package(ZLIB)
 find_package(LibCURL)
 find_package(Libgcrypt)
 find_package(Iconv)
+
+PKG_CHECK_MODULES(CURL libcurl)
+PKG_CHECK_MODULES(LIBSSH2 libssh2)
+PKG_CHECK_MODULES(LIBGIT2 libgit2)
 
 # We build libssh2 from source, so simply take care of some Windows naming weirdness.
 if (WIN32)
