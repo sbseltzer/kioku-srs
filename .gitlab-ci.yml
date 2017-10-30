@@ -83,7 +83,6 @@ build-gcc:
     - deps-gcc
     - submodules-build
   script:
-    - export clean_first=no
     - export build_shared=ON
     - ci/linux/build.sh
     - export build_shared=OFF
