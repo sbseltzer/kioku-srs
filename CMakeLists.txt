@@ -46,6 +46,7 @@ find_package(Iconv)
 PKG_CHECK_MODULES(CURL libcurl)
 PKG_CHECK_MODULES(LIBSSH2 libssh2)
 PKG_CHECK_MODULES(LIBGIT2 libgit2)
+PKG_CHECK_MODULES(OPENSSL openssl)
 
 # We build libssh2 from source, so simply take care of some Windows naming weirdness.
 if (WIN32)
