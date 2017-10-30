@@ -61,6 +61,8 @@ else()
     set(LIBSSH_LIB ssh2)
   endif (WIN32)
   list( APPEND KIOKU_LIBS ${LIBSSH_LIB} )
+  link_directories( ${CMAKE_SOURCE_DIR}/extern/install/lib )
+  include_directories( ${CMAKE_SOURCE_DIR}/extern/install/include )
 endif()
 
 PKG_CHECK_MODULES(LIBGIT2 libgit2)
