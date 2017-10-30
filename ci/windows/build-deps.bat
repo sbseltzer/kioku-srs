@@ -16,6 +16,10 @@ IF "%shared%" == "ON" (
   set lib_exit=lib
 )
 
+rem IF "%build_conf%" == "Release" (
+   set build_test_flag="-DBUILD_TESTING=OFF"
+rem )
+
 echo "Start Directory: %build_dir%"
 echo "Build Type: %build_type%"
 
@@ -31,7 +35,7 @@ rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build 
 rem Build the project
 :try_cmake_gen
-cmake .. -G"%build_type%" -DBUILD_SHARED_LIBS=%shared% -DBUILD_EXAMPLES=OFF -DCMAKE_INSTALL_PREFIX=%build_dir%\extern\install
+cmake .. -G"%build_type%" -DBUILD_SHARED_LIBS=%shared% -DBUILD_EXAMPLES=OFF -DCMAKE_INSTALL_PREFIX=%build_dir%\extern\install %build_test_flag%
 if not "%errorlevel%"=="0" (
    rm -rf *
    set try_build_type=Visual Studio 12 2013 Win64
