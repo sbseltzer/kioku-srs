@@ -67,7 +67,6 @@ find_package(Pthreads)
 find_package(Threads)
 
 PKG_CHECK_MODULES(CURL libcurl)
-PKG_CHECK_MODULES(LIBGIT2 libgit2)
 PKG_CHECK_MODULES(OPENSSL openssl)
 
 PKG_CHECK_MODULES(LIBGIT2 libgit2)
