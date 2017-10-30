@@ -8,7 +8,7 @@ result=0
 build_dir=$TRAVIS_BUILD_DIR
 build_type="Unix Makefiles"
 : ${build_shared:=ON}
-: ${install_prefix:="$build_dir/extern"}
+: ${install_prefix:="$build_dir/extern/install"}
 if test "x$build_shared" = "xON"; then
     lib_ext="so"
 else

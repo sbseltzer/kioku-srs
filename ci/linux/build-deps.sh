@@ -8,7 +8,8 @@ result=0
 build_dir=$TRAVIS_BUILD_DIR
 build_type="Unix Makefiles"
 : ${build_shared:=ON}
-: ${install_prefix:="$build_dir/extern"}
+: ${install_prefix:="$build_dir/extern/install"}
+mkdir $install_prefix
 fpic_flags=-DCMAKE_CXXFLAGS="-fPIC" -DCMAKE_C_FLAGS="-fPIC"
 
 if test "x$build_shared" = "xON"; then

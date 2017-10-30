@@ -7,7 +7,7 @@ result=0
 : ${TRAVIS_BUILD_DIR:=$start_dir}
 build_dir=$TRAVIS_BUILD_DIR
 build_type="Xcode"
-: ${install_prefix:="$build_dir/extern"}
+: ${install_prefix:="$build_dir/extern/install"}
 
 echo "Start dir: $start_dir"
 echo "Build dir: $build_dir"
