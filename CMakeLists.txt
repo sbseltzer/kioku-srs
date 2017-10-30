@@ -25,8 +25,7 @@ list(APPEND CMAKE_PREFIX_PATH
             ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src
             )
 # Give this to find Libssh2Config.cmake
-#set(Libssh2_DIR extern/libssh2/src)
-#set(Libssh2_DIR extern/libssh2/build/src)
+set(Libssh2_DIR extern/install/lib/cmake/libssh2)
 
 ##
 # Some platforms won't have the specific required version of libraries.
@@ -38,13 +37,19 @@ list(APPEND CMAKE_PREFIX_PATH
 
 INCLUDE(FindPkgConfig)
 
+find_package(Libssh2)
 find_package(ZLIB)
 find_package(LibCURL)
 find_package(Libgcrypt)
 find_package(Iconv)
 
 PKG_CHECK_MODULES(CURL libcurl)
-PKG_CHECK_MODULES(LIBSSH2 libssh2)
+if (NOT Libssh2_FOUND)
+  message("Failed to find libssh2 via CMake Config - try PkgConfig")
+  PKG_CHECK_MODULES(LIBSSH2 libssh2)
+else()
+  message("Found libssh2 via CMake Config")
+endif()
 PKG_CHECK_MODULES(LIBGIT2 libgit2)
 PKG_CHECK_MODULES(OPENSSL openssl)
 set (KIOKU_LIBS "")
