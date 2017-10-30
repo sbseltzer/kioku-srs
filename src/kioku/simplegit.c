@@ -311,12 +311,13 @@ bool srsGit_Add(const char *path)
 	git_tree *tree = NULL;
 	git_index *index = NULL;
 
-  srsGIT_INIT_LIB();
-
   if (srsGIT_REPO == NULL)
   {
     return false;
   }
+
+  srsGIT_INIT_LIB();
+
   /* See if this is the first commit */
   git_result = git_repository_head_unborn(srsGIT_REPO);
   if (git_result == 1)
