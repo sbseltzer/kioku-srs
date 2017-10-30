@@ -75,9 +75,9 @@ if (NOT LIBGIT2_FOUND)
 endif()
 if (LIBGIT2_FOUND)
    message(Adding libgit2)
-   include_directories( kioku ${LIBGIT2_INCLUDE_DIRS} )
+   include_directories( ${LIBGIT2_INCLUDE_DIRS} )
    link_directories( ${LIBGIT2_LIBRARY_DIRS} )
-   link_libraries( kioku ${LIBGIT2_LIBRARIES} )
+   link_libraries( ${LIBGIT2_LIBRARIES} )
    list( APPEND KIOKU_LIBS ${LIBSSH_LIB} )
 endif()
 
@@ -190,15 +190,16 @@ if (NOT MSVC)
       set(LIBRARY_TYPE STATIC)
    endif()
 endif ()
-add_library( kioku ${LIBRARY_TYPE} src/kioku/log.c
-                          src/kioku/filesystem.c
-                          src/kioku/simplegit.c
-                          src/kioku/model.c
-                          src/kioku/controller.c
-                          src/kioku/rest.c
-                          src/kioku/server.c
-                          extern/parson/parson.c
-                          )
+add_library( kioku ${LIBRARY_TYPE}
+                   src/kioku/log.c
+                   src/kioku/filesystem.c
+                   src/kioku/simplegit.c
+                   src/kioku/model.c
+                   src/kioku/controller.c
+                   src/kioku/rest.c
+                   src/kioku/server.c
+                   extern/parson/parson.c
+                   )
 target_link_libraries( kioku ${KIOKU_LIBS} )
 # Edited from https://github.com/commontk/Log4Qt/blob/patched/CMakeLists.txt#L116
 if (NOT MSVC)
