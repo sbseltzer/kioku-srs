@@ -31,7 +31,7 @@ rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build 
 rem Build the project
 :try_cmake_gen
-cmake .. -G"%build_type%" -DBUILD_SHARED_LIBS=%shared% -DBUILD_EXAMPLES=OFF
+cmake .. -G"%build_type%" -DBUILD_SHARED_LIBS=%shared% -DBUILD_EXAMPLES=OFF -DCMAKE_INSTALL_PREFIX=%build_dir%\extern\install
 if not "%errorlevel%"=="0" (
    rm -rf *
    set try_build_type=Visual Studio 12 2013 Win64
@@ -66,7 +66,7 @@ mkdir build
 rem Attempt to go to build dir and clear it out if it has anything in it.
 cd build
 rem Build the project
-cmake .. -G"%build_type%" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=%shared% -DLIBSSH2_FOUND=YES -DLIBSSH2_INCLUDE_DIRS:PATH=%build_dir%\extern\libssh2\include;%build_dir%\extern\libssh2\build\src -DLIBSSH2_LIBRARY_DIRS:PATH=%build_dir%\extern\libssh2\build\src\%build_conf% -DLIBSSH2_LIBRARIES=libssh2.%lib_ext%  -DCMAKE_INSTALL_PREFIX=%build_dir%\extern\install
+cmake .. -G"%build_type%" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=%shared% -DLIBSSH2_FOUND=YES -DLIBSSH2_INCLUDE_DIRS:PATH=%build_dir%\extern\install\include;%build_dir%\extern\libssh2\build\src -DLIBSSH2_LIBRARY_DIRS:PATH=%build_dir%\extern\install\lib\;%build_dir%\extern\libssh2\build\src\%build_conf% -DLIBSSH2_LIBRARIES=libssh2.%lib_ext%  -DCMAKE_INSTALL_PREFIX=%build_dir%\extern\install
 cmake --build . --config %build_conf%
 rem Install it
 cmake --build . --config %build_conf% --target install
