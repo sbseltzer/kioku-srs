@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.6)
 
 project (kioku C)
 
-OPTION (BUILD_SHARED_LIBS "Build Shared Library (OFF for Static - Unix-like systems only)" ON)
+OPTION (BUILD_SHARED_LIBS "Build Shared Library (OFF for Static)" ON)
 OPTION (BUILD_TESTS "Build Tests" ON)
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
