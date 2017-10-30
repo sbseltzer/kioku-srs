@@ -207,6 +207,7 @@ if (NOT MSVC)
       set(LIBRARY_TYPE STATIC)
    endif()
 endif ()
+message("${KIOKU_LIBS}")
 add_library( kioku ${LIBRARY_TYPE}
                    src/kioku/log.c
                    src/kioku/filesystem.c
@@ -228,7 +229,6 @@ if (NOT MSVC)
       ENDIF()
    endif()
 endif ()
-
 
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
