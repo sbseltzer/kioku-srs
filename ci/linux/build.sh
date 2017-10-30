@@ -41,7 +41,7 @@ if test "x$build_shared" = "xON"; then
       result=1
   fi
 fi
-PKG_CONFIG_PATH=$install_prefix/lib/pkgconfig cmake .. -G"$build_type" -DBUILD_SHARED_LIBS=$build_shared
+PKG_CONFIG_PATH=$install_prefix/lib/pkgconfig cmake .. -G"$build_type" -DBUILD_SHARED_LIBS=$build_shared -DCMAKE_BUILD_TYPE=$build_conf
 cmake --build . --config $build_conf
 CTEST_OUTPUT_ON_FAILURE=1 ctest -C $build_conf
 result=$?

@@ -34,7 +34,7 @@ mkdir build
 cd build
 
 # Build the project
-cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=$build_shared
+cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=$build_shared  -DCMAKE_BUILD_TYPE=$build_conf
 cmake --build . --config $build_conf
 cmake --build . --target install
 ls $install_prefix
@@ -51,7 +51,7 @@ mkdir build
 cd build
 
 # Build the project
-PKG_CONFIG_PATH=$install_prefix/lib/pkgconfig cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=$build_shared -DBUILD_CLAR=OFF
+PKG_CONFIG_PATH=$install_prefix/lib/pkgconfig cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=$build_shared -DBUILD_CLAR=OFF -DCMAKE_BUILD_TYPE=$build_conf
 cmake --build . --config $build_conf
 cmake --build . --target install
 ls $install_prefix
