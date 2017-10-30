@@ -13,7 +13,7 @@ TEST git_create_makes_a_repository(void)
   ASSERT(kioku_filesystem_exists(REPO_NAME "/username"));
   ASSERT(srsGit_IsRepo(REPO_NAME));
 
-  ASSERT_EQ_FMT(srsGit_InitCount(), 1, "Still has %d instances");
+  ASSERT_EQ_FMT(1, srsGit_InitCount(), "Still has %d instances");
 
   char content[2086] = {0};
 
