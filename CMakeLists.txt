@@ -62,9 +62,6 @@ CHECK_LIBRARY_EXISTS("${SECURITY_DIRS}" SSLCreateContext "Security/SecureTranspo
 ENDIF()
 
 find_package(ZLIB)
-#find_package(LibSSH2)
-#find_package(Libssh2 1.8.1 REQUIRED)
-#find_package(LibGit2 REQUIRED)
 find_package(LibCURL)
 find_package(Libgcrypt)
 find_package(Iconv)
