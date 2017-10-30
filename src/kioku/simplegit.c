@@ -75,7 +75,10 @@ bool srsGit_IsRepo(const char *path)
   {
     srsGIT_DEBUG_ERROR();
   }
-  git_repository_free(repo);
+  if (repo != NULL)
+  {
+    git_repository_free(repo);
+  }
   srsGIT_EXIT_LIB();
   return result;
 }
@@ -111,11 +114,16 @@ bool srsGit_Repo_Open(const char *path)
   }
   if (!result)
   {
+    srsGIT_EXIT_LIB();
     return result;
   }
 
   int git_result = git_repository_open(&srsGIT_REPO, path);
   result = (srsGIT_REPO != NULL);
+  if (!result)
+  {
+    srsGIT_EXIT_LIB();
+  }
   /* We do not call srsGIT_EXIT_LIB here because we want the user to be able to continue using the repository */
   return result;
 }
