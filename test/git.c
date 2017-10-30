@@ -9,6 +9,7 @@ TEST git_create_makes_a_repository(void)
   const char *writeme = "me\n";
   srsGIT_CREATE_OPTS opts = {"username", writeme, "Initial commit, dawg"};
   ASSERT(srsGit_Repo_Create(REPO_NAME, opts));
+  ASSERT_EQ_FMT(1, srsGit_InitCount(), "Still has %d instances");
   ASSERT(kioku_filesystem_exists(REPO_NAME "/.git/"));
   ASSERT(kioku_filesystem_exists(REPO_NAME "/username"));
   ASSERT(srsGit_IsRepo(REPO_NAME));
