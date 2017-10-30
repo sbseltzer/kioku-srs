@@ -12,6 +12,8 @@ build_type="Xcode"
 echo "Start dir: $start_dir"
 echo "Build dir: $build_dir"
 
+ls $install_prefix
+cat $install_prefix/*.pc
 # Delete CMake generated files that could screw up CMake output location
 make clean
 rm -rf CMakeFiles CMakeCache.txt
