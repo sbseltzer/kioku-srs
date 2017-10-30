@@ -12,8 +12,6 @@ build_type="Xcode"
 echo "Start dir: $start_dir"
 echo "Build dir: $build_dir"
 
-ls $install_prefix
-cat $install_prefix/*.pc
 # Delete CMake generated files that could screw up CMake output location
 make clean
 rm -rf CMakeFiles CMakeCache.txt
@@ -21,7 +19,7 @@ rm -rf CMakeFiles CMakeCache.txt
 mkdir build
 # Attempt to go to build dir and clear it out if it has anything in it.
 cd build && make clean && rm -rf *
-PKG_CONFIG_PATH=$install_prefix cmake .. -G"$build_type" -DBUILD_SHARED_LIBS=OFF
+PKG_CONFIG_PATH=$install_prefix/lib/pkgconfig cmake .. -G"$build_type" -DBUILD_SHARED_LIBS=OFF
 cmake --build . --config $build_conf
 CTEST_OUTPUT_ON_FAILURE=1 ctest -C $build_conf
 result=$?

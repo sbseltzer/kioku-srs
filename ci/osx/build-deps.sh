@@ -13,7 +13,6 @@ fpic_flags=-DCMAKE_CXXFLAGS="-fPIC" -DCMAKE_C_FLAGS="-fPIC"
 
 echo "Start dir: $start_dir"
 echo "Build dir: $build_dir"
-echo "OpenSSL flags: $openssl_flags"
 
 # BUILD LIBSSH2
 cd $build_dir/extern/libssh2
@@ -39,7 +38,7 @@ mkdir build
 # Attempt to go to build dir and clear it out if it has anything in it.
 cd build && rm -rf *
 # Build the project
-PKG_CONFIG_PATH=$install_prefix cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=OFF -DBUILD_CLAR=OFF
+PKG_CONFIG_PATH=$install_prefix/lib/pkgconfig cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=OFF -DBUILD_CLAR=OFF
 cmake --build . --config $build_conf
 cmake --build . --target install
 ls $install_prefix

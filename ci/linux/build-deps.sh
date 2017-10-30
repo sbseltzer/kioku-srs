@@ -50,7 +50,7 @@ mkdir build
 cd build
 
 # Build the project
-PKG_CONFIG_PATH=$install_prefix cmake .. -G"$build_type" $fpic_flags -DBUILD_SHARED_LIBS=$build_shared -DBUILD_CLAR=OFF
+PKG_CONFIG_PATH=$install_prefix/lib/pkgconfig cmake .. -G"$build_type" $fpic_flags -DBUILD_SHARED_LIBS=$build_shared -DBUILD_CLAR=OFF
 cmake --build . --config $build_conf
 cmake --build . --target install
 ls $install_prefix
