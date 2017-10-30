@@ -25,7 +25,7 @@ list(APPEND CMAKE_PREFIX_PATH
             ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src
             )
 # Give this to find Libssh2Config.cmake
-set(Libssh2_DIR extern/install/lib/cmake/libssh2)
+set(Libssh2_DIR ${CMAKE_SOURCE_DIR}/extern/install/lib/cmake/libssh2)
 
 ##
 # Some platforms won't have the specific required version of libraries.
@@ -69,8 +69,8 @@ PKG_CHECK_MODULES(LIBGIT2 libgit2)
 if (NOT LIBGIT2_FOUND)
    message(try libgit2 from install)
    set(LIBGIT2_FOUND YES)
-   set(LIBGIT2_INCLUDE_DIRS extern/install/include)
-   set(LIBGIT2_LIBRARY_DIRS extern/install/lib)
+   set(LIBGIT2_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/extern/install/include)
+   set(LIBGIT2_LIBRARY_DIRS ${CMAKE_SOURCE_DIR}/extern/install/lib)
    set(LIBGIT2_LIBRARIES git2 ssh2)
 endif()
 if (LIBGIT2_FOUND)
