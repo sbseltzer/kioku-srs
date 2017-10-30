@@ -8,6 +8,9 @@ result=0
 build_dir=$TRAVIS_BUILD_DIR
 build_type="Unix Makefiles"
 : ${build_shared:=ON}
+: ${install_prefix:="$build_dir/extern"}
+fpic_flags=-DCMAKE_CXXFLAGS="-fPIC" -DCMAKE_C_FLAGS="-fPIC"
+
 if test "x$build_shared" = "xON"; then
     lib_ext="so"
 else
@@ -29,10 +32,10 @@ mkdir build
 cd build
 
 # Build the project
-cmake .. -G"$build_type" -DCMAKE_CXXFLAGS="-fPIC" -DCMAKE_C_FLAGS="-fPIC" -DCMAKE_INSTALL_PREFIX:PATH=$build_dir/extern/libssh2/build/src -DBUILD_SHARED_LIBS=$build_shared
+cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=$build_shared
 cmake --build . --config $build_conf
 cmake --build . --target install
-ls src
+ls $install_prefix
 
 ##### BUILD LIBGIT2
 cd $build_dir/extern/libgit2
@@ -46,9 +49,10 @@ mkdir build
 cd build
 
 # Build the project
-PKG_CONFIG_PATH=$build_dir/extern/libssh2/build/src cmake .. -G"$build_type" -DCMAKE_CXXFLAGS="-fPIC" -DCMAKE_C_FLAGS="-fPIC" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=$build_shared
+PKG_CONFIG_PATH=$install_prefix cmake .. -G"$build_type" $fpic_flags -DBUILD_SHARED_LIBS=$build_shared -DBUILD_CLAR=OFF
 cmake --build . --config $build_conf
-ls
+cmake --build . --target install
+ls $install_prefix
 
 # Check whether the libraries were built
 if ! test -f $build_dir/extern/libssh2/build/src/libssh2.$lib_ext ; then

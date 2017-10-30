@@ -8,6 +8,7 @@ result=0
 build_dir=$TRAVIS_BUILD_DIR
 build_type="Unix Makefiles"
 : ${build_shared:=ON}
+: ${install_prefix:="$build_dir/extern"}
 if test "x$build_shared" = "xON"; then
     lib_ext="so"
 else
@@ -40,7 +41,7 @@ if test "x$build_shared" = "xON"; then
       result=1
   fi
 fi
-cmake .. -G"$build_type" -DBUILD_SHARED_LIBS=$build_shared
+PKG_CONFIG_PATH=$install_prefix cmake .. -G"$build_type" -DBUILD_SHARED_LIBS=$build_shared
 cmake --build . --config $build_conf
 CTEST_OUTPUT_ON_FAILURE=1 ctest -C $build_conf
 result=$?

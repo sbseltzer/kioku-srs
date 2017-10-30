@@ -7,7 +7,8 @@ result=0
 : ${TRAVIS_BUILD_DIR:=$start_dir}
 build_dir=$TRAVIS_BUILD_DIR
 build_type="Xcode"
-openssl_flags="-DOPENSSL_ROOT_DIR=$(brew --prefix openssl) -DOPENSSL_LIB_DIR=$(brew --prefix openssl)/lib -DOPENSSL_INCLUDE_DIR=$(brew --prefix openssl)/include"
+: ${install_prefix:="$build_dir/extern"}
+fpic_flags=-DCMAKE_CXXFLAGS="-fPIC" -DCMAKE_C_FLAGS="-fPIC"
 
 echo "Start dir: $start_dir"
 echo "Build dir: $build_dir"
@@ -23,10 +24,10 @@ mkdir build
 # Attempt to go to build dir and clear it out if it has anything in it.
 cd build && make clean && rm -rf *
 # Build the project
-cmake .. -G"$build_type" -DCMAKE_CXXFLAGS="-fPIC" -DCMAKE_C_FLAGS="-fPIC" -DCMAKE_INSTALL_PREFIX:PATH=$build_dir/extern/libssh2/build/src -DBUILD_SHARED_LIBS=OFF $openssl_flags
+cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=OFF
 cmake --build . --config $build_conf
 cmake --build . --target install
-ls src
+ls $install_prefix
 
 # BUILD LIBGIT2
 cd $build_dir/extern/libgit2
@@ -37,9 +38,10 @@ mkdir build
 # Attempt to go to build dir and clear it out if it has anything in it.
 cd build && rm -rf *
 # Build the project
-PKG_CONFIG_PATH=$build_dir/extern/libssh2/build/src cmake .. -G"$build_type" -DCMAKE_CXXFLAGS="-fPIC" -DCMAKE_C_FLAGS="-fPIC" -DBUILD_CLAR=OFF -DBUILD_SHARED_LIBS=OFF $openssl_flags
+PKG_CONFIG_PATH=$install_prefix cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=OFF -DBUILD_CLAR=OFF
 cmake --build . --config $build_conf
-ls
+cmake --build . --target install
+ls $install_prefix
 
 # Check whether the libraries were built
 if ! test -f $build_dir/extern/libssh2/build/src/lib/libssh2.$lib_ext ; then
