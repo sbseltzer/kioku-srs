@@ -73,6 +73,10 @@ For [archived releases of Visual Studio](https://my.visualstudio.com/downloads/f
 1. Failing to link at run time in Debug builds for VS2015 due to one Windows DLL not being redistributable. Not sure why this is. This is ultimately why the above explicitly states VS2013.
 1. It seems libgit2 has a bug where it segfaults in `srsGit_Add` on Release builds. At the moment I can only get Debug builds to pass that particular unit test.
 
+## More on OSX
+
+I had a lot of problems linking which stemmed from being uninformed - post-10.04 OSX use a proprietary security framework instead of OpenSSL (I think as a knee-jerk reaction to the Heart Bleed exploit) whose symbols I mistook for OpenSSL. For a while I was trying to redetect the libgit2 dependencies and wedge them into my CMakeLists, but this is the wrong way to do things. I think I'm supposed to ignore what those might be and instead utilize pkgconfig to do the heavy lifting. Haven't 100% figured out how to do that yet.
+
 # Possible Future Dependencies
 
 Here are other libraries I'm thinking of using in the future. Sorted by use-case. This information isn't really relevant to building, but I can't think of a better place to keep this list right now.
