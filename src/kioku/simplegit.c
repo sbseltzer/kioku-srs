@@ -14,19 +14,19 @@ static int srsGIT_READY = 0;
  *  - https://git-scm.com/book/be/v2/Appendix-B%3A-Embedding-Git-in-your-Applications-Libgit2
  */
 
-inline uint32_t srsGIT_INIT_LIB()
+static uint32_t srsGIT_INIT_LIB()
 {
   uint32_t result = (srsGIT_READY = git_libgit2_init());
   assert(result > 0);
   return result;
 }
-inline uint32_t srsGIT_EXIT_LIB()
+static uint32_t srsGIT_EXIT_LIB()
 {
   uint32_t result = (srsGIT_READY = git_libgit2_shutdown());
   assert(result >= 0);
   return result;
 }
-inline void srsGIT_DEBUG_ERROR()
+static void srsGIT_DEBUG_ERROR()
 {
   const git_error *err = giterr_last();
   if (err == NULL)
