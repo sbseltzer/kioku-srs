@@ -77,7 +77,7 @@ static void handle_GetNextCard(struct mg_connection *nc, struct http_message *hm
   {
     goto respond;
   }
-  if (!kioku_filesystem_isdir(deck_path))
+  if (!srsDir_Exists(deck_path))
   {
     goto respond;
   }
@@ -125,7 +125,7 @@ respond:
     codestring = HTTP_BAD_REQUEST;
     rest_respond(nc, codestring, "%s", "{\"error\":\"No deck specified!\"}");
   }
-  else if (!kioku_filesystem_isdir(deck_path))
+  else if (!srsDir_Exists(deck_path))
   {
     codestring = HTTP_BAD_REQUEST;
     rest_respond(nc, codestring, "%s", "{\"error\":\"Specified deck does not exist!\"}");

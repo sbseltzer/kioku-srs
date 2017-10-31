@@ -555,7 +555,7 @@ bool kioku_filesystem_delete(const char *path)
   {
     return result;
   }
-  if (kioku_filesystem_isdir(path))
+  if (srsDir_Exists(path))
   {
     result = rmdir(path) == 0;
   }
@@ -582,7 +582,7 @@ bool kioku_filesystem_exists(const char *path)
   return result;
 }
 
-bool kioku_filesystem_isdir(const char *path)
+bool srsDir_Exists(const char *path)
 {
   bool result = false;
   if (path == NULL)
@@ -618,7 +618,7 @@ int32_t srsFile_GetLength(const char *filepath)
   {
     return result;
   }
-  if (kioku_filesystem_isdir(filepath))
+  if (srsDir_Exists(filepath))
   {
     return result;
   }
@@ -647,7 +647,7 @@ bool srsFile_SetContent(const char *filepath, const char *content)
   {
     return result;
   }
-  if (kioku_filesystem_isdir(filepath))
+  if (srsDir_Exists(filepath))
   {
     return result;
   }
@@ -680,7 +680,7 @@ bool srsFile_GetContent(const char *filepath, char *content_out, size_t count)
   {
     return result;
   }
-  if (kioku_filesystem_isdir(filepath))
+  if (srsDir_Exists(filepath))
   {
     return result;
   }

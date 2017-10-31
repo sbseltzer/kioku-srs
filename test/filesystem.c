@@ -231,15 +231,15 @@ TEST test_file_manage(void) {
   ASSERT(kioku_filesystem_rename(NULL, NULL) == false);
   ASSERT(kioku_filesystem_rename(NULL, "a") == false);
   ASSERT(kioku_filesystem_rename("a", NULL) == false);
-  ASSERT(kioku_filesystem_isdir(NULL) == false);
+  ASSERT(srsDir_Exists(NULL) == false);
   ASSERT(kioku_filesystem_delete(NULL) == false);
 
   const char *path = "a/b/c/a.txt";
   ASSERT(kioku_filesystem_exists(path) == false);
-  ASSERT(kioku_filesystem_isdir(path) == false);
+  ASSERT(srsDir_Exists(path) == false);
   ASSERT(kioku_filesystem_create(path));
   ASSERT(kioku_filesystem_exists(path));
-  ASSERT(kioku_filesystem_isdir(path) == false);
+  ASSERT(srsDir_Exists(path) == false);
   ASSERT(kioku_filesystem_create(path) == false);
 
   ASSERT(kioku_filesystem_delete(path));
@@ -247,18 +247,18 @@ TEST test_file_manage(void) {
   ASSERT(kioku_filesystem_delete(path) == false);
 
   ASSERT(kioku_filesystem_exists("a"));
-  ASSERT(kioku_filesystem_isdir("a"));
+  ASSERT(srsDir_Exists("a"));
   ASSERT(kioku_filesystem_delete("a") == false);
   ASSERT(kioku_filesystem_exists("a"));
 
   ASSERT(kioku_filesystem_delete("a/b") == false);
   ASSERT(kioku_filesystem_exists("a/b"));
-  ASSERT(kioku_filesystem_isdir("a/b"));
+  ASSERT(srsDir_Exists("a/b"));
 
-  ASSERT(kioku_filesystem_isdir("a/b/c"));
+  ASSERT(srsDir_Exists("a/b/c"));
   ASSERT(kioku_filesystem_delete("a/b/c"));
   ASSERT(kioku_filesystem_exists("a/b/c") == false);
-  ASSERT(kioku_filesystem_isdir("a/b/c") == false);
+  ASSERT(srsDir_Exists("a/b/c") == false);
   ASSERT(kioku_filesystem_delete("a/b/c") == false);
 
   ASSERT(kioku_filesystem_delete("a/b"));
