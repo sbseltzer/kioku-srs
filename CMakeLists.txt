@@ -4,6 +4,7 @@ project (kioku C)
 
 OPTION (BUILD_SHARED_LIBS "Build Shared Library (OFF for Static)" ON)
 OPTION (BUILD_TESTS "Build Tests" ON)
+OPTION (BUILD_SERVER "Build default server implementation" ON)
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -236,13 +237,15 @@ endif ()
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable( kioku-server
-                src/main.c
-                extern/mongoose/mongoose.c
-                extern/parson/parson.c
-                )
-target_link_libraries( kioku-server kioku ${KIOKU_LIBS})
-add_dependencies( kioku-server kioku )
+if (BUILD_SERVER)
+  add_executable( kioku-server
+                  src/main.c
+                  extern/mongoose/mongoose.c
+                  extern/parson/parson.c
+                  )
+  target_link_libraries( kioku-server kioku ${KIOKU_LIBS})
+  add_dependencies( kioku-server kioku )
+endif()
 
 # add_subdirectory(src)
 if (BUILD_TESTS)
