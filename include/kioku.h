@@ -25,6 +25,7 @@
 #include "kioku/types.h"
 #include "kioku/log.h"
 #include "kioku/filesystem.h"
+#include "kioku/git.h"
 #include "kioku/model.h"
 #include "kioku/controller.h"
 #include "kioku/server.h"

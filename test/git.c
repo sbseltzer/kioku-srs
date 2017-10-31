@@ -1,5 +1,5 @@
 #include "greatest.h"
-#include "kioku/simplegit.h"
+#include "kioku/git.h"
 #include "kioku/filesystem.h"
 
 /* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */

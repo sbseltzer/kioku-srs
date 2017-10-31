@@ -1,5 +1,5 @@
 #include "git2.h"
-#include "kioku/simplegit.h"
+#include "kioku/git.h"
 #include "kioku/filesystem.h"
 #include "kioku/log.h"
 #include <string.h>

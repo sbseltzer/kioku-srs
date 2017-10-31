@@ -220,7 +220,7 @@ message("${KIOKU_LIBS}")
 add_library( kioku ${LIBRARY_TYPE}
                    src/kioku/log.c
                    src/kioku/filesystem.c
-                   src/kioku/simplegit.c
+                   src/kioku/git.c
                    src/kioku/model.c
                    src/kioku/controller.c
                    src/kioku/rest.c
