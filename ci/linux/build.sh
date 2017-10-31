@@ -30,8 +30,7 @@ rm *.so*
 rm *.a
 if test "x$build_shared" = "xON"; then
   # Copy libraries over
-  cp $build_dir/extern/libssh2/build/src/*.$lib_ext* .
-  cp $build_dir/extern/libgit2/build/*.$lib_ext* .
+  cp $build_dir/extern/install/lib/*.$lib_ext* .
   #Check whether they were copied
   if ! test -f libgit2.$lib_ext ; then
       printf '%s\n' 'Build: Failed to copy libgit2!' >&2
