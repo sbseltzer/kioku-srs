@@ -428,9 +428,9 @@ TEST test_file_io(void)
   printf("Testing file io functions"kiokuSTRING_LF);
   char buffer[255] = {0};
   printf("\tTesting getlen edges..."kiokuSTRING_LF);
-  ASSERT(kioku_filesystem_getlen(NULL) == -1);
-  ASSERT(kioku_filesystem_getlen("invalid/file/path.txt") == -1);
-  ASSERT(kioku_filesystem_getlen(".") == -1);
+  ASSERT(srsFile_GetLength(NULL) == -1);
+  ASSERT(srsFile_GetLength("invalid/file/path.txt") == -1);
+  ASSERT(srsFile_GetLength(".") == -1);
 
   printf("\tTesting setcontent edges..."kiokuSTRING_LF);
   ASSERT(srsFile_SetContent(NULL, "test") == false);
@@ -450,7 +450,7 @@ TEST test_file_io(void)
   ASSERT(srsFile_SetContent(filepath, content) == false);
   kioku_filesystem_create(filepath);
   ASSERT(srsFile_SetContent(filepath, content));
-  ASSERT(kioku_filesystem_getlen(filepath) == strlen(content));
+  ASSERT(srsFile_GetLength(filepath) == strlen(content));
 
   printf("\tTesting getcontent..."kiokuSTRING_LF);
   ASSERT(srsFile_GetContent(filepath, buffer, sizeof(buffer)));

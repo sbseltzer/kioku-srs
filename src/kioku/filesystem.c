@@ -607,7 +607,7 @@ bool kioku_filesystem_isdir(const char *path)
   return result;
 }
 
-int32_t kioku_filesystem_getlen(const char *filepath)
+int32_t srsFile_GetLength(const char *filepath)
 {
   int32_t result = -1;
   if (filepath == NULL)

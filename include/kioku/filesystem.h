@@ -169,7 +169,7 @@ kiokuAPI bool kioku_filesystem_isdir(const char *path);
  * @param[in] filepath Path to the file
  * @return If the file can be opened and the seek/tell is successful, it will return the length. -1 otherwise.
  */
-kiokuAPI int32_t kioku_filesystem_getlen(const char *filepath);
+kiokuAPI int32_t srsFile_GetLength(const char *filepath);
 
 /**
  * Set the content of a file (overwriting what may have been there)

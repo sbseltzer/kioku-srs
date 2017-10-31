@@ -44,7 +44,7 @@ kiokuAPI bool srsModel_Card_GetPath(const char *deck_path, const char *card_id, 
  * @param[in] card_id The ID of the card to get the content of. It will only be considered valid if a file @ref srsModel_Card_GetPath gives back an existing path.
  * @param[out] buf Buffer to store the content in, if any. The contents are unspecified if this function returns false.
  * @param[in] buf_size Size of the buffer to store the ID in, including the null-terminator. To ensure there's enough room, use the length of the file content plus one.
- * @return True if a the content is available for the specified deck/card ID, and the content size did not exceed the provided buffer size. @todo Failure ambiguity is a design flaw. For now the user should use @ref kioku_filesystem_getlen to protect themselves.
+ * @return True if a the content is available for the specified deck/card ID, and the content size did not exceed the provided buffer size. @todo Failure ambiguity is a design flaw. For now the user should use @ref srsFile_GetLength to protect themselves.
  */
 kiokuAPI bool srsModel_Card_GetCardContent(const char *deck_path, const char *card_id, const char *buf, size_t buf_size);
 

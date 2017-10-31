@@ -179,7 +179,7 @@ bool srsModel_Deck_Open(const char *path)
   {
     return result;
   }
-  int32_t filelen = kioku_filesystem_getlen(concatpath);
+  int32_t filelen = srsFile_GetLength(concatpath);
   result = (filelen < 0);
   if (!result)
   {
