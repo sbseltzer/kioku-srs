@@ -12,18 +12,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Mo
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/extern/libgit2/cmake/Modules/")
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/extern/libssh2/cmake/")
 
-# Give this to get CMake to look for libraries built from source.
-list(APPEND CMAKE_PREFIX_PATH
-            ${CMAKE_SOURCE_DIR}
-            ${CMAKE_SOURCE_DIR}/build
-            ${CMAKE_SOURCE_DIR}/extern/libgit2
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/build
-            ${CMAKE_SOURCE_DIR}/extern/libgit2/src
-            ${CMAKE_SOURCE_DIR}/extern/libssh2
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/src
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/build
-            ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src
-            )
 # Give this to find Libssh2Config.cmake
 set(Libssh2_DIR ${CMAKE_SOURCE_DIR}/extern/install/lib/cmake/libssh2)
 
