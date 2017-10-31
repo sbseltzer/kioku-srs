@@ -437,9 +437,9 @@ TEST test_file_io(void)
   ASSERT(kioku_filesystem_setcontent(".", "test") == false);
 
   printf("\tTesting getcontent edges..."kiokuSTRING_LF);
-  ASSERT(kioku_filesystem_getcontent(NULL, NULL, 0) == false);
-  ASSERT(kioku_filesystem_getcontent(".", NULL, 0) == false);
-  ASSERT(kioku_filesystem_getcontent("invalid/file/path.txt", buffer, sizeof(buffer)) == false);
+  ASSERT(srsFile_GetContent(NULL, NULL, 0) == false);
+  ASSERT(srsFile_GetContent(".", NULL, 0) == false);
+  ASSERT(srsFile_GetContent("invalid/file/path.txt", buffer, sizeof(buffer)) == false);
 
   const char *filepath = "a/test/file.txt";
   const char *content = "some text";
@@ -453,14 +453,14 @@ TEST test_file_io(void)
   ASSERT(kioku_filesystem_getlen(filepath) == strlen(content));
 
   printf("\tTesting getcontent..."kiokuSTRING_LF);
-  ASSERT(kioku_filesystem_getcontent(filepath, buffer, sizeof(buffer)));
+  ASSERT(srsFile_GetContent(filepath, buffer, sizeof(buffer)));
   ASSERT(strlen(buffer) == strlen(content));
   ASSERT_STR_EQ(buffer, content);
 
   printf("\tTesting setcontent/getcontent..."kiokuSTRING_LF);
   content = "some totally different text";
   ASSERT(kioku_filesystem_setcontent(filepath, content));
-  ASSERT(kioku_filesystem_getcontent(filepath, buffer, sizeof(buffer)));
+  ASSERT(srsFile_GetContent(filepath, buffer, sizeof(buffer)));
   ASSERT(strlen(buffer) == strlen(content));
   ASSERT_STR_EQ(buffer, content);
 

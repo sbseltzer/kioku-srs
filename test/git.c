@@ -18,14 +18,14 @@ TEST git_create_makes_a_repository(void)
 
   char content[2086] = {0};
 
-  kioku_filesystem_getcontent(REPO_NAME "/username", content, sizeof(content));
+  srsFile_GetContent(REPO_NAME "/username", content, sizeof(content));
   ASSERT_STR_EQ(writeme, content);
 
-  kioku_filesystem_getcontent(REPO_NAME "/.git/HEAD", content, sizeof(content));
+  srsFile_GetContent(REPO_NAME "/.git/HEAD", content, sizeof(content));
   const char *headref = "ref: refs/heads/master\n";
   ASSERT_STR_EQ(headref, content);
 
-  ASSERT(kioku_filesystem_getcontent(REPO_NAME "/.git/logs/HEAD", content, sizeof(content)));
+  ASSERT(srsFile_GetContent(REPO_NAME "/.git/logs/HEAD", content, sizeof(content)));
   const char *commitlog = "Me <me@example.com> 1507741820 -0400  commit (initial): Initial commit, dawg\n";
   const char *commitlog_me = strstr(commitlog, "Me");
   const char *content_me = strstr(content, "Me");

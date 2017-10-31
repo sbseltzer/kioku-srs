@@ -186,7 +186,7 @@ kiokuAPI bool kioku_filesystem_setcontent(const char *filepath, const char *cont
  * @param[in] count Size of the content buffer, including null-terminator.
  * @return Whether successful
  */
-kiokuAPI bool kioku_filesystem_getcontent(const char *filepath, char *content_out, size_t count);
+kiokuAPI bool srsFile_GetContent(const char *filepath, char *content_out, size_t count);
 
 kiokuAPI FILE *kioku_filesystem_open(const char *path, const char *mode);
 

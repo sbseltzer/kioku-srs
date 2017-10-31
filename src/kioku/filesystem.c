@@ -661,7 +661,7 @@ bool kioku_filesystem_setcontent(const char *filepath, const char *content)
   return result;
 }
 
-bool kioku_filesystem_getcontent(const char *filepath, char *content_out, size_t count)
+bool srsFile_GetContent(const char *filepath, char *content_out, size_t count)
 {
   bool result = false;
   if (filepath == NULL)
