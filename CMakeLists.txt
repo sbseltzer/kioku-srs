@@ -119,8 +119,8 @@ if (ICONV_FOUND)
    list( APPEND KIOKU_LIBS ${ICONV_LIBRARIES} )
 endif()
 
-# libgit2 does this - should help with linking
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  # Here we work around a defect in the generated libssh2.pc file that hardcodes a linker flag for libgcrypt without any indication of where to find it, which is hypocritical when its own CMake module for finding it gets an absolute path to the library. Ugh.
   if ("${KIOKU_LIBS}" MATCHES "gcrypt")
     find_package(Libgcrypt)
     if(LIBGCRYPT_FOUND)
