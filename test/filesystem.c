@@ -396,7 +396,7 @@ TEST test_file_readlinenumber(void)
   const char *multilinefile = "./testlines";
   kioku_filesystem_delete(multilinefile);
   ASSERT(kioku_filesystem_create(multilinefile));
-  ASSERT(kioku_filesystem_setcontent(multilinefile, filebuf));
+  ASSERT(srsFile_SetContent(multilinefile, filebuf));
   char linebuf[256] = {0};
   for (index = 0; index < numlines; index++)
   {
@@ -433,8 +433,8 @@ TEST test_file_io(void)
   ASSERT(kioku_filesystem_getlen(".") == -1);
 
   printf("\tTesting setcontent edges..."kiokuSTRING_LF);
-  ASSERT(kioku_filesystem_setcontent(NULL, "test") == false);
-  ASSERT(kioku_filesystem_setcontent(".", "test") == false);
+  ASSERT(srsFile_SetContent(NULL, "test") == false);
+  ASSERT(srsFile_SetContent(".", "test") == false);
 
   printf("\tTesting getcontent edges..."kiokuSTRING_LF);
   ASSERT(srsFile_GetContent(NULL, NULL, 0) == false);
@@ -447,9 +447,9 @@ TEST test_file_io(void)
   kioku_filesystem_delete(filepath);
 
   printf("\tTesting setcontent/getlen..."kiokuSTRING_LF);
-  ASSERT(kioku_filesystem_setcontent(filepath, content) == false);
+  ASSERT(srsFile_SetContent(filepath, content) == false);
   kioku_filesystem_create(filepath);
-  ASSERT(kioku_filesystem_setcontent(filepath, content));
+  ASSERT(srsFile_SetContent(filepath, content));
   ASSERT(kioku_filesystem_getlen(filepath) == strlen(content));
 
   printf("\tTesting getcontent..."kiokuSTRING_LF);
@@ -459,7 +459,7 @@ TEST test_file_io(void)
 
   printf("\tTesting setcontent/getcontent..."kiokuSTRING_LF);
   content = "some totally different text";
-  ASSERT(kioku_filesystem_setcontent(filepath, content));
+  ASSERT(srsFile_SetContent(filepath, content));
   ASSERT(srsFile_GetContent(filepath, buffer, sizeof(buffer)));
   ASSERT(strlen(buffer) == strlen(content));
   ASSERT_STR_EQ(buffer, content);

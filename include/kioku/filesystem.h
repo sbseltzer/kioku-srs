@@ -177,7 +177,7 @@ kiokuAPI int32_t kioku_filesystem_getlen(const char *filepath);
  * @param[in] content The null-terminated content string to write.
  * @return Whether successful
  */
-kiokuAPI bool kioku_filesystem_setcontent(const char *filepath, const char *content);
+kiokuAPI bool srsFile_SetContent(const char *filepath, const char *content);
 
 /**
  * Get the content of a file.

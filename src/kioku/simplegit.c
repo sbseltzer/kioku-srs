@@ -175,7 +175,7 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   }
   if (result)
   {
-    result = kioku_filesystem_setcontent(fullpath, opts.first_file_content);
+    result = srsFile_SetContent(fullpath, opts.first_file_content);
   }
   if (result)
   {

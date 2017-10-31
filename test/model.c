@@ -7,8 +7,8 @@ static bool createdeck()
   bool ok = true;
   ok = ok && kioku_filesystem_create("deck-test/.at");
   ok = ok && kioku_filesystem_create("deck-test/.schedule");
-  ok = ok && kioku_filesystem_setcontent("deck-test/.at", "3");
-  ok = ok && kioku_filesystem_setcontent("deck-test/.schedule", "ab\nabcd\nabcdef\na");
+  ok = ok && srsFile_SetContent("deck-test/.at", "3");
+  ok = ok && srsFile_SetContent("deck-test/.schedule", "ab\nabcd\nabcdef\na");
   return ok;
 }
 static bool deletedeck()
@@ -67,29 +67,29 @@ TEST test_card_getnextid(void)
 
   char path[kiokuPATH_MAX + 1] = {0};
 
-  kioku_filesystem_setcontent("deck-test/.at", "0");
+  srsFile_SetContent("deck-test/.at", "0");
   ASSERT_FALSE(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
 
-  kioku_filesystem_setcontent("deck-test/.at", "-1");
+  srsFile_SetContent("deck-test/.at", "-1");
   ASSERT_FALSE(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
 
-  kioku_filesystem_setcontent("deck-test/.at", "1");
+  srsFile_SetContent("deck-test/.at", "1");
   ASSERT(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
   ASSERT_STR_EQ("ab", path);
 
-  kioku_filesystem_setcontent("deck-test/.at", "2");
+  srsFile_SetContent("deck-test/.at", "2");
   ASSERT(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
   ASSERT_STR_EQ("abcd", path);
 
-  kioku_filesystem_setcontent("deck-test/.at", "3");
+  srsFile_SetContent("deck-test/.at", "3");
   ASSERT(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
   ASSERT_STR_EQ("abcdef", path);
 
-  kioku_filesystem_setcontent("deck-test/.at", "4");
+  srsFile_SetContent("deck-test/.at", "4");
   ASSERT(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
   ASSERT_STR_EQ("a", path);
 
-  kioku_filesystem_setcontent("deck-test/.at", "7");
+  srsFile_SetContent("deck-test/.at", "7");
   ASSERT_FALSE(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));
 
   ASSERT(deletedeck());

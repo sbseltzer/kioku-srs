@@ -632,7 +632,7 @@ int32_t kioku_filesystem_getlen(const char *filepath)
   return result;
 }
 
-bool kioku_filesystem_setcontent(const char *filepath, const char *content)
+bool srsFile_SetContent(const char *filepath, const char *content)
 {
   bool result = false;
   if (filepath == NULL)
