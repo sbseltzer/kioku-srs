@@ -141,7 +141,7 @@ kiokuAPI bool srsFile_Create(const char *path);
  * @param[in] path Path to the file/dir to rename.
  * @return Whether the file/dir was renamed.
  */
-kiokuAPI bool srsFileSystem_Move(const char *path, const char *newpath);
+kiokuAPI bool srsPath_Move(const char *path, const char *newpath);
 
 /**
  * Delete a file or directory. @todo Directories will be deleted recursively.

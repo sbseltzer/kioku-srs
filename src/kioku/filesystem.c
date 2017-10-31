@@ -532,7 +532,7 @@ bool srsFile_Create(const char *path)
   return (fp != NULL) && (fclose(fp) == 0);
 }
 
-bool srsFileSystem_Move(const char *path, const char *newpath)
+bool srsPath_Move(const char *path, const char *newpath)
 {
   bool result = false;
   if (path == NULL || newpath == NULL)
