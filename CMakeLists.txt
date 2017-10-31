@@ -199,14 +199,6 @@ add_library(lua5-3-4 SHARED extern/lua/ldblib.c
                             extern/lua/lundump.c
                             )
 
-link_directories(
-  ${CMAKE_SOURCE_DIR}/extern/libgit2
-  ${CMAKE_SOURCE_DIR}/extern/libgit2/build
-  ${CMAKE_SOURCE_DIR}/extern/libssh2
-  ${CMAKE_SOURCE_DIR}/extern/libssh2/build
-  ${CMAKE_SOURCE_DIR}/extern/libssh2/build/src
-)
-
 include_directories( include
                      extern/mongoose
                      extern/parson
