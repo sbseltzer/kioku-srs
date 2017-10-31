@@ -134,7 +134,7 @@ kiokuAPI const char *kioku_get_user_directory(const char *username);
  * @param[in] path Path to the file to create.
  * @return Whether the path and preceding directories could be created.
  */
-kiokuAPI bool kioku_filesystem_create(const char *path);
+kiokuAPI bool srsFile_Create(const char *path);
 
 /**
  * Rename a file or directory

@@ -171,7 +171,7 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   result = (wrote == pathlen);
   if (result)
   {
-    result = kioku_filesystem_create(fullpath);
+    result = srsFile_Create(fullpath);
   }
   if (result)
   {

@@ -5,8 +5,8 @@
 static bool createdeck()
 {
   bool ok = true;
-  ok = ok && kioku_filesystem_create("deck-test/.at");
-  ok = ok && kioku_filesystem_create("deck-test/.schedule");
+  ok = ok && srsFile_Create("deck-test/.at");
+  ok = ok && srsFile_Create("deck-test/.schedule");
   ok = ok && srsFile_SetContent("deck-test/.at", "3");
   ok = ok && srsFile_SetContent("deck-test/.schedule", "ab\nabcd\nabcdef\na");
   return ok;
@@ -22,9 +22,9 @@ static bool deletedeck()
 static bool createcards()
 {
   bool ok = true;
-  ok = ok && kioku_filesystem_create("deck-test/cards/a.txt");
-  ok = ok && kioku_filesystem_create("deck-test/cards/ab.txt");
-  ok = ok && kioku_filesystem_create("deck-test/cards/abcdef.txt");
+  ok = ok && srsFile_Create("deck-test/cards/a.txt");
+  ok = ok && srsFile_Create("deck-test/cards/ab.txt");
+  ok = ok && srsFile_Create("deck-test/cards/abcdef.txt");
   return ok;
 }
 static bool deletecards()

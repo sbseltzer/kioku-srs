@@ -486,7 +486,7 @@ int32_t kioku_path_up_index(const char *path, int32_t start_index)
   return result;
 }
 
-bool kioku_filesystem_create(const char *path)
+bool srsFile_Create(const char *path)
 {
   if (path == NULL)
   {

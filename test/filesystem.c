@@ -227,7 +227,7 @@ TEST test_concat_path(void)
 TEST test_file_manage(void) {
   printf("Testing file management functions..."kiokuSTRING_LF);
   ASSERT(srsFileSystem_Exists(NULL) == false);
-  ASSERT(kioku_filesystem_create(NULL) == false);
+  ASSERT(srsFile_Create(NULL) == false);
   ASSERT(srsFileSystem_Move(NULL, NULL) == false);
   ASSERT(srsFileSystem_Move(NULL, "a") == false);
   ASSERT(srsFileSystem_Move("a", NULL) == false);
@@ -237,10 +237,10 @@ TEST test_file_manage(void) {
   const char *path = "a/b/c/a.txt";
   ASSERT(srsFileSystem_Exists(path) == false);
   ASSERT(srsDir_Exists(path) == false);
-  ASSERT(kioku_filesystem_create(path));
+  ASSERT(srsFile_Create(path));
   ASSERT(srsFileSystem_Exists(path));
   ASSERT(srsDir_Exists(path) == false);
-  ASSERT(kioku_filesystem_create(path) == false);
+  ASSERT(srsFile_Create(path) == false);
 
   ASSERT(kioku_filesystem_delete(path));
   ASSERT(srsFileSystem_Exists(path) == false);
@@ -270,7 +270,7 @@ TEST test_file_manage(void) {
   ASSERT(kioku_filesystem_delete("a") == false);
 
   /* Test a file-only rename */
-  ASSERT(kioku_filesystem_create(path));
+  ASSERT(srsFile_Create(path));
   const char *newpath = "a/b/c/d.txt";
   ASSERT(srsFileSystem_Exists(newpath) == false);
   ASSERT(srsFileSystem_Move(path, newpath));
@@ -304,9 +304,9 @@ TEST test_file_manage(void) {
   char fullpath[255] = {0};
   kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b/c/a.txt");
   ASSERT(srsFileSystem_Exists(fullpath) == false);
-  ASSERT(kioku_filesystem_create(fullpath));
+  ASSERT(srsFile_Create(fullpath));
   ASSERT(srsFileSystem_Exists(fullpath));
-  ASSERT(kioku_filesystem_create(fullpath) == false);
+  ASSERT(srsFile_Create(fullpath) == false);
   ASSERT(kioku_filesystem_delete(fullpath));
   ASSERT(srsFileSystem_Exists(fullpath) == false);
 
@@ -395,7 +395,7 @@ TEST test_file_readlinenumber(void)
 
   const char *multilinefile = "./testlines";
   kioku_filesystem_delete(multilinefile);
-  ASSERT(kioku_filesystem_create(multilinefile));
+  ASSERT(srsFile_Create(multilinefile));
   ASSERT(srsFile_SetContent(multilinefile, filebuf));
   char linebuf[256] = {0};
   for (index = 0; index < numlines; index++)
@@ -448,7 +448,7 @@ TEST test_file_io(void)
 
   printf("\tTesting setcontent/getlen..."kiokuSTRING_LF);
   ASSERT(srsFile_SetContent(filepath, content) == false);
-  kioku_filesystem_create(filepath);
+  srsFile_Create(filepath);
   ASSERT(srsFile_SetContent(filepath, content));
   ASSERT(srsFile_GetLength(filepath) == strlen(content));
 
