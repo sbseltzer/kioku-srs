@@ -18,6 +18,7 @@
 #endif
 
 #define srsMODEL_CARD_ID_MAX 256
+#define srsMODEL_DECK_ID_MAX 256
 
 /**
  * Get the next card ID for a deck.

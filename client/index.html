@@ -24,7 +24,7 @@
        GetNextCard : function()
        {
          // Not very robust concatenation here...
-         $.get(srs.endpoint + "card/next", srs.callbacks.OnGetNextCard, 'json')
+         $.get(srs.endpoint + "card/next?deck=../client/testdeck", srs.callbacks.OnGetNextCard, 'json')
           .fail(function(){ srs.callbacks.OnGetNextCard(undefined); });
        },
        GradeCard : function(id, grade)
