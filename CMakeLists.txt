@@ -46,6 +46,8 @@ if (Libssh2_FOUND)
    link_directories( ${Libssh2_LIBRARY_DIRS} )
    link_libraries( ${Libssh2_LIBRARIES} ${Libssh2_LIBS} )
    list( APPEND KIOKU_LIBS ${Libssh2_LIBRARIES} ${Libssh2_LIBS}  )
+   link_libraries( ${Libssh2_STATIC_LIBRARIES} )
+   list( APPEND KIOKU_LIBS ${Libssh2_STATIC_LIBRARIES} )
    message("Appended SSH2 libs ${KIOKU_LIBS}")
 else()
   # We build libssh2 from source, so simply take care of some Windows naming weirdness.
