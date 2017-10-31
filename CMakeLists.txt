@@ -5,6 +5,7 @@ project (kioku C)
 OPTION (BUILD_SHARED_LIBS "Build Shared Library (OFF for Static)" ON)
 OPTION (BUILD_TESTS "Build Tests" ON)
 OPTION (BUILD_SERVER "Build default server implementation" ON)
+OPTION (BUILD_LUA "Build Lua" ON)
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -151,43 +152,45 @@ ENDIF()
 link_directories( ${CMAKE_SOURCE_DIR}/extern/install/lib )
 include_directories( ${CMAKE_SOURCE_DIR}/extern/install/include )
 
-add_library(lua5-3-4 SHARED extern/lua/ldblib.c
-                            extern/lua/lgc.c
-                            extern/lua/llex.c
-                            extern/lua/lmem.c
-                            extern/lua/lparser.c
-                            extern/lua/lstate.c
-                            extern/lua/ltable.c
-                            extern/lua/lzio.c
-                            extern/lua/lapi.c
-                            extern/lua/lbaselib.c
-                            extern/lua/lcorolib.c
-                            extern/lua/ldebug.c
-                            extern/lua/ldump.c
-                            extern/lua/lopcodes.c
-                            extern/lua/lstring.c
-                            extern/lua/ltm.c
-                            extern/lua/lutf8lib.c
-                            extern/lua/lbitlib.c
-                            extern/lua/lctype.c
-                            extern/lua/lfunc.c
-                            extern/lua/lfunc.c
-                            extern/lua/linit.c
-                            extern/lua/loadlib.c
-                            extern/lua/ltablib.c
-                            extern/lua/lvm.c
-                            extern/lua/lauxlib.c
-                            extern/lua/lcode.c
-                            extern/lua/ldo.c
-                            extern/lua/liolib.c
-                            extern/lua/lmathlib.c
-                            extern/lua/lobject.c
-                            extern/lua/loslib.c
-                            extern/lua/lstrlib.c
-                            extern/lua/ltests.c
-                            extern/lua/lua.c
-                            extern/lua/lundump.c
-                            )
+if (BUILD_LUA)
+  add_library(lua5-3-4 SHARED extern/lua/ldblib.c
+                              extern/lua/lgc.c
+                              extern/lua/llex.c
+                              extern/lua/lmem.c
+                              extern/lua/lparser.c
+                              extern/lua/lstate.c
+                              extern/lua/ltable.c
+                              extern/lua/lzio.c
+                              extern/lua/lapi.c
+                              extern/lua/lbaselib.c
+                              extern/lua/lcorolib.c
+                              extern/lua/ldebug.c
+                              extern/lua/ldump.c
+                              extern/lua/lopcodes.c
+                              extern/lua/lstring.c
+                              extern/lua/ltm.c
+                              extern/lua/lutf8lib.c
+                              extern/lua/lbitlib.c
+                              extern/lua/lctype.c
+                              extern/lua/lfunc.c
+                              extern/lua/lfunc.c
+                              extern/lua/linit.c
+                              extern/lua/loadlib.c
+                              extern/lua/ltablib.c
+                              extern/lua/lvm.c
+                              extern/lua/lauxlib.c
+                              extern/lua/lcode.c
+                              extern/lua/ldo.c
+                              extern/lua/liolib.c
+                              extern/lua/lmathlib.c
+                              extern/lua/lobject.c
+                              extern/lua/loslib.c
+                              extern/lua/lstrlib.c
+                              extern/lua/ltests.c
+                              extern/lua/lua.c
+                              extern/lua/lundump.c
+                              )
+endif()
 
 include_directories( include
                      extern/mongoose
