@@ -56,11 +56,13 @@ if NOT EXIST git2.%lib_ext% (
    goto end
 )
 cd ..
-set CTEST_OUTPUT_ON_FAILURE=1
-ctest -C %build_conf%
-set result=%errorlevel%
-if not "%result%"=="0" (
-   type Testing\Temporary\LastTest.log
+IF "%skip_test%"=="" (
+   set CTEST_OUTPUT_ON_FAILURE=1
+   ctest -C %build_conf%
+   set result=%errorlevel%
+   if not "%result%"=="0" (
+      type Testing\Temporary\LastTest.log
+   )
 )
 :end
 cd %build_dir%

@@ -9,6 +9,7 @@ before_build:
   - git submodule update --init
   - set build_conf=%CONFIGURATION%
   - ci\windows\build-deps.bat
+  - set skip_test=1
   - ci\windows\build.bat
 
 build:
