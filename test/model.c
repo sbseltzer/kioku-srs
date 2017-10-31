@@ -14,9 +14,9 @@ static bool createdeck()
 static bool deletedeck()
 {
   bool ok = true;
-  ok = ok && kioku_filesystem_delete("deck-test/.at");
-  ok = ok && kioku_filesystem_delete("deck-test/.schedule");
-  ok = ok && kioku_filesystem_delete("deck-test");
+  ok = ok && srsFileSystem_Remove("deck-test/.at");
+  ok = ok && srsFileSystem_Remove("deck-test/.schedule");
+  ok = ok && srsFileSystem_Remove("deck-test");
   return ok;
 }
 static bool createcards()
@@ -30,9 +30,9 @@ static bool createcards()
 static bool deletecards()
 {
   bool ok = true;
-  ok = ok && kioku_filesystem_delete("deck-test/cards/a.txt");
-  ok = ok && kioku_filesystem_delete("deck-test/cards/ab.txt");
-  ok = ok && kioku_filesystem_delete("deck-test/cards/abcdef.txt");
+  ok = ok && srsFileSystem_Remove("deck-test/cards/a.txt");
+  ok = ok && srsFileSystem_Remove("deck-test/cards/ab.txt");
+  ok = ok && srsFileSystem_Remove("deck-test/cards/abcdef.txt");
   return ok;
 }
 /* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */

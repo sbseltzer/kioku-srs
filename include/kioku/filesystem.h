@@ -144,11 +144,11 @@ kiokuAPI bool srsFile_Create(const char *path);
 kiokuAPI bool srsFileSystem_Move(const char *path, const char *newpath);
 
 /**
- * Delete a file or directory. Directories will be deleted recursively.
+ * Delete a file or directory. @todo Directories will be deleted recursively.
  * @param[in] path Path to the file/dir to delete.
  * @return Whether the file/dir was deleted.
  */
-kiokuAPI bool kioku_filesystem_delete(const char *path);
+kiokuAPI bool srsFileSystem_Remove(const char *path);
 
 /**
  * Check if a file/dir exists.
