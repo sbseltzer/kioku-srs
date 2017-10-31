@@ -21,4 +21,6 @@ before_install:
 script:
  - echo "Hello, Travis CI"
  - ci/osx/build-deps.sh
+ - cat extern/libgit2/build/CMakeCache.txt
+ - cat extern/libgit2/build/src/CMakeCache.txt
  - ci/osx/build.sh
