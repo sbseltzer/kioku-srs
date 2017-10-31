@@ -24,3 +24,4 @@ script:
  - cat extern/libgit2/build/CMakeCache.txt
  - cat extern/libgit2/build/src/CMakeCache.txt
  - ci/osx/build.sh
+ - cat build/CMakeCache.txt
