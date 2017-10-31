@@ -492,7 +492,7 @@ bool srsFile_Create(const char *path)
   {
     return false;
   }
-  if (srsFileSystem_Exists(path))
+  if (srsPath_Exists(path))
   {
     return false;
   }
@@ -510,7 +510,7 @@ bool srsFile_Create(const char *path)
     {
       break;
     }
-    if (srsFileSystem_Exists(dupedpath))
+    if (srsPath_Exists(dupedpath))
     {
       continue;
     }
@@ -551,7 +551,7 @@ bool srsPath_Remove(const char *path)
   {
     return result;
   }
-  if (!srsFileSystem_Exists(path))
+  if (!srsPath_Exists(path))
   {
     return result;
   }
@@ -566,7 +566,7 @@ bool srsPath_Remove(const char *path)
   return result;
 }
 
-bool srsFileSystem_Exists(const char *path)
+bool srsPath_Exists(const char *path)
 {
   bool result = false;
   if (path == NULL)
@@ -590,7 +590,7 @@ bool srsFile_Exists(const char *path)
   {
     return result;
   }
-  if (!srsFileSystem_Exists(path))
+  if (!srsPath_Exists(path))
   {
     return result;
   }
@@ -615,7 +615,7 @@ bool srsDir_Exists(const char *path)
   {
     return result;
   }
-  if (!srsFileSystem_Exists(path))
+  if (!srsPath_Exists(path))
   {
     return result;
   }
@@ -640,7 +640,7 @@ int32_t srsFile_GetLength(const char *filepath)
   {
     return result;
   }
-  if (!srsFileSystem_Exists(filepath))
+  if (!srsPath_Exists(filepath))
   {
     return result;
   }
@@ -669,7 +669,7 @@ bool srsFile_SetContent(const char *filepath, const char *content)
   {
     return result;
   }
-  if (!srsFileSystem_Exists(filepath))
+  if (!srsPath_Exists(filepath))
   {
     return result;
   }
@@ -702,7 +702,7 @@ bool srsFile_GetContent(const char *filepath, char *content_out, size_t count)
   {
     return result;
   }
-  if (!srsFileSystem_Exists(filepath))
+  if (!srsPath_Exists(filepath))
   {
     return result;
   }

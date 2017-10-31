@@ -226,7 +226,7 @@ TEST test_concat_path(void)
 /** @todo Add tests for srsFile_Exists */
 TEST test_file_manage(void) {
   printf("Testing file management functions..."kiokuSTRING_LF);
-  ASSERT(srsFileSystem_Exists(NULL) == false);
+  ASSERT(srsPath_Exists(NULL) == false);
   ASSERT(srsFile_Create(NULL) == false);
   ASSERT(srsPath_Move(NULL, NULL) == false);
   ASSERT(srsPath_Move(NULL, "a") == false);
@@ -235,65 +235,65 @@ TEST test_file_manage(void) {
   ASSERT(srsPath_Remove(NULL) == false);
 
   const char *path = "a/b/c/a.txt";
-  ASSERT(srsFileSystem_Exists(path) == false);
+  ASSERT(srsPath_Exists(path) == false);
   ASSERT(srsDir_Exists(path) == false);
   ASSERT(srsFile_Create(path));
-  ASSERT(srsFileSystem_Exists(path));
+  ASSERT(srsPath_Exists(path));
   ASSERT(srsDir_Exists(path) == false);
   ASSERT(srsFile_Create(path) == false);
 
   ASSERT(srsPath_Remove(path));
-  ASSERT(srsFileSystem_Exists(path) == false);
+  ASSERT(srsPath_Exists(path) == false);
   ASSERT(srsPath_Remove(path) == false);
 
-  ASSERT(srsFileSystem_Exists("a"));
+  ASSERT(srsPath_Exists("a"));
   ASSERT(srsDir_Exists("a"));
   ASSERT(srsPath_Remove("a") == false);
-  ASSERT(srsFileSystem_Exists("a"));
+  ASSERT(srsPath_Exists("a"));
 
   ASSERT(srsPath_Remove("a/b") == false);
-  ASSERT(srsFileSystem_Exists("a/b"));
+  ASSERT(srsPath_Exists("a/b"));
   ASSERT(srsDir_Exists("a/b"));
 
   ASSERT(srsDir_Exists("a/b/c"));
   ASSERT(srsPath_Remove("a/b/c"));
-  ASSERT(srsFileSystem_Exists("a/b/c") == false);
+  ASSERT(srsPath_Exists("a/b/c") == false);
   ASSERT(srsDir_Exists("a/b/c") == false);
   ASSERT(srsPath_Remove("a/b/c") == false);
 
   ASSERT(srsPath_Remove("a/b"));
-  ASSERT(srsFileSystem_Exists("a/b") == false);
+  ASSERT(srsPath_Exists("a/b") == false);
   ASSERT(srsPath_Remove("a/b") == false);
 
   ASSERT(srsPath_Remove("a"));
-  ASSERT(srsFileSystem_Exists("a") == false);
+  ASSERT(srsPath_Exists("a") == false);
   ASSERT(srsPath_Remove("a") == false);
 
   /* Test a file-only rename */
   ASSERT(srsFile_Create(path));
   const char *newpath = "a/b/c/d.txt";
-  ASSERT(srsFileSystem_Exists(newpath) == false);
+  ASSERT(srsPath_Exists(newpath) == false);
   ASSERT(srsPath_Move(path, newpath));
-  ASSERT(srsFileSystem_Exists(path) == false);
-  ASSERT(srsFileSystem_Exists(newpath));
+  ASSERT(srsPath_Exists(path) == false);
+  ASSERT(srsPath_Exists(newpath));
 
   /* Test a directory-only rename */
   path = "a/b/c";
   newpath = "a/b/d";
-  ASSERT(srsFileSystem_Exists(path));
-  ASSERT(srsFileSystem_Exists(newpath) == false);
+  ASSERT(srsPath_Exists(path));
+  ASSERT(srsPath_Exists(newpath) == false);
   ASSERT(srsPath_Move(path, newpath));
-  ASSERT(srsFileSystem_Exists(path) == false);
-  ASSERT(srsFileSystem_Exists(newpath));
+  ASSERT(srsPath_Exists(path) == false);
+  ASSERT(srsPath_Exists(newpath));
 
   /* Test a move-like rename */
   path = "a/b/d/d.txt";
   newpath = "a/b/c/d.txt";
-  ASSERT(srsFileSystem_Exists(path));
-  ASSERT(srsFileSystem_Exists(newpath) == false);
+  ASSERT(srsPath_Exists(path));
+  ASSERT(srsPath_Exists(newpath) == false);
   ASSERT(srsPath_Move(path, newpath) == false);
-  ASSERT(srsFileSystem_Exists(path));
-  ASSERT(srsFileSystem_Exists(newpath) == false);
+  ASSERT(srsPath_Exists(path));
+  ASSERT(srsPath_Exists(newpath) == false);
 
   /* Cleanup */
   ASSERT(srsPath_Remove(path));
@@ -303,26 +303,26 @@ TEST test_file_manage(void) {
 
   char fullpath[255] = {0};
   kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b/c/a.txt");
-  ASSERT(srsFileSystem_Exists(fullpath) == false);
+  ASSERT(srsPath_Exists(fullpath) == false);
   ASSERT(srsFile_Create(fullpath));
-  ASSERT(srsFileSystem_Exists(fullpath));
+  ASSERT(srsPath_Exists(fullpath));
   ASSERT(srsFile_Create(fullpath) == false);
   ASSERT(srsPath_Remove(fullpath));
-  ASSERT(srsFileSystem_Exists(fullpath) == false);
+  ASSERT(srsPath_Exists(fullpath) == false);
 
   kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b/c");
   ASSERT(srsPath_Remove(fullpath));
-  ASSERT(srsFileSystem_Exists(fullpath) == false);
+  ASSERT(srsPath_Exists(fullpath) == false);
   ASSERT(srsPath_Remove(fullpath) == false);
 
   kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b");
   ASSERT(srsPath_Remove(fullpath));
-  ASSERT(srsFileSystem_Exists(fullpath) == false);
+  ASSERT(srsPath_Exists(fullpath) == false);
   ASSERT(srsPath_Remove(fullpath) == false);
 
   kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a");
   ASSERT(srsPath_Remove(fullpath));
-  ASSERT(srsFileSystem_Exists(fullpath) == false);
+  ASSERT(srsPath_Exists(fullpath) == false);
   ASSERT(srsPath_Remove(fullpath) == false);
   PASS();
 }
