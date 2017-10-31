@@ -544,7 +544,7 @@ bool srsPath_Move(const char *path, const char *newpath)
 }
 
 #define KIOKU_DIR_MAX_DEPTH 128
-bool srsFileSystem_Remove(const char *path)
+bool srsPath_Remove(const char *path)
 {
   bool result = false;
   if (path == NULL)

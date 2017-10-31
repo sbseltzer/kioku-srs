@@ -232,7 +232,7 @@ TEST test_file_manage(void) {
   ASSERT(srsPath_Move(NULL, "a") == false);
   ASSERT(srsPath_Move("a", NULL) == false);
   ASSERT(srsDir_Exists(NULL) == false);
-  ASSERT(srsFileSystem_Remove(NULL) == false);
+  ASSERT(srsPath_Remove(NULL) == false);
 
   const char *path = "a/b/c/a.txt";
   ASSERT(srsFileSystem_Exists(path) == false);
@@ -242,32 +242,32 @@ TEST test_file_manage(void) {
   ASSERT(srsDir_Exists(path) == false);
   ASSERT(srsFile_Create(path) == false);
 
-  ASSERT(srsFileSystem_Remove(path));
+  ASSERT(srsPath_Remove(path));
   ASSERT(srsFileSystem_Exists(path) == false);
-  ASSERT(srsFileSystem_Remove(path) == false);
+  ASSERT(srsPath_Remove(path) == false);
 
   ASSERT(srsFileSystem_Exists("a"));
   ASSERT(srsDir_Exists("a"));
-  ASSERT(srsFileSystem_Remove("a") == false);
+  ASSERT(srsPath_Remove("a") == false);
   ASSERT(srsFileSystem_Exists("a"));
 
-  ASSERT(srsFileSystem_Remove("a/b") == false);
+  ASSERT(srsPath_Remove("a/b") == false);
   ASSERT(srsFileSystem_Exists("a/b"));
   ASSERT(srsDir_Exists("a/b"));
 
   ASSERT(srsDir_Exists("a/b/c"));
-  ASSERT(srsFileSystem_Remove("a/b/c"));
+  ASSERT(srsPath_Remove("a/b/c"));
   ASSERT(srsFileSystem_Exists("a/b/c") == false);
   ASSERT(srsDir_Exists("a/b/c") == false);
-  ASSERT(srsFileSystem_Remove("a/b/c") == false);
+  ASSERT(srsPath_Remove("a/b/c") == false);
 
-  ASSERT(srsFileSystem_Remove("a/b"));
+  ASSERT(srsPath_Remove("a/b"));
   ASSERT(srsFileSystem_Exists("a/b") == false);
-  ASSERT(srsFileSystem_Remove("a/b") == false);
+  ASSERT(srsPath_Remove("a/b") == false);
 
-  ASSERT(srsFileSystem_Remove("a"));
+  ASSERT(srsPath_Remove("a"));
   ASSERT(srsFileSystem_Exists("a") == false);
-  ASSERT(srsFileSystem_Remove("a") == false);
+  ASSERT(srsPath_Remove("a") == false);
 
   /* Test a file-only rename */
   ASSERT(srsFile_Create(path));
@@ -296,10 +296,10 @@ TEST test_file_manage(void) {
   ASSERT(srsFileSystem_Exists(newpath) == false);
 
   /* Cleanup */
-  ASSERT(srsFileSystem_Remove(path));
-  ASSERT(srsFileSystem_Remove("a/b/d"));
-  ASSERT(srsFileSystem_Remove("a/b"));
-  ASSERT(srsFileSystem_Remove("a"));
+  ASSERT(srsPath_Remove(path));
+  ASSERT(srsPath_Remove("a/b/d"));
+  ASSERT(srsPath_Remove("a/b"));
+  ASSERT(srsPath_Remove("a"));
 
   char fullpath[255] = {0};
   kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b/c/a.txt");
@@ -307,23 +307,23 @@ TEST test_file_manage(void) {
   ASSERT(srsFile_Create(fullpath));
   ASSERT(srsFileSystem_Exists(fullpath));
   ASSERT(srsFile_Create(fullpath) == false);
-  ASSERT(srsFileSystem_Remove(fullpath));
+  ASSERT(srsPath_Remove(fullpath));
   ASSERT(srsFileSystem_Exists(fullpath) == false);
 
   kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b/c");
-  ASSERT(srsFileSystem_Remove(fullpath));
+  ASSERT(srsPath_Remove(fullpath));
   ASSERT(srsFileSystem_Exists(fullpath) == false);
-  ASSERT(srsFileSystem_Remove(fullpath) == false);
+  ASSERT(srsPath_Remove(fullpath) == false);
 
   kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b");
-  ASSERT(srsFileSystem_Remove(fullpath));
+  ASSERT(srsPath_Remove(fullpath));
   ASSERT(srsFileSystem_Exists(fullpath) == false);
-  ASSERT(srsFileSystem_Remove(fullpath) == false);
+  ASSERT(srsPath_Remove(fullpath) == false);
 
   kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a");
-  ASSERT(srsFileSystem_Remove(fullpath));
+  ASSERT(srsPath_Remove(fullpath));
   ASSERT(srsFileSystem_Exists(fullpath) == false);
-  ASSERT(srsFileSystem_Remove(fullpath) == false);
+  ASSERT(srsPath_Remove(fullpath) == false);
   PASS();
 }
 
@@ -394,7 +394,7 @@ TEST test_file_readlinenumber(void)
   printf("File content: %s"kiokuSTRING_LF, filebuf);
 
   const char *multilinefile = "./testlines";
-  srsFileSystem_Remove(multilinefile);
+  srsPath_Remove(multilinefile);
   ASSERT(srsFile_Create(multilinefile));
   ASSERT(srsFile_SetContent(multilinefile, filebuf));
   char linebuf[256] = {0};
@@ -419,7 +419,7 @@ TEST test_file_readlinenumber(void)
 
   /* Cleanup */
 
-  srsFileSystem_Remove(multilinefile);
+  srsPath_Remove(multilinefile);
   PASS();
 }
 
@@ -444,7 +444,7 @@ TEST test_file_io(void)
   const char *filepath = "a/test/file.txt";
   const char *content = "some text";
 
-  srsFileSystem_Remove(filepath);
+  srsPath_Remove(filepath);
 
   printf("\tTesting setcontent/getlen..."kiokuSTRING_LF);
   ASSERT(srsFile_SetContent(filepath, content) == false);
@@ -470,7 +470,7 @@ TEST test_file_io(void)
   int32_t upindex = -1;
   while ((upindex = kioku_path_up_index(filepathdup, upindex)) > -1)
   {
-    ASSERT(srsFileSystem_Remove(filepathdup));
+    ASSERT(srsPath_Remove(filepathdup));
     filepathdup[upindex] = '\0';
   }
   PASS();

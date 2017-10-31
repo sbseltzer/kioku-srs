@@ -148,7 +148,7 @@ kiokuAPI bool srsPath_Move(const char *path, const char *newpath);
  * @param[in] path Path to the file/dir to delete.
  * @return Whether the file/dir was deleted.
  */
-kiokuAPI bool srsFileSystem_Remove(const char *path);
+kiokuAPI bool srsPath_Remove(const char *path);
 
 /**
  * Check if a file/dir exists.
