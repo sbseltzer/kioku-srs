@@ -15,12 +15,12 @@
 /**
  * Format for writing dates
  */
-#define srsTIME_DATE_FORMAT "%Y-%m-%d"
+#define srsTIME_DATE_FORMAT "%Y-%m-%d %H:%M"
 
 /**
  * Format for reading dates
  */
-#define srsTIME_SCAN_FORMAT "%04u-%02u-%02u"
+#define srsTIME_SCAN_FORMAT "%04u-%02u-%02u %02u:%02u"
 
 /**
  * Maximum size for a time string.
@@ -37,10 +37,19 @@ typedef signed char srsTIME_STRING[srsTIME_STRING_SIZE];
  */
 typedef struct _srsTIME_s
 {
-  uint8_t day;
-  uint8_t month;
   uint16_t year;
+  uint8_t month;
+  uint8_t day;
+  uint8_t hour;
+  uint8_t minute;
 } srsTIME;
+
+typedef struct _srsSCHED_REP_s
+{
+  const char *algorithm;
+  const srsTIME last_repped;
+  const char *data;
+} srsSCHED_REP;
 
 /**
  * Converts from an @ref srsTIME struct to an @ref srsTIME_STRING.
@@ -59,6 +68,8 @@ kiokuAPI bool srsTime_ToString(const srsTIME time, srsTIME_STRING string);
  * @return Whether it was successful. If false, the contents of time are undefined.
  */
 kiokuAPI bool srsTime_FromString(const srsTIME_STRING string, srsTIME *time);
+
+kiokuAPI bool srsSchedule_CalculateNextTime(const srsTIME lastRep, uint8_t lastGrade);
 
 #endif /* _KIOKU_SCHEDULE_H */
 

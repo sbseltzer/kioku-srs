@@ -11,13 +11,17 @@ TEST TimeConvertsToAndFromString(void)
   ASSERT_FALSE(srsTime_FromString(timestr, NULL));
   ASSERT_FALSE(srsTime_FromString(NULL, NULL));
   const char *in = NULL;
-  in = "2017-10-31";
+  in = "2017-10-31 23:59";
   ASSERT(srsTime_FromString(in, &time));
   ASSERT_EQ(2017, time.year);
   ASSERT_EQ(10, time.month);
   ASSERT_EQ(31, time.day);
+  ASSERT_EQ(23, time.hour);
+  ASSERT_EQ(59, time.minute);
   ASSERT(srsTime_ToString(time, timestr));
   ASSERT_STR_EQ(in, timestr);
+  /** @todo Test out of range stuff */
+  /** @todo Test format mismatches */
   PASS();
 }
 
