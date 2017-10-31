@@ -85,10 +85,9 @@ if (LIBGIT2_FOUND)
    link_directories( ${LIBGIT2_LIBRARY_DIRS} )
    link_libraries( ${LIBGIT2_LIBRARIES} )
    list( APPEND KIOKU_LIBS ${LIBGIT2_LIBRARIES} )
-   if (NOT BUILD_SHARED_LIBS)
-      link_libraries( ${LIBGIT2_STATIC_LIBRARIES} )
-      list( APPEND KIOKU_LIBS ${LIBGIT2_STATIC_LIBRARIES} )
-   endif()
+   # In case the dependencies were build static, these will be needed, regardless of whether libkioku is static.
+   link_libraries( ${LIBGIT2_STATIC_LIBRARIES} )
+   list( APPEND KIOKU_LIBS ${LIBGIT2_STATIC_LIBRARIES} )
 endif()
 
 if (MSVC)
