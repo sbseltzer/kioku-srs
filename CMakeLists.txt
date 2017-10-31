@@ -122,7 +122,7 @@ endif()
 
 # libgit2 does this - should help with linking
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  if ("${KIOKU_LIBS}" MATCHES "*gcrypt*")
+  if ("${KIOKU_LIBS}" MATCHES "gcrypt")
     find_package(Libgcrypt)
     if(LIBGCRYPT_FOUND)
       STRING(REPLACE ";gcrypt" "" KIOKU_LIBS "${KIOKU_LIBS}")
