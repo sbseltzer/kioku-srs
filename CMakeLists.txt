@@ -115,7 +115,7 @@ if (Threads_FOUND)
 endif()
 
 find_package(LibCURL)
-PKG_CHECK_MODULES(CURL libcurl)
+#PKG_CHECK_MODULES(CURL libcurl)
 if (LIBCURL_FOUND)
    include_directories( ${LIBCURL_INCLUDE_DIR} )
    list( APPEND KIOKU_LIBS ${LIBCURL_LIBRARY} )
@@ -125,6 +125,7 @@ endif()
 # See how libssh2 gets it's crypto backend in extern/libssh2/src/CMakeLists.txt
 # This only seems to be necessary on macOS for some reason
 find_package(Libgcrypt)
+#PKG_CHECK_MODULES(LIBGCRYPT libgcrypt)
 if(LIBGCRYPT_FOUND)
    list( APPEND KIOKU_LIBS ${LIBGCRYPT_LIBRARIES} )
 endif()
