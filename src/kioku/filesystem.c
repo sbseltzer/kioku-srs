@@ -532,7 +532,7 @@ bool kioku_filesystem_create(const char *path)
   return (fp != NULL) && (fclose(fp) == 0);
 }
 
-bool kioku_filesystem_rename(const char *path, const char *newpath)
+bool srsFileSystem_Move(const char *path, const char *newpath)
 {
   bool result = false;
   if (path == NULL || newpath == NULL)

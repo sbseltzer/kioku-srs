@@ -228,9 +228,9 @@ TEST test_file_manage(void) {
   printf("Testing file management functions..."kiokuSTRING_LF);
   ASSERT(srsFileSystem_Exists(NULL) == false);
   ASSERT(kioku_filesystem_create(NULL) == false);
-  ASSERT(kioku_filesystem_rename(NULL, NULL) == false);
-  ASSERT(kioku_filesystem_rename(NULL, "a") == false);
-  ASSERT(kioku_filesystem_rename("a", NULL) == false);
+  ASSERT(srsFileSystem_Move(NULL, NULL) == false);
+  ASSERT(srsFileSystem_Move(NULL, "a") == false);
+  ASSERT(srsFileSystem_Move("a", NULL) == false);
   ASSERT(srsDir_Exists(NULL) == false);
   ASSERT(kioku_filesystem_delete(NULL) == false);
 
@@ -273,7 +273,7 @@ TEST test_file_manage(void) {
   ASSERT(kioku_filesystem_create(path));
   const char *newpath = "a/b/c/d.txt";
   ASSERT(srsFileSystem_Exists(newpath) == false);
-  ASSERT(kioku_filesystem_rename(path, newpath));
+  ASSERT(srsFileSystem_Move(path, newpath));
   ASSERT(srsFileSystem_Exists(path) == false);
   ASSERT(srsFileSystem_Exists(newpath));
 
@@ -282,7 +282,7 @@ TEST test_file_manage(void) {
   newpath = "a/b/d";
   ASSERT(srsFileSystem_Exists(path));
   ASSERT(srsFileSystem_Exists(newpath) == false);
-  ASSERT(kioku_filesystem_rename(path, newpath));
+  ASSERT(srsFileSystem_Move(path, newpath));
   ASSERT(srsFileSystem_Exists(path) == false);
   ASSERT(srsFileSystem_Exists(newpath));
 
@@ -291,7 +291,7 @@ TEST test_file_manage(void) {
   newpath = "a/b/c/d.txt";
   ASSERT(srsFileSystem_Exists(path));
   ASSERT(srsFileSystem_Exists(newpath) == false);
-  ASSERT(kioku_filesystem_rename(path, newpath) == false);
+  ASSERT(srsFileSystem_Move(path, newpath) == false);
   ASSERT(srsFileSystem_Exists(path));
   ASSERT(srsFileSystem_Exists(newpath) == false);
 
