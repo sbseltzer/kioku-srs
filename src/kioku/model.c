@@ -174,7 +174,7 @@ bool srsModel_Deck_Open(const char *path)
   int32_t needed = kioku_path_concat(concatpath, sizeof(concatpath), path, ".deck");
   assert(needed > 0);
   assert(needed <= sizeof(concatpath));
-  result = kioku_filesystem_exists(concatpath);
+  result = srsFile_Exists(concatpath);
   if (!result)
   {
     return result;

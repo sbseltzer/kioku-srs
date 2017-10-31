@@ -155,7 +155,14 @@ kiokuAPI bool kioku_filesystem_delete(const char *path);
  * @param[in] path Path to the file/dir to check.
  * @return Whether the file/dir exists.
  */
-kiokuAPI bool kioku_filesystem_exists(const char *path);
+kiokuAPI bool srsFileSystem_Exists(const char *path);
+
+/**
+ * Check if a file exists.
+ * @param[in] path Path to the file/dir to check.
+ * @return Whether the file exists.
+ */
+kiokuAPI bool srsFile_Exists(const char *path);
 
 /**
  * Check if path is an existing dir.

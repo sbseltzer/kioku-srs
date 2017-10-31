@@ -492,7 +492,7 @@ bool kioku_filesystem_create(const char *path)
   {
     return false;
   }
-  if (kioku_filesystem_exists(path))
+  if (srsFileSystem_Exists(path))
   {
     return false;
   }
@@ -510,7 +510,7 @@ bool kioku_filesystem_create(const char *path)
     {
       break;
     }
-    if (kioku_filesystem_exists(dupedpath))
+    if (srsFileSystem_Exists(dupedpath))
     {
       continue;
     }
@@ -551,7 +551,7 @@ bool kioku_filesystem_delete(const char *path)
   {
     return result;
   }
-  if (!kioku_filesystem_exists(path))
+  if (!srsFileSystem_Exists(path))
   {
     return result;
   }
@@ -566,7 +566,7 @@ bool kioku_filesystem_delete(const char *path)
   return result;
 }
 
-bool kioku_filesystem_exists(const char *path)
+bool srsFileSystem_Exists(const char *path)
 {
   bool result = false;
   if (path == NULL)
@@ -582,6 +582,32 @@ bool kioku_filesystem_exists(const char *path)
   return result;
 }
 
+/** @todo Add tests */
+bool srsFile_Exists(const char *path)
+{
+  bool result = false;
+  if (path == NULL)
+  {
+    return result;
+  }
+  if (!srsFileSystem_Exists(path))
+  {
+    return result;
+  }
+#ifdef kiokuOS_WINDOWS
+  /* https://stackoverflow.com/a/6218957 */
+  result = !(GetFileAttributes(path) & FILE_ATTRIBUTE_DIRECTORY);
+#else
+  /* https://stackoverflow.com/a/4553053 */
+  struct stat statbuf;
+  if (stat(path, &statbuf) == 0)
+  {
+    result = !S_ISDIR(statbuf.st_mode);
+  }
+#endif
+  return result;
+}
+
 bool srsDir_Exists(const char *path)
 {
   bool result = false;
@@ -589,7 +615,7 @@ bool srsDir_Exists(const char *path)
   {
     return result;
   }
-  if (!kioku_filesystem_exists(path))
+  if (!srsFileSystem_Exists(path))
   {
     return result;
   }
@@ -614,7 +640,7 @@ int32_t srsFile_GetLength(const char *filepath)
   {
     return result;
   }
-  if (!kioku_filesystem_exists(filepath))
+  if (!srsFileSystem_Exists(filepath))
   {
     return result;
   }
@@ -643,7 +669,7 @@ bool srsFile_SetContent(const char *filepath, const char *content)
   {
     return result;
   }
-  if (!kioku_filesystem_exists(filepath))
+  if (!srsFileSystem_Exists(filepath))
   {
     return result;
   }
@@ -676,7 +702,7 @@ bool srsFile_GetContent(const char *filepath, char *content_out, size_t count)
   {
     return result;
   }
-  if (!kioku_filesystem_exists(filepath))
+  if (!srsFileSystem_Exists(filepath))
   {
     return result;
   }
