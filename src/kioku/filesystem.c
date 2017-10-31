@@ -594,17 +594,7 @@ bool srsFile_Exists(const char *path)
   {
     return result;
   }
-#ifdef kiokuOS_WINDOWS
-  /* https://stackoverflow.com/a/6218957 */
-  result = !(GetFileAttributes(path) & FILE_ATTRIBUTE_DIRECTORY);
-#else
-  /* https://stackoverflow.com/a/4553053 */
-  struct stat statbuf;
-  if (stat(path, &statbuf) == 0)
-  {
-    result = !S_ISDIR(statbuf.st_mode);
-  }
-#endif
+  result = !srsDir_Exists(path);
   return result;
 }
 
