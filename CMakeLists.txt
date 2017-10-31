@@ -221,6 +221,7 @@ add_library( kioku ${LIBRARY_TYPE}
                    src/kioku/log.c
                    src/kioku/filesystem.c
                    src/kioku/git.c
+                   src/kioku/schedule.c
                    src/kioku/model.c
                    src/kioku/controller.c
                    src/kioku/rest.c
@@ -262,4 +263,5 @@ if (BUILD_TESTS)
    add_test(NAME TestFileSystem COMMAND filesystem)
    add_test(NAME TestGit COMMAND git)
    add_test(NAME TestModel COMMAND model)
+   add_test(NAME TestSchedule COMMAND schedule)
 endif()

@@ -9,5 +9,6 @@ endmacro(make_test)
 make_test(filesystem filesystem.c)
 make_test(git git.c)
 make_test(model model.c)
+make_test(schedule schedule.c)
 
 add_definitions(-DBUILDDIR="${CMAKE_CURRENT_BINARY_DIR}")
