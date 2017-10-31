@@ -13,8 +13,6 @@ If you are experienced in doing this and see it as a kluge, please, for the love
 - Apple platforms always use static libraries. This is the recommended configuration. I'm not too familiar with why that is, but my understanding is it doesn't deal with shared libraries in the same way Windows/Linux does, and for some reason this can make them more complex to deploy.
 - Linux can be built as dynamic or static. Hooray!
 
-Static builds make the Kioku library quite large. On my Ubuntu 14.04 x64 it's about 3MB. Although I haven't the data to back it up, it's probably not much larger than the cumulative of libgit2, libssh2, and libkioku as shared libraries. This is already a (mostly) necessary evil on macOS platforms.
-
 ## Getting started
 
 Start by cloning. This should work on Unix-like systems and Git Bash for Windows. All required dependencies are submodules, and will be included when you clone unless you forget the `--recursive` flag.
