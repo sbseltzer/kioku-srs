@@ -2,17 +2,6 @@
 
 This project uses CMake. This is for portability reasons. You will need it in order to build.
 
-## Build Strategy
-
-I'll be the first to admit that this build system is messy and inelegant, but it's easy to use and it works, and that's what's important. Part of this comes from my inexperience with leveraging CMake. Another part of this comes from my inexperience building a library with such complex dependencies. And finally, the last part comes from my desire to keep things portable and relatively consistent, which sometimes means not having the most optimal solution for each platform.
-
-If you are experienced in doing this and see it as a kluge, please, for the love of all that is good, tell me what I'm doing wrong and how I can improve it. If you're an especially kind person, submit a PR.
-
-### Dynamic vs Static Libraries
-- Windows always uses DLLs moved to the same directory as their executable. I have had a great deal of trouble linking them to Kioku statically.
-- Apple platforms always use static libraries. This is the recommended configuration. I'm not too familiar with why that is, but my understanding is it doesn't deal with shared libraries in the same way Windows/Linux does, and for some reason this can make them more complex to deploy.
-- Linux can be built as dynamic or static. Hooray!
-
 ## Getting started
 
 Start by cloning. This should work on Unix-like systems and Git Bash for Windows. All required dependencies are submodules, and will be included when you clone unless you forget the `--recursive` flag.
@@ -20,6 +9,12 @@ Start by cloning. This should work on Unix-like systems and Git Bash for Windows
 git clone --recursive https://github.com/seltzy/kioku-srs.git
 cd kioku-srs
 ```
+
+### Dynamic vs Static Libraries
+
+- Windows always uses DLLs moved to the same directory as their executable. I have had a great deal of trouble linking them to Kioku statically.
+- Apple platforms always use static libraries. This is the recommended configuration. I'm not too familiar with why that is, but my understanding is it doesn't deal with shared libraries in the same way Windows/Linux does, and for some reason this can make them more complex to deploy.
+- Linux can be built as dynamic or static. Hooray!
 
 ## Build Scripts for Linux, OSX, and Windows
 
@@ -75,14 +70,20 @@ For [archived releases of Visual Studio](https://my.visualstudio.com/downloads/f
 
 I had a lot of problems linking which stemmed from being uninformed - post-10.04 OSX use a proprietary security framework instead of OpenSSL (I think as a knee-jerk reaction to the Heart Bleed exploit) whose symbols I mistook for OpenSSL. For a while I was trying to redetect the libgit2 dependencies and wedge them into my CMakeLists, but this is the wrong way to do things. I think I'm supposed to ignore what those might be and instead utilize pkgconfig to do the heavy lifting. Haven't 100% figured out how to do that yet.
 
+## Build Strategy
+
+I'll be the first to admit that this build system needs a lot of work. It's easy to use and it works, which is what's truly important. If you look at the source of [CMakeLists.txt](CMakeLists.txt) you'll see it's not pretty. Part of this comes from my inexperience with leveraging CMake. Another part of this comes from my inexperience building a library with such complex dependencies. And finally, the last part comes from my desire to keep things portable and relatively consistent, which sometimes means not having the most optimal solution for each platform.
+
+If you are experienced in doing this and see it as a kluge, please, for the love of all that is good, tell me what I'm doing wrong and how I can improve it. If you're an especially kind person, submit a PR.
+
 # Possible Future Dependencies
 
 Here are other libraries I'm thinking of using in the future. Sorted by use-case. This information isn't really relevant to building, but I can't think of a better place to keep this list right now.
 
 #### Backend
 - [curl](https://github.com/curl/curl) - This one should be obvious.
-- [mbedtls](https://github.com/ARMmbed/mbedtls) - Appears to be the smallest, most portable SSL implementation, which would allow for HTTPS on mongoose, but libgit2 support is sparse.
 - [openssl](https://github.com/openssl/openssl) - More common/accepted. This is currently the only supported libgit2 SSL implementation (though there's a feature in progress).
+- [mbedtls](https://github.com/ARMmbed/mbedtls) - Appears to be the smallest, most portable SSL implementation, which would allow for HTTPS on mongoose, but libgit2 support is sparse.
 - [slre](https://github.com/cesanta/slre) - Super Light RegEx library. Portable. Gives a subset of Perl-style regex in C.
 - [autoupdate](https://github.com/pmq20/libautoupdate) - A cross-platform in-place application updater in C. Mostly useful for inspiration.
 - [sundown](https://github.com/vmg/sundown) - A portable, secure markdown processing library in C.

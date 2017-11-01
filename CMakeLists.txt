@@ -78,9 +78,6 @@ if (LIBGIT2_FOUND)
    list( APPEND KIOKU_LIBS ${LIBGIT2_LIBRARIES} )
    # In case the dependencies were build static, these will be needed, regardless of whether libkioku is static.
    list( APPEND KIOKU_LIBS ${LIBGIT2_STATIC_LIBRARIES} )
-   # This should help link on odd platforms like OSX
-   list(APPEND KIOKU_LIBS ${LIBGIT2_LDFLAGS_OTHER})
-   list(APPEND KIOKU_LIBS ${LIBGIT2_STATIC_LDFLAGS_OTHER})
 endif()
 
 if (MSVC)
@@ -128,6 +125,9 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
       list(APPEND KIOKU_LIBS ${LIBGCRYPT_LIBRARIES})
     endif()
   endif()
+	FIND_PACKAGE(Security)
+	FIND_PACKAGE(CoreFoundation REQUIRED)
+  link_libraries(${COREFOUNDATION_DIRS})
 ELSE()
   PKG_CHECK_MODULES(OPENSSL openssl)
   if (OPENSSL_FOUND)
@@ -136,6 +136,21 @@ ELSE()
      list( APPEND KIOKU_LIBS ${OPENSSL_SSL_LIBRARY} )
      list( APPEND KIOKU_LIBS ${OPENSSL_CRYPTO_LIBRARY} )
   endif()
+ENDIF()
+
+IF (SECURITY_FOUND)
+  CHECK_LIBRARY_EXISTS("${SECURITY_DIRS}" SSLCreateContext "Security/SecureTransport.h" HAVE_NEWER_SECURITY)
+  IF (HAVE_NEWER_SECURITY)
+    MESSAGE("-- Found Security ${SECURITY_DIRS}")
+	  link_libraries(${SECURITY_DIRS})
+  ELSE()
+    MESSAGE("-- Security framework is too old, falling back to OpenSSL")
+    find_package(OpenSSL)
+    IF (OPENSSL_FOUND)
+	     LIST(APPEND KIOKU_INCLUDES ${OPENSSL_INCLUDE_DIR})
+	     LIST(APPEND KIOKU_LIBS ${OPENSSL_LIBRARIES})
+    ENDIF()
+  ENDIF()
 ENDIF()
 
 # These extra link directories act as a fallback for our dependencies that are compiled from source.
@@ -210,6 +225,7 @@ add_library( kioku ${LIBRARY_TYPE}
                    src/kioku/filesystem.c
                    src/kioku/git.c
                    src/kioku/schedule.c
+                   src/kioku/string.c
                    src/kioku/model.c
                    src/kioku/controller.c
                    src/kioku/rest.c
@@ -252,4 +268,5 @@ if (BUILD_TESTS)
    add_test(NAME TestGit COMMAND git)
    add_test(NAME TestModel COMMAND model)
    add_test(NAME TestSchedule COMMAND schedule)
+   add_test(NAME TestString COMMAND string)
 endif()

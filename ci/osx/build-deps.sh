@@ -28,7 +28,7 @@ cd build && make clean && rm -rf *
 cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=OFF
 cmake --build . --config $build_conf
 cmake --build . --target install
-ls $install_prefix
+ls $install_prefix/lib
 
 # BUILD LIBGIT2
 cd $build_dir/extern/libgit2
@@ -42,13 +42,13 @@ cd build && rm -rf *
 PKG_CONFIG_PATH=$install_prefix/lib/pkgconfig cmake .. -G"$build_type" $fpic_flags -DCMAKE_INSTALL_PREFIX:PATH=$install_prefix -DBUILD_SHARED_LIBS=OFF -DBUILD_CLAR=OFF
 cmake --build . --config $build_conf
 cmake --build . --target install
-ls $install_prefix
+ls $install_prefix/lib
 
 # Check whether the libraries were built
-if ! test -f $build_dir/extern/libssh2/build/src/lib/libssh2.$lib_ext ; then
+if ! test -f $install_prefix/lib/libssh2.$lib_ext ; then
     printf '%s\n' 'Build: Failed to build libssh2!' >&2
     result=1
-elif ! test -f $build_dir/extern/libgit2/build/$build_conf/libgit2.$lib_ext ; then
+elif ! test -f $install_prefix/lib/libgit2.$lib_ext ; then
     printf '%s\n' 'Build: Failed to build libgit2!' >&2
     result=1
 fi

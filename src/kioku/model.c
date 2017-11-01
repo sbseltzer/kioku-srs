@@ -1,8 +1,9 @@
 #include "kioku/model.h"
 #include "kioku/git.h"
 #include "kioku/filesystem.h"
+#include "kioku/log.h"
+#include "kioku/string.h"
 
-#include "git2.h"
 #include "parson.h"
 #include "hashmap.h"
 #include "utf8.h"
@@ -54,99 +55,44 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   }
 
   /* Get content from .at file */
-  char atindex[16] = {0};
-  result = srsFile_GetContent(file_path, atindex, sizeof(atindex));
-  srsLOG_NOTIFY(".at = %s", atindex);
+  char atindex_string[16] = {0};
+  result = srsFile_GetContent(file_path, atindex_string, sizeof(atindex_string));
+  srsLOG_NOTIFY(".at = %s", atindex_string);
   if (!result)
   {
     return result;
   }
+
   /* Convert .at content to integer */
-  int64_t index = 0;
-  char *end = NULL;
-  /** @todo From this point forward the code gets aggressively error-checky, and a lot of it has to do with integer conversion. I think this indicates a need for a string module with this functionality being the first. See if this can be simplified without sacrificing safety. */
-  if (sizeof(index) >= sizeof(long long int))
-  {
-    index = strtoll(atindex, &end, 10);
-    result = (index != LLONG_MIN) && (index != LLONG_MAX);
-    if (!result)
-    {
-      srsLOG_ERROR("strtoll produced an out of range value!"kiokuSTRING_LF);
-    }
-  }
-  else if (sizeof(index) >= sizeof(long int))
-  {
-    index = strtol(atindex, &end, 10);
-    /* Check range */
-    result = (index != LONG_MIN) && (index != LONG_MAX);
-    if (!result)
-    {
-      srsLOG_ERROR("strtol produced an out of range value!"kiokuSTRING_LF);
-    }
-  }
-  else
-  {
-    srsLOG_ERROR("Something about integer sizes with strtol/strtoll is incompatible (trying to store %zu or %zu in %zu)!"kiokuSTRING_LF, sizeof(long), sizeof(long long), sizeof(index));
-    result = false;
-  }
+  int32_t atindex = 0;
+  result = srsString_ToU32(atindex_string, &atindex);
   if (!result)
   {
     return result;
   }
-  if (index > INT32_MAX || index < 1)
+  if (atindex < 1)
   {
-    srsLOG_ERROR("Line number is out of range for line search (%d)"kiokuSTRING_LF, (int32_t) index);
+    srsLOG_ERROR("Line number is out of range for line search (%d)", atindex);
     return false;
-  }
-  result = (end != NULL);
-  if (!result)
-  {
-    srsLOG_ERROR("Result of strtol/strtoll was invalid: end == NULL"kiokuSTRING_LF);
-    return result;
-  }
-  result = (index >= 0);
-  if (!result)
-  {
-    srsLOG_ERROR("Result of strtol/strtoll was invalid: index = %d"kiokuSTRING_LF, (int32_t)index);
-    return result;
-  }
-  /* Check the result of integer conversion */
-  /** @todo Figure out what counts as a failure state */
-  if ((*atindex == '\0') && (*end != '\0'))
-  {
-    /* Entire string is valid */
-    result = true;
-  }
-  else if ((index == 0) && (end == atindex))
-  {
-    /* No digits */
-    srsLOG_ERROR("Result of strtol/strtoll had no digits"kiokuSTRING_LF);
-    result = false;
-  }
-  else if (*end != '\0')
-  {
-    /* Stopped at an invalid character */
-    srsLOG_ERROR("Result of strtol/strtoll stopped at invalid character %c"kiokuSTRING_LF, *end);
-    result = false;
   }
 
   int32_t schedlen = kioku_path_concat(file_path, sizeof(file_path), deck_path, ".schedule");
   result = ((schedlen > 0) && (schedlen < sizeof(file_path)));
   if (!result)
   {
-    srsLOG_ERROR("Schedule file path name length out of range: %d"kiokuSTRING_LF, schedlen);
+    srsLOG_ERROR("Schedule file path name length out of range: %d", schedlen);
     return result;
   }
   char linedata[srsMODEL_CARD_ID_MAX] = {0};
-  int32_t linelen = srsFile_ReadLineByNumber(file_path, (uint32_t)index, linedata, sizeof(linedata));
+  int32_t linelen = srsFile_ReadLineByNumber(file_path, (uint32_t)atindex, linedata, sizeof(linedata));
   if (linelen < 0)
   {
-    srsLOG_ERROR("%ld line invalid"kiokuSTRING_LF, (int32_t)index);
+    srsLOG_ERROR("%ld line invalid", atindex);
   }
-  srsLOG_NOTIFY("%ld line: %s"kiokuSTRING_LF, (int32_t)index, linedata);
+  srsLOG_NOTIFY("%ld line: %s", atindex, linedata);
   if (card_id_buf_size < linelen + 1)
   {
-    srsLOG_ERROR("Insufficient string size: %zu < %zu"kiokuSTRING_LF, card_id_buf_size, linelen);
+    srsLOG_ERROR("Insufficient string size: %zu < %zu", card_id_buf_size, linelen);
     return false;
   }
   /** @todo Should I check srsMODEL_CARD_ID_MAX agains the card_id_buf_size? Does it make sense to let the user choose something larger? */
