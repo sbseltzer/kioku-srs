@@ -9,9 +9,8 @@
 #ifndef _KIOKU_MODEL_H
 #define _KIOKU_MODEL_H
 
+#include "kioku/decl.h"
 #include "kioku/types.h"
-#include "kioku/log.h"
-#include "kioku/filesystem.h"
 
 #ifndef KIOKU_MODEL_USERLIST_NAME
 #define KIOKU_MODEL_USERLIST_NAME "users.json"

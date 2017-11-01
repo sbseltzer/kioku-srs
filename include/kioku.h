@@ -27,6 +27,7 @@
 #include "kioku/filesystem.h"
 #include "kioku/git.h"
 #include "kioku/schedule.h"
+#include "kioku/string.h"
 #include "kioku/model.h"
 #include "kioku/controller.h"
 #include "kioku/server.h"
