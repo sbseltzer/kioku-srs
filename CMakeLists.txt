@@ -78,9 +78,6 @@ if (LIBGIT2_FOUND)
    list( APPEND KIOKU_LIBS ${LIBGIT2_LIBRARIES} )
    # In case the dependencies were build static, these will be needed, regardless of whether libkioku is static.
    list( APPEND KIOKU_LIBS ${LIBGIT2_STATIC_LIBRARIES} )
-   # This should help link on odd platforms like OSX
-   list(APPEND KIOKU_LIBS ${LIBGIT2_LDFLAGS_OTHER})
-   list(APPEND KIOKU_LIBS ${LIBGIT2_STATIC_LDFLAGS_OTHER})
 endif()
 
 if (MSVC)
