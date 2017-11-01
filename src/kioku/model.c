@@ -1,7 +1,5 @@
-#include "kioku/decl.h"
-#include "kioku/types.h"
-#include "kioku/git.h"
 #include "kioku/model.h"
+#include "kioku/git.h"
 #include "kioku/filesystem.h"
 
 #include "git2.h"
