@@ -75,7 +75,7 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   }
   if (atindex < 1)
   {
-    srsLOG_ERROR("Line number is out of range for line search (%d)"kiokuSTRING_LF, atindex);
+    srsLOG_ERROR("Line number is out of range for line search (%d)", atindex);
     return false;
   }
 
@@ -83,19 +83,19 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   result = ((schedlen > 0) && (schedlen < sizeof(file_path)));
   if (!result)
   {
-    srsLOG_ERROR("Schedule file path name length out of range: %d"kiokuSTRING_LF, schedlen);
+    srsLOG_ERROR("Schedule file path name length out of range: %d", schedlen);
     return result;
   }
   char linedata[srsMODEL_CARD_ID_MAX] = {0};
   int32_t linelen = srsFile_ReadLineByNumber(file_path, (uint32_t)atindex, linedata, sizeof(linedata));
   if (linelen < 0)
   {
-    srsLOG_ERROR("%ld line invalid"kiokuSTRING_LF, atindex);
+    srsLOG_ERROR("%ld line invalid", atindex);
   }
-  srsLOG_NOTIFY("%ld line: %s"kiokuSTRING_LF, atindex, linedata);
+  srsLOG_NOTIFY("%ld line: %s", atindex, linedata);
   if (card_id_buf_size < linelen + 1)
   {
-    srsLOG_ERROR("Insufficient string size: %zu < %zu"kiokuSTRING_LF, card_id_buf_size, linelen);
+    srsLOG_ERROR("Insufficient string size: %zu < %zu", card_id_buf_size, linelen);
     return false;
   }
   /** @todo Should I check srsMODEL_CARD_ID_MAX agains the card_id_buf_size? Does it make sense to let the user choose something larger? */
