@@ -10,6 +10,12 @@ git clone --recursive https://github.com/seltzy/kioku-srs.git
 cd kioku-srs
 ```
 
+### Dynamic vs Static Libraries
+
+- Windows always uses DLLs moved to the same directory as their executable. I have had a great deal of trouble linking them to Kioku statically.
+- Apple platforms always use static libraries. This is the recommended configuration. I'm not too familiar with why that is, but my understanding is it doesn't deal with shared libraries in the same way Windows/Linux does, and for some reason this can make them more complex to deploy.
+- Linux can be built as dynamic or static. Hooray!
+
 ## Build Scripts for Linux, OSX, and Windows
 
 Here's how to build in Unix-like environements. This assumes you have `git` and `cmake` installed and in your `PATH`.
@@ -69,11 +75,6 @@ I had a lot of problems linking which stemmed from being uninformed - post-10.04
 I'll be the first to admit that this build system needs a lot of work. It's easy to use and it works, which is what's truly important. If you look at the source of [CMakeLists.txt](CMakeLists.txt) you'll see it's not pretty. Part of this comes from my inexperience with leveraging CMake. Another part of this comes from my inexperience building a library with such complex dependencies. And finally, the last part comes from my desire to keep things portable and relatively consistent, which sometimes means not having the most optimal solution for each platform.
 
 If you are experienced in doing this and see it as a kluge, please, for the love of all that is good, tell me what I'm doing wrong and how I can improve it. If you're an especially kind person, submit a PR.
-
-### Dynamic vs Static Libraries
-- Windows always uses DLLs moved to the same directory as their executable. I have had a great deal of trouble linking them to Kioku statically.
-- Apple platforms always use static libraries. This is the recommended configuration. I'm not too familiar with why that is, but my understanding is it doesn't deal with shared libraries in the same way Windows/Linux does, and for some reason this can make them more complex to deploy.
-- Linux can be built as dynamic or static. Hooray!
 
 # Possible Future Dependencies
 
