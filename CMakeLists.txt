@@ -130,7 +130,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   endif()
 	FIND_PACKAGE(Security)
 	FIND_PACKAGE(CoreFoundation REQUIRED)
-  link_directories(COREFOUNDATION_DIRS);
+  link_directories(COREFOUNDATION_DIRS)
 ELSE()
   PKG_CHECK_MODULES(OPENSSL openssl)
   if (OPENSSL_FOUND)
