@@ -239,6 +239,11 @@ TEST test_file_manage(void) {
   ASSERT_FALSE(srsPath_Move("a", NULL));
   ASSERT_FALSE(srsPath_Remove(NULL));
 
+  srsPath_Remove("a/b/c/d.txt");
+  srsPath_Remove("a/b/c");
+  srsPath_Remove("a/b");
+  srsPath_Remove("a");
+
   /* Existence/creation/removal of dirs */
   partial_path = "a/b/";
   ASSERT_FALSE(srsFile_Create(partial_path));
