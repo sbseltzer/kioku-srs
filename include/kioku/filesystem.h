@@ -201,7 +201,13 @@ kiokuAPI bool srsFile_SetContent(const char *filepath, const char *content);
  */
 kiokuAPI bool srsFile_GetContent(const char *filepath, char *content_out, size_t count);
 
-kiokuAPI FILE *kioku_filesystem_open(const char *path, const char *mode);
+/**
+ * Wrapper for fopen.
+ * @param[in] filepath Path to the file.
+ * @param[in] mode File descriptor mode. Accepts anything that fopen would.
+ * @return Whether successful.
+ */
+kiokuAPI FILE *srsFile_Open(const char *path, const char *mode);
 
 #ifndef srsFILESYSTEM_DIRSTACK_SIZE
 #define srsFILESYSTEM_DIRSTACK_SIZE 16

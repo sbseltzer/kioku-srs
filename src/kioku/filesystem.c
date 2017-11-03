@@ -189,7 +189,7 @@ bool srsDir_PopCWD(char **popped)
 
 /** @todo Perhaps have a method called by an init that dynamically finds a "true" max path length */
 
-FILE *kioku_filesystem_open(const char *path, const char *mode)
+FILE *srsFile_Open(const char *path, const char *mode)
 {
 #ifdef kiokuOS_WINDOWS
   FILE *fp = NULL;
@@ -679,7 +679,7 @@ int32_t srsFile_GetLength(const char *filepath)
   {
     return result;
   }
-  FILE *fp = kioku_filesystem_open(filepath, "r");
+  FILE *fp = srsFile_Open(filepath, "r");
   if (fp != NULL)
   {
     fseek(fp, 0, SEEK_END);
@@ -708,7 +708,7 @@ bool srsFile_SetContent(const char *filepath, const char *content)
   {
     return result;
   }
-  FILE *fp = kioku_filesystem_open(filepath, "w");
+  FILE *fp = srsFile_Open(filepath, "w");
   if (fp == NULL)
   {
     return result;
@@ -741,7 +741,7 @@ bool srsFile_GetContent(const char *filepath, char *content_out, size_t count)
   {
     return result;
   }
-  FILE *fp = kioku_filesystem_open(filepath, "r");
+  FILE *fp = srsFile_Open(filepath, "r");
   if (fp == NULL)
   {
     return result;
@@ -774,7 +774,7 @@ int32_t srsFile_ReadLineByNumber(const char *path, uint32_t linenum, char *lineb
     goto cleanup;
   }
   /* Attempt to open file */
-  fp = kioku_filesystem_open(path, "r");
+  fp = srsFile_Open(path, "r");
   /* Must be valid file */
   if (fp == NULL)
   {
