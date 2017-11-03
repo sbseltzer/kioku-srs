@@ -12,6 +12,7 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <limits.h>
+#include <stddef.h> /* size_t */
 
 #endif /* _KIOKU_TYPES_H */
 
