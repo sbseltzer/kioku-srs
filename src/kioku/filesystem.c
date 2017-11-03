@@ -512,18 +512,15 @@ bool srsDir_Create(const char *path)
     {
       next_separator++;
     }
-    if (!srsPath_Exists(create_dir))
-    {
-      char separator_character = *next_separator;
-      *next_separator = '\0';
+    char separator_character = *next_separator;
+    *next_separator = '\0';
 #ifdef kiokuOS_WINDOWS
-      ok = _mkdir(create_dir) == 0;
+    ok = _mkdir(create_dir) == 0;
 #else
-      ok = mkdir(create_dir, 0700) == 0;
+    ok = mkdir(create_dir, 0700) == 0;
 #endif
-      /* We don't do anything with ok for now. If we break the loop here we won't get to attempt all the directories we need to. */
-      *next_separator = separator_character;
-    }
+    /* We don't do anything with ok for now. If we break the loop here we won't get to attempt all the directories we need to. */
+    *next_separator = separator_character;
     next_separator++;
   }
   free(create_dir);
