@@ -129,8 +129,14 @@ kiokuAPI const char *kioku_get_home_directory();
 kiokuAPI const char *kioku_get_user_directory(const char *username);
 
 /**
+ * Create an empty directory along with leading parent directories if necessary.
+ * @param[in] path Path to the dir to create.
+ * @return Whether the path and preceding directories could be created.
+ */
+kiokuAPI bool srsDir_Create(const char *path);
+
+/**
  * Create an empty file along with leading parent directories if necessary.
- * Because git doesn't see directories until there are files in them, why should the filesystem module?
  * @param[in] path Path to the file to create.
  * @return Whether the path and preceding directories could be created.
  */

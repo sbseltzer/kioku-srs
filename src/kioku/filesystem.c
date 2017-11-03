@@ -486,49 +486,90 @@ int32_t kioku_path_up_index(const char *path, int32_t start_index)
   return result;
 }
 
-bool srsFile_Create(const char *path)
+/**
+ * Get the path to the directory where a Kioku user's collection is stored.
+ * @param[in] username The keyname of the user to get the path for.
+ * @return The stored path to their directory, which may or may not exist.
+ */
+bool srsDir_Create(const char *path)
 {
   if (path == NULL)
   {
     return false;
   }
+  char *create_dir = strdup(path);
+  if (create_dir == NULL)
+  {
+    return false;
+  }
+  char *next_separator = create_dir;
+  bool ok = false;
+  while ((next_separator != NULL) && (*next_separator != '\0'))
+  {
+    while ((*next_separator != '/') &&  /* Stop at the first '/' */
+           (*next_separator != '\\') && /* Or stop at the first '\\' */
+           (*next_separator != '\0') )  /* Or stop at the first null terminator */
+    {
+      next_separator++;
+    }
+    if (!srsPath_Exists(create_dir))
+    {
+      char separator_character = *next_separator;
+      *next_separator = '\0';
+#ifdef kiokuOS_WINDOWS
+      ok = _mkdir(create_dir) == 0;
+#else
+      ok = mkdir(create_dir, 0700) == 0;
+#endif
+      /* We don't do anything with ok for now. If we break the loop here we won't get to attempt all the directories we need to. */
+      *next_separator = separator_character;
+    }
+    next_separator++;
+  }
+  free(create_dir);
+  return ok;
+}
+
+/**
+ * Create an empty directory along with leading parent directories if necessary.
+ * @param[in] path Path to the dir to create.
+ * @return Whether the path and preceding directories could be created.
+ */
+bool srsFile_Create(const char *path)
+{
+  /* Cannot create a NULL path */
+  if (path == NULL)
+  {
+    return false;
+  }
+  /* Cannot create something that already exists */
   if (srsPath_Exists(path))
   {
     return false;
   }
-  /* Do not allow creating an empty directory */
+  /* This function is not for creating an empty directory */
   if (path[strlen(path)] == '/')
   {
     return false;
   }
-  char *dupedpath = strdup(path);
-  char *found = dupedpath;
-  while (found != NULL)
+  /* Calculate path to the parent dir of the new file */
+  /** @todo Consider moving this functionality to an srsPath_GetParentDir method */
+  char *create_dir = strdup(path);
+  size_t path_length = strlen(create_dir);
+  char *end_of_dirs = create_dir + path_length;
+  while (( end_of_dirs > create_dir)  && /* Do not iterate beyond the start of the path */
+         (*end_of_dirs != '/')  && /* Stop at the first '/' */
+         (*end_of_dirs != '\\') )  /* Or stop at the first '\\' */
   {
-    found = strchr(found, '/');
-    if (found == NULL)
-    {
-      break;
-    }
-    if (srsPath_Exists(dupedpath))
-    {
-      continue;
-    }
-    char oldval = found[1];
-    found[1] = 0;
-#ifdef kiokuOS_WINDOWS
-    bool ok = _mkdir(dupedpath) == 0;
-#else
-    bool ok = mkdir(dupedpath, 0700) == 0;
-#endif
-    /* We don't do anything with ok for now. If we break the loop here we won't get to attempt all the directories we need to. */
-    found[1] = oldval;
-    found++;
+    end_of_dirs--;
   }
-  free(dupedpath);
-  /* Creating file */
-
-  FILE *fp = kioku_filesystem_open(path, "w");
+  *end_of_dirs = '\0';
+  /* Create the parent dir */
+  bool ok = srsDir_Create(create_dir);
+  free(create_dir);
+  /* Create the file */
+  FILE *fp = srsFile_Open(path, "w");
+  /* Return whether successful */
   return (fp != NULL) && (fclose(fp) == 0);
 }
 
