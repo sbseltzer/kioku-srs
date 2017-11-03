@@ -566,15 +566,6 @@ TEST TestSetGetCWD(void)
   char start_path[kiokuPATH_MAX] = {0};
   char system_cwd[kiokuPATH_MAX] = {0};
 
-  const char *dirs[] = {
-    "./a",
-    "./a/b",
-    "./a/b/c",
-    "./a/b/d",
-    "./a/b/e",
-    "./a/b/e/f"
-  };
-
   /* Try getting the CWD and check it against the low-level system CWD */
   ASSERT(srsDir_GetSystemCWD(system_cwd, sizeof(system_cwd)));
   srsLOG_NOTIFY("System CWD: %s", system_cwd);
@@ -599,10 +590,46 @@ TEST TestSetGetCWD(void)
 TEST TestPushPopCWD(void)
 {
   srsLOG_NOTIFY("Testing dir traversal");
+  const char *dirs[] = {
+    "./a",
+    "./a/b",
+    "./a/b/c",
+    "./a/b/d",
+    "./a/b/e",
+    "./a/b/e/f"
+  };
   char start_path[kiokuPATH_MAX] = {0};
   char path[kiokuPATH_MAX] = {0};
   const char *cwd = NULL;
   int32_t up_index = -1;
+
+  ASSERT_FALSE(srsDir_PushCWD(NULL, NULL));
+  ASSERT_FALSE(srsDir_PopCWD(NULL));
+
+  /* Clean up directories from previous tests */
+  size_t i = 0;
+  for (i = sizeof(dirs) / sizeof(dirs[0]); i >= 0; i--)
+  {
+    srsPath_Remove(dirs[i]);
+  }
+
+  cwd = srsDir_GetCWD();
+  ASSERT(cwd != NULL);
+  strcpy(start_path, cwd);
+  for (i = 0; i < sizeof(dirs) / sizeof(dirs[0]); i++)
+  {
+    ASSERT(srsDir_Create(dirs[i]));
+    const char *newdir = NULL;
+    ASSERT(newdir = srsDir_PushCWD(dirs[i], NULL));
+    cwd = srsDir_GetCWD();
+    ASSERT_STR_EQ(cwd, newdir);
+    ASSERT_STR_EQ(cwd, dirs[i]);
+    ASSERT(srsDir_PopCWD(NULL));
+    cwd = srsDir_GetCWD();
+    ASSERT_FALSE(strcmp(cwd, dirs[i]) == 0);
+    ASSERT_STR_EQ(cwd, newdir);
+    ASSERT_STR_EQ(cwd, start_path);
+  }
 
   /* Test basic getting of CWD */
   {
