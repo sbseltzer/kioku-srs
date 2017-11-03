@@ -500,6 +500,7 @@ bool srsDir_Create(const char *path)
   char *create_dir = strdup(path);
   if (create_dir == NULL)
   {
+    srsLOG_ERROR("Failed to duplicate string!");
     return false;
   }
   char *next_separator = create_dir;
