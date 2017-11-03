@@ -137,6 +137,12 @@ const char *srsDir_PushCWD(const char *path, char **lost)
   return cwd;
 }
 
+/**
+ * Pop the Current Working Directory (CWD) from the Directory Stack, changing to the new top CWD if available.
+ * If the previous new top is no longer valid, this function will repeat until either a valid one is found, or no CWDs are left on the stack.
+ * @param[out] popped A place to store the null-terminated string of the popped CWD. If non-NULL, it will not be freed and it is up to the user to do so. Otherwise it will be automatically freed.
+ * @return Whether an entry was popped.
+ */
 bool srsDir_PopCWD(char **popped)
 {
   char *pop_me = NULL;
