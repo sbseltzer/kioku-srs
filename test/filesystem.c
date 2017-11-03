@@ -555,10 +555,46 @@ TEST test_fullpath(void)
   /* ASSERT(); */
 }
 
-TEST test_dir_traversal(void)
+TEST TestSetGetCWD(void)
+{
+  char *cwd = NULL;
+  char start_path[kiokuPATH_MAX] = {0};
+  char system_cwd[kiokuPATH_MAX] = {0};
+
+  const char *dirs[] = {
+    "./a",
+    "./a/b",
+    "./a/b/c",
+    "./a/b/d",
+    "./a/b/e",
+    "./a/b/e/f"
+  };
+
+  /* Try getting the CWD and check it against the low-level system CWD */
+  ASSERT(srsDir_GetSystemCWD(system_cwd, sizeof(system_cwd)));
+  srsLOG_NOTIFY("System CWD: %s", system_cwd);
+  cwd = srsDir_GetCWD();
+  ASSERT_STR_EQ(system_cwd, cwd);
+  /* Store for later check */
+  strcpy(start_path, cwd);
+
+  /* Navigate to newly created test directory and check CWD */
+  ASSERT(srsFile_Create("./testdir/file"));
+  ASSERT(srsDir_SetCWD("./testdir"));
+  ASSERT(srsDir_GetSystemCWD(system_cwd, sizeof(system_cwd)));
+  srsLOG_NOTIFY("System CWD: %s", system_cwd);
+  cwd = srsDir_GetCWD();
+  ASSERT_STR_EQ(system_cwd, cwd);
+
+  /* Relative path up to start directory test */
+  ASSERT(srsDir_SetCWD(".."));
+  cwd = srsDir_GetCWD();
+  ASSERT_STR_EQ(start_path, cwd);
+}
+TEST TestPushPopCWD(void)
 {
   srsLOG_NOTIFY("Testing dir traversal");
-  char original_path[kiokuPATH_MAX] = {0};
+  char start_path[kiokuPATH_MAX] = {0};
   char path[kiokuPATH_MAX] = {0};
   const char *cwd = NULL;
   int32_t up_index = -1;
@@ -567,7 +603,7 @@ TEST test_dir_traversal(void)
   {
     cwd = srsDir_GetCWD();
     ASSERT(cwd != NULL);
-    strcpy(original_path, cwd);
+    strcpy(start_path, cwd);
     srsLOG_NOTIFY(cwd);
   }
   /* Get the expected parent directory */
@@ -594,7 +630,7 @@ TEST test_dir_traversal(void)
 
   /* Reset directory */
   {
-    cwd = srsDir_SetCWD(original_path);
+    cwd = srsDir_SetCWD(start_path);
     ASSERT(cwd != NULL);
     srsLOG_NOTIFY(cwd);
     strcpy(path, cwd);
@@ -664,7 +700,9 @@ SUITE(test_filesystem) {
   printf(kiokuSTRING_LF);
   RUN_TEST(test_file_io);
   printf(kiokuSTRING_LF);
-  RUN_TEST(test_dir_traversal);
+  RUN_TEST(TestSetGetCWD);
+  printf(kiokuSTRING_LF);
+  RUN_TEST(TestPushPopCWD);
 }
 /* Add definitions that need to be in the test runner's main file. */
 GREATEST_MAIN_DEFS();
