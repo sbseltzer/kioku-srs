@@ -228,6 +228,26 @@ TEST test_file_manage(void) {
   printf("Testing file management functions..."kiokuSTRING_LF);
   const char *path = NULL;
   const char *partial_path = NULL;
+  /* For File-related API functions */
+  struct FileTestTable {
+    bool CannotCreateExistingFile;
+    bool CannotCreateExistingDir;
+    bool DoesNotExistBeforeCreation;
+    bool ExistsAfterOkCreation;
+    bool DoesNotExistAfterNotOkCreation;
+    bool CreatedFileIsFile;
+    bool CreatedFileIsNotDir;
+    bool CanDeleteExisting;
+    bool CanDeleteNonExisting;
+    bool CanDeleteExistingFile;
+    bool CannotDeleteExistingDir;
+    bool DirExistsAfterNotOkDeletion;
+    bool FileExistsAfterNotOkDeletion;
+    bool FileDoesNotExistAfterOkDeletion;
+  };
+  /* For Dir-related API functions */
+  struct DirTestTable {
+  };
   /* Invalid input */
   ASSERT_FALSE(srsDir_Exists(NULL));
   ASSERT_FALSE(srsFile_Exists(NULL));
