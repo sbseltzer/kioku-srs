@@ -247,6 +247,23 @@ TEST test_file_manage(void) {
   };
   /* For Dir-related API functions */
   struct DirTestTable {
+    bool CannotCreateExistingFile;
+    bool CannotCreateExistingDir;
+    bool DoesNotExistBeforeCreation;
+    bool ExistsAfterOkCreation;
+    bool DoesNotExistAfterNotOkCreation;
+    bool CreatedDirIsDir;
+    bool CreatedDirIsNotFile;
+    bool CanDeleteExisting;
+    bool CanDeleteNonExisting;
+    bool CannotDeleteExistingFile;
+    bool CanDeleteExistingEmptyDir;
+    bool CanDeleteExistingEmptyDirsRecursively;
+    bool CanDeleteExistingNonEmptyDir;
+    bool CanDeleteExistingNonEmptyDirsRecursively;
+    bool DirExistsAfterNotOkDeletion;
+    bool FileExistsAfterNotOkDeletion;
+    bool DirDoesNotExistAfterOkDeletion;
   };
   /* Invalid input */
   ASSERT_FALSE(srsDir_Exists(NULL));
