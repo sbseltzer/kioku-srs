@@ -285,9 +285,11 @@ TEST test_file_manage(void) {
   srsPath_Remove("a/b");
   srsPath_Remove("a");
 
-  /* Existence/creation/removal of dirs */
   partial_path = "a/b/";
+  /* creating a dir as a file fails */
   ASSERT_FALSE(srsFile_Create(partial_path));
+
+  /* Existence/creation/removal of dirs */
   ASSERT(srsDir_Create(partial_path));
   ASSERT_FALSE(srsDir_Create(partial_path));
   ASSERT(srsDir_Exists(partial_path));
@@ -645,6 +647,7 @@ TEST TestPushPopCWD(void)
   const char *cwd = NULL;
   int32_t up_index = -1;
 
+  srsLOG_NOTIFY("NULL tests");
   ASSERT_FALSE(srsDir_PushCWD(NULL, NULL));
   ASSERT_FALSE(srsDir_PopCWD(NULL));
 
@@ -654,14 +657,21 @@ TEST TestPushPopCWD(void)
   int32_t i = 0;
   for (i = numdirs - 1; i >= 0; i--)
   {
+    srsLOG_NOTIFY("Attempting a remove on %s", dirs[i]);
     srsPath_Remove(dirs[i]);
+    srsLOG_NOTIFY("Attempted a remove on %s", dirs[i]);
+    ASSERT_FALSE(srsPath_Exists(dirs[i]));
   }
 
+  srsLOG_NOTIFY("Attempt to get the CWD");
   cwd = srsDir_GetCWD();
   ASSERT(cwd != NULL);
+  srsLOG_NOTIFY("Store cwd %s in buffer", cwd);
   strcpy(start_path, cwd);
+  srsLOG_NOTIFY("Stored cwd as %s in buffer", start_path);
   for (i = 0; i < numdirs; i++)
   {
+    srsLOG_NOTIFY("Test pushpop for #%d: %s", i, dirs[i]);
     ASSERT(srsDir_Create(dirs[i]));
     const char *newdir = NULL;
     ASSERT(newdir = srsDir_PushCWD(dirs[i], NULL));
