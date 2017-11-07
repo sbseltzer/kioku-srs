@@ -30,6 +30,23 @@ static int32_t directory_stack_top_index = 0;
 static char *directory_stack[srsFILESYSTEM_DIRSTACK_SIZE] = {NULL};
 static char *directory_current = NULL;
 
+
+void kioku_path_replace_separators(char *path, size_t nbytes)
+{
+  size_t i = 0;
+  if ((path != NULL) && (nbytes > 0))
+  {
+    while ((path[i] != kiokuCHAR_NULL) && (i < nbytes))
+    {
+      if (path[i] == '\\')
+      {
+        path[i] = '/';
+      }
+      i++;
+    }
+  }
+}
+
 char *srsDir_GetSystemCWD(char *buf, size_t bufsize)
 {
   if (buf == NULL)
@@ -45,6 +62,7 @@ char *srsDir_GetSystemCWD(char *buf, size_t bufsize)
   {
     return NULL;
   }
+  kioku_path_replace_separators(cwd, bufsize);
   return cwd;
 }
 
@@ -217,22 +235,6 @@ FILE *srsFile_Open(const char *path, const char *mode)
 /** @todo It may be a good idea to have a max path length and use a strnlen-like method. */
 /** @todo implement a relative path resolver that eliminates . and .. - https://linux.die.net/man/3/realpath */
 
-void kioku_path_replace_separators(char *path, size_t nbytes)
-{
-  size_t i = 0;
-  if ((path != NULL) && (nbytes > 0))
-  {
-    while ((path[i] != kiokuCHAR_NULL) && (i < nbytes))
-    {
-      if (path[i] == '\\')
-      {
-        path[i] = '/';
-      }
-      i++;
-    }
-  }
-}
-
 void kioku_path_resolve_relative(char *path, int32_t nbytes)
 {
   int32_t i = 0;
@@ -332,6 +334,7 @@ size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
     /* result = kioku_path_resolve_relative(path_out, result); */
   }
 #endif
+  kioku_path_replace_separators(path_out, nbytes);
   return result;
 }
 void kioku_path_trimpoints(const char *path, size_t *start, size_t *end)
