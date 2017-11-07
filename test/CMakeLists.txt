@@ -13,3 +13,10 @@ make_test(schedule schedule.c)
 make_test(string string.c)
 
 add_definitions(-DBUILDDIR="${CMAKE_CURRENT_BINARY_DIR}")
+
+# TODO Utilize the greatest.h command line options for more fine-grained tests
+add_test(NAME TestFileSystem COMMAND filesystem)
+add_test(NAME TestGit COMMAND git)
+add_test(NAME TestModel COMMAND model)
+add_test(NAME TestSchedule COMMAND schedule)
+add_test(NAME TestString COMMAND string)
