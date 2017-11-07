@@ -72,7 +72,7 @@ kiokuAPI bool srsFileSystem_Exit();
  * @param[out] nbytes The maximum number of characters to store, including the null terminator.
  * @return The number of characters that were needed for the full path, excluding the null terminator. Setting path_out to NULL or nbytes to 0 will still cause this to output how many characters were needed.
  */
-kiokuAPI size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes);
+kiokuAPI size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes);
 
 /**
  * Find the first and last chars to use in path for trimming redundant chars on each end.

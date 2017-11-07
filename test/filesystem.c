@@ -599,7 +599,7 @@ TEST test_resolve_relative(void)
 }
 TEST test_fullpath(void)
 {
-  printf("Testing kioku_path_getfull..." kiokuSTRING_LF);
+  printf("Testing srsPath_GetFull..." kiokuSTRING_LF);
   /* ASSERT(); */
 }
 

@@ -285,7 +285,7 @@ void kioku_path_resolve_relative(char *path, int32_t nbytes)
   }
 }
 
-size_t kioku_path_getfull(const char *relative, char *path_out, size_t nbytes)
+size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
 {
   size_t result = 0;
   /** @todo mitigate max path length using the getcwd and chdir method described below for all platforms */
