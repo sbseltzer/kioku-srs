@@ -32,6 +32,14 @@ static char *directory_current = NULL;
 
 char *srsDir_GetSystemCWD(char *buf, size_t bufsize)
 {
+  if (buf == NULL)
+  {
+    return NULL;
+  }
+  if (bufsize == 0)
+  {
+    return NULL;
+  }
   char *cwd = getcwd(buf, bufsize);
   if (cwd != buf || cwd == NULL)
   {
