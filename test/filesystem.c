@@ -677,10 +677,12 @@ TEST TestPushPopCWD(void)
     ASSERT(newdir = srsDir_PushCWD(dirs[i], NULL));
     cwd = srsDir_GetCWD();
     ASSERT_STR_EQ(cwd, newdir);
-    ASSERT_STR_EQ(cwd, dirs[i]);
+    ASSERT(0 != srsPath_GetFull(dirs[i], path, sizeof(path)));
+    ASSERT_STR_EQ(newdir, path);
     ASSERT(srsDir_PopCWD(NULL));
     cwd = srsDir_GetCWD();
-    ASSERT_FALSE(strcmp(cwd, dirs[i]) == 0);
+    ASSERT(0 != srsPath_GetFull(dirs[i], path, sizeof(path)));
+    ASSERT_FALSE(strcmp(cwd, path) == 0);
     ASSERT_STR_EQ(cwd, newdir);
     ASSERT_STR_EQ(cwd, start_path);
   }
