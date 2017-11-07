@@ -792,17 +792,17 @@ int32_t srsFile_ReadLineByNumber(const char *path, uint32_t linenum, char *lineb
   /* Must be valid line number */
   if (linenum < 1)
   {
-    goto cleanup;
+    goto done;
   }
   /* Must be valid buffer */
   if (linebuf == NULL)
   {
-    goto cleanup;
+    goto done;
   }
   /* Must be valid buffer size */
   if (linebuf_size == 0)
   {
-    goto cleanup;
+    goto done;
   }
   /* Attempt to open file */
   fp = srsFile_Open(path, "r");
@@ -810,7 +810,7 @@ int32_t srsFile_ReadLineByNumber(const char *path, uint32_t linenum, char *lineb
   if (fp == NULL)
   {
     srsLOG_ERROR("Failed to open %s for line reading", path);
-    goto cleanup;
+    goto done;
   }
   int ch = EOF;
   int i = 1;
@@ -825,7 +825,7 @@ int32_t srsFile_ReadLineByNumber(const char *path, uint32_t linenum, char *lineb
   /* If we reached the end of file, it means the line number was greater than the number of lines in the file */
   if (ch == EOF)
   {
-    goto cleanup;
+    goto done;
   }
   /* Read the line into the buffer up to buffer size excluding null terminator, and stripping carriage returns. */
   for (; (linelen < linebuf_size-1) && (ch != '\n') && (ch != EOF); ch = fgetc(fp))
@@ -840,7 +840,7 @@ int32_t srsFile_ReadLineByNumber(const char *path, uint32_t linenum, char *lineb
   assert(linelen <= INT32_MAX);
   result = (int32_t) linelen;
   /* Perform cleanup */
-cleanup:
+done:
   /* Don't null-terminate an ostensibly zero-sized buffer. */
   if ((linebuf != NULL) && (linebuf_size > 0))
   {
