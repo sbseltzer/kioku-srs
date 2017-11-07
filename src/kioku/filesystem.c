@@ -546,7 +546,10 @@ bool srsDir_Create(const char *path)
 #endif
     /* We don't do anything with ok for now. If we break the loop here we won't get to attempt all the directories we need to. */
     *next_separator = separator_character;
-    next_separator++;
+    if (separator_character != '\0')
+    {
+      next_separator++;
+    }
   }
 done:
   if (create_dir != NULL)
