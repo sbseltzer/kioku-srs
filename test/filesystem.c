@@ -649,8 +649,10 @@ TEST TestPushPopCWD(void)
   ASSERT_FALSE(srsDir_PopCWD(NULL));
 
   /* Clean up directories from previous tests */
-  size_t i = 0;
-  for (i = sizeof(dirs) / sizeof(dirs[0]); i >= 0; i--)
+  size_t numdirs = sizeof(dirs) / sizeof(dirs[0]);
+  srsLOG_NOTIFY("Pre-test cleanup for %u dirs", numdirs);
+  int32_t i = 0;
+  for (i = numdirs - 1; i >= 0; i--)
   {
     srsPath_Remove(dirs[i]);
   }
@@ -658,7 +660,7 @@ TEST TestPushPopCWD(void)
   cwd = srsDir_GetCWD();
   ASSERT(cwd != NULL);
   strcpy(start_path, cwd);
-  for (i = 0; i < sizeof(dirs) / sizeof(dirs[0]); i++)
+  for (i = 0; i < numdirs; i++)
   {
     ASSERT(srsDir_Create(dirs[i]));
     const char *newdir = NULL;
