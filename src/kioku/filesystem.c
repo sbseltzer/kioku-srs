@@ -499,18 +499,19 @@ int32_t kioku_path_up_index(const char *path, int32_t start_index)
  */
 bool srsDir_Create(const char *path)
 {
+  bool ok = false;
+  char *create_dir = NULL;
   if (path == NULL)
   {
-    return false;
+    goto done;
   }
-  char *create_dir = strdup(path);
+  create_dir = strdup(path);
   if (create_dir == NULL)
   {
     srsLOG_ERROR("Failed to duplicate string!");
-    return false;
+    goto done;
   }
   char *next_separator = create_dir;
-  bool ok = false;
   while ((next_separator != NULL) && (*next_separator != '\0'))
   {
     while ((*next_separator != '/') &&  /* Stop at the first '/' */
@@ -519,8 +520,17 @@ bool srsDir_Create(const char *path)
     {
       next_separator++;
     }
+    /** @todo EDGE CASE: two separators in a row (this includes / followed by \0) */
     char separator_character = *next_separator;
     *next_separator = '\0';
+    /* @todo Check if create_dir at this point is a file and fail if it is */
+    if (srsFile_Exists(create_dir))
+    {
+      ok = false;
+      srsLOG_ERROR("Attempted to create dir `%s`, but a file with that name already exists!", create_dir);
+      goto done;
+    }
+    srsLOG_NOTIFY("Attempt to create dir `%s`", create_dir);
 #ifdef kiokuOS_WINDOWS
     ok = _mkdir(create_dir) == 0;
 #else
@@ -530,7 +540,11 @@ bool srsDir_Create(const char *path)
     *next_separator = separator_character;
     next_separator++;
   }
-  free(create_dir);
+done:
+  if (create_dir != NULL)
+  {
+    free(create_dir);
+  }
   return ok;
 }
 
