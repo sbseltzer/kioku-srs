@@ -228,6 +228,10 @@ TEST test_file_manage(void) {
   printf("Testing file management functions..."kiokuSTRING_LF);
   const char *path = NULL;
   const char *partial_path = NULL;
+  /** @todo tests with trailing and leading separators */
+  /** @todo tests with mixed separators */
+  /** @todo tests with windows drives */
+  /** @todo Consider somehow simplifying these test tables and then have a table OF them that describe different path configurations */
   /* For File-related API functions */
   struct FileTestTable {
     bool CannotCreateExistingFile;
@@ -483,7 +487,7 @@ TEST test_file_readlinenumber(void)
     /* Some lines have a number of CRs that are skipped and therefore reduce the length. */
     ASSERT_EQ(strlen(lines_out[index]), written);
     ASSERT_STR_EQ(lines_out[index], linebuf);
-    /* @todo test line output */
+    /** @todo test line output */
   }
   /* Test invalid line numbers */
   ASSERT_EQ(-1, srsFile_ReadLineByNumber(multilinefile, 0, linebuf, sizeof(linebuf)));
@@ -611,6 +615,7 @@ TEST TestSetGetCWD(void)
   /* Store for later check */
   strcpy(start_path, cwd);
 
+  /** @todo do null tests */
   /* Navigate to newly created test directory and check CWD */
   ASSERT(srsFile_Create("./testdir/file"));
   ASSERT(srsDir_SetCWD("./testdir"));
