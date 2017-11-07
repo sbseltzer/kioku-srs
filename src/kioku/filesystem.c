@@ -574,7 +574,12 @@ bool srsFile_Create(const char *path)
     return false;
   }
   /* This function is not for creating an empty directory */
-  if (path[strlen(path)] == '/')
+  size_t pathlen = strlen(path);
+  if (pathlen == 0)
+  {
+    return false;
+  }
+  if (path[pathlen-1] == '/')
   {
     return false;
   }
