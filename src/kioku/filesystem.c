@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #ifdef kiokuOS_WINDOWS
 #include <direct.h>
@@ -68,7 +69,14 @@ char *srsDir_GetSystemCWD(char *buf, size_t bufsize)
 
 bool srsDir_SetSystemCWD(const char *buf)
 {
-  return (chdir(buf) == 0);
+  errno = 0;
+  bool ok = (chdir(buf) == 0);
+  uint32_t errno_capture = errno;
+  if (errno_capture != 0)
+  {
+    srsLOG_ERROR("Failed to change CWD to [%s] (errno = %d): %s", buf, errno_capture, strerror(errno_capture));
+  }
+  return ok;
 }
 
 const char *srsDir_GetCWD()
@@ -521,6 +529,7 @@ bool srsDir_Create(const char *path)
   char *create_dir = NULL;
   if (path == NULL)
   {
+    srsLOG_ERROR("Input path was NULL");
     goto done;
   }
   create_dir = strdup(path);
@@ -553,6 +562,10 @@ bool srsDir_Create(const char *path)
 #else
     ok = mkdir(create_dir, 0700) == 0;
 #endif
+    if (!ok)
+    {
+      srsLOG_ERROR("Error occurred while attempting to create directory [%s]: %s", create_dir, strerror(errno));
+    }
     /* We don't do anything with ok for now. If we break the loop here we won't get to attempt all the directories we need to. */
     *next_separator = separator_character;
     if (separator_character != '\0')
@@ -561,8 +574,21 @@ bool srsDir_Create(const char *path)
     }
   }
 done:
+  if (ok)
+  {
+    ok = srsDir_Exists(create_dir);
+    if (!ok)
+    {
+      srsLOG_ERROR("For some reason, the system function for directory creation succeeded, yet our check for directory existence failed. This could be a serious defect. Please report this!");
+    }
+    assert(ok);
+  }
   if (create_dir != NULL)
   {
+    if (!ok)
+    {
+      srsLOG_NOTIFY("Failed to create final dir `%s`", create_dir);
+    }
     free(create_dir);
   }
   return ok;
