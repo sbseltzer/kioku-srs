@@ -267,6 +267,18 @@ size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
   /* Some platforms implement getcwd to malloc space when passed a null pointer. Both the Windows CRT _getcwd and the extension to the POSIX.1-2001 standard, Linux (libc4, libc5, glibc) implement it in this way. */
   /* The WINAPI GetCurrentDirectory does return the required length if not long enough, which is basically what we want here. It's not threadsafe, but currenly Kioku does not attempt to be. https://msdn.microsoft.com/en-us/library/windows/desktop/aa364934(v=vs.85).aspx */
   /* Consider using realpath and _fullpath */
+  if (relative == NULL)
+  {
+    return result;
+  }
+  if (path_out == NULL)
+  {
+    return result;
+  }
+  if (nbytes == NULL)
+  {
+    return result;
+  }
 #ifdef kiokuOS_WINDOWS
   const char *path = _fullpath(path_out, relative, nbytes);
   if (path != NULL)
