@@ -296,15 +296,16 @@ TEST test_file_manage(void) {
   ASSERT(srsPath_Exists(partial_path));
   ASSERT_FALSE(srsFile_Exists(partial_path));
   ASSERT_FALSE(srsPath_Remove("a/b/c"));
+  ASSERT_FALSE(srsPath_Exists("a/b/c"));
   partial_path = "a/b/c";
-  ASSERT_FALSE(srsDir_Create(partial_path));
+  ASSERT(srsDir_Create(partial_path));
   ASSERT(srsDir_Exists(partial_path));
   ASSERT(srsPath_Exists(partial_path));
   ASSERT_FALSE(srsFile_Exists(partial_path));
-  ASSERT_FALSE(srsPath_Remove("a/b/c"));
-  ASSERT(srsPath_Remove("a/b/c"));
-  ASSERT_FALSE(srsPath_Remove("a/b/c"));
-  ASSERT_FALSE(srsDir_Exists("a/b/c"));
+  ASSERT(srsPath_Remove(partial_path));
+  ASSERT_FALSE(srsPath_Remove(partial_path));
+  ASSERT_FALSE(srsDir_Exists(partial_path));
+  /** @todo use the up index function to do these removal/existence tests programatically */
   ASSERT(srsDir_Exists("a/b"));
   ASSERT(srsPath_Remove("a/b"));
   ASSERT_FALSE(srsPath_Remove("a/b"));
