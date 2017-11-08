@@ -280,11 +280,19 @@ size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
     return result;
   }
 #ifdef kiokuOS_WINDOWS
-  const char *path = _fullpath(path_out, relative, nbytes);
-  if (path != NULL)
+  char *fullpath = _fullpath(path_out, relative, nbytes);
+  if (fullpath != NULL)
   {
-    result = strlen(path) + 1;
-    kioku_path_replace_separators(path_out, result);
+    int32_t needed = strlen(fullpath);
+    if (needed > 0)
+    {
+      result = (size_t) needed;
+    }
+    else
+    {
+      srsLOG_ERROR("The calculated needed size to store the full path of %s was <= 0 - this is likely a defect - Please report this!", relative);
+      abort();
+    }
   }
 #else
   const char *cwd = srsDir_GetCWD();
