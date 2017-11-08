@@ -49,7 +49,7 @@
   #endif
 #endif
 
-#define kiokuCHAR_ISDIRSEP(x) (((x) == '/') || ((x) == '\\'))
+#define srsCHAR_ISDIRSEP(x) (((x) == '/') || ((x) == '\\'))
 
 kiokuSTATIC_ASSERT(kiokuPATH_MAX > 0);
 

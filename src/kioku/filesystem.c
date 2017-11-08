@@ -354,12 +354,12 @@ void kioku_path_trimpoints(const char *path, size_t *start, size_t *end)
       path_end--;
     }
     /* Strip extra slashes on end of path */
-    while ((path_end > path_start) && (path[path_end] == '/'))
+    while ((path_end > path_start) && srsCHAR_ISDIRSEP(path[path_end]))
     {
       path_end--;
     }
     /* Strip extra slashes at start of path */
-    while ((path_start < path_end) && (path[path_start] == '/'))
+    while ((path_start < path_end) && srsCHAR_ISDIRSEP(path[path_start]))
     {
       path_start++;
     }
@@ -384,7 +384,7 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
   kioku_path_trimpoints(path1, &path1_start, &path1_end);
   kioku_path_trimpoints(path2, &path2_start, &path2_end);
   /* The right hand portion should not have a leading slash */
-  if (path2[path2_start] == '/')
+  if (srsCHAR_ISDIRSEP(path2[path2_start]))
   {
     path2_start++;
   }
@@ -403,7 +403,7 @@ int32_t kioku_path_concat(char *dest, size_t destsize, const char *path1, const 
     neededlen++;
   }
   /* Add separator iff path1 had content that didn't end with a separator and path2 non-empty */
-  if ((neededlen > 0) && (path1[path1_end] != '/') && (path2[path2_start] != '\0'))
+  if ((neededlen > 0) && !srsCHAR_ISDIRSEP(path1[path1_end]) && (path2[path2_start] != '\0'))
   {
     if ((dest != NULL) && (wrotelen < max_index))
     {
@@ -484,25 +484,25 @@ int32_t kioku_path_up_index(const char *path, int32_t start_index)
   /* Sanity check: If it hits the beginning of the string, it was apparently empty - this case should be captured above. */
   assert(result >= 0);
   /* If the path ends with a separator, we need to march back to the first non-separator before traversing to the parent. */
-  if (kiokuCHAR_ISDIRSEP(path[result]))
+  if (srsCHAR_ISDIRSEP(path[result]))
   {
     /* March back to first non-separator */
-    while ((result >= 0) && kiokuCHAR_ISDIRSEP(path[result]))
+    while ((result >= 0) && srsCHAR_ISDIRSEP(path[result]))
     {
       result--;
     }
   }
   /* March back to first separator to eliminate the file/dir we're on in the path. */
-  while ((result >= 0) && !kiokuCHAR_ISDIRSEP(path[result]))
+  while ((result >= 0) && !srsCHAR_ISDIRSEP(path[result]))
   {
     result--;
   }
   /* March back to next non-separator in case this path has redundant separators. */
-  while ((result >= 0) && kiokuCHAR_ISDIRSEP(path[result]))
+  while ((result >= 0) && srsCHAR_ISDIRSEP(path[result]))
   {
     result--;
   }
-  if ((result >= 0) && !kiokuCHAR_ISDIRSEP(path[result]))
+  if ((result >= 0) && !srsCHAR_ISDIRSEP(path[result]))
   {
     /* March forward by one so the string ends with a separator */
     result++;
@@ -532,8 +532,7 @@ bool srsDir_Create(const char *path)
   char *next_separator = create_dir;
   while ((next_separator != NULL) && (*next_separator != '\0'))
   {
-    while ((*next_separator != '/') &&  /* Stop at the first '/' */
-           (*next_separator != '\\') && /* Or stop at the first '\\' */
+    while (!srsCHAR_ISDIRSEP(*next_separator) &&  /* Stop at the first separator */
            (*next_separator != '\0') )  /* Or stop at the first null terminator */
     {
       next_separator++;
@@ -592,7 +591,8 @@ bool srsFile_Create(const char *path)
   {
     return false;
   }
-  if (path[pathlen-1] == '/')
+  /* Cannot create a directory */
+  if (srsCHAR_ISDIRSEP(path[pathlen-1]))
   {
     return false;
   }
@@ -601,9 +601,8 @@ bool srsFile_Create(const char *path)
   char *create_dir = strdup(path);
   size_t path_length = strlen(create_dir);
   char *end_of_dirs = create_dir + path_length;
-  while (( end_of_dirs > create_dir)  && /* Do not iterate beyond the start of the path */
-         (*end_of_dirs != '/')  && /* Stop at the first '/' */
-         (*end_of_dirs != '\\') )  /* Or stop at the first '\\' */
+  while ((end_of_dirs > create_dir) && /* Do not iterate beyond the start of the path */
+         (!srsCHAR_ISDIRSEP(*end_of_dirs))) /* Stop at the first separator */
   {
     end_of_dirs--;
   }
