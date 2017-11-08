@@ -310,7 +310,11 @@ size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
     /* result = kioku_path_resolve_relative(path_out, result); */
   }
 #endif
-  kioku_path_replace_separators(path_out, nbytes);
+  /** @todo resolve the relative paths to mimic the functionality of realpath and _fullpath if necessary. */
+  if (result > 0)
+  {
+    kioku_path_replace_separators(path_out, nbytes);
+  }
   return result;
 }
 void kioku_path_trimpoints(const char *path, size_t *start, size_t *end)
