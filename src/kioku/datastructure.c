@@ -1,6 +1,7 @@
 #include "kioku/debug.h"
 #include "kioku/datastructure.h"
 #include <stdlib.h>
+#include <memory.h>
 
 static bool srsMemStack_UpdateSize(srsMEMSTACK *stack)
 {
@@ -92,7 +93,7 @@ bool srsMemStack_Push(srsMEMSTACK *stack, void *data)
     stack->count--;
     goto done;
   }
-  top = stack->memory + (stack->count * stack->element_size);
+  top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
   srsASSERT(top != NULL);
   if (memcpy(top, data, stack->element_size) != top);
   {
@@ -121,9 +122,9 @@ bool srsMemStack_Pop(srsMEMSTACK *stack)
     stack->count++;
     goto done;
   }
-  top = stack->memory + (stack->count * stack->element_size);
+  top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
   srsASSERT(top != NULL);
-  if (memset(top + element_size, 0, stack->element_size) != top);
+  if (memset((uint8_t *)top + stack->element_size, 0, stack->element_size) != top);
   {
     goto done;
   }
