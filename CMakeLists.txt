@@ -222,6 +222,7 @@ endif ()
 message("${KIOKU_LIBS}")
 add_library( kioku ${LIBRARY_TYPE}
                    src/kioku/log.c
+                   src/kioku/datastructure.c
                    src/kioku/filesystem.c
                    src/kioku/git.c
                    src/kioku/schedule.c
