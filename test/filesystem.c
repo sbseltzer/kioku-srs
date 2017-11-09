@@ -674,21 +674,22 @@ TEST TestPushPopCWD(void)
   {
     srsLOG_NOTIFY("Test pushpop for #%d: %s", i, dirs[i]);
     ASSERT(srsDir_Create(dirs[i]));
+    /* Grab the full path of the new dir before we change to it. */
+    ASSERT(0 != srsPath_GetFull(dirs[i], path, sizeof(path)));
+
     const char *newdir = NULL;
     ASSERT(newdir = srsDir_PushCWD(dirs[i], NULL));
+    /* Check the hypothetical fullpath against the pushed dir path */
+    ASSERT_STR_EQ(newdir, path);
     cwd = srsDir_GetCWD();
     ASSERT_STR_EQ(cwd, newdir);
-    if (dirs[i][0] == '.')
-    {
-      ASSERT(0 != srsPath_GetFull(dirs[i] + 2, path, sizeof(path)));
-      ASSERT_STR_EQ(cwd, path);
-    }
-    ASSERT(0 != srsPath_GetFull(dirs[i], path, sizeof(path)));
+    /* Check the hypothetical fullpath against the cwd path */
     ASSERT_STR_EQ(cwd, path);
+
+    /* Now pop the directory and make sure we returned to the right place */
     ASSERT(srsDir_PopCWD(NULL));
     cwd = srsDir_GetCWD();
-    ASSERT(0 != srsPath_GetFull(dirs[i], path, sizeof(path)));
-    ASSERT_FALSE(strcmp(cwd, path) == 0);
+    ASSERT_FALSE(strcmp(cwd, path) < 0);
     ASSERT_STR_EQ(cwd, newdir);
     ASSERT_STR_EQ(cwd, start_path);
   }
