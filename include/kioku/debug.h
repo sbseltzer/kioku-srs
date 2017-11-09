@@ -11,9 +11,9 @@
 
 #ifndef KIOKU_IGNORE_RUNTIME_ASSERTS
 #include <assert.h>
-#define kiokuASSERT(x) assert(x)
+#define srsASSERT(x) assert(x)
 #else
-#define kiokuASSERT(x) ((void)0)
+#define srsASSERT(x) ((void)0)
 #endif
 
 #ifndef KIOKU_IGNORE_STATIC_ASSERTS
