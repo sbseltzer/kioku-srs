@@ -182,6 +182,10 @@ Version the whole thing using Subtrees for sharing. When things bloat, have a fa
 #### External REST Wrappers
 Use external REST APIs to automatically fork and break up user tree into subprojects, managed similarly to submodules.
 
+## Deck Collaboration
+
+Had an idea for making contributions to upstream shared decks more manageable. The *maintainer* decides what kinds of content cannot be contributed back upstream. Particularly, preventing changes to certain fields from making their way into the upstream repository. If there was a good way to make configuring these rules easier that'd be ideal.
+
 ## User Restraint
 
 One point of concern is Users getting too "clever" by manipulating history directly with a CLI. If they seriously tamper with things in dangerous/opaque ways (history rewrites, squashing, etc.), that's on them. The application will interpret that as it will, but it may not do what they think.

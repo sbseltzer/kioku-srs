@@ -86,7 +86,7 @@ static void handle_GetNextCard(struct mg_connection *nc, struct http_message *hm
     JSON_Value *button_value = NULL;
     JSON_Object *button = NULL;
     {
-      /** @todo load real card text */
+      /** TODO load real card text */
       json_object_set_string(root_object, "id", card_id);
       json_object_set_string(root_object, "front", "front text");
       json_object_set_string(root_object, "back", "front text<br>back text which included the front text");
