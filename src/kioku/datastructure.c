@@ -13,6 +13,13 @@ static bool srsMemStack_UpdateSize(srsMEMSTACK *stack)
   {
     goto done;
   }
+  /* In case something funky changes in the future, it'd be good to have a fallback newsize. */
+  newsize = stack->capacity * stack->element_size;
+  /** TODO Should this be an assert? */
+  if (stack->capacity == 0)
+  {
+    goto done;
+  }
   /* Try to reallocate based on current count */
   if (stack->count < stack->capacity / 2)
   {
