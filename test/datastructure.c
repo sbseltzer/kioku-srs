@@ -4,7 +4,7 @@
 /* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */
 TEST TestMemStack_Init(void)
 {
-  srsMemStack stack = {0};
+  srsMEMSTACK stack = {0};
   uint8_t value = 0;
   /* Test invalid input */
   ASSERT_FALSE(srsMemStack_Init(NULL, sizeof(value), -1));
