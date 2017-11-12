@@ -88,7 +88,7 @@ done:
     }
     memset(stack, 0, sizeof(*stack));
   }
-  return result
+  return result;
 }
 bool srsMemStack_FreeContents(srsMEMSTACK *stack)
 {
