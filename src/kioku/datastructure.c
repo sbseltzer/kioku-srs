@@ -7,39 +7,44 @@
 static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
 {
   bool result = false;
-  size_t newsize = 0;
+  size_t setsize = 0;
   void *mem = NULL;
   if (stack == NULL)
   {
     goto done;
   }
+  /* TODO Consider whether it really makes sense to even allow a capacity of zero */
   if (stack->capacity == 0)
   {
     stack->capacity = srsMEMSTACK_MINIMUM_CAPACITY;
   }
-  /* In case something funky changes in the future, it'd be good to have a fallback newsize. */
-  newsize = stack->capacity * stack->element_size;
+  /* In case something funky changes in the future, it'd be good to have a fallback setsize. */
+  setsize = stack->capacity * stack->element_size;
   /* Try to reallocate based on current count */
-  if (stack->count < stack->capacity / 2)
+  if (stack->count == stack->capacity)
   {
-    newsize = stack->capacity / 2;
-    if (newsize < srsMEMSTACK_MINIMUM_CAPACITY)
+    setsize = stack->capacity * 2;
+  }
+  else if (stack->count < stack->capacity / 4)
+  {
+    /* If count gets below a fourth capacity, resize down by half, but cap by minimum capacity.
+       This gives a reasonable space within which to grow before increasing the size again. */
+    /** TODO This is somewhat complex behaviour, so make sure to thoroughly test this */
+    setsize = stack->capacity / 2;
+    if (setsize < srsMEMSTACK_MINIMUM_CAPACITY)
     {
-      newsize = srsMEMSTACK_MINIMUM_CAPACITY;
+      setsize = srsMEMSTACK_MINIMUM_CAPACITY;
     }
   }
-  else if (stack->count == stack->capacity)
-  {
-    newsize = stack->capacity * 2;
-  }
-  else
+  else if (stack->count > stack->capacity)
   {
     /* There should be no case where count has been allowed to exceed capacity */
-    abort();
+    srsLOG_ERROR("FATAL: Stack count was allowed to exceed stack capacity! This is either a heinous bug, or an engineered failure.");
+    srsASSERT(false);
   }
-  if (newsize != stack->capacity)
+  if (setsize != stack->capacity)
   {
-    mem = realloc(stack->memory, newsize);
+    mem = realloc(stack->memory, setsize);
   }
   else
   {
