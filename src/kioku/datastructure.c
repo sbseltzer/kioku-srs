@@ -4,6 +4,11 @@
 #include <stdlib.h>
 #include <memory.h>
 
+static void *srsMemStack_CalculatedTop(srsMEMSTACK *stack)
+{
+  /** NOTE This does not do any error checking - it only used internally in places where all checks have passed */
+  return (void *)(((uint8_t *)stack->memory) + ((stack->count - 1) * stack->element_size));
+}
 static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
 {
   bool result = false;
@@ -127,7 +132,7 @@ bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
     srsLOG_ERROR("Failed to update size of srsMEMSTACK while Pushing - count will remain at %d", count);
     goto done;
   }
-  top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
+  top = srsMemStack_CalculatedTop(stack);
   srsASSERT(top != NULL);
   if (memcpy(top, data, stack->element_size) != top)
   {
@@ -140,7 +145,7 @@ revert:
   stack->count = count;
   srsMemStack_UpdateCapacity(stack);
   /* Restore top of stack */
-  top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
+  top = srsMemStack_CalculatedTop(stack);
   srsASSERT(top != NULL);
 done:
   /* Set top of stack*/
@@ -166,7 +171,7 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
   /* Get top position in stack before possibly decrementing so we can zero it out */
   top = stack->top;
   count = stack->count;
-  srsASSERT(top == (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size)));
+  srsASSERT(top == srsMemStack_CalculatedTop(stack));
   /* Attempt to decrement */
   stack->count--;
   /* Attempt to shrink if necessary */
@@ -192,7 +197,7 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
     goto revert;
   }
   /* Find new top of stack using the modified count */
-  top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
+  top = srsMemStack_CalculatedTop(stack);
   srsASSERT(top != NULL);
   result = true;
 revert:
@@ -200,7 +205,7 @@ revert:
   stack->count = count;
   srsMemStack_UpdateCapacity(stack); /** TODO Should we check the result of this? */
   /* Restore top of stack */
-  top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
+  top = srsMemStack_CalculatedTop(stack);
   srsASSERT(top != NULL);
   /* Zero out the output variable */
   memset(data_out, 0, stack->element_size);
