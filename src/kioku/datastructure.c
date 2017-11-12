@@ -97,7 +97,6 @@ bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
   stack->count++;
   if (!srsMemStack_UpdateSize(stack))
   {
-    stack->count = count;
     srsLOG_ERROR("Failed to update size of srsMEMSTACK while Pushing - count will remain at %d", count);
     goto done;
   }
@@ -107,9 +106,20 @@ bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
   {
     goto done;
   }
-  stack->top = top;
   result = true;
+revert:
+  /* Restore count and attmept to update size if applicable */
+  stack->count = count;
+  srsMemStack_UpdateSize(stack);
+  /* Restore top of stack */
+  top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
+  srsASSERT(top != NULL);
 done:
+  /* Set top of stack*/
+  if (top != NULL)
+  {
+    stack->top = top;
+  }
   return result;
 }
 bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
