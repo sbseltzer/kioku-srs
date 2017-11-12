@@ -10,13 +10,59 @@ To put this into perspective, both the Linux kernel and libgit2 (upon which this
 
 Many people go to great lengths to avoid it's use while preserving its utility with convoluted and sometimes wasteful workarounds that ironically *reduce* code clarity and open themselves up to more future maintenance.
 
-Since not everyone is as experienced in the safe use of `goto`, including myself, there are three rules for applying it in this codebase.
+Since not everyone is as experienced in the safe use of `goto`, including myself, there are rules for applying it in this codebase.
 
 1. Labels MUST only be declared within top function scope (i.e. outside of control structures such as `for` and `if`, but within the confines of a function).
 2. Jumps to labels MUST only go forward in execution - never backward.
 3. All symbols referenced *past* the label MUST be declared and initialized *before* the first possible jump to it.
 
 These are some very tight restrictions on its use that help keep the codebase clean and readable. If you follow these rules, you will rarely end up in a situation where `goto` hurts more than helps. As always, clarity is key.
+
+There are however things to watch out for.
+
+### Multi-label functions
+Some functions have a pattern of two labels to jump to: One for reverting to a previous state upon failure, and one for things like cleanup/output.
+
+I've made the mistake of not jumping past my revert on success, which effecitively caused a success result with a failure state. Take the following code.
+```c
+char *DoThing()
+{
+  char *something = malloc(1000);
+  if (something == NULL)
+  {
+    goto done;
+  }
+  if (getcwd(something, 1000) != something)
+  {
+    goto cleanup;
+  }
+cleanup:
+  free(something);
+done:
+  return something;
+}
+```
+In the above contrived example which is quite similar to my original mistake from a much more complex function, I've neglected to put `goto done;` before `cleanup:`. This means that when `getcwd` succeeds, still end up freeing `something` and returning the pointer. This is very dangerous.
+
+It was my first time applying this strategy, and thankfully unit tests caught my cognitive dissonance. This begs the question as to whether `goto` was the right tool for this. The following might have been clearer for this particular case.
+```c
+char *DoThing()
+{
+  char *something = malloc(1000);
+  if (something != NULL)
+  {
+    if (getcwd(something, 1000) != something)
+    {
+      free(something);
+      something = NULL;
+    }
+  }
+  return something;
+}
+```
+As stated before, my real use-case (fixed the same commit where I've added this warning) was far more complex. It may indicate that the function itself is too complex, but at the time of writing I have not judged this to be the case.
+
+One suggestion you could take away from this, which I haven't stated as a rule yet, is to ensure every execution path in such functions ends with a `goto`. This would have disallowed any "fall-through" behaviour and made the bug much more obvious when it was being introduced. For now, just be sure to check the line *above* every label so you know whether it really makes sense. What helped me was to add a debug message at the top of my cleanup label. Another thing that would have helped would be to assert whether my result made sense at the top of my cleanup label.
 
 ## User Input
 
