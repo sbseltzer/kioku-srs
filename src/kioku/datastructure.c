@@ -205,7 +205,10 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
   }
   /* Find new top of stack using the modified count */
   top = srsMemStack_CalculatedTop(stack);
-  srsASSERT(top != NULL);
+  if (stack->count > 0)
+  {
+    srsASSERT(top != NULL);
+  }
   result = true;
 revert:
   /* Restore count and attempt to restore size when applicable */
