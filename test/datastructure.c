@@ -31,7 +31,7 @@ TEST TestMemStack_Init(void)
 
   /* Test first push on stack of 1 */
   ASSERT(srsMemStack_Init(&stack, 1, 1));
-  ASSERT(srsMemStack_Push(&stack, ));
+  ASSERT(srsMemStack_Push(&stack, &value));
 
   PASS();
 }
