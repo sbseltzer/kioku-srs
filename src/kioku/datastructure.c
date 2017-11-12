@@ -65,10 +65,6 @@ bool srsMemStack_Init(srsMEMSTACK *stack, size_t element_size, int32_t initial_c
   {
     goto done;
   }
-  if (initial_capacity == 0)
-  {
-    goto done;
-  }
   stack->element_size = element_size;
   stack->count = 0;
   stack->capacity = (initial_capacity > 0) ? initial_capacity : srsMEMSTACK_MINIMUM_CAPACITY;
