@@ -164,6 +164,7 @@ done:
   }
   return result;
 }
+
 bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
 {
   bool result = false;
@@ -174,6 +175,10 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
     goto done;
   }
   if (stack->memory == NULL)
+  {
+    goto done;
+  }
+  if (stack->count == 0)
   {
     goto done;
   }
