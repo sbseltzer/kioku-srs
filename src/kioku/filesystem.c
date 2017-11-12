@@ -26,6 +26,23 @@ static char *directory_stack[srsFILESYSTEM_DIRSTACK_SIZE] = {NULL};
 static srsMEMSTACK dirstack = {0};
 static char *directory_current = NULL;
 
+static void ClearDirectoryStack()
+{
+  if (dirstack.memory == NULL)
+  {
+    return;
+  }
+  size_t i = 0;
+  char *string_ptr = NULL;
+  while (dirstack.count > 0)
+  {
+    srsMemStack_Pop(&dirstack, &string_ptr);
+    if (string_ptr != NULL)
+    {
+      free(string_ptr);
+    }
+  }
+}
 
 void kioku_path_replace_separators(char *path, size_t nbytes)
 {
@@ -96,20 +113,7 @@ const char *srsDir_GetCWD()
 const char *srsDir_SetCWD(const char *path)
 {
   /* Clear stack */
-  for (directory_stack_top_index = 0; directory_stack_top_index < srsFILESYSTEM_DIRSTACK_SIZE; directory_stack_top_index++)
-  {
-    if (directory_stack[directory_stack_top_index] != NULL)
-    {
-      /* Only free the stack entry if it isn't the current directory */
-      if (directory_stack[directory_stack_top_index] != directory_current)
-      {
-        free(directory_stack[directory_stack_top_index]);
-      }
-      /* Nullify it regardless */
-      directory_stack[directory_stack_top_index] = NULL;
-    }
-  }
-  directory_stack_top_index = -1;
+  ClearDirStack();
   /* Free the current directory so our next call to srsDir_GetCWD regenerates it */
   if (directory_current != NULL)
   {
@@ -147,7 +151,7 @@ const char *srsDir_PushCWD(const char *path)
     /** TODO Check result of strdup - not exactly sure how best to handle it. */
     srsASSERT(push_me != NULL);
     /* Try to push the new directory onto the stack */
-    if (!srsMemStack_Push(dirstack, push_me))
+    if (!srsMemStack_Push(dirstack, &push_me))
     {
       free(push_me);
     }
