@@ -33,6 +33,7 @@ TEST TestMemStack_Init(void)
   ASSERT(srsMemStack_Init(&stack, 1, 1));
   ASSERT(srsMemStack_Push(&stack, &value));
   ASSERT(srsMemStack_Pop(&stack, &value));
+  ASSERT(srsMemStack_FreeContents(&stack));
 
   PASS();
 }
