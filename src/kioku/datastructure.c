@@ -49,20 +49,39 @@ done:
 }
 bool srsMemStack_Init(srsMEMSTACK *stack, size_t element_size, int32_t initial_capacity)
 {
+  bool result = false;
   if (stack == NULL)
   {
-    return false;
+    goto done;
   }
   if (element_size == 0)
   {
-    return false;
+    goto done;
+  }
+  if (initial_capacity == 0)
+  {
+    goto done;
   }
   stack->element_size = element_size;
-  stack->capacity = (initial_capacity > 0) ? initial_capacity : srsMEMSTACK_MINIMUM_CAPACITY;
-  stack->memory = malloc(stack->element_size * stack->capacity);
   stack->count = 0;
-  stack->top = NULL;
-  return stack->memory != NULL;
+  stack->capacity = (initial_capacity > 0) ? initial_capacity : srsMEMSTACK_MINIMUM_CAPACITY;
+  stack->memory = NULL;
+  if (stack->capacity != 0)
+  {
+    stack->memory = malloc(stack->element_size * stack->capacity);
+    stack->top = stack->memory;
+  }
+  result = stack->memory != NULL;
+done:
+  if (!result && (stack != NULL))
+  {
+    if (stack->memory != NULL)
+    {
+      free(stack->memory);
+    }
+    memset(stack, 0, sizeof(*stack));
+  }
+  return result
 }
 bool srsMemStack_FreeContents(srsMEMSTACK *stack)
 {
