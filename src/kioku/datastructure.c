@@ -125,7 +125,7 @@ bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
   }
   top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
   srsASSERT(top != NULL);
-  if (memcpy(top, data, stack->element_size) != top);
+  if (memcpy(top, data, stack->element_size) != top)
   {
     srsLOG_ERROR("Failed to copy pushed data to the srsMEMSTACK");
     goto done;
