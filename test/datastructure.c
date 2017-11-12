@@ -1,14 +1,20 @@
 #include "greatest.h"
+#include "kioku/log.h"
 #include "kioku/datastructure.h"
 
 /* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */
-TEST TestMemStack_Init(void)
+TEST TestMemStack_InitAndFree(void)
 {
   srsMEMSTACK stack = {0};
   uint8_t value = 0;
+  srsLOG_NOTIFY("Testing bad input for memstack");
   /* Test invalid input */
   ASSERT_FALSE(srsMemStack_Init(NULL, sizeof(value), -1));
   ASSERT_FALSE(srsMemStack_Init(&stack, 0, -1));
+  ASSERT_FALSE(srsMemStack_FreeContents(NULL));
+  ASSERT_FALSE(srsMemStack_FreeContents(&stack));
+
+  srsLOG_NOTIFY("Testing input defaulting for memstack");
 
   /* Test that initial_capacity of -1 results in a minimum capacity being chosen */
   ASSERT(srsMemStack_Init(&stack, sizeof(value), -1));
@@ -20,6 +26,7 @@ TEST TestMemStack_Init(void)
   ASSERT_EQ(srsMEMSTACK_MINIMUM_CAPACITY, stack.capacity);
   ASSERT(srsMemStack_FreeContents(&stack));
 
+  srsLOG_NOTIFY("Testing results of free on memstack contents");
   /* Test all members of stack with a few elements */
   size_t capacity = 3;
   ASSERT(srsMemStack_Init(&stack, sizeof(value), capacity));
@@ -28,20 +35,37 @@ TEST TestMemStack_Init(void)
   ASSERT(NULL != stack.memory);
   ASSERT_EQ(capacity, stack.capacity);
   ASSERT_EQ(sizeof(value), stack.element_size);
-
-  /* Test first push on stack of 1 */
-  ASSERT(srsMemStack_Init(&stack, sizeof(value), 1));
-  ASSERT(srsMemStack_Push(&stack, &value));
-  ASSERT(srsMemStack_Pop(&stack, &value));
   ASSERT(srsMemStack_FreeContents(&stack));
-
+  srsLOG_NOTIFY("Testing results of free on memstack contents");
+  srsMEMSTACK zeroed = {0};
+  ASSERT_EQ(0, memcmp(&stack, &zeroed, sizeof(zeroed)));
   PASS();
 }
 
+TEST TestMemStack_Push(void)
+{
+  srsMEMSTACK stack = {0};
+  uint8_t value = 200;
+  /* Test bad input */
+  ASSERT_FALSE(srsMemStack_Push(NULL, NULL));
+  ASSERT_FALSE(srsMemStack_Push(NULL, &value));
+  ASSERT_FALSE(srsMemStack_Push(&stack, NULL));
+
+  /* Test first push on stack of 1 */
+  ASSERT(srsMemStack_Init(&stack, sizeof(value), 1));
+  srsLOG_NOTIFY("Testing push on smallest possible stack capacity");
+
+  ASSERT(srsMemStack_Push(&stack, &value));
+  ASSERT_EQ(value, *((uint8_t *)stack.top));
+  srsLOG_NOTIFY("Testing pop from smallest stack capacity");
+  ASSERT(srsMemStack_FreeContents(&stack));
+  PASS();
+}
 
 /* Suites can group multiple tests with common setup. */
 SUITE(the_suite) {
-  RUN_TEST(TestMemStack_Init);
+  RUN_TEST(TestMemStack_InitAndFree);
+  RUN_TEST(TestMemStack_Push);
 }
 
 /* Add definitions that need to be in the test runner's main file. */
