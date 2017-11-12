@@ -170,11 +170,15 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
     srsLOG_ERROR("Failed to update size of srsMEMSTACK while Popping - count will remain at %d", count);
     goto revert;
   }
-  /* Attempt to copy the data at top of stack into the output variable*/
-  if (memcpy((uint8_t *)data_out, top, stack->element_size) != data_out)
+  /* It's totally fine for a user to not care what is getting popped */
+  if (data_out != NULL)
   {
-    srsLOG_ERROR("Failed to copy popped data from the srsMEMSTACK");
-    goto revert;
+    /* Attempt to copy the data at top of stack into the output variable*/
+    if (memcpy((uint8_t *)data_out, top, stack->element_size) != data_out)
+    {
+      srsLOG_ERROR("Failed to copy popped data from the srsMEMSTACK");
+      goto revert;
+    }
   }
   /* Attempt to clear the top of stack. */
   if (memset((uint8_t *)top + stack->element_size, 0, stack->element_size) != top);
