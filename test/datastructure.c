@@ -25,13 +25,14 @@ TEST TestMemStack_Init(void)
   ASSERT(srsMemStack_Init(&stack, sizeof(value), capacity));
   ASSERT_EQ(0, stack.count);
   ASSERT_EQ(NULL, stack.top);
-  ASSERT_NEQ(NULL, stack.memory);
+  ASSERT(NULL != stack.memory);
   ASSERT_EQ(capacity, stack.capacity);
   ASSERT_EQ(sizeof(value), stack.element_size);
 
   /* Test first push on stack of 1 */
   ASSERT(srsMemStack_Init(&stack, 1, 1));
   ASSERT(srsMemStack_Push(&stack, &value));
+  ASSERT(srsMemStack_Pop(&stack, &value));
 
   PASS();
 }
