@@ -7,7 +7,7 @@
 static void *srsMemStack_CalculatedTop(srsMEMSTACK *stack)
 {
   /** NOTE This does not do any error checking - it only used internally in places where all checks have passed */
-  return (void *)(((uint8_t *)stack->memory) + ((stack->count - 1) * stack->element_size));
+  return (stack->count == 0) ? NULL : (void *)(((uint8_t *)stack->memory) + ((stack->count - 1) * stack->element_size));
 }
 static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
 {
@@ -150,7 +150,10 @@ revert:
   srsMemStack_UpdateCapacity(stack);
   /* Restore top of stack */
   top = srsMemStack_CalculatedTop(stack);
-  srsASSERT(top != NULL);
+  if (stack->count != 0)
+  {
+    srsASSERT(top != NULL);
+  }
 done:
   /* Set top of stack*/
   if (top != NULL)
