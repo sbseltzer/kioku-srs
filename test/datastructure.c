@@ -39,7 +39,7 @@ TEST TestMemStack_Init(void)
 
 /* Suites can group multiple tests with common setup. */
 SUITE(the_suite) {
-  RUN_TEST(TestStringToU32);
+  RUN_TEST(TestMemStack_Init);
 }
 
 /* Add definitions that need to be in the test runner's main file. */
