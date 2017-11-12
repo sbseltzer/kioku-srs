@@ -63,6 +63,7 @@ done:
   }
   return result;
 }
+/** TODO An srsMemStack_PrintToStream, srsMemStack_PrintToBuffer, and srsMemStack_Compare would be nice for debugging */
 bool srsMemStack_Init(srsMEMSTACK *stack, size_t element_size, int32_t initial_capacity)
 {
   bool result = false;
