@@ -28,7 +28,8 @@ typedef struct _srsMEMSTACK_s
 
 #define srsMEMSTACK_PRINT(stack_struct)                                 \
   do {                                                                  \
-    srsLOG_NOTIFY("memstack {"kiokuSTRING_LF                            \
+    srsLOG_NOTIFY(kiokuSTRING_LF                                        \
+                  "memstack {"kiokuSTRING_LF                            \
                   "  element_size: %u"kiokuSTRING_LF                    \
                   "  capacity: %u"kiokuSTRING_LF                        \
                   "  count: %u"kiokuSTRING_LF                           \
