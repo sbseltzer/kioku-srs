@@ -83,6 +83,7 @@ bool srsMemStack_Push(srsMEMSTACK *stack, void *data)
 {
   bool result = false;
   void *top = NULL;
+  size_t count = 0;
   if (stack == NULL)
   {
     goto done;
@@ -91,11 +92,12 @@ bool srsMemStack_Push(srsMEMSTACK *stack, void *data)
   {
     goto done;
   }
+  count = stack->count;
   stack->count++;
   if (!srsMemStack_UpdateSize(stack))
   {
-    stack->count--;
-    srsLOG_ERROR("Failed to update size of srsMEMSTACK while Pushing - count will remain at %d", stack->count);
+    stack->count = count;
+    srsLOG_ERROR("Failed to update size of srsMEMSTACK while Pushing - count will remain at %d", count);
     goto done;
   }
   top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
@@ -113,6 +115,7 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
 {
   bool result = false;
   void *top = NULL;
+  size_t count = 0;
   if (stack == NULL)
   {
     goto done;
@@ -127,6 +130,7 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
     stack->count++;
     goto done;
     srsLOG_ERROR("Failed to update size of srsMEMSTACK while Popping - count will remain at %d", stack->count);
+    srsLOG_ERROR("Failed to update size of srsMEMSTACK while Popping - count will remain at %d", count);
   }
   top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
   srsASSERT(top != NULL);
