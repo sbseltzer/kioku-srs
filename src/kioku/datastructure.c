@@ -108,7 +108,7 @@ bool srsMemStack_Push(srsMEMSTACK *stack, void *data)
 done:
   return result;
 }
-bool srsMemStack_Pop(srsMEMSTACK *stack)
+bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
 {
   bool result = false;
   void *top = NULL;
