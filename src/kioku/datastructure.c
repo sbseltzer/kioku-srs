@@ -1,4 +1,5 @@
 #include "kioku/debug.h"
+#include "kioku/log.h"
 #include "kioku/datastructure.h"
 #include <stdlib.h>
 #include <memory.h>
