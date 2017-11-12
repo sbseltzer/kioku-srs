@@ -30,7 +30,7 @@ TEST TestMemStack_Init(void)
   ASSERT_EQ(sizeof(value), stack.element_size);
 
   /* Test first push on stack of 1 */
-  ASSERT(srsMemStack_Init(&stack, 1, 1));
+  ASSERT(srsMemStack_Init(&stack, sizeof(value), 1));
   ASSERT(srsMemStack_Push(&stack, &value));
   ASSERT(srsMemStack_Pop(&stack, &value));
   ASSERT(srsMemStack_FreeContents(&stack));
