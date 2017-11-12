@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <memory.h>
 
-static bool srsMemStack_UpdateSize(srsMEMSTACK *stack)
+static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
 {
   bool result = false;
   size_t newsize = 0;
@@ -13,13 +13,12 @@ static bool srsMemStack_UpdateSize(srsMEMSTACK *stack)
   {
     goto done;
   }
-  /* In case something funky changes in the future, it'd be good to have a fallback newsize. */
-  newsize = stack->capacity * stack->element_size;
-  /** TODO Should this be an assert? */
   if (stack->capacity == 0)
   {
-    goto done;
+    stack->capacity = srsMEMSTACK_MINIMUM_CAPACITY;
   }
+  /* In case something funky changes in the future, it'd be good to have a fallback newsize. */
+  newsize = stack->capacity * stack->element_size;
   /* Try to reallocate based on current count */
   if (stack->count < stack->capacity / 2)
   {
@@ -118,7 +117,7 @@ bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
   count = stack->count;
   top = stack->top;
   stack->count++;
-  if (!srsMemStack_UpdateSize(stack))
+  if (!srsMemStack_UpdateCapacity(stack))
   {
     srsLOG_ERROR("Failed to update size of srsMEMSTACK while Pushing - count will remain at %d", count);
     goto done;
@@ -134,7 +133,7 @@ bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
 revert:
   /* Restore count and attmept to update size if applicable */
   stack->count = count;
-  srsMemStack_UpdateSize(stack);
+  srsMemStack_UpdateCapacity(stack);
   /* Restore top of stack */
   top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
   srsASSERT(top != NULL);
@@ -166,7 +165,7 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
   /* Attempt to decrement */
   stack->count--;
   /* Attempt to shrink if necessary */
-  if (!srsMemStack_UpdateSize(stack))
+  if (!srsMemStack_UpdateCapacity(stack))
   {
     srsLOG_ERROR("Failed to update size of srsMEMSTACK while Popping - count will remain at %d", count);
     goto revert;
@@ -190,7 +189,7 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
 revert:
   /* Restore count and attempt to restore size when applicable */
   stack->count = count;
-  srsMemStack_UpdateSize(stack); /** TODO Should we check the result of this? */
+  srsMemStack_UpdateCapacity(stack); /** TODO Should we check the result of this? */
   /* Restore top of stack */
   top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
   srsASSERT(top != NULL);
