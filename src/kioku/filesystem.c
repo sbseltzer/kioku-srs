@@ -21,8 +21,6 @@
 #include <unistd.h>
 #endif
 
-static int32_t directory_stack_top_index = 0;
-static char *directory_stack[srsFILESYSTEM_DIRSTACK_SIZE] = {NULL};
 static srsMEMSTACK dirstack = {0};
 static char *directory_current = NULL;
 
@@ -137,6 +135,7 @@ const char *srsDir_PushCWD(const char *path)
   {
     srsASSERT(srsMemStack_Init(&dirstack, sizeof(char *), -1));
   }
+  /* Try changing to the directory we're pushing */
   if ((path != NULL) && srsDir_SetSystemCWD(path))
   {
     /* Free the current directory so our next call to srsDir_GetCWD regenerates it */
@@ -163,56 +162,52 @@ const char *srsDir_PushCWD(const char *path)
  * Pop the Current Working Directory (CWD) from the Directory Stack, changing to the new top CWD if available.
  * If the previous new top is no longer valid, this function will repeat until either a valid one is found, or no CWDs are left on the stack.
  * @param[out] popped A place to store the null-terminated string of the popped CWD. If non-NULL, it will not be freed and it is up to the user to do so. Otherwise it will be automatically freed.
- * @return Whether an entry was popped.
+ * @return Whether the directory was popped to a valid directory.
  */
 bool srsDir_PopCWD(char **popped)
 {
-  char *pop_me = NULL;
-  int32_t current_index = directory_stack_top_index;
-  /* See if there's anything left to pop */
-  if ((current_index >= 0) && (directory_stack[current_index] != NULL))
+  char *change_to = NULL;
+  bool popped_to_valid_dir = false;
+  if (dirstack.memory == NULL)
   {
-    pop_me = directory_stack[current_index];
+    srsASSERT(srsMemStack_Init(&dirstack, sizeof(char *), -1));
   }
-  /* Figure out what the next index will be */
-  /* Decrement index */
-  int32_t next_index = directory_stack_top_index - 1;
-  /* Wrap around if needed */
-  if (next_index < 0)
+  /* Perform the following until we pop to a valid directory */
+  while (true)
   {
-    next_index = srsFILESYSTEM_DIRSTACK_SIZE - 1;
-  }
-  /* Decrement down the stack until a non-NULL entry is reached or until the bottom is hit (which indicates an empty stack) */
-  while ((next_index > 0) && (directory_stack[next_index] == NULL))
-  {
-    next_index--;
-  }
-  assert(next_index < srsFILESYSTEM_DIRSTACK_SIZE);
-  /* Attempt to change to the new directory */
-  if ((next_index >= 0) && (directory_stack[next_index] != NULL))
-  {
-    if (!srsDir_SetSystemCWD(directory_stack[next_index]))
+    /* If we can't pop, there's nothing left to try changing to and must break out of the loop. */
+    if (!srsMemStack_Pop(&dirstack, NULL))
     {
-      srsLOG_ERROR("Unable to pop directory to %s", directory_stack[next_index]);
+      break;
+    }
+    /* If the new top of the stack is NULL, it means we ran out of directories to try changing to, so we break from the loop */
+    if (dirstack.top == NULL)
+    {
+      break;
+    }
+    /* Grab the directory to change to */
+    change_to = *((char *)dirstack.top)
+    /* Can't change to a null directory, try next one. */
+    if (change_to == NULL)
+    {
+      continue;
+    }
+    /* Attempt to change to the new directory */
+    popped_to_valid_dir = srsDir_SetSystemCWD(change_to);
+    if (!popped_to_valid_dir)
+    {
+      /* Free it and try the next one. */
+      srsLOG_ERROR("Unable to pop directory to %s", change_to);
+      free(change_to);
+      change_to = NULL;
+      continue;
     }
   }
-  /* Just in case nothing is found, start by initializing the output value to NULL */
   if (popped != NULL)
   {
-    /* The user wanted the entry, so output it (if any) rather than freeing it */
-    *popped = pop_me;
+    *popped = change_to;
   }
-  else
-  {
-    /* The user didn't want the popped entry, so free it (if any) */
-    if (pop_me != NULL)
-    {
-      free(pop_me);
-      directory_stack[current_index] = NULL;
-    }
-  }
-  directory_stack_top_index = next_index;
-  return (pop_me != NULL);
+  return popped_to_valid_dir;
 }
 
 /** @todo Perhaps have a method called by an init that dynamically finds a "true" max path length */
