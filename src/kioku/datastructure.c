@@ -69,10 +69,10 @@ bool srsMemStack_Init(srsMEMSTACK *stack, size_t element_size, int32_t initial_c
   stack->count = 0;
   stack->capacity = (initial_capacity > 0) ? initial_capacity : srsMEMSTACK_MINIMUM_CAPACITY;
   stack->memory = NULL;
+  stack->top = NULL;
   if (stack->capacity != 0)
   {
     stack->memory = malloc(stack->element_size * stack->capacity);
-    stack->top = stack->memory;
   }
   result = stack->memory != NULL;
 done:
