@@ -79,7 +79,7 @@ bool srsMemStack_FreeContents(srsMEMSTACK *stack)
     stack->memory = NULL;
   }
 }
-bool srsMemStack_Push(srsMEMSTACK *stack, void *data)
+bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
 {
   bool result = false;
   void *top = NULL;
