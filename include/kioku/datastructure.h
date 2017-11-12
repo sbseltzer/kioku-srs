@@ -26,7 +26,7 @@ typedef struct _srsMEMSTACK_s
   void *memory;
 } srsMEMSTACK;
 
-kiokuAPI bool srsMemStack_Init(srsMEMSTACK *stack, size_t element_size);
+kiokuAPI bool srsMemStack_Init(srsMEMSTACK *stack, size_t element_size, int32_t initial_capacity);
 kiokuAPI bool srsMemStack_FreeContents(srsMEMSTACK *stack);
 kiokuAPI bool srsMemStack_Push(srsMEMSTACK *stack, void *data);
 kiokuAPI bool srsMemStack_Pop(srsMEMSTACK *stack);
