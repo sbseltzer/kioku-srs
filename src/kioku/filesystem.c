@@ -1,5 +1,6 @@
 #include "kioku/types.h"
 #include "kioku/filesystem.h"
+#include "kioku/datastructure.h"
 #include "kioku/log.h"
 
 #include <stdlib.h>
@@ -20,15 +21,9 @@
 #include <unistd.h>
 #endif
 
-/** Explanation of the directory stack implementation
- * The top of the stack can have valid entries after it.
- * When a push would cause the max size to be overrun, no element shifting takes place.
- * Instead, the first element is overwritten and the index for the top is moved.
- * When subsequent pops take place such that the stack index would drop below zero, it wraps around to the first non-NULL element starting from the end of the stack array.
- * Similarly, if a subsequent pop causes the index to point to a NULL element, it will step back till a non-NULL element is found, or until it would drop below zero, in which case the stack is considered empty.
- */
 static int32_t directory_stack_top_index = 0;
 static char *directory_stack[srsFILESYSTEM_DIRSTACK_SIZE] = {NULL};
+static srsMEMSTACK dirstack = {0};
 static char *directory_current = NULL;
 
 
@@ -130,9 +125,14 @@ const char *srsDir_SetCWD(const char *path)
   return NULL;
 }
 
-const char *srsDir_PushCWD(const char *path, char **lost)
+const char *srsDir_PushCWD(const char *path)
 {
   const char *cwd = NULL;
+  /* Initialize the dirstack if it isn't */
+  if (dirstack.memory == NULL)
+  {
+    srsASSERT(srsMemStack_Init(&dirstack, sizeof(char *), -1));
+  }
   if ((path != NULL) && srsDir_SetSystemCWD(path))
   {
     /* Free the current directory so our next call to srsDir_GetCWD regenerates it */
@@ -142,31 +142,15 @@ const char *srsDir_PushCWD(const char *path, char **lost)
       directory_current = NULL;
     }
     cwd = srsDir_GetCWD();
-    /** @todo Check result of srsDir_GetCWD */
-    /* Increment the stack index (if the stack is empty, this should end up at zero) */
-    directory_stack_top_index++;
-    assert(directory_stack_top_index >= 0);
-    /* Wrap around the stack if needed */
-    if (directory_stack_top_index >= srsFILESYSTEM_DIRSTACK_SIZE)
+    /** TODO Check result of srsDir_GetCWD */
+    char *push_me = strdup(cwd);
+    /** TODO Check result of strdup - not exactly sure how best to handle it. */
+    srsASSERT(push_me != NULL);
+    /* Try to push the new directory onto the stack */
+    if (!srsMemStack_Push(dirstack, push_me))
     {
-      directory_stack_top_index = 0;
+      free(push_me);
     }
-    /* Figure out if we're losing a stack entry */
-    if (directory_stack[directory_stack_top_index] != NULL)
-    {
-      if (lost != NULL)
-      {
-        /* Give user back the lost entry for inspection, and they will need to free it */
-        *lost = directory_stack[directory_stack_top_index];
-      }
-      else
-      {
-        /* The user doesn't want lost entries back - free it */
-        free(directory_stack[directory_stack_top_index]);
-      }
-    }
-    directory_stack[directory_stack_top_index] = strdup(cwd);
-    /** @todo Check result of strdup */
   }
   return cwd;
 }
