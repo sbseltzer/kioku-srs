@@ -7,7 +7,7 @@ static bool srsMemStack_UpdateSize(srsMEMSTACK *stack)
 {
   bool result = false;
   size_t newsize = 0;
-  void *newmem = NULL;
+  void *mem = NULL;
   if (stack == NULL)
   {
     goto done;
@@ -32,12 +32,16 @@ static bool srsMemStack_UpdateSize(srsMEMSTACK *stack)
   }
   if (newsize != stack->capacity)
   {
-    newmem = realloc(stack->memory, newsize);
+    mem = realloc(stack->memory, newsize);
+  }
+  else
+  {
+    mem = stack->memory;
   }
 done:
-  if (newmem != NULL)
+  if (mem != NULL)
   {
-    stack->memory = newmem;
+    stack->memory = mem;
     result = true;
   }
   return result;
