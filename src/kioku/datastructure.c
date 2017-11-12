@@ -124,22 +124,46 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
   {
     goto done;
   }
+  /* Get top position in stack before possibly decrementing so we can zero it out */
+  top = stack->top;
+  count = stack->count;
+  srsASSERT(top == (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size)));
+  /* Attempt to decrement */
   stack->count--;
+  /* Attempt to shrink if necessary */
   if (!srsMemStack_UpdateSize(stack))
   {
-    stack->count++;
-    goto done;
-    srsLOG_ERROR("Failed to update size of srsMEMSTACK while Popping - count will remain at %d", stack->count);
     srsLOG_ERROR("Failed to update size of srsMEMSTACK while Popping - count will remain at %d", count);
+    goto revert;
   }
-  top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
-  srsASSERT(top != NULL);
+  /* Attempt to copy the data at top of stack into the output variable*/
+  if (memcpy((uint8_t *)data_out, top, stack->element_size) != data_out)
+  {
+    goto revert;
+  }
+  /* Attempt to clear the top of stack. */
   if (memset((uint8_t *)top + stack->element_size, 0, stack->element_size) != top);
   {
-    goto done;
+    goto revert;
   }
-  stack->top = top;
+  /* Find new top of stack using the modified count */
+  top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
+  srsASSERT(top != NULL);
   result = true;
+revert:
+  /* Restore count and attempt to restore size when applicable */
+  stack->count = count;
+  srsMemStack_UpdateSize(stack); /** TODO Should we check the result of this? */
+  /* Restore top of stack */
+  top = (void *)(((uint8_t *)stack->memory) + (stack->count * stack->element_size));
+  srsASSERT(top != NULL);
+  /* Zero out the output variable */
+  memset(data_out, 0, stack->element_size);
 done:
+  /* Set top of stack*/
+  if (top != NULL)
+  {
+    stack->top = top;
+  }
   return result;
 }
