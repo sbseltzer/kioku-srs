@@ -120,28 +120,31 @@ bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
   {
     goto done;
   }
+  if (data == NULL)
+  {
+    goto done;
+  }
   if (stack->memory == NULL)
   {
     goto done;
   }
   count = stack->count;
-  top = stack->top;
   stack->count++;
   if (!srsMemStack_UpdateCapacity(stack))
   {
     srsLOG_ERROR("Failed to update size of srsMEMSTACK while Pushing - count will remain at %d", count);
-    goto done;
+    goto revert;
   }
   top = srsMemStack_CalculatedTop(stack);
   srsASSERT(top != NULL);
   if (memcpy(top, data, stack->element_size) != top)
   {
     srsLOG_ERROR("Failed to copy pushed data to the srsMEMSTACK");
-    goto done;
+    goto revert;
   }
   result = true;
 revert:
-  /* Restore count and attmept to update size if applicable */
+  /* Restore count and attempt to update size if applicable */
   stack->count = count;
   srsMemStack_UpdateCapacity(stack);
   /* Restore top of stack */
