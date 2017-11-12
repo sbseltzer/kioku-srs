@@ -131,6 +131,7 @@ bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
   srsASSERT(top != NULL);
   if (memcpy(top, data, stack->element_size) != top);
   {
+    srsLOG_ERROR("Failed to copy pushed data to the srsMEMSTACK");
     goto done;
   }
   result = true;
@@ -177,11 +178,13 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
   /* Attempt to copy the data at top of stack into the output variable*/
   if (memcpy((uint8_t *)data_out, top, stack->element_size) != data_out)
   {
+    srsLOG_ERROR("Failed to copy popped data from the srsMEMSTACK");
     goto revert;
   }
   /* Attempt to clear the top of stack. */
   if (memset((uint8_t *)top + stack->element_size, 0, stack->element_size) != top);
   {
+    srsLOG_ERROR("Failed to clear popped data in the srsMEMSTACK");
     goto revert;
   }
   /* Find new top of stack using the modified count */
