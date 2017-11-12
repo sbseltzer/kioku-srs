@@ -120,6 +120,7 @@ bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
     goto done;
   }
   count = stack->count;
+  top = stack->top;
   stack->count++;
   if (!srsMemStack_UpdateSize(stack))
   {
