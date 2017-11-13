@@ -152,15 +152,19 @@ const char *srsDir_PushCWD(const char *path)
   {
     srsLOG_NOTIFY("Directory Stack appears to be uninitialized - run srsMemStack_Init");
     srsASSERT(srsMemStack_Init(&dirstack, sizeof(char *), -1));
+    srsASSERT(dirstack.element_size > 0);
+    srsASSERT(dirstack.capacity > 0);
     srsASSERT(dirstack.memory != NULL);
     srsMEMSTACK_PRINT(dirstack);
   }
   cwd = srsDir_GetCWD();
   srsMEMSTACK_PRINT(dirstack);
+  srsASSERT(cwd != NULL);
   /** TODO Check result of srsDir_GetCWD */
   char *push_me = strdup(cwd);
   /** TODO Check result of strdup - not exactly sure how best to handle it. */
   srsASSERT(push_me != NULL);
+  srsASSERT(dirstack.memory != NULL);
   srsMEMSTACK_PRINT(dirstack);
   /* Try to push the new directory onto the stack */
   if (!srsMemStack_Push(&dirstack, &push_me))
@@ -180,6 +184,7 @@ const char *srsDir_PushCWD(const char *path)
       directory_current = NULL;
     }
     cwd = srsDir_GetCWD();
+    srsASSERT(cwd != NULL);
   }
   return cwd;
 }
