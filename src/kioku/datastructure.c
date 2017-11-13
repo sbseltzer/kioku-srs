@@ -111,6 +111,7 @@ bool srsMemStack_FreeContents(srsMEMSTACK *stack)
     free(stack->memory);
     stack->memory = NULL;
   }
+  return true;
 }
 bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
 {
