@@ -100,9 +100,18 @@ const char *srsDir_GetCWD()
       char *cwd = srsDir_GetSystemCWD(directory_current, kiokuPATH_MAX);
       if (cwd != directory_current || cwd == NULL)
       {
+        srsLOG_ERROR("Failed to get the underlying system CWD when attempting to initialize the API CWD");
         free(directory_current);
         directory_current = NULL;
       }
+      else
+      {
+        srsLOG_NOTIFY("Initialized Kioku CWD to %s", directory_current);
+      }
+    }
+    else
+    {
+      srsLOG_ERROR("Failed to allocate space for CWD");
     }
   }
   /** @todo Consider doing a realloc to save a little heap space */
@@ -122,6 +131,7 @@ const char *srsDir_SetCWD(const char *path)
   /* Attempt to change the directory, and if it succeeds cause the current directory to be reallocated */
   if ((path != NULL) && srsDir_SetSystemCWD(path))
   {
+    srsLOG_NOTIFY("Set Kioku CWD to %s", directory_current);
     return srsDir_GetCWD();
   }
   /* Failure to do the actual directory changing returns NULL */
@@ -140,18 +150,23 @@ const char *srsDir_PushCWD(const char *path)
   /* Initialize the dirstack if it isn't */
   if (dirstack.memory == NULL)
   {
+    srsLOG_NOTIFY("Directory Stack appears to be uninitialized - run srsMemStack_Init");
     srsASSERT(srsMemStack_Init(&dirstack, sizeof(char *), -1));
     srsASSERT(dirstack.memory != NULL);
+    srsMEMSTACK_PRINT(dirstack);
   }
   cwd = srsDir_GetCWD();
+  srsMEMSTACK_PRINT(dirstack);
   /** TODO Check result of srsDir_GetCWD */
   char *push_me = strdup(cwd);
   /** TODO Check result of strdup - not exactly sure how best to handle it. */
   srsASSERT(push_me != NULL);
+  srsMEMSTACK_PRINT(dirstack);
   /* Try to push the new directory onto the stack */
   if (!srsMemStack_Push(&dirstack, &push_me))
   {
     srsLOG_ERROR("Failed attempt to push directory onto stack: %s", push_me);
+    srsMEMSTACK_PRINT(dirstack);
     free(push_me);
     return NULL;
   }
