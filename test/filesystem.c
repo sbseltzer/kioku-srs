@@ -649,8 +649,8 @@ TEST TestPushPopCWD(void)
   int32_t up_index = -1;
 
   srsLOG_NOTIFY("NULL tests");
-  ASSERT_FALSE(srsDir_PushCWD(NULL, NULL));
-  ASSERT_FALSE(srsDir_PopCWD(NULL));
+  ASSERT_EQ(NULL,  srsDir_PushCWD(NULL));
+  ASSERT_EQ(false, srsDir_PopCWD(NULL));
 
   /* Clean up directories from previous tests */
   size_t numdirs = sizeof(dirs) / sizeof(dirs[0]);
@@ -676,9 +676,8 @@ TEST TestPushPopCWD(void)
     ASSERT(srsDir_Create(dirs[i]));
     /* Grab the full path of the new dir before we change to it. */
     ASSERT(0 != srsPath_GetFull(dirs[i], path, sizeof(path)));
-
-    const char *newdir = NULL;
-    ASSERT(newdir = srsDir_PushCWD(dirs[i], NULL));
+    const char *newdir = srsDir_PushCWD(dirs[i]);
+    ASSERT(newdir != NULL);
     /* Check the hypothetical fullpath against the pushed dir path */
     ASSERT_STR_EQ(newdir, path);
     cwd = srsDir_GetCWD();
@@ -745,11 +744,11 @@ TEST TestPushPopCWD(void)
     strcpy(path, cwd);
     path[up_index] = '\0';
     /* Go up one directory via push */
-    cwd = srsDir_PushCWD("..", NULL);
+    cwd = srsDir_PushCWD("..");
     ASSERT(cwd != NULL);
     ASSERT_STR_EQ(path, cwd);
     /* Go up another directory via push*/
-    cwd = srsDir_PushCWD("..", NULL);
+    cwd = srsDir_PushCWD("..");
     ASSERT(cwd != NULL);
     srsLOG_NOTIFY(cwd);
     ASSERT(strcmp(path, cwd) != 0); /** @todo Use a < or > here as appropriate. */
