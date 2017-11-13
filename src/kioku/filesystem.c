@@ -111,7 +111,7 @@ const char *srsDir_GetCWD()
 const char *srsDir_SetCWD(const char *path)
 {
   /* Clear stack */
-  ClearDirStack();
+  ClearDirectoryStack();
   /* Free the current directory so our next call to srsDir_GetCWD regenerates it */
   if (directory_current != NULL)
   {
