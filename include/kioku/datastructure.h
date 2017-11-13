@@ -17,6 +17,10 @@
 #define srsMEMSTACK_MINIMUM_CAPACITY 2
 #endif
 
+/**
+ * srsMEMSTACK
+ * Uses an internal dynamic array implementation (contiguous memory).
+ */
 typedef struct _srsMEMSTACK_s
 {
   size_t element_size;
