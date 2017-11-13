@@ -89,10 +89,7 @@ bool srsMemStack_Init(srsMEMSTACK *stack, size_t element_size, int32_t initial_c
 done:
   if (!result && (stack != NULL))
   {
-    if (stack->memory != NULL)
-    {
-      free(stack->memory);
-    }
+    free(stack->memory);
     memset(stack, 0, sizeof(*stack));
   }
   return result;
