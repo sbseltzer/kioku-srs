@@ -28,7 +28,8 @@ static void ClearDirectoryStack()
 {
   if (dirstack.memory == NULL)
   {
-    return;
+    srsASSERT(srsMemStack_Init(&dirstack, sizeof(char *), -1));
+    srsASSERT(dirstack.memory != NULL);
   }
   size_t i = 0;
   char *string_ptr = NULL;
