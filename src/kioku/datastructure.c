@@ -143,6 +143,7 @@ bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
   result = true;
   goto done;
 revert:
+  srsASSERT(!result);
   srsLOG_ERROR("Something went wrong while pushing to stack - try to revert to previous state");
   /* Restore count and attempt to update size if applicable */
   stack->count = count;
@@ -216,6 +217,7 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
   result = true;
   goto done;
 revert:
+  srsASSERT(!result);
   srsLOG_ERROR("Something went wrong while popping from stack - try to revert to previous state");
   /* Restore count and attempt to restore size when applicable */
   stack->count = count;
