@@ -208,7 +208,7 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
     }
   }
   /* Attempt to clear the top of stack. */
-  if (memset((uint8_t *)top + stack->element_size, 0, stack->element_size) != top);
+  if (memset((uint8_t *)top, 0, stack->element_size) != top);
   {
     srsLOG_ERROR("Failed to clear popped data in the srsMEMSTACK");
     goto revert;
