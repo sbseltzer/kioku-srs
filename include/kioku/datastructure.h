@@ -35,9 +35,9 @@ typedef struct _srsMEMSTACK_s
   do {                                                                  \
     srsLOG_NOTIFY(kiokuSTRING_LF                                        \
                   "memstack {"kiokuSTRING_LF                            \
-                  "  element_size: %u"kiokuSTRING_LF                    \
-                  "  capacity: %u"kiokuSTRING_LF                        \
-                  "  count: %u"kiokuSTRING_LF                           \
+                  "  element_size: %zu"kiokuSTRING_LF                    \
+                  "  capacity: %zu"kiokuSTRING_LF                        \
+                  "  count: %zu"kiokuSTRING_LF                           \
                   "  memory: %p"kiokuSTRING_LF                          \
                   "  top: %p"kiokuSTRING_LF                             \
                   "}"kiokuSTRING_LF,                                    \
