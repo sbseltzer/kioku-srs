@@ -98,8 +98,8 @@ done:
 }
 bool srsMemStack_FreeContents(srsMEMSTACK *stack)
 {
-  /* TODO Right now it's possible that someone could prevent a stack from ever being freed by manually setting capacity to zero. Is this okay? */
-  if (stack == NULL || stack->capacity == 0)
+  /* TODO Right now it's possible that someone could prevent a stack from ever being freed by manually changing sacred elements. */
+  if (stack == NULL || stack->capacity == 0 || stack->element_size == 0)
   {
     return false;
   }
