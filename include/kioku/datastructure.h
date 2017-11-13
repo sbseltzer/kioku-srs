@@ -27,8 +27,8 @@ typedef struct _srsMEMSTACK_s
   size_t element_size;
   size_t capacity;
   size_t count;
-  void *top;
   void *memory;
+  void *top;
 } srsMEMSTACK;
 
 #define srsMEMSTACK_PRINT(stack_struct)                                 \
