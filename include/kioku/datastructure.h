@@ -54,7 +54,7 @@ typedef struct _srsMEMSTACK_s
 kiokuAPI bool srsMemStack_Init(srsMEMSTACK *stack, size_t element_size, int32_t initial_capacity);
 
 /**
- * Uninitializes the stack by clearing all state and freeing allocated memory.
+ * Uninitializes the stack that was previously initialized via @ref srsMemStack_Init by clearing all state and freeing allocated memory.
  * @param[in] stack The stack to uninitialized. Contents of stack are undefined if this is false. Otherwise it will be completely zeroed out.
  * @return Whether the stack could be uninitialized.
  */
