@@ -86,6 +86,7 @@ bool srsMemStack_Init(srsMEMSTACK *stack, size_t element_size, int32_t initial_c
 done:
   if (!result && (stack != NULL))
   {
+    srsLOG_NOTIFY("Failed to initialize srsMEMSTACK - free any memory that was allocated and zero out the struct");
     free(stack->memory);
     memset(stack, 0, sizeof(*stack));
   }
@@ -116,14 +117,17 @@ bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
   size_t count = 0;
   if (stack == NULL)
   {
+    srsLOG_ERROR("Failed to push to NULL memstack");
     goto done;
   }
   if (data == NULL)
   {
+    srsLOG_ERROR("Failed to push NULL data to memstack");
     goto done;
   }
   if (stack->memory == NULL)
   {
+    srsLOG_ERROR("Failed to push to memstack with NULL memory");
     goto done;
   }
   count = stack->count;
