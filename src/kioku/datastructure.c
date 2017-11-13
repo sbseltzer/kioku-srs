@@ -98,7 +98,8 @@ done:
 }
 bool srsMemStack_FreeContents(srsMEMSTACK *stack)
 {
-  if (stack == NULL)
+  /* TODO Right now it's possible that someone could prevent a stack from ever being freed by manually setting capacity to zero. Is this okay? */
+  if (stack == NULL || stack->capacity == 0)
   {
     return false;
   }
