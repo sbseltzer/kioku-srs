@@ -154,6 +154,7 @@ revert:
   srsMemStack_UpdateCapacity(stack);
   /* Restore top of stack */
   top = srsMemStack_CalculatedTop(stack);
+  /* Make sure that when count did not return to zero, we still have a valid top */
   if (stack->count != 0)
   {
     srsASSERT(top != NULL);
