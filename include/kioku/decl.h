@@ -3,6 +3,9 @@
  *
  * Declarations used by the rest of the project.
  *
+ * This is intended to be included at the top of all Kioku API headers and sources.
+ * It is important that this is included before any standard headers as it may include feature macro definitions.
+ *
  * @{
  */
 #ifndef _KIOKU_DECL_H
