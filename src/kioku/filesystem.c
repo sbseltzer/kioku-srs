@@ -130,10 +130,29 @@ const char *srsDir_SetCWD(const char *path)
 const char *srsDir_PushCWD(const char *path)
 {
   const char *cwd = NULL;
+  /* Invalid path cannot be changed to */
+  if (!srsDir_Exists(path))
+  {
+    srsLOG_ERROR("Failed attempt to navigate to invalid directory: %s", path);
+    return NULL;
+  }
   /* Initialize the dirstack if it isn't */
   if (dirstack.memory == NULL)
   {
     srsASSERT(srsMemStack_Init(&dirstack, sizeof(char *), -1));
+    srsASSERT(dirstack.memory != NULL);
+  }
+  cwd = srsDir_GetCWD();
+  /** TODO Check result of srsDir_GetCWD */
+  char *push_me = strdup(cwd);
+  /** TODO Check result of strdup - not exactly sure how best to handle it. */
+  srsASSERT(push_me != NULL);
+  /* Try to push the new directory onto the stack */
+  if (!srsMemStack_Push(&dirstack, &push_me))
+  {
+    srsLOG_ERROR("Failed attempt to push directory onto stack: %s", push_me);
+    free(push_me);
+    return NULL;
   }
   /* Try changing to the directory we're pushing */
   if ((path != NULL) && srsDir_SetSystemCWD(path))
@@ -145,15 +164,6 @@ const char *srsDir_PushCWD(const char *path)
       directory_current = NULL;
     }
     cwd = srsDir_GetCWD();
-    /** TODO Check result of srsDir_GetCWD */
-    char *push_me = strdup(cwd);
-    /** TODO Check result of strdup - not exactly sure how best to handle it. */
-    srsASSERT(push_me != NULL);
-    /* Try to push the new directory onto the stack */
-    if (!srsMemStack_Push(&dirstack, &push_me))
-    {
-      free(push_me);
-    }
   }
   return cwd;
 }
