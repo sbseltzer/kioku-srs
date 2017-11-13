@@ -50,6 +50,7 @@ static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
   if (setsize != stack->capacity)
   {
     mem = realloc(stack->memory, setsize);
+    stack->top = srsMemStack_CalculatedTop(stack);
   }
   else
   {
