@@ -150,7 +150,7 @@ const char *srsDir_PushCWD(const char *path)
     /** TODO Check result of strdup - not exactly sure how best to handle it. */
     srsASSERT(push_me != NULL);
     /* Try to push the new directory onto the stack */
-    if (!srsMemStack_Push(dirstack, &push_me))
+    if (!srsMemStack_Push(&dirstack, &push_me))
     {
       free(push_me);
     }
@@ -186,7 +186,7 @@ bool srsDir_PopCWD(char **popped)
       break;
     }
     /* Grab the directory to change to */
-    change_to = *((char *)dirstack.top)
+    change_to = *((char *)dirstack.top);
     /* Can't change to a null directory, try next one. */
     if (change_to == NULL)
     {
