@@ -167,7 +167,7 @@ const char *srsDir_PushCWD(const char *path)
   srsASSERT(push_me != NULL);
   srsASSERT(dirstack.memory != NULL);
   srsMEMSTACK_PRINT(dirstack);
-  /* Try to push the new directory onto the stack */
+  /* Try to push the current directory onto the stack before navigating to the new one*/
   if (!srsMemStack_Push(&dirstack, &push_me))
   {
     srsLOG_ERROR("Failed attempt to push directory onto stack: %s", push_me);
@@ -205,6 +205,7 @@ bool srsDir_PopCWD(char **popped)
     bool ok = srsMemStack_Init(&dirstack, sizeof(char *), -1);
     srsASSERT(ok);
   }
+  srsMEMSTACK_PRINT(dirstack);
   /* Perform the following until we pop to a valid directory */
   while (true)
   {
@@ -230,7 +231,7 @@ bool srsDir_PopCWD(char **popped)
     if (!popped_to_valid_dir)
     {
       /* Free it and try the next one. */
-      srsLOG_ERROR("Unable to pop directory to %s", change_to);
+      srsLOG_ERROR("Unable to pop directory to %s - try the next one", change_to);
       free(change_to);
       change_to = NULL;
       continue;
@@ -240,6 +241,7 @@ bool srsDir_PopCWD(char **popped)
   {
     *popped = change_to;
   }
+  srsMEMSTACK_PRINT(dirstack);
   return popped_to_valid_dir;
 }
 
