@@ -54,6 +54,7 @@ TEST TestMemStack_Push1Pop1(void)
 
   /* Test first push on stack of 1 */
   ASSERT(srsMemStack_Init(&stack, sizeof(value_in), 1));
+  srsMEMSTACK original_state = stack;
 
   srsLOG_NOTIFY("Testing push on smallest possible stack capacity");
   srsMEMSTACK_PRINT(stack);
@@ -64,9 +65,11 @@ TEST TestMemStack_Push1Pop1(void)
 
   srsLOG_NOTIFY("Testing pop from smallest stack capacity");
   ASSERT(srsMemStack_Pop(&stack, &value_out));
+  srsMEMSTACK_PRINT(stack);
   ASSERT_EQ_FMT(value_in, value_out, "%u");
-  ASSERT_EQ(NULL, stack.top, "%p");
-  ASSERT_EQ(0, stack.count, "%d");
+  ASSERT_EQ_FMT(original_state.top, stack.top, "%p");
+  ASSERT_EQ_FMT(original_state.count, stack.count, "%u");
+  ASSERT_EQ_FMT(original_state.capacity, stack.capacity, "%u");
 
   ASSERT(srsMemStack_FreeContents(&stack));
 
