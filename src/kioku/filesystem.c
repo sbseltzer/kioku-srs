@@ -460,7 +460,7 @@ int32_t kioku_path_up_index(const char *path, int32_t start_index)
   /* Example:       for (i = strlen(path); i > -1; i = kioku_path_up_index(path, i))
      As opposed to: for (i = -1; i != -1; i = kioku_path_up_index(path, i))
      If `i` starts at less than -1 and we assume it means "use path length", then in the unlikely case of a 32bit int not being able to contain a large size_t, the user could end up in an infinite loop by feeding the result of this function into itself.
-     */
+  */
   if (start_index < -1)
   {
     return result;
