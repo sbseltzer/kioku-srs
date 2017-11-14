@@ -23,9 +23,9 @@ Examples of SRS applications would be SuperMemo, Anki, Mnemosyne, and perhaps mo
 
 ## Why another SRS?
 
-This is really born of my frustration with Anki (and other SRS solutions). I've used Anki for over a year. It does its job wonderfully. There are many user-created decks and addons, but it's a nightmare to actually port addons to multiple devices. Mnemosyne's modding framework is a bit more thought out, but it suffers from a similar class of problems.
+This is really born of my frustration with Anki. I've used Anki for over a year. It does its job wonderfully. There are many user-created decks and addons, but it's impossible to port most addons to the web and mobile platforms. Mnemosyne's modding framework is a bit more thought out, but it suffers from a similar class of problems. All that to say, the original inspiration for this was something with all the features we love about other SRS applications, but with a robust portable modding framework. 
 
-This section will review the main problems Kioku aims to solve.
+This section will go into more detail about what Kioku aims to be good at.
 
 ### Portability
 
