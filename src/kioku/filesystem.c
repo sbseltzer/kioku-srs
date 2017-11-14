@@ -577,8 +577,8 @@ done:
     if (!ok)
     {
       srsLOG_ERROR("For some reason, the system function for directory creation succeeded, yet our check for directory existence failed. This could be a serious defect. Please report this!");
+      srsBAIL();
     }
-    assert(ok);
   }
   if (create_dir != NULL)
   {
