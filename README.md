@@ -1,6 +1,6 @@
 # Kioku SRS (記憶SRS)
 
-A portable, versioned, distributed, self-hosted Spaced Repetition System (SRS) inspired by [Anki](https://ankisrs.net) and backed by Git.
+A portable, versioned, distributed, self-hosted Spaced Repetition System (SRS) inspired by [Anki](https://ankisrs.net) and backed by Git. Development is still in very early stages, so I wouldn't even call this a real SRS yet.
 
 ## Build Status
 
