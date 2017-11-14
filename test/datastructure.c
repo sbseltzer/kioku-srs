@@ -42,7 +42,7 @@ TEST TestMemStack_InitAndFree(void)
   PASS();
 }
 
-TEST TestMemStack_Push(void)
+TEST TestMemStack_Push1Pop1(void)
 {
   srsMEMSTACK stack = {0};
   uint8_t value_in = 200;
@@ -76,7 +76,7 @@ TEST TestMemStack_Push(void)
 /* Suites can group multiple tests with common setup. */
 SUITE(the_suite) {
   RUN_TEST(TestMemStack_InitAndFree);
-  RUN_TEST(TestMemStack_Push);
+  RUN_TEST(TestMemStack_Push1Pop1);
 }
 
 /* Add definitions that need to be in the test runner's main file. */
