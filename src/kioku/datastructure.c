@@ -92,6 +92,7 @@ done:
   }
   return result;
 }
+
 bool srsMemStack_FreeContents(srsMEMSTACK *stack)
 {
   /* TODO Right now it's possible that someone could prevent a stack from ever being freed by manually changing sacred elements. */
@@ -110,6 +111,7 @@ bool srsMemStack_FreeContents(srsMEMSTACK *stack)
   }
   return true;
 }
+
 bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
 {
   bool result = false;
