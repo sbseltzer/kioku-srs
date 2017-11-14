@@ -120,6 +120,8 @@ bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
     srsLOG_ERROR("Failed to push to NULL memstack");
     goto done;
   }
+  /* Set top to the current stack top in case one of these fails */
+  top = stack->top;
   if (data == NULL)
   {
     srsLOG_ERROR("Failed to push NULL data to memstack");
@@ -161,7 +163,7 @@ revert:
   }
 done:
   /* Set top of stack*/
-  if (top != NULL)
+  if (stack != NULL)
   {
     stack->top = top;
   }
@@ -177,6 +179,8 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
   {
     goto done;
   }
+  /* Set top to the current stack top in case one of these fails */
+  top = stack->top;
   if (stack->memory == NULL)
   {
     goto done;
@@ -234,7 +238,7 @@ revert:
   memset(data_out, 0, stack->element_size);
 done:
   /* Set top of stack*/
-  if (top != NULL)
+  if (stack != NULL)
   {
     stack->top = top;
   }
