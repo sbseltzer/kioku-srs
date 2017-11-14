@@ -9,9 +9,12 @@
 #ifndef _KIOKU_DEBUG_H
 #define _KIOKU_DEBUG_H
 
-#ifndef KIOKU_IGNORE_RUNTIME_ASSERTS
 #include <assert.h>
-#define srsASSERT(x) assert(x)
+
+#define srsBAIL() abort()
+
+#ifndef KIOKU_IGNORE_RUNTIME_ASSERTS
+#define srsASSERT(x) do {if (!(x)) {srsLOG_ERROR("Assert Failed: %s", #x); srsBAIL();}} while(0)
 #else
 #define srsASSERT(x) ((void)0)
 #endif
