@@ -28,8 +28,8 @@ static void ClearDirectoryStack()
 {
   if (dirstack.memory == NULL)
   {
-    srsASSERT(srsMemStack_Init(&dirstack, sizeof(char *), -1));
-    srsASSERT(dirstack.memory != NULL);
+    bool ok = srsMemStack_Init(&dirstack, sizeof(char *), -1);
+    srsASSERT(ok);
   }
   size_t i = 0;
   char *string_ptr = NULL;
@@ -151,7 +151,8 @@ const char *srsDir_PushCWD(const char *path)
   if (dirstack.memory == NULL)
   {
     srsLOG_NOTIFY("Directory Stack appears to be uninitialized - run srsMemStack_Init");
-    srsASSERT(srsMemStack_Init(&dirstack, sizeof(char *), -1));
+    bool ok = srsMemStack_Init(&dirstack, sizeof(char *), -1);
+    srsASSERT(ok);
     srsASSERT(dirstack.element_size > 0);
     srsASSERT(dirstack.capacity > 0);
     srsASSERT(dirstack.memory != NULL);
@@ -201,7 +202,8 @@ bool srsDir_PopCWD(char **popped)
   bool popped_to_valid_dir = false;
   if (dirstack.memory == NULL)
   {
-    srsASSERT(srsMemStack_Init(&dirstack, sizeof(char *), -1));
+    bool ok = srsMemStack_Init(&dirstack, sizeof(char *), -1);
+    srsASSERT(ok);
   }
   /* Perform the following until we pop to a valid directory */
   while (true)
