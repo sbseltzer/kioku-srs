@@ -75,7 +75,7 @@ kiokuAPI bool srsMemStack_Push(srsMEMSTACK *stack, const void *data);
  * If capacity is not updated, the contents of memory past the new top are unspecified.
  * @param[in] stack The stack to pop from.
  * @param[out] data The data to copy from the top of the stack.
- * @return Whether the pop was successful.
+ * @return Whether the pop was successful. It could fail if there's bad input, or the stack is empty.
  */
 kiokuAPI bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out);
 
