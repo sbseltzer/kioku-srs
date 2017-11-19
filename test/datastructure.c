@@ -120,7 +120,7 @@ TEST TestMemStack_Push4Pop4WorksAndIncreasesCapacity(void)
     /* See if count is what we expect */
     ASSERT_EQ_FMT(i-1, stack.count, "%zu");
     /* Push */
-    srsLOG_NOTIFY("Pushing value #%zu (%zu)", i, value_in);
+    srsLOG_NOTIFY("Pushing value #%zu (%d)", i, value_in);
     ASSERT(srsMemStack_Push(&stack, &value_in));
     srsMEMSTACK_PRINT(stack);
     /* See if top of stack updated to expected value */
@@ -158,11 +158,11 @@ TEST TestMemStack_Push4Pop4WorksAndIncreasesCapacity(void)
     /* See if count is what we expect */
     ASSERT_EQ_FMT(i, stack.count, "%zu");
     /* Pop */
-    srsLOG_NOTIFY("Popping value #%zu (%zu)", i, value_in);
+    srsLOG_NOTIFY("Popping value #%zu (%d)", i, value_in);
     ASSERT(srsMemStack_Pop(&stack, &value_out));
     srsMEMSTACK_PRINT(stack);
     /* See if we got the right value */
-    ASSERT_EQ_FMT(value_in, value_out, "%zu");
+    ASSERT_EQ_FMT(value_in, value_out, "%d");
     /* See if top of stack updated to expected value */
     if (i > 1)
     {
