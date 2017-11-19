@@ -72,6 +72,7 @@ kiokuAPI bool srsMemStack_Push(srsMEMSTACK *stack, const void *data);
 /**
  * Pops an element from the stack by copy.
  * Capacity may be updated and the pointer to the top of the stack will be modified upon success.
+ * If capacity is not updated, the contents of memory past the new top are unspecified.
  * @param[in] stack The stack to pop from.
  * @param[out] data The data to copy from the top of the stack.
  * @return Whether the pop was successful.

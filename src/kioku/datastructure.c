@@ -191,19 +191,12 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
   {
     goto done;
   }
-  /* Get top position in stack before possibly decrementing so we can zero it out */
-  top = stack->top;
+  /* Hold onto original count for calculating pointer to copy even if stack memory gets moved, or for later restoration (in case of failure) */
   count = stack->count;
+  top = stack->top;
   srsASSERT(top == srsMemStack_ElementPointerByNumber(stack, stack->count));
-  /* Attempt to decrement */
-  stack->count--;
-  /* Attempt to shrink if necessary */
-  if (!srsMemStack_UpdateCapacity(stack))
-  {
-    srsLOG_ERROR("Failed to update size of srsMEMSTACK while Popping - count will remain at %d", count);
-    goto revert;
-  }
-  /* It's totally fine for a user to not care what is getting popped */
+  /* It's totally fine for a user to not care what is getting popped,
+   * Though it is important we do this before updating capacity, as we can lose during a realloc. */
   if (data_out != NULL)
   {
     /* Attempt to copy the data at top of stack into the output variable*/
@@ -213,10 +206,12 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
       goto revert;
     }
   }
-  /* Attempt to clear the top of stack. */
-  if (memset((uint8_t *)top, 0, stack->element_size) != top)
+  /* Attempt to decrement */
+  stack->count--;
+  /* Attempt to shrink if necessary */
+  if (!srsMemStack_UpdateCapacity(stack))
   {
-    srsLOG_ERROR("Failed to clear popped data in the srsMEMSTACK");
+    srsLOG_ERROR("Failed to update size of srsMEMSTACK while Popping - count will remain at %d", count);
     goto revert;
   }
   /* Find new top of stack using the modified count */
