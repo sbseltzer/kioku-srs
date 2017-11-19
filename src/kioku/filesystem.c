@@ -349,12 +349,29 @@ size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
     }
     free(path);
     /* Instead of checking POSIX spec, let compilation fail for missing realpath. */
+    int errno_capture = 0;
+    errno = 0;
     path = realpath(path_out, NULL);
+    errno_capture = errno;
     /* TODO Add a check for whether realpath behaves as described by POSIX 2008 in CMakeLists.txt if such a facility exists so we don't fail preprocessor checks in funky compilers. */
     #if defined(kiokuOS_APPLE) && (_POSIX_VERSION < 200809L)
-      /* Instead we assert realpath always returns a valid malloc'd string. */
-      /* TODO This is sloppy, but best solution I can think of for now. Needs to be more robust some day. */
-      srsASSERT(path != NULL);
+    if (errno_capture != 0)
+    {
+      /* QUOTH THE SPEC
+           EINVAL
+           path  is NULL.   (In  glibc versions  before 2.3,  this
+                             error is also returned if resolved_path is NULL.)
+      */
+      /* Here the input for path (path_out) cannot be NULL at this point, so the realpath implementation doesn't support returning a malloc'd string */
+      srsLOG_ERROR("Something went wrong calling realpath: %d = %s", errno_capture, strerror(errno_capture));
+      if (errno_capture == EINVAL)
+      {
+        /* So here we assert that path != NULL, but here it will almost certainly be. Failure here indicates an unsupported realpath implementation. */
+        srsLOG_ERROR("Unsupported realpath implementation!");
+        /* TODO This is sloppy, but best solution I can think of for now. Needs to be more robust some day. */
+        srsASSERT(path != NULL);
+      }
+    }
     #endif
     needed = strlen(path);
     if (needed > 0)
