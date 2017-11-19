@@ -28,7 +28,7 @@ TEST TestMemStack_InitAndFree(void)
 
   srsLOG_NOTIFY("Testing results of free on memstack contents");
   /* Test all members of stack with a few elements */
-  size_t capacity = 3;
+  int32_t capacity = 3;
   ASSERT(srsMemStack_Init(&stack, sizeof(value), capacity));
   ASSERT_EQ(0, stack.count);
   ASSERT_EQ(NULL, stack.top);
