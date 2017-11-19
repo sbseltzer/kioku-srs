@@ -155,6 +155,7 @@ const char *srsDir_PushCWD(const char *path)
     srsASSERT(dirstack.memory != NULL);
     srsMEMSTACK_PRINT(dirstack);
   }
+  /* Get the current working directory to be pushed (so that a subsequent pop can restore it) */
   cwd = srsDir_GetCWD();
   srsMEMSTACK_PRINT(dirstack);
   srsASSERT(cwd != NULL);
