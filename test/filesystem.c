@@ -688,9 +688,9 @@ TEST TestPushPopCWD(void)
     /* Now pop the directory and make sure we returned to the right place */
     ASSERT(srsDir_PopCWD(NULL));
     cwd = srsDir_GetCWD();
-    ASSERT_FALSE(strcmp(cwd, path) < 0);
-    ASSERT_STR_EQ(cwd, newdir);
-    ASSERT_STR_EQ(cwd, start_path);
+    srsLOG_NOTIFY("Check whether %s < %s (%d < 0)", cwd, path, strcmp(cwd, path));
+    ASSERT(strcmp(cwd, path) < 0);
+    ASSERT_STR_EQ(start_path, cwd);
   }
 
   /* Test basic getting of CWD */
