@@ -69,7 +69,8 @@ TEST TestMemStack_Push1Pop1(void)
   ASSERT_EQ_FMT(value_in, value_out, "%u");
   ASSERT_EQ_FMT(original_state.top, stack.top, "%p");
   ASSERT_EQ_FMT(original_state.count, stack.count, "%u");
-  ASSERT_EQ_FMT(original_state.capacity, stack.capacity, "%u");
+  /* Adding an element doubled the capacity to 2 */
+  ASSERT_EQ_FMT(original_state.capacity * 2, stack.capacity, "%u");
 
   ASSERT(srsMemStack_FreeContents(&stack));
 
