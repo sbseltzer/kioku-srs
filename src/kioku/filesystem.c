@@ -196,46 +196,54 @@ bool srsDir_PopCWD(char **popped)
   bool popped_to_valid_dir = false;
   if (dirstack.memory == NULL)
   {
+    srsLOG_NOTIFY("Initializing memory stack before popping, perhaps against our better judgement...");
     bool ok = srsMemStack_Init(&dirstack, sizeof(char *), -1);
     srsASSERT(ok);
   }
-  srsMEMSTACK_PRINT(dirstack);
   /* Perform the following until we pop to a valid directory */
-  while (true)
+  while (!popped_to_valid_dir)
   {
-    /* If we can't pop, there's nothing left to try changing to and must break out of the loop. */
-    if (!srsMemStack_Pop(&dirstack, NULL))
-    {
-      break;
-    }
+    srsLOG_NOTIFY("Iterate dirstack for pop...");
     /* If the new top of the stack is NULL, it means we ran out of directories to try changing to, so we break from the loop */
     if (dirstack.top == NULL)
     {
       break;
     }
+    srsLOG_NOTIFY("Stack before possibly segfaulty part...");
+    srsMEMSTACK_PRINT(dirstack);
     /* Grab the directory to change to */
-    change_to = *((char *)dirstack.top);
-    /* Can't change to a null directory, try next one. */
-    if (change_to == NULL)
-    {
-      continue;
-    }
+    change_to = *((char **)dirstack.top);
+    srsLOG_NOTIFY("Stack still has a top: %s", change_to);
     /* Attempt to change to the new directory */
+    srsLOG_NOTIFY("Try changing to %s as a result of pop", change_to);
     popped_to_valid_dir = srsDir_SetSystemCWD(change_to);
+    srsLOG_NOTIFY("srsDir_SetSystemCWD returned %s", popped_to_valid_dir ? "true" : "false");
     if (!popped_to_valid_dir)
     {
       /* Free it and try the next one. */
       srsLOG_ERROR("Unable to pop directory to %s - try the next one", change_to);
       free(change_to);
       change_to = NULL;
-      continue;
     }
+    else
+    {
+      srsLOG_NOTIFY("Popped Directory: CWD = %s", change_to);
+      /* Reset CWD so next call to srsDir_GetCWD regenerates it */
+      free(directory_current);
+      directory_current = NULL;
+    }
+    /* If we can't pop, there's nothing left to try changing to and must break out of the loop. */
+    if (!srsMemStack_Pop(&dirstack, NULL))
+    {
+      break;
+    }
+    srsLOG_NOTIFY("Pop worked!");
   }
   if (popped != NULL)
   {
+    srsLOG_NOTIFY("Storing result of srsDir_PopCWD: %s (DON'T FORGET TO FREE)", change_to);
     *popped = change_to;
   }
-  srsMEMSTACK_PRINT(dirstack);
   return popped_to_valid_dir;
 }
 
