@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <memory.h>
 
-static void *srsMemStack_CalculatedTop(srsMEMSTACK *stack)
+static void *srsMemStack_ElementPointerByNumber(srsMEMSTACK *stack, size_t count)
 {
   /** NOTE This does not do any error checking - it only used internally in places where all checks have passed */
-  return (stack->count == 0) ? NULL : (void *)(((uint8_t *)stack->memory) + ((stack->count - 1) * stack->element_size));
+  return (stack->count == 0) ? NULL : (void *)(((uint8_t *)stack->memory) + ((count - 1) * stack->element_size));
 }
 static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
 {
@@ -50,7 +50,7 @@ static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
   if (setsize != stack->capacity)
   {
     mem = realloc(stack->memory, setsize);
-    stack->top = srsMemStack_CalculatedTop(stack);
+    stack->top = srsMemStack_ElementPointerByNumber(stack, stack->count);
   }
   else
   {
@@ -141,7 +141,7 @@ bool srsMemStack_Push(srsMEMSTACK *stack, const void *data)
     srsLOG_ERROR("Failed to update size of srsMEMSTACK while Pushing - count will remain at %d", count);
     goto revert;
   }
-  top = srsMemStack_CalculatedTop(stack);
+  top = srsMemStack_ElementPointerByNumber(stack, stack->count);
   srsASSERT(top != NULL);
   if (memcpy(top, data, stack->element_size) != top)
   {
@@ -157,7 +157,7 @@ revert:
   stack->count = count;
   srsMemStack_UpdateCapacity(stack);
   /* Restore top of stack */
-  top = srsMemStack_CalculatedTop(stack);
+  top = srsMemStack_ElementPointerByNumber(stack, stack->count);
   /* Make sure that when count did not return to zero, we still have a valid top */
   if (stack->count != 0)
   {
@@ -194,7 +194,7 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
   /* Get top position in stack before possibly decrementing so we can zero it out */
   top = stack->top;
   count = stack->count;
-  srsASSERT(top == srsMemStack_CalculatedTop(stack));
+  srsASSERT(top == srsMemStack_ElementPointerByNumber(stack, stack->count));
   /* Attempt to decrement */
   stack->count--;
   /* Attempt to shrink if necessary */
@@ -220,7 +220,7 @@ bool srsMemStack_Pop(srsMEMSTACK *stack, void *data_out)
     goto revert;
   }
   /* Find new top of stack using the modified count */
-  top = srsMemStack_CalculatedTop(stack);
+  top = srsMemStack_ElementPointerByNumber(stack, stack->count);
   if (stack->count > 0)
   {
     srsASSERT(top != NULL);
@@ -234,7 +234,7 @@ revert:
   stack->count = count;
   srsMemStack_UpdateCapacity(stack); /** TODO Should we check the result of this? */
   /* Restore top of stack */
-  top = srsMemStack_CalculatedTop(stack);
+  top = srsMemStack_ElementPointerByNumber(stack, stack->count);
   srsASSERT(top != NULL);
   /* Zero out the output variable */
   memset(data_out, 0, stack->element_size);
