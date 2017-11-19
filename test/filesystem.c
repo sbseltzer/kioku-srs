@@ -750,6 +750,7 @@ TEST TestPushPopCWD(void)
     ASSERT(up_index > 0);
     strcpy(path, cwd);
     path[up_index] = '\0';
+    srsLOG_NOTIFY("Expecting to go up: %s", path);
     /* Go up one directory via push */
     cwd = srsDir_PushCWD("..");
     ASSERT(cwd != NULL);
@@ -760,6 +761,7 @@ TEST TestPushPopCWD(void)
     srsLOG_NOTIFY(cwd);
     ASSERT(strcmp(path, cwd) != 0); /** @todo Use a < or > here as appropriate. */
     /* Go back */
+    srsLOG_NOTIFY("This time when we pop, try storing the result");
     char *popped;
     ASSERT(srsDir_PopCWD(&popped));
     ASSERT(popped != NULL);
