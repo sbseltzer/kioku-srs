@@ -333,7 +333,7 @@ size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
     }
   }
 #else
-  #if _POSIX_VERSION < 200809L
+  #if !defined(kiokuOS_APPLE) && _POSIX_VERSION < 200809L
     #error Linux-like implementation requires POSIX 2008+ for a safe realpath implementation!
   #endif
   const char *cwd = srsDir_GetCWD();
@@ -348,7 +348,14 @@ size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
       result = (size_t) needed;
     }
     free(path);
+    /* Instead of checking POSIX spec, let compilation fail for missing realpath. */
     path = realpath(path_out, NULL);
+    /* TODO Add a check for whether realpath behaves as described by POSIX 2008 in CMakeLists.txt if such a facility exists so we don't fail preprocessor checks in funky compilers. */
+    #if defined(kiokuOS_APPLE) && (_POSIX_VERSION < 200809L)
+      /* Instead we assert realpath always returns a valid malloc'd string. */
+      /* TODO This is sloppy, but best solution I can think of for now. Needs to be more robust some day. */
+      srsASSERT(path != NULL);
+    #endif
     needed = strlen(path);
     if (needed > 0)
     {
