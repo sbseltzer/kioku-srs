@@ -598,10 +598,25 @@ TEST test_resolve_relative(void)
     /* ASSERT_STR_EQ(path, paths[i].out); */
   }
 }
-TEST test_fullpath(void)
+TEST TestGetFullPath(void)
 {
   printf("Testing srsPath_GetFull..." kiokuSTRING_LF);
-  /* ASSERT(); */
+
+  char expected_fullpath[kiokuPATH_MAX];
+  kioku_path_concat(expected_fullpath, sizeof(expected_fullpath), BUILDDIR, "a");
+  char path[kiokuPATH_MAX];
+  ASSERT(0 != srsPath_GetFull("a", path, sizeof(path)));
+  /** TODO At some point we must specify whether trailing slashes will be returned by these functions */
+  if (expected_fullpath[strlen(expected_fullpath)] == '/')
+  {
+    expected_fullpath[strlen(expected_fullpath)] = '\0';
+  }
+  if (path[strlen(path)] == '/')
+  {
+    path[strlen(path)] = '\0';
+  }
+  ASSERT_STR_EQ(expected_fullpath, path);
+  PASS();
 }
 
 TEST TestSetGetCWD(void)
@@ -806,6 +821,8 @@ SUITE(test_filesystem) {
   RUN_TEST(TestSetGetCWD);
   printf(kiokuSTRING_LF);
   RUN_TEST(TestPushPopCWD);
+  printf(kiokuSTRING_LF);
+  RUN_TEST(TestGetFullPath);
 }
 /* Add definitions that need to be in the test runner's main file. */
 GREATEST_MAIN_DEFS();
