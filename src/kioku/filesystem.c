@@ -183,6 +183,13 @@ const char *srsDir_PushCWD(const char *path)
     srsASSERT(cwd != NULL);
     srsLOG_NOTIFY("Pushed Directory (%s): CWD = %s", path, cwd);
   }
+  else
+  {
+    srsLOG_NOTIFY("Failed to change to directory %s - undo change to stack!", path);
+    bool ok = srsMemStack_Pop(&dirstack, NULL);
+    /* TODO There may be a better way to handle this */
+    srsASSERT(ok);
+  }
   return cwd;
 }
 
