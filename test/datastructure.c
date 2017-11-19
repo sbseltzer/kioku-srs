@@ -80,10 +80,139 @@ TEST TestMemStack_Push1Pop1(void)
   PASS();
 }
 
+TEST TestMemStack_PopFromEmptyFailsWithNoOutput(void)
+{
+  srsMEMSTACK stack = {0};
+  uint8_t value_in = 200;
+  uint8_t value_out = 0;
+
+  ASSERT(srsMemStack_Init(&stack, sizeof(value_in), 1));
+  srsMEMSTACK original_state = stack;
+
+  srsLOG_NOTIFY("Testing pop from empty stack");
+  ASSERT_EQ(false, srsMemStack_Pop(&stack, &value_out));
+  ASSERT_EQ_FMT(0, value_out, "%zu");
+  ASSERT_EQ_FMT(original_state.top, stack.top, "%p");
+  ASSERT_EQ_FMT(original_state.count, stack.count, "%zu");
+  ASSERT_EQ_FMT(original_state.capacity, stack.capacity, "%zu");
+  ASSERT(srsMemStack_FreeContents(&stack));
+
+  PASS();
+}
+
+/* TODO Add test to make sure memory doesn't change when capacity is never changed */
+
+TEST TestMemStack_Push4Pop4WorksAndIncreasesCapacity(void)
+{
+  srsMEMSTACK stack = {0};
+  int32_t values[4] = {12, 25, -27, 0};
+  int32_t value_in = 0;
+  int32_t value_out = 0;
+
+  ASSERT(srsMemStack_Init(&stack, sizeof(value_in), 1));
+  srsMEMSTACK original_state = stack;
+  size_t i;
+  /* Perform pushes */
+  for (i = 1; i <= 4; i++)
+  {
+    value_in = values[i-1];
+    srsMEMSTACK_PRINT(stack);
+    /* See if count is what we expect */
+    ASSERT_EQ_FMT(i-1, stack.count, "%zu");
+    /* Push */
+    srsLOG_NOTIFY("Pushing value #%zu (%zu)", i, value_in);
+    ASSERT(srsMemStack_Push(&stack, &value_in));
+    srsMEMSTACK_PRINT(stack);
+    /* See if top of stack updated to expected value */
+    ASSERT_MEM_EQ(&value_in, stack.top, stack.element_size);
+    /* See if count updated */
+    ASSERT_EQ_FMT(i, stack.count, "%zu");
+    /* See if capacity has increased as expected */
+    switch(stack.count)
+    {
+      case 1:
+      {
+        ASSERT_EQ_FMT(2, stack.capacity, "%zu");
+        break;
+      }
+      case 2:
+      case 3:
+      {
+        ASSERT_EQ_FMT(4, stack.capacity, "%zu");
+        break;
+      }
+      case 4:
+      {
+        ASSERT_EQ_FMT(8, stack.capacity, "%zu");
+        break;
+      }
+      default:
+        ASSERT(false);
+    }
+  }
+  /* Perform pops (we count backward since for the correct index on the values array) */
+  for (i = 4; i >= 1; i--)
+  {
+    value_in = values[i-1];
+    srsMEMSTACK_PRINT(stack);
+    /* See if count is what we expect */
+    ASSERT_EQ_FMT(i, stack.count, "%zu");
+    /* Pop */
+    srsLOG_NOTIFY("Popping value #%zu (%zu)", i, value_in);
+    ASSERT(srsMemStack_Pop(&stack, &value_out));
+    srsMEMSTACK_PRINT(stack);
+    /* See if we got the right value */
+    ASSERT_EQ_FMT(value_in, value_out, "%zu");
+    /* See if top of stack updated to expected value */
+    if (i > 1)
+    {
+      ASSERT_MEM_EQ(&values[i-2], stack.top, stack.element_size);
+    }
+    else
+    {
+      ASSERT_EQ_FMT(NULL, stack.top, "%p");
+    }
+    /* See if count updated */
+    ASSERT_EQ_FMT(i-1, stack.count, "%zu");
+    /* See if capacity has decreased as expected */
+    /* The capacity decreases by 1/2 every time count is less than 1/4 the capacity */
+    switch(stack.count)
+    {
+      case 3:
+      case 2:
+      {
+        ASSERT_EQ_FMT(8, stack.capacity, "%zu");
+        break;
+      }
+      case 1:
+      {
+        ASSERT_EQ_FMT(4, stack.capacity, "%zu");
+        break;
+      }
+      case 0:
+      {
+        ASSERT_EQ_FMT(2, stack.capacity, "%zu");
+        break;
+      }
+      default:
+        ASSERT(false);
+    }
+  }
+  ASSERT_EQ_FMT(original_state.top, stack.top, "%p");
+  ASSERT_EQ_FMT(original_state.count, stack.count, "%zu");
+  /* Capacity increased 3 times and decreased twice */
+  ASSERT_EQ_FMT(((original_state.capacity * 2 * 2 * 2) / 2) / 2, stack.capacity, "%zu");
+  ASSERT(srsMemStack_FreeContents(&stack));
+
+  PASS();
+}
+
 /* Suites can group multiple tests with common setup. */
 SUITE(the_suite) {
   RUN_TEST(TestMemStack_InitAndFree);
   RUN_TEST(TestMemStack_Push1Pop1);
+  RUN_TEST(TestMemStack_PopFromEmptyFailsWithNoOutput);
+  RUN_TEST(TestMemStack_Push4Pop4WorksAndIncreasesCapacity);
 }
 
 /* Add definitions that need to be in the test runner's main file. */
