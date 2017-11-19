@@ -730,14 +730,21 @@ TEST TestPushPopCWD(void)
     strcpy(path, cwd);
   }
 
-  /* Test push/pop */
+  /* Test pop on empty stack */
   {
+    /* Pop everything off the stack */
+    while(srsDir_PopCWD(NULL));
     /* Pop without anything on the stack */
+    srsLOG_NOTIFY("Pop without anything on the stack");
     ASSERT_FALSE(srsDir_PopCWD(NULL));
     /* Ensure that pop didn't change the CWD */
     cwd = srsDir_GetCWD();
     ASSERT(cwd != NULL);
     ASSERT_STR_EQ(path, cwd);
+  }
+
+  /* Test push/pop */
+  {
     /* Calculate next expected directory change */
     up_index = kioku_path_up_index(cwd, -1);
     ASSERT(up_index > 0);
