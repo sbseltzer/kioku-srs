@@ -333,8 +333,8 @@ size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
     }
   }
 #else
-  #if _POSIX_VERSION != 200809L
-    #error Linux implementation requires POSIX 2008+ for a safe realpath implementation!
+  #if _POSIX_VERSION < 200809L
+    #error Linux-like implementation requires POSIX 2008+ for a safe realpath implementation!
   #endif
   const char *cwd = srsDir_GetCWD();
   if (cwd != NULL)
