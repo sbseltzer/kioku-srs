@@ -21,6 +21,7 @@ static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
   srsASSERT(stack->capacity > 0);
   /* In case something funky changes in the future, it'd be good to have a fallback set_capacity. */
   set_capacity = stack->capacity;
+  mem = stack->memory;
   /* Try to reallocate based on current count */
   if (stack->count == stack->capacity)
   {
@@ -47,10 +48,6 @@ static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
   {
     srsLOG_NOTIFY("Reallocating Memory Stack from element capacity of %u to %u", stack->capacity, set_capacity);
     mem = realloc(stack->memory, set_capacity * stack->element_size);
-  }
-  else
-  {
-    mem = stack->memory;
   }
 done:
   if (mem != NULL)
