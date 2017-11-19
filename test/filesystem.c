@@ -766,7 +766,7 @@ TEST TestPushPopCWD(void)
     ASSERT(srsDir_PopCWD(&popped));
     ASSERT(popped != NULL);
     srsLOG_NOTIFY("Popped: %s", popped);
-    ASSERT_STR_EQ(popped, cwd);
+    ASSERT_STR_EQ(path, popped);
     /* Calculate what the directory should have changed to */
     cwd = srsDir_GetCWD();
     srsLOG_NOTIFY(cwd);
