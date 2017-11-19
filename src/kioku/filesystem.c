@@ -80,6 +80,8 @@ char *srsDir_GetSystemCWD(char *buf, size_t bufsize)
 
 bool srsDir_SetSystemCWD(const char *buf)
 {
+  /* This is low level API function, so we assume all input is perfect, more or less */
+  srsASSERT(buf != NULL);
   errno = 0;
   bool ok = (chdir(buf) == 0);
   uint32_t errno_capture = errno;
