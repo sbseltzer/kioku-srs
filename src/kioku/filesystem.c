@@ -123,11 +123,8 @@ const char *srsDir_SetCWD(const char *path)
   /* Clear stack */
   ClearDirectoryStack();
   /* Free the current directory so our next call to srsDir_GetCWD regenerates it */
-  if (directory_current != NULL)
-  {
-    free(directory_current);
-    directory_current = NULL;
-  }
+  free(directory_current);
+  directory_current = NULL;
   /* Attempt to change the directory, and if it succeeds cause the current directory to be reallocated */
   if ((path != NULL) && srsDir_SetSystemCWD(path))
   {
@@ -179,11 +176,8 @@ const char *srsDir_PushCWD(const char *path)
   if ((path != NULL) && srsDir_SetSystemCWD(path))
   {
     /* Free the current directory so our next call to srsDir_GetCWD regenerates it */
-    if (directory_current != NULL)
-    {
-      free(directory_current);
-      directory_current = NULL;
-    }
+    free(directory_current);
+    directory_current = NULL;
     cwd = srsDir_GetCWD();
     srsASSERT(cwd != NULL);
   }
