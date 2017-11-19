@@ -12,29 +12,29 @@ static void *srsMemStack_ElementPointerByNumber(srsMEMSTACK *stack, size_t count
 static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
 {
   bool result = false;
-  size_t setsize = 0;
+  size_t set_capacity = 0;
   void *mem = NULL;
   if (stack == NULL)
   {
     goto done;
   }
-  /* In case something funky changes in the future, it'd be good to have a fallback setsize. */
-  setsize = stack->capacity * stack->element_size;
   srsASSERT(stack->capacity > 0);
+  /* In case something funky changes in the future, it'd be good to have a fallback set_capacity. */
+  set_capacity = stack->capacity;
   /* Try to reallocate based on current count */
   if (stack->count == stack->capacity)
   {
-    setsize = stack->capacity * 2;
+    set_capacity = stack->capacity * 2;
   }
   else if (stack->count < stack->capacity / 4)
   {
     /* If count gets below a fourth capacity, resize down by half, but cap by minimum capacity.
        This gives a reasonable space within which to grow before increasing the size again. */
     /** TODO This is somewhat complex behaviour, so make sure to thoroughly test this */
-    setsize = stack->capacity / 2;
-    if (setsize < srsMEMSTACK_MINIMUM_CAPACITY)
+    set_capacity = stack->capacity / 2;
+    if (set_capacity < srsMEMSTACK_MINIMUM_CAPACITY)
     {
-      setsize = srsMEMSTACK_MINIMUM_CAPACITY;
+      set_capacity = srsMEMSTACK_MINIMUM_CAPACITY;
     }
   }
   else if (stack->count > stack->capacity)
@@ -43,10 +43,12 @@ static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
     srsLOG_ERROR("FATAL: Stack count was allowed to exceed stack capacity! This is either a heinous bug, or an engineered failure.");
     srsASSERT(false);
   }
-  if (setsize != stack->capacity)
+  if (set_capacity != stack->capacity)
   {
-    mem = realloc(stack->memory, setsize);
+    srsLOG_NOTIFY("Reallocating Memory Stack from element capacity of %u to %u", stack->capacity, set_capacity);
+    mem = realloc(stack->memory, set_capacity);
     stack->top = srsMemStack_ElementPointerByNumber(stack, stack->count);
+    stack->capacity = set_capacity;
   }
   else
   {
