@@ -51,6 +51,9 @@ TEST TestMemStack_Push1Pop1(void)
   ASSERT_FALSE(srsMemStack_Push(NULL, NULL));
   ASSERT_FALSE(srsMemStack_Push(NULL, &value_in));
   ASSERT_FALSE(srsMemStack_Push(&stack, NULL));
+  ASSERT_FALSE(srsMemStack_Pop(NULL, NULL));
+  ASSERT_FALSE(srsMemStack_Pop(&stack, &value_out));
+  ASSERT_FALSE(srsMemStack_Pop(&stack, NULL));
 
   /* Test first push on stack of 1 */
   ASSERT(srsMemStack_Init(&stack, sizeof(value_in), 1));
