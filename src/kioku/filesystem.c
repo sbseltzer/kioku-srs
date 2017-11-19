@@ -375,18 +375,22 @@ size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
       }
     }
     #endif
-    needed = strlen(path);
-    if (needed > 0)
+    needed = 0;
+    if (path != NULL)
     {
-      result = (size_t) needed;
+      needed = strlen(path);
+      if (needed > 0)
+      {
+        result = (size_t) needed;
+      }
+      else
+      {
+        srsLOG_ERROR("The calculated needed size to store the full path of %s was <= 0 - this is likely a defect - Please report this!", relative);
+        srsBAIL();
+      }
+      strcpy(path_out, path);
+      free(path);
     }
-    else
-    {
-      srsLOG_ERROR("The calculated needed size to store the full path of %s was <= 0 - this is likely a defect - Please report this!", relative);
-      srsBAIL();
-    }
-    strcpy(path_out, path);
-    free(path);
     /** @todo resolve the relative paths to mimic the functionality of realpath and _fullpath */
     /* result = kioku_path_resolve_relative(path_out, result); */
   }
