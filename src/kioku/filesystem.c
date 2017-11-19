@@ -180,6 +180,7 @@ const char *srsDir_PushCWD(const char *path)
     directory_current = NULL;
     cwd = srsDir_GetCWD();
     srsASSERT(cwd != NULL);
+    srsLOG_NOTIFY("Pushed Directory (%s): CWD = %s", path, cwd);
   }
   return cwd;
 }
