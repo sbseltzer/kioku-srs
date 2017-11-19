@@ -18,13 +18,9 @@ static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
   {
     goto done;
   }
-  /* TODO Consider whether it really makes sense to even allow a capacity of zero */
-  if (stack->capacity == 0)
-  {
-    stack->capacity = srsMEMSTACK_MINIMUM_CAPACITY;
-  }
   /* In case something funky changes in the future, it'd be good to have a fallback setsize. */
   setsize = stack->capacity * stack->element_size;
+  srsASSERT(stack->capacity > 0);
   /* Try to reallocate based on current count */
   if (stack->count == stack->capacity)
   {
