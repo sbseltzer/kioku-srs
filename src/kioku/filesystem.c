@@ -329,13 +329,17 @@ size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
     else
     {
       srsLOG_ERROR("The calculated needed size to store the full path of %s was <= 0 - this is likely a defect - Please report this!", relative);
-      abort();
+      srsBAIL();
     }
   }
 #else
+  #if _POSIX_VERSION != 200809L
+    #error Linux implementation requires POSIX 2008+ for a safe realpath implementation!
+  #endif
   const char *cwd = srsDir_GetCWD();
   if (cwd != NULL)
   {
+    /* TODO This is a serious vulnerability, just as anything that uses bounded path sizes. There are mitigations for this in POSIX 2001 but no real soltion. In POSIX 2008 this can be significantly safer by having the implementation malloc for us. */
     char *path = strdup(cwd);
     kioku_path_replace_separators(path, strlen(path) + 1);
     int32_t needed = kioku_path_concat(path_out, nbytes, path, relative);
@@ -343,6 +347,19 @@ size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
     {
       result = (size_t) needed;
     }
+    free(path);
+    path = realpath(path_out, NULL);
+    needed = strlen(path);
+    if (needed > 0)
+    {
+      result = (size_t) needed;
+    }
+    else
+    {
+      srsLOG_ERROR("The calculated needed size to store the full path of %s was <= 0 - this is likely a defect - Please report this!", relative);
+      srsBAIL();
+    }
+    strcpy(path_out, path);
     free(path);
     /** @todo resolve the relative paths to mimic the functionality of realpath and _fullpath */
     /* result = kioku_path_resolve_relative(path_out, result); */
