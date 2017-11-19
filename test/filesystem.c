@@ -665,7 +665,9 @@ TEST TestSetGetCWD(void)
   ASSERT(srsDir_SetCWD(".."));
   cwd = srsDir_GetCWD();
   ASSERT_STR_EQ(start_path, cwd);
+  PASS();
 }
+
 TEST TestPushPopCWD(void)
 {
   srsLOG_NOTIFY("Testing dir traversal");
