@@ -990,6 +990,7 @@ static bool srsFileSystem_Iterate_Internal(const char *dirpath, void *userdata, 
     if (tinydir_result == -1)
     {
       srsLOG_ERROR("Skipping - tinydir_readfile had error getting file: %s", strerror(errno_capture));
+      tinydir_next(&dir);
       continue;
     }
     /* Do not risk endless loop recursing on the current or parent directory */
