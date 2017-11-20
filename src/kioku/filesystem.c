@@ -989,9 +989,8 @@ static bool srsFileSystem_Iterate_Internal(const char *dirpath, void *userdata, 
     int errno_capture = errno;
     if (tinydir_result == -1)
     {
-      result = false;
-      srsLOG_ERROR("tinydir_readfile had error getting file: %s", strerror(errno_capture));
-      goto done;
+      srsLOG_ERROR("Skipping - tinydir_readfile had error getting file: %s", strerror(errno_capture));
+      continue;
     }
     /* Do not risk endless loop recursing on the current or parent directory */
     if (strcmp(file.name, ".") == 0 || strcmp(file.name, "..") == 0)
