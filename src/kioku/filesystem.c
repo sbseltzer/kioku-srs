@@ -948,3 +948,122 @@ done:
   }
   return result;
 }
+
+#include "tinydir.h"
+static bool srsFileSystem_Iterate_Internal(const char *dirpath, void *userdata, srsFILESYSTEM_VISIT_FUNC iterate, bool *exit_out, size_t *depth_out)
+{
+  bool result = false;
+  tinydir_dir dir;
+  const int tinydir_invalid_result = -9999;
+  int tinydir_result = tinydir_invalid_result;
+  if (dirpath == NULL)
+  {
+    goto done;
+  }
+  if (iterate == NULL)
+  {
+    goto done;
+  }
+  if (!srsDir_Exists(dirpath))
+  {
+    goto done;
+  }
+  tinydir_result = tinydir_open(&dir, dirpath);
+  if (tinydir_result == -1)
+  {
+    goto done;
+  }
+  char *cwd = srsDir_PushCWD(dirpath);
+  if (cwd == NULL)
+  {
+    goto done;
+  }
+  *depth_out += 1;
+  srsLOG_NOTIFY("Iterating in %s (%s)", dirpath, cwd);
+  result = true;
+  while (dir.has_next)
+  {
+    tinydir_file file;
+    tinydir_result = tinydir_readfile(&dir, &file);
+    if (tinydir_result == -1)
+    {
+      result = false;
+      srsLOG_ERROR("tinydir_readfile had error getting file");
+      goto done;
+    }
+    /* Do not risk endless loop recursing on the current or parent directory */
+    if (strcmp(file.name, ".") == 0 || strcmp(file.name, "..") == 0)
+    {
+      tinydir_next(&dir);
+      continue;
+    }
+    srsLOG_NOTIFY("Visiting %s", file.name);
+    /* Perform one iteration to see what the user wants to do from here */
+    srsFILESYSTEM_VISIT_ACTION action = iterate(file.name, userdata);
+    switch(action)
+    {
+      /* The user wants to recurse into a directory if possible */
+      case srsFILESYSTEM_VISIT_RECURSE:
+      {
+        if (file.is_dir)
+        {
+          srsLOG_NOTIFY("RECURSE -> %s", file.name);
+          /* Traverse into directory */
+          result = srsFileSystem_Iterate_Internal(file.name, userdata, iterate, exit_out, depth_out);
+          if (!result || *exit_out)
+          {
+            srsLOG_NOTIFY("Breaking out of iteration (result = %s, exit = %s)", result ? "true" : "false", *exit_out ? "true" : "false");
+            goto done;
+          }
+          break;
+        }
+        /* Fall through to continue */
+      }
+      /* The user wants to continue onto the next item */
+      case srsFILESYSTEM_VISIT_CONTINUE:
+      {
+        srsLOG_NOTIFY("CONTINUE processing %s (%s)", dirpath, cwd);
+        break;
+      }
+      case srsFILESYSTEM_VISIT_STOP:
+      {
+        /* The user wants to break out of directory being traversed, which may mean picking up from another one. */
+        srsLOG_NOTIFY("STOP processing %s (%s)", dirpath, cwd);
+        goto done;
+      }
+      case srsFILESYSTEM_VISIT_EXIT:
+      {
+        *exit_out = true;
+        srsLOG_NOTIFY("EXIT all processing from %s (%s) upward", dirpath, cwd);
+        goto done;
+      }
+    }
+    tinydir_next(&dir);
+  }
+done:
+  if (srsDir_PopCWD(NULL))
+  {
+    *depth_out -= 1;
+  }
+  if (tinydir_result != tinydir_invalid_result)
+  {
+    tinydir_close(&dir);
+  }
+  return result;
+}
+
+bool srsFileSystem_Iterate(const char *dirpath, void *userdata, srsFILESYSTEM_VISIT_FUNC iterate)
+{
+  bool result = false;
+  bool exit_triggered = false;
+  size_t depth = 0;
+  result = srsFileSystem_Iterate_Internal(dirpath, userdata, iterate, &exit_triggered, &depth);
+  while (depth > 0)
+  {
+    srsLOG_NOTIFY("Must pop %zu more directories to store CWD to what it was before srsFileSystem_Iterate was called", depth);
+    /** TODO There's a serious problem with the @ref srsDir_PopCWD behaviour for inaccessible files being opaque. Not only could it screw up depth_out, but also cause the iterate function to behave unpredictably. */
+    srsDir_PopCWD(NULL);
+    depth--;
+  }
+  return result;
+}

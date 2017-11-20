@@ -826,6 +826,73 @@ TEST TestPushPopCWD(void)
   PASS();
 }
 
+struct filesystem_counter
+{
+  size_t numdirs;
+  size_t numfiles;
+};
+srsFILESYSTEM_VISIT_ACTION filesystem_counter_iterator(const char *path, void *userdata)
+{
+  struct filesystem_counter *counter = ((struct filesystem_counter *)userdata);
+  srsLOG_NOTIFY("ITERATOR: VISTITING %s", path);
+  if (srsDir_Exists(path))
+  {
+    counter->numdirs++;
+    srsLOG_NOTIFY("ITERATOR: numdirs = %zu", counter->numdirs);
+    return srsFILESYSTEM_VISIT_RECURSE;
+  }
+  else
+  {
+    counter->numfiles++;
+    srsLOG_NOTIFY("ITERATOR: numfiles = %zu", counter->numfiles);
+  }
+  return srsFILESYSTEM_VISIT_CONTINUE;
+}
+TEST TestIteration(void)
+{
+  const char *files[] = {
+    "./a/file",
+    "./a/b/e/file",
+  };
+  const char *dirs[] = {
+    "./a",
+    "./a/b",
+    "./a/b/c",
+    "./a/b/d",
+    "./a/b/e",
+    "./a/b/e/f"
+  };
+  size_t numfiles = sizeof(files) / sizeof(files[0]);
+  size_t numdirs = sizeof(dirs) / sizeof(dirs[0]);
+  size_t i;
+  for (i = 0; i < numdirs; i++)
+  {
+    ASSERT(srsDir_Exists(dirs[i]) || srsDir_Create(dirs[i]));
+  }
+  for (i = 0; i < numfiles; i++)
+  {
+    ASSERT(srsFile_Exists(files[i]) || srsFile_Create(files[i]));
+  }
+
+  /* Test bad input */
+  srsLOG_NOTIFY("TestIteration: Testing bad input");
+  ASSERT_EQ(false, srsFileSystem_Iterate(NULL, NULL, NULL));
+  ASSERT_EQ(false, srsFileSystem_Iterate(dirs[0], NULL, NULL));
+  ASSERT_EQ(false, srsFileSystem_Iterate(dirs[0], 0xDEADBEEF, NULL));
+  ASSERT_EQ(false, srsDir_Exists("not-a-directory-lol"));
+  ASSERT_EQ(false, srsFileSystem_Iterate("not-a-directory-lol", 0xDEADBEEF, &filesystem_counter_iterator));
+
+  /* Test counting files and dirs */
+  srsLOG_NOTIFY("TestIteration: Testing counter");
+  struct filesystem_counter counter = {0};
+  ASSERT_EQ(true, srsFileSystem_Iterate(dirs[0], &counter, &filesystem_counter_iterator));
+  /* We subtract 1 from numdirs because we start in dirs[0], so that one won't increment the counter */
+  ASSERT_EQ_FMT(numfiles, counter.numfiles, "%zu");
+  ASSERT_EQ_FMT(numdirs-1, counter.numdirs, "%zu");
+
+  PASS();
+}
+
 SUITE(test_filesystem) {
   RUN_TEST(test_file_readlinenumber);
   printf(kiokuSTRING_LF);
@@ -844,6 +911,8 @@ SUITE(test_filesystem) {
   RUN_TEST(TestPushPopCWD);
   printf(kiokuSTRING_LF);
   RUN_TEST(TestGetFullPath);
+  printf(kiokuSTRING_LF);
+  RUN_TEST(TestIteration);
 }
 /* Add definitions that need to be in the test runner's main file. */
 GREATEST_MAIN_DEFS();

@@ -54,6 +54,43 @@
 kiokuSTATIC_ASSERT(kiokuPATH_MAX > 0);
 
 /**
+ * Describes what to do at the end of a call to a @ref srsFILESYSTEM_VISIT_FUNC iterator.
+ * RECURSE means "If this is a directory, continue iteration in there".
+ * If RECURSE is returned but the current path is a file, it will behave as a CONTINUE.
+ * CONTINUE means "Continue on to the next item in this directory".
+ * If CONTINUE is returned but there are no items left, it will behave as a STOP.
+ * STOP means "Stop processing this directory and continue iteration from the directory we we in before this".
+ * If STOP is returned but there were no previous iterations that resulted in RECURSE, it will behave as an EXIT.
+ * EXIT means "Stop all iteration and let @ref srsFileSystem_Iterate return".
+ */
+typedef enum _srsFILESYSTEM_VISIT_ACTION_e
+{
+  srsFILESYSTEM_VISIT_RECURSE,
+  srsFILESYSTEM_VISIT_CONTINUE,
+  srsFILESYSTEM_VISIT_STOP,
+  srsFILESYSTEM_VISIT_EXIT,
+} srsFILESYSTEM_VISIT_ACTION;
+
+/**
+ * This is used by @ref srsFileSystem_Iterate to determine what to iterate over.
+ * @param path The path of the filesystem item currently being visited.
+ * @param userdata User-specified data via @ref srsFileSystem_Iterate.
+ * @return Visiting action to perform. See @ref srsFILESYSTEM_VISIT_ACTION for more information.
+ */
+typedef srsFILESYSTEM_VISIT_ACTION (*srsFILESYSTEM_VISIT_FUNC)(const char *path, void *userdata);
+
+/**
+ * Iterate the filesystem starting from a directory according to an iterator.
+ * This function will cause the CWD to change during execution, and will attempt to restore it by the time it returns.
+ * If CWD is not restored properly, it will return false.
+ * @param dirpath The path to iterate from. Must be a valid directory.
+ * @param userdata Passed to the iterator for the user to do with as they please.
+ * @param iterator A callback function to determine how iteration takes place. See @ref srsFILESYSTEM_VISIT_FUNC for more information.
+ * @return Whether any problems occured.
+ */
+kiokuAPI bool srsFileSystem_Iterate(const char *dirpath, void *userdata, srsFILESYSTEM_VISIT_FUNC iterator);
+
+/**
  * Initialize filesystem module state.
  * @return Whether all went ok.
  */
