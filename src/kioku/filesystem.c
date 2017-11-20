@@ -984,11 +984,13 @@ static bool srsFileSystem_Iterate_Internal(const char *dirpath, void *userdata, 
   while (dir.has_next)
   {
     tinydir_file file;
+    errno = 0;
     tinydir_result = tinydir_readfile(&dir, &file);
+    int errno_capture = errno;
     if (tinydir_result == -1)
     {
       result = false;
-      srsLOG_ERROR("tinydir_readfile had error getting file");
+      srsLOG_ERROR("tinydir_readfile had error getting file: %s", strerror(errno_capture));
       goto done;
     }
     /* Do not risk endless loop recursing on the current or parent directory */
