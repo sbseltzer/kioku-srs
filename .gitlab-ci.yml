@@ -59,6 +59,7 @@ submodules-build:
       - extern/parson
       - extern/lua
       - extern/generic-c-hashmap
+      - extern/tinydir
       - extern/utf8.h
 
 deps-gcc:
