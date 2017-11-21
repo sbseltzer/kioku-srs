@@ -73,7 +73,7 @@ typedef enum _srsFILESYSTEM_VISIT_ACTION_e
 
 /**
  * This is used by @ref srsFileSystem_Iterate to determine what to iterate over.
- * @param path The path of the filesystem item currently being visited.
+ * @param path The path of the filesystem item currently being visited. This is a relative path.
  * @param userdata User-specified data via @ref srsFileSystem_Iterate.
  * @return Visiting action to perform. See @ref srsFILESYSTEM_VISIT_ACTION for more information.
  */
