@@ -70,6 +70,72 @@ For [archived releases of Visual Studio](https://my.visualstudio.com/downloads/f
 
 I had a lot of problems linking which stemmed from being uninformed - post-10.04 OSX use a proprietary security framework instead of OpenSSL (I think as a knee-jerk reaction to the Heart Bleed exploit) whose symbols I mistook for OpenSSL. For a while I was trying to redetect the libgit2 dependencies and wedge them into my CMakeLists, but this is the wrong way to do things. I think I'm supposed to ignore what those might be and instead utilize pkgconfig to do the heavy lifting. Haven't 100% figured out how to do that yet.
 
+## More on Linux
+
+I rarely have problems compiling for Linux, but I did come across one very wierd problem on one of my Japanese installs of Ubuntu.
+
+When compiling libssh2 on it, I encountered this.
+```
+[ 44%] Linking C shared library libssh2.so
+*** invalid %N$ use detected ***
+collect2: fatal error: ld terminated with signal 6 [中止], core dumped
+compilation terminated.
+/usr/bin/ld: src/CMakeFiles/libssh2.dir/build.make:614: ターゲット 'src/libssh2.so.1.0.1' のレシピで失敗しました
+make[2]: *** [src/libssh2.so.1.0.1] エラー 1
+make[2]: *** ファイル 'src/libssh2.so.1.0.1'　を削除します
+CMakeFiles/Makefile2:85: ターゲット 'src/CMakeFiles/libssh2.dir/all' のレシピで失敗しました
+make[1]: *** [src/CMakeFiles/libssh2.dir/all] エラー 2
+Makefile:160: ターゲット 'all' のレシピで失敗しました
+make: *** [all] エラー 2
+```
+
+A number of other Japanese developers had fixed this in unrelated projects with `-fPIC`, and some had varying success with `-U_FORTIFY_SOURCE`/`-D_FORTIFY_SOURCE=0`. None of these worked in my particular case. So I gave up and installed `libssh2-1-dev` via `apt`.
+
+```
+citadel:~/kioku-srs$ sudo apt-get install libssh2-1-dev
+パッケージリストを読み込んでいます... 完了
+依存関係ツリーを作成しています
+状態情報を読み取っています... 完了
+以下の追加パッケージがインストールされます:
+  libgcrypt20-dev libgpg-error-dev libssh2-1
+提案パッケージ:
+  libgcrypt20-doc
+以下のパッケージが新たにインストールされます:
+  libgcrypt20-dev libgpg-error-dev libssh2-1 libssh2-1-dev
+アップグレード: 0 個、新規インストール: 4 個、削除: 0 個、保留: 0 個。
+752 kB のアーカイブを取得する必要があります。
+この操作後に追加で 2,888 kB のディスク容量が消費されます。
+続行しますか? [Y/n] y
+取得:1 http://archive.ubuntu.com/ubuntu xenial/main amd64 libgpg-error-dev amd64 1.21-2ubuntu1 [68.2 kB]
+取得:2 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libgcrypt20-dev amd64 1.6.5-2ubuntu0.3 [380 kB]
+取得:3 http://archive.ubuntu.com/ubuntu xenial-updates/universe amd64 libssh2-1 amd64 1.5.0-2ubuntu0.1 [70.2 kB]
+取得:4 http://archive.ubuntu.com/ubuntu xenial-updates/universe amd64 libssh2-1-dev amd64 1.5.0-2ubuntu0.1 [233 kB]
+752 kB を 1秒 で取得しました (385 kB/s)
+以前に未選択のパッケージ libgpg-error-dev を選択しています。
+(データベースを読み込んでいます ... 現在 39621 個のファイルとディレクトリがインストールされています。)
+.../libgpg-error-dev_1.21-2ubuntu1_amd64.deb を展開する準備をしています ...
+libgpg-error-dev (1.21-2ubuntu1) を展開しています...
+以前に未選択のパッケージ libgcrypt20-dev を選択しています。
+.../libgcrypt20-dev_1.6.5-2ubuntu0.3_amd64.deb を展開する準備をしています ...
+libgcrypt20-dev (1.6.5-2ubuntu0.3) を展開しています...
+以前に未選択のパッケージ libssh2-1:amd64 を選択しています。
+.../libssh2-1_1.5.0-2ubuntu0.1_amd64.deb を展開する準備をしています ...
+libssh2-1:amd64 (1.5.0-2ubuntu0.1) を展開しています...
+以前に未選択のパッケージ libssh2-1-dev:amd64 を選択しています。
+.../libssh2-1-dev_1.5.0-2ubuntu0.1_amd64.deb を展開する準備をしています ...
+libssh2-1-dev:amd64 (1.5.0-2ubuntu0.1) を展開しています...
+install-info (6.1.0.dfsg.1-5) のトリガを処理しています ...
+man-db (2.7.5-1) のトリガを処理しています ...
+libc-bin (2.23-0ubuntu9) のトリガを処理しています ...
+libgpg-error-dev (1.21-2ubuntu1) を設定しています ...
+libgcrypt20-dev (1.6.5-2ubuntu0.3) を設定しています ...
+libssh2-1:amd64 (1.5.0-2ubuntu0.1) を設定しています ...
+libssh2-1-dev:amd64 (1.5.0-2ubuntu0.1) を設定しています ...
+libc-bin (2.23-0ubuntu9) のトリガを処理しています ...
+```
+
+And lo, the next time I compiled `libssh2` from source, it succeeded! The difference? Gcrypt. The ostensibly *optional* dependency fixed my problem. I uninstalled `libssh2-1-dev`, and sure enough, it continued to compile from source.
+
 ## Build Strategy
 
 I'll be the first to admit that this build system needs a lot of work. It's easy to use and it works, which is what's truly important. If you look at the source of [CMakeLists.txt](CMakeLists.txt) you'll see it's not pretty. Part of this comes from my inexperience with leveraging CMake. Another part of this comes from my inexperience building a library with such complex dependencies. And finally, the last part comes from my desire to keep things portable and relatively consistent, which sometimes means not having the most optimal solution for each platform.
