@@ -968,17 +968,17 @@ static bool srsFileSystem_Iterate_Internal(const char *dirpath, void *userdata, 
   {
     goto done;
   }
-  tinydir_result = tinydir_open(&dir, dirpath);
-  if (tinydir_result == -1)
-  {
-    goto done;
-  }
   char *cwd = srsDir_PushCWD(dirpath);
   if (cwd == NULL)
   {
     goto done;
   }
   *depth_out += 1;
+  tinydir_result = tinydir_open(&dir, ".");
+  if (tinydir_result == -1)
+  {
+    goto done;
+  }
   srsLOG_NOTIFY("Iterating in %s (%s)", dirpath, cwd);
   result = true;
   while (dir.has_next)
