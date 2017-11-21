@@ -1,15 +1,6 @@
-#ifndef _KIOKU_MODEL_CARD_H
-#define _KIOKU_MODEL_CARD_H
-
-#include "kioku/schedule.h"
-
-typedef struct _srsCARD_s
-{
-  const char *id;
-  const char *path;
-  srsTIME     when_added;
-  srsTIME     when_next_scheduled;
-} srsCARD;
+#include "kioku/model/card.h"
+#include "kioku/filesystem.h"
+#include "kioku/string.h"
 
 /**
  * Returns a list of all cards for a deck.
@@ -18,7 +9,10 @@ typedef struct _srsCARD_s
  * @param[out] count_out Place to store the number of elements in the returned array.
  * @return Unmanaged dynamically allocated card array, or NULL if no cards are found.
  */
-kiokuAPI srsCARD *srsCard_GetAll(const char *deck_path, size_t *count_out);
+srsCARD *srsCard_GetAll(const char *deck_path, size_t *count_out)
+{
+  return NULL;
+}
 
 /**
  * Returns the content of a file associated with the specified card.
@@ -26,6 +20,7 @@ kiokuAPI srsCARD *srsCard_GetAll(const char *deck_path, size_t *count_out);
  * @param[in] file The filename to find relative to the card's directory.
  * @return Unmanaged dynamically allocated text of a file for the specified card. Returns NULL if the file doesn't exist relative to the card directory.
  */
-kiokuAPI char *srsCard_GetContent(srsCARD card, const char *file);
-
-#endif /* _KIOKU_MODEL_CARD_H */
+char *srsCard_GetContent(srsCARD card, const char *file)
+{
+  return NULL;
+}

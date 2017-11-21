@@ -228,6 +228,7 @@ add_library( kioku ${LIBRARY_TYPE}
                    src/kioku/schedule.c
                    src/kioku/string.c
                    src/kioku/model.c
+                   src/kioku/model/card.c
                    src/kioku/controller.c
                    src/kioku/rest.c
                    src/kioku/server.c
