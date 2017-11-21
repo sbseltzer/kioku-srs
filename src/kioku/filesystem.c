@@ -989,14 +989,19 @@ static bool srsFileSystem_Iterate_Internal(const char *dirpath, void *userdata, 
     int errno_capture = errno;
     if (tinydir_result == -1)
     {
-      srsLOG_ERROR("Skipping - tinydir_readfile had error getting file: %s", strerror(errno_capture));
+      srsLOG_ERROR("Skipping - tinydir_readfile had error getting file %s: %s", file.name, strerror(errno_capture));
       tinydir_next(&dir);
       continue;
     }
     /* Do not risk endless loop recursing on the current or parent directory */
     if (strcmp(file.name, ".") == 0 || strcmp(file.name, "..") == 0)
     {
-      tinydir_next(&dir);
+      tinydir_result = tinydir_next(&dir);
+      if (tinydir_result == -1)
+      {
+        srsLOG_ERROR("Tinydir problem - could not iterate to next directory - terminating file tree walk early!");
+        goto done;
+      }
       continue;
     }
     srsLOG_NOTIFY("Visiting %s", file.name);
@@ -1040,7 +1045,12 @@ static bool srsFileSystem_Iterate_Internal(const char *dirpath, void *userdata, 
         goto done;
       }
     }
-    tinydir_next(&dir);
+    tinydir_result = tinydir_next(&dir);
+    if (tinydir_result == -1)
+    {
+      srsLOG_ERROR("Tinydir problem - could not iterate to next directory - terminating file tree walk early!");
+      goto done;
+    }
   }
 done:
   if (srsDir_PopCWD(NULL))
