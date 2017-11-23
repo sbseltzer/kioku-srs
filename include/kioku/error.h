@@ -3,6 +3,7 @@
 
 #include "kioku/result.h"
 
+/* A fairly heavyweight error struct to communicate as much as possible */
 typedef struct _srsERROR_DATA_s
 {
   /* Basic information */
@@ -19,16 +20,23 @@ typedef struct _srsERROR_DATA_s
   int32_t     errno;            /* A captured errno */
 } srsERROR_DATA;
 
+/** Returns a copy of global thread-local error data struct */
 kiokuAPI srsERROR_DATA srsError_Get();
 
+/** Resets the global thread-local error data struct */
 kiokuAPI void srsError_Reset();
 
+/** Sets up the global thread local error data struct */
 kiokuAPI void srsError_Set(srsRESULT code, const char *name, const char *message, int32_t errno_capture,
                            const char *_FILENAME, int32_t line_number, const char _FUNCNAME);
 
+/** Specifies a log line number if any */
 kiokuAPI void srsError_SetLogLineNumber(int32_t log_line_number);
+
+/** Specifies some user data associated with the error data struct */
 kiokuAPI void srsError_SetUserData(void *userdata);
 
+/** More user friendly macro for srsError_Set */
 #define srsERROR_SET(code, name_getter, msg, errno_capture)     \
   do {                                                          \
     srsError_Reset();                                           \
@@ -45,7 +53,7 @@ kiokuAPI void srsError_SetUserData(void *userdata);
                  __FILE__, __LINE__, srsFUNCTION_NAME);         \
   } while(0)
 
-/* This will take the last set error, create a log for it, then retroactively set its log line number. */
+/** This will take the last set error, create a log for it, then retroactively set its log line number. */
 #define srsERROR_LOG()                                                  \
   do {                                                                  \
     srsERROR_DATA data = srsError_Get();                                \
