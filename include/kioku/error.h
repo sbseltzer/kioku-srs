@@ -17,7 +17,7 @@ typedef struct _srsERROR_DATA_s
   /* Extras */
   int32_t     log_line_number;  /* The line in the log file that was created when this error occurred. -1 if no associated log was printed. */
   void       *dynamic_userdata; /* Dynamically allocated error-specific userdata. Depends on the source. Generally left alone. */
-  int32_t     errno;            /* A captured errno */
+  int32_t     captured_errno;   /* A captured errno */
 } srsERROR_DATA;
 
 /** Returns a copy of global thread-local error data struct */
@@ -28,7 +28,7 @@ kiokuAPI void srsError_Reset();
 
 /** Sets up the global thread local error data struct */
 kiokuAPI void srsError_Set(srsRESULT code, const char *name, const char *message, int32_t errno_capture,
-                           const char *_FILENAME, int32_t _LINENUMBER, const char _FUNCNAME)
+                           const char *_FILENAME, int32_t _LINENUMBER, const char _FUNCNAME);
 
 /** Specifies a log line number if any */
 kiokuAPI void srsError_SetLogLineNumber(int32_t log_line_number);

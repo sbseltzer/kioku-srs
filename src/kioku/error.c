@@ -45,7 +45,7 @@ void srsError_Set(srsRESULT code, const char *name, const char *message, int32_t
   srsError_Last.code = code;
   strncpy(srsError_Last.name, name, sizeof(srsError_Name));
   strncpy(srsError_Last.message, message, sizeof(srsError_Message));
-  srsError_Last.errno = errno_capture;
+  srsError_Last.captured_errno = errno_capture;
   srsError_Last.file_name = _FILENAME;
   srsError_Last.line_number = _LINENUMBER;
   srsError_Last.function_name = _FUNCNAME;
