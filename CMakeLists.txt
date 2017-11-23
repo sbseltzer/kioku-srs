@@ -221,6 +221,7 @@ if (NOT MSVC)
 endif ()
 message("${KIOKU_LIBS}")
 add_library( kioku ${LIBRARY_TYPE}
+                   src/kioku/error.c
                    src/kioku/log.c
                    src/kioku/datastructure.c
                    src/kioku/filesystem.c
