@@ -32,9 +32,17 @@ kiokuAPI void srsError_SetUserData(void *userdata);
 #define srsERROR_SET(code, name_getter, msg, errno_capture)     \
   do {                                                          \
     srsError_Reset();                                           \
-    const char *error_code_name = name_getter(code);            \
+    const char *error_code_name = NULL;                         \
+    if (name_getter != NULL)                                    \
+    {                                                           \
+      error_code_name = name_getter(code);                      \
+    }                                                           \
+    if (error_code_name == NULL)                                \
+    {                                                           \
+      error_code_name = "UNKNOWN";                              \
+    }                                                           \
     srsError_Set(code, error_code_name, message, errno_capture, \
-                 __FILE__, __LINE__, __FUNC__);                 \
+                 __FILE__, __LINE__, srsFUNCTION_NAME);         \
   } while(0)
 
 /* This will take the last set error, create a log for it, then retroactively set its log line number. */

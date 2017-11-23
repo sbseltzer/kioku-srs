@@ -74,6 +74,11 @@
   #error Unsupported architecture
 #endif
 
+/** TODO This is not exactly standard and will need some special casing for some compilers */
+#define srs__FUNCTION_NAME__() __PRETTY_FUNCTION__
+
+#define srsFUNCTION_NAME srs__FUNCTION_NAME__()
+
 #ifdef kiokuOS_WINDOWS
 #define kiokuSTRING_LF "\r\n"
 #else
