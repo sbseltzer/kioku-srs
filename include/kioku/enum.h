@@ -1,3 +1,6 @@
+#ifndef _KIOKU_ENUM_H
+#define _KIOKU_ENUM_H
+
 #include "kioku/decl.h"
 #include "kioku/types.h"
 
@@ -42,3 +45,5 @@
   srsASSERT_STATIC();                                                   \
   /* Assert that the size */                                            \
   srsASSERT_STATIC()
+
+#endif /* _KIOKU_ENUM_H */

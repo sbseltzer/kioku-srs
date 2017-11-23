@@ -1,3 +1,6 @@
+#ifndef _KIOKU_RESULT_H
+#define _KIOKU_RESULT_H
+
 #include "kioku/enum.h"
 
 /* An enumeration space for module result codes */
@@ -27,3 +30,5 @@ typedef enum _srsRESULT_e
   srsRESULT_FATAL,              /* Show stopper */
   srsENUM_RANGE_END(srsRESULT, srsMODULE_GENERIC, srsMODULE_SEPARATION),
 } srsRESULT;
+
+#endif /* _KIOKU_RESULT_H */
