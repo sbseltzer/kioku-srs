@@ -82,6 +82,8 @@
 
 #define kiokuCHAR_NULL '\0'
 
+#define srsTHREADLOCAL
+
 #endif /* _KIOKU_DECL_H */
 
 /** @} */
