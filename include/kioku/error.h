@@ -26,7 +26,8 @@ kiokuAPI void srsError_Reset();
 kiokuAPI void srsError_Set(srsRESULT code, const char *name, const char *message, int32_t errno_capture,
                            const char *_FILENAME, int32_t line_number, const char _FUNCNAME);
 
-kiokuAPI void srsError_SetExtra(int32_t log_line_number, void *userdata);
+kiokuAPI void srsError_SetLogLineNumber(int32_t log_line_number);
+kiokuAPI void srsError_SetUserData(void *userdata);
 
 #define srsERROR_SET(code, name_getter, msg, errno_capture)     \
   do {                                                          \
@@ -44,6 +45,7 @@ kiokuAPI void srsError_SetExtra(int32_t log_line_number, void *userdata);
                  data.file_name, data.line_number, data.function_name,  \
                  data.code, data.name, data.message);                   \
     /** TODO make the srsLOG_* functions more robust and wrappable, and have them return an integer representing the logged line number */ \
+    srsError_SetLogLineNumber(0);                                       \
   } while(0)
 
 #endif /* _KIOKU_ERROR_H */
