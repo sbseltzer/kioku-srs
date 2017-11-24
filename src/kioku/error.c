@@ -1,4 +1,6 @@
 #include "kioku/error.h"
+#include <string.h>
+#include <stdlib.h>
 
 static char srsError_Name[srsERROR_NAME_SIZE]       = {0};
 static char srsError_Message[srsERROR_MESSAGE_SIZE] = {0};
