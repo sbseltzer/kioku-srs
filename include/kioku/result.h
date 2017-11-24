@@ -4,7 +4,7 @@
 #include "kioku/enum.h"
 
 /* An enumeration space for module result codes */
-typedef enum _srsRESULT_MODULES_e
+typedef enum _srsMODULE_e
 {
   srsMODULE_GENERIC = 0,
   srsMODULE_FILESYSTEM,
@@ -18,16 +18,18 @@ typedef enum _srsRESULT_MODULES_e
   srsMODULE_SEPARATION = 100,
   /* This bounds is special in that it is used by all the ranges registered for this enumeration space */
   srsENUM_ADD_BOUNDS(srsMODULE_RANGES, INT32)
-} srsRESULT_MODULES;
+} srsMODULE;
 
 /* A generic result type that can be used across all enums modules enumeration space */
 typedef enum _srsRESULT_e
 {
   srsENUM_RANGE_START(srsRESULT, srsMODULE_GENERIC, srsMODULE),
-  srsRESULT_OK,                 /* All is well */
-  srsRESULT_BAD,                /* Generic NOT OK */
-  srsRESULT_ERROR,              /* Generic error */
-  srsRESULT_FATAL,              /* Show stopper */
+  srsOK,                 /* All is well */
+  srsFAIL,               /* Generic NOT OK */
+  srsERROR,              /* Generic error */
+  srsERROR_ASSERT,       /* Show stopper */
+  srsERROR_ARG,          /* Bad input */
+  srsERROR_SYSTEM,       /* Generic system-level error */
   srsENUM_RANGE_END(srsRESULT, srsMODULE_GENERIC, srsMODULE),
 } srsRESULT;
 

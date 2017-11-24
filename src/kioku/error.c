@@ -6,7 +6,7 @@ static char srsError_Name[srsERROR_NAME_SIZE]       = {0};
 static char srsError_Message[srsERROR_MESSAGE_SIZE] = {0};
 
 srsTHREADLOCAL static srsERROR_DATA srsError_Last = {
-  srsRESULT_OK,                 /* Result code */
+  srsOK,                        /* Result code */
   srsError_Name,                /* Value never changes, contents do */
   srsError_Message,             /* Value never changes, contents do */
   NULL,                         /* File name */
@@ -27,7 +27,7 @@ srsERROR_DATA srsError_Get()
 void srsError_Reset()
 {
   /* Reset to defaults */
-  srsError_Set(srsRESULT_OK,    /* Result code */
+  srsError_Set(srsOK,           /* Result code */
                "OK",            /* Name */
                "",              /* Message */
                0,               /* Captured errno */
