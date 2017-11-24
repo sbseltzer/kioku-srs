@@ -3,6 +3,9 @@
 
 #include "kioku/result.h"
 
+#define srsERROR_NAME_SIZE    128
+#define srsERROR_MESSAGE_SIZE 1024
+
 /* A fairly heavyweight error struct to communicate as much as possible */
 typedef struct _srsERROR_DATA_s
 {
