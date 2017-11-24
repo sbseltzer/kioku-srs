@@ -1,16 +1,17 @@
 #include "greatest.h"
 #include "kioku/string.h"
 
-void test_number(const char *str, bool isnum, int32_t num)
-{
-  int32_t number = 0;
-  ASSERT_EQ(isnum, srsString_ToU32(str, NULL));
-  ASSERT_EQ(isnum, srsString_ToU32(str, &number));
-  if (isnum)
-  {
-    ASSERT_EQ(num, number);
-  }
-}
+/* char *, bool, int32 */
+#define test_number(str, isnum, num)                  \
+  do {                                                \
+    int32_t number = 0;                               \
+    ASSERT_EQ(isnum, srsString_ToU32(str, NULL));     \
+    ASSERT_EQ(isnum, srsString_ToU32(str, &number));  \
+    if (isnum)                                        \
+    {                                                 \
+      ASSERT_EQ(num, number);                         \
+    }                                                 \
+  } while (0)
 
 /* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */
 TEST TestStringToU32(void)
