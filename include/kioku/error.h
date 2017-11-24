@@ -28,7 +28,7 @@ kiokuAPI void srsError_Reset();
 
 /** Sets up the global thread local error data struct */
 kiokuAPI void srsError_Set(srsRESULT code, const char *name, const char *message, int32_t errno_capture,
-                           const char *_FILENAME, int32_t _LINENUMBER, const char _FUNCNAME);
+                           const char *_FILENAME, int32_t _LINENUMBER, const char *_FUNCNAME);
 
 /** Specifies a log line number if any */
 kiokuAPI void srsError_SetLogLineNumber(int32_t log_line_number);

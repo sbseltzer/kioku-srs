@@ -40,7 +40,7 @@ void srsError_Reset()
 
 /** Sets up the global thread local error data struct */
 void srsError_Set(srsRESULT code, const char *name, const char *message, int32_t errno_capture,
-                           const char *_FILENAME, int32_t _LINENUMBER, const char _FUNCNAME)
+                           const char *_FILENAME, int32_t _LINENUMBER, const char *_FUNCNAME)
 {
   srsError_Last.code = code;
   strncpy(srsError_Last.name, name, sizeof(srsError_Name));
