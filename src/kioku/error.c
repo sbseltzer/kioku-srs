@@ -13,7 +13,6 @@ srsTHREADLOCAL static srsERROR_DATA srsError_Last = {
   NULL,                         /* Function name */
   0,                            /* Line number */
   0,                            /* Log line number */
-  NULL,                         /* Dynamic userdata */
   0                             /* Captured errno */
 };
 
@@ -49,18 +48,10 @@ void srsError_Set(srsRESULT code, const char *name, const char *message, int32_t
   srsError_Last.line_number = _LINENUMBER;
   srsError_Last.function_name = _FUNCNAME;
   srsError_SetLogLineNumber(0);
-  srsError_SetUserData(NULL);
 }
 
 /** Specifies a log line number if any */
 void srsError_SetLogLineNumber(int32_t log_line_number)
 {
   srsError_Last.log_line_number = log_line_number;
-}
-
-/** Specifies some user data associated with the error data struct */
-void srsError_SetUserData(void *userdata)
-{
-  free(srsError_Last.dynamic_userdata);
-  srsError_Last.dynamic_userdata = userdata;
 }

@@ -19,7 +19,6 @@ typedef struct _srsERROR_DATA_s
   int32_t     line_number;      /* Origin line */
   /* Extras */
   int32_t     log_line_number;  /* The line in the log file that was created when this error occurred. -1 if no associated log was printed. */
-  void       *dynamic_userdata; /* Dynamically allocated error-specific userdata. Depends on the source. Generally left alone. */
   int32_t     captured_errno;   /* A captured errno */
 } srsERROR_DATA;
 
@@ -35,9 +34,6 @@ kiokuAPI void srsError_Set(srsRESULT code, const char *name, const char *message
 
 /** Specifies a log line number if any */
 kiokuAPI void srsError_SetLogLineNumber(int32_t log_line_number);
-
-/** Specifies some user data associated with the error data struct */
-kiokuAPI void srsError_SetUserData(void *userdata);
 
 /** More user friendly macro for srsError_Set */
 #define srsERROR_SET(code, name_getter, msg, errno_capture)     \
