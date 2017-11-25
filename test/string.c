@@ -2,15 +2,15 @@
 #include "kioku/string.h"
 
 /* char *, bool, int32 */
-#define test_number(str, isnum, num)                  \
-  do {                                                \
-    int32_t number = 0;                               \
-    ASSERT_EQ(isnum, srsString_ToU32(str, NULL));     \
-    ASSERT_EQ(isnum, srsString_ToU32(str, &number));  \
-    if (isnum)                                        \
-    {                                                 \
-      ASSERT_EQ(num, number);                         \
-    }                                                 \
+#define test_number(str, isnum, num)                        \
+  do {                                                      \
+    int32_t output_number = 0;                              \
+    ASSERT_EQ(isnum, srsString_ToU32(str, NULL));           \
+    ASSERT_EQ(isnum, srsString_ToU32(str, &output_number)); \
+    if (isnum)                                              \
+    {                                                       \
+      ASSERT_EQ(num, output_number);                        \
+    }                                                       \
   } while (0)
 
 /* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */
