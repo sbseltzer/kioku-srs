@@ -31,8 +31,8 @@ TEST TestStringToU32(void)
   test_number("12345", true, 12345);
   test_number("12345abc", true, 12345);
 
-  test_number("-1", true, 1);
-  test_number("-1abc", true, 1);
+  test_number("-1", true, -1);
+  test_number("-1abc", true, -1);
   test_number("-12345", true, -12345);
   test_number("-12345abc", true, -12345);
 
