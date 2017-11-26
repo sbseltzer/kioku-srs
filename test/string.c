@@ -1,5 +1,6 @@
 #include "greatest.h"
 #include "kioku/string.h"
+#include "kioku/log.h"
 
 /* char *, bool, int32 */
 #define test_number(str, isnum, num)                        \
@@ -46,10 +47,18 @@ TEST TestStringToU32(void)
   PASS();
 }
 
+TEST TestSourcePath(void)
+{
+  SKIP();
+  const char *path = srsString_GetSourcePath(__FILE__);
+  srsLOG_NOTIFY("Source Path: %s", path);
+  ASSERT_STR_EQ(path, "test/string.c");
+}
 
 /* Suites can group multiple tests with common setup. */
 SUITE(the_suite) {
   RUN_TEST(TestStringToU32);
+  RUN_TEST(TestSourcePath);
 }
 
 /* Add definitions that need to be in the test runner's main file. */

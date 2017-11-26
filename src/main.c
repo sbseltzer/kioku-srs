@@ -263,7 +263,7 @@ int main(int argc, char *argv[]) {
   mg_mgr_free(&mgr);
 
   /* Cleanup logger resources */
-  kioku_log_Exit();
+  srsLog_Exit();
 
   return 0;
 }

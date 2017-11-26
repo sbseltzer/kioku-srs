@@ -14,19 +14,34 @@
 
 #include "kioku/decl.h"
 #include "kioku/types.h"
-#include <stdio.h> /* FILE, fprintf, fopen, fclose */
+#include <stdio.h> /* FILE, vfprintf, fopen, fclose */
+#include <stdarg.h> /* va_list */
 
-kiokuAPI FILE *kioku_log_GetHandle();
+kiokuAPI FILE *srsLog_GetHandle();
 
-kiokuAPI void kioku_log_Exit();
+kiokuAPI void srsLog_Exit();
 
-#define kLOG_WRITE(...)                                           \
-  do {                                                            \
-  fprintf(kioku_log_GetHandle(), "%s:%d: ", __FILE__, __LINE__);  \
-  fprintf(kioku_log_GetHandle(), __VA_ARGS__);                    \
-  fprintf(kioku_log_GetHandle(), "\r\n");                         \
-  fflush(kioku_log_GetHandle());                                  \
-} while (0)
+kiokuAPI bool srsLog_VWriteToStream(FILE *stream, const char *_FILENAME, uint32_t _LINENUMBER, const char *_FUNCNAME, const char *format, va_list args);
+
+kiokuAPI bool srsLog_WriteToStream(FILE *stream, const char *_FILENAME, uint32_t _LINENUMBER, const char *_FUNCNAME, const char *format, ...);
+
+kiokuAPI int32_t srsLog_WriteToStreamAndLog(FILE *stream, const char *_FILENAME, uint32_t _LINENUMBER, const char *_FUNCNAME, const char *format, ...);
+
+#define srsLOGFILE srsLog_GetHandle()
+
+#define srsLOG_WRITE(stream, format, ...)                               \
+  srsLog_WriteToStreamAndLog(stream, __FILE__, __LINE__, srsFUNCTION_NAME, format, __VA_ARGS__);
+
+#define srsLOG_PRINT(format, ...) srsLOG_WRITE(stdout, format, __VA_ARGS__)
+#define srsLOG_ERR(format, ...) srsLOG_WRITE(stderr, format, __VA_ARGS__)
+
+#define kLOG_WRITE(...)                                         \
+  do {                                                          \
+    fprintf(srsLog_GetHandle(), "%s:%d: ", __FILE__, __LINE__); \
+    fprintf(srsLog_GetHandle(), __VA_ARGS__);                   \
+    fprintf(srsLog_GetHandle(), "\r\n");                        \
+    fflush(srsLog_GetHandle());                                 \
+  } while (0)
 
 #define srsLOG_NOTIFY(...)                            \
     do {                                              \

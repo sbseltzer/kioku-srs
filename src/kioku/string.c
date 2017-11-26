@@ -3,6 +3,38 @@
 #include "kioku/log.h"
 #include <stdlib.h>
 
+static const char *srsSTRING_SEARCH_PATH_SEGMENTS[] = {
+  "src/kioku/",
+  "src\\kioku\\",
+  "include/kioku/",
+  "include\\kioku\\"
+  "test/kioku/",
+  "test\\kioku\\"
+};
+
+/* Find the start of the *meaningful* part of __FILE__ since it will bake the full paths the host it was compiled on into the binary. */
+/* Come to think of it, that means your data section size could depend on how deep into the filesystem your project was when it was compiled. Freaky. */
+const char *srsString_GetSourcePath(const char *_FILENAME)
+{
+  char *filepath = _FILENAME;
+  #if 0
+  size_t i;
+  size_t n = sizeof(srsSTRING_SEARCH_PATH_SEGMENTS) / sizeof(srsSTRING_SEARCH_PATH_SEGMENTS[0]);
+  for (i = 0; i < n; i++)
+  {
+    srsLOG_NOTIFY("%zu / %zu = %s", i, n, srsSTRING_SEARCH_PATH_SEGMENTS[i]);
+    filepath = strstr(_FILENAME, srsSTRING_SEARCH_PATH_SEGMENTS[i]);
+    srsLOG_NOTIFY("convert path = %s", _FILENAME);
+    srsLOG_NOTIFY("to path = %s", filepath);
+    if (filepath != NULL)
+    {
+      break;
+    }
+  }
+  #endif
+  return filepath;
+}
+
 bool srsString_ToU32(const char *string, int32_t *out)
 {
   bool result = false;
