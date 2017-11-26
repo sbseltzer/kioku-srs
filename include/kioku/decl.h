@@ -75,7 +75,12 @@
 #endif
 
 /** TODO This is not exactly standard and will need some special casing for some compilers */
+/* https://stackoverflow.com/questions/4384765/whats-the-difference-between-pretty-function-function-func */
+#if defined __GNUC__
 #define srs__FUNCTION_NAME__() __PRETTY_FUNCTION__
+#else
+#define srs__FUNCTION_NAME__() __func__
+#endif
 
 #define srsFUNCTION_NAME srs__FUNCTION_NAME__()
 
