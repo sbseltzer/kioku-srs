@@ -1,4 +1,5 @@
 #include "kioku/log.h"
+#include "kioku/string.h"
 #include <errno.h> /* errno */
 #include <string.h> /* strerror, strstr */
 
