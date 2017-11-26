@@ -1,7 +1,9 @@
 #include "kioku/types.h"
 #include "kioku/string.h"
 #include "kioku/log.h"
+#include "kioku/debug.h"
 #include <stdlib.h>
+#include <string.h>
 
 static const char *srsSTRING_SEARCH_PATH_SEGMENTS[] = {
   "src/kioku/",
@@ -16,22 +18,23 @@ static const char *srsSTRING_SEARCH_PATH_SEGMENTS[] = {
 /* Come to think of it, that means your data section size could depend on how deep into the filesystem your project was when it was compiled. Freaky. */
 const char *srsString_GetSourcePath(const char *_FILENAME)
 {
-  char *filepath = _FILENAME;
-  #if 0
+  const char *filepath = _FILENAME;
   size_t i;
   size_t n = sizeof(srsSTRING_SEARCH_PATH_SEGMENTS) / sizeof(srsSTRING_SEARCH_PATH_SEGMENTS[0]);
   for (i = 0; i < n; i++)
   {
     srsLOG_NOTIFY("%zu / %zu = %s", i, n, srsSTRING_SEARCH_PATH_SEGMENTS[i]);
-    filepath = strstr(_FILENAME, srsSTRING_SEARCH_PATH_SEGMENTS[i]);
+    char *subpath = strstr(_FILENAME, srsSTRING_SEARCH_PATH_SEGMENTS[i]);
+    srsLOG_NOTIFY("paths = %p <= %p", _FILENAME, subpath);
+    srsASSERT(subpath == NULL || _FILENAME <= subpath);
     srsLOG_NOTIFY("convert path = %s", _FILENAME);
-    srsLOG_NOTIFY("to path = %s", filepath);
-    if (filepath != NULL)
+    srsLOG_NOTIFY("to path = %s", subpath);
+    if (subpath != NULL)
     {
+      filepath = subpath;
       break;
     }
   }
-  #endif
   return filepath;
 }
 
