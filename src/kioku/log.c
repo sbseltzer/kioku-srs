@@ -20,7 +20,7 @@ FILE *srsLog_GetHandle()
 }
 
 /* va_copy support for MSVC - https://stackoverflow.com/a/28641350 */
-#if _MSC_VER < 1800 /* va_copy is available in vc2013 and onwards */
+#if defined _MSC_VER && _MSC_VER < 1800 /* va_copy is available in vc2013 and onwards */
 #define va_copy(a, b) (a = b)
 #endif
 
