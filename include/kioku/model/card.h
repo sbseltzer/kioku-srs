@@ -2,6 +2,7 @@
 #define _KIOKU_MODEL_CARD_H
 
 #include "kioku/schedule.h"
+#include "kioku/result.h"
 
 typedef struct _srsCARD_s
 {
@@ -27,5 +28,13 @@ kiokuAPI srsCARD *srsCard_GetAll(const char *deck_path, size_t *count_out);
  * @return Unmanaged dynamically allocated text of a file for the specified card. Returns NULL if the file doesn't exist relative to the card directory.
  */
 kiokuAPI char *srsCard_GetContent(srsCARD card, const char *file);
+
+/**
+ * Frees a card array returned by @ref srsCard_GetAll
+ * @param[in] cards Array of cards
+ * @param[in] count Number of cards
+ * @return srsOK if it succeeded.
+ */
+kiokuAPI srsRESULT srsCard_FreeArray(srsCARD *cards, size_t count);
 
 #endif /* _KIOKU_MODEL_CARD_H */

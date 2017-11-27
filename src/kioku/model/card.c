@@ -1,6 +1,57 @@
 #include "kioku/model/card.h"
 #include "kioku/filesystem.h"
+#include "kioku/schedule.h"
+#include "kioku/datastructure.h"
 #include "kioku/string.h"
+#include "kioku/debug.h"
+
+static srsFILESYSTEM_VISIT_ACTION get_cards(const char *path, void *userdata)
+{
+  srsMEMSTACK *list = (srsMEMSTACK *)userdata;
+  srsTIME_STRING added_time_str = {0};
+  srsTIME_STRING scheduled_time_str = {0};
+  /** TODO We should not rely on the push/pop/get CWD functions. It's not very robust. */
+  /* Go into the card's folder */
+  srsDir_PushCWD(path);
+  {
+    srsTIME added_time = srsTime_Now();
+    srsTIME scheduled_time = srsTime_Now();
+    bool ok = false;
+
+    /* Try to load added time */
+    ok = srsFile_GetContent("added.txt", added_time_str, sizeof(added_time_str));
+    ok = srsTime_FromString(added_time_str, &added_time);
+    if (!ok)
+    {
+      srsTime_ToString(added_time, added_time_str);
+      srsFile_SetContent("added.txt", added_time_str);
+    }
+    /* Try to load scheduled time */
+    ok = srsFile_GetContent("scheduled.txt", scheduled_time_str, sizeof(scheduled_time_str));
+    ok = srsTime_FromString(scheduled_time_str, &scheduled_time);
+    if (!ok)
+    {
+      srsTime_ToString(scheduled_time, scheduled_time_str);
+      srsFile_SetContent("scheduled.txt", added_time_str);
+    }
+
+    /* Create card */
+    srsCARD card = {0};
+    card.id = strdup(path);
+    /** TODO If we switch to a new filesystem iterator implementation, the srsDir_GetCWD usage here will be invalid */
+    card.path = strdup(srsDir_GetCWD());
+    srsASSERT(card.id != NULL);
+    srsASSERT(card.path != NULL);
+    card.when_added = added_time;
+    card.when_next_scheduled = scheduled_time;
+    /* Add to list */
+    ok = srsMemStack_Push(list, &card);
+  }
+done:
+  /* Go out of the card's folder */
+  srsDir_PopCWD(NULL);
+  return srsFILESYSTEM_VISIT_CONTINUE;
+}
 
 /**
  * Returns a list of all cards for a deck.
@@ -11,7 +62,38 @@
  */
 srsCARD *srsCard_GetAll(const char *deck_path, size_t *count_out)
 {
-  return NULL;
+  srsMEMSTACK list = {0};
+  srsMemStack_Init(&list, sizeof(srsCARD), 16);
+
+  srsDir_PushCWD(deck_path);
+  bool ok = srsFileSystem_Iterate("cards", (void *)&list, get_cards);
+  srsDir_PopCWD(NULL);
+
+  *count_out = list.count;
+  /* We can safely lose reference to the list since the internal malloc'd memory will still exist */
+  return list.memory;
+}
+
+/**
+ * Frees a card array returned by @ref srsCard_GetAll
+ * @param[in] cards Array of cards
+ * @param[in] count Number of cards
+ * @return Whether it succeeded.
+ */
+srsRESULT srsCard_FreeArray(srsCARD *cards, size_t count)
+{
+  if (cards == NULL || count == 0)
+  {
+    return srsOK;
+  }
+  while (count > 0)
+  {
+    free(cards[count-1].id);
+    free(cards[count-1].path);
+    count--;
+  }
+  free(cards);
+  return srsOK;
 }
 
 /**
