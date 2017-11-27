@@ -12,6 +12,7 @@ make_test(model model.c)
 make_test(schedule schedule.c)
 make_test(string string.c)
 make_test(datastructure datastructure.c)
+make_test(card card.c)
 
 add_definitions(-DBUILDDIR="${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -22,3 +23,4 @@ add_test(NAME TestModel COMMAND model)
 add_test(NAME TestSchedule COMMAND schedule)
 add_test(NAME TestString COMMAND string)
 add_test(NAME TestDatastructure COMMAND datastructure)
+add_test(NAME TestCard COMMAND card)
