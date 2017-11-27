@@ -1,6 +1,5 @@
 #include "greatest.h"
 #include "kioku/model/card.h"
-#include "kioku/model/card.h"
 
 static bool add_card(const char *id, srsTIME added, srsTIME scheduled)
 {
