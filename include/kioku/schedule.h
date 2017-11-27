@@ -53,7 +53,7 @@ typedef struct _srsSCHED_REP_s
 
 /**
  * Converts from an @ref srsTIME struct to an @ref srsTIME_STRING.
- * @todo Add timezone handling, daylight savings handling, and leapyear/leapsecond handling 
+ * TODO Add timezone handling, daylight savings handling, and leapyear/leapsecond handling
  * @param[in] time The time struct.
  * @param[out] string The time string.
  * @return Whether it was successful. If false, the contents of string are undefined.
@@ -62,7 +62,7 @@ kiokuAPI bool srsTime_ToString(const srsTIME time, srsTIME_STRING string);
 
 /**
  * Converts from an @ref srsTIME_STRING to an @ref srsTIME struct.
- * @todo Add timezone handling, daylight savings handling, and leapyear/leapsecond handling 
+ * TODO Add timezone handling, daylight savings handling, and leapyear/leapsecond handling
  * @param[in] string The time string.
  * @param[out] time The time struct.
  * @return Whether it was successful. If false, the contents of time are undefined.
