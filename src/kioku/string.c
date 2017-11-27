@@ -6,12 +6,12 @@
 #include <string.h>
 
 static const char *srsSTRING_SEARCH_PATH_SEGMENTS[] = {
-  "src/kioku/",
-  "src\\kioku\\",
-  "include/kioku/",
-  "include\\kioku\\"
-  "test/kioku/",
-  "test\\kioku\\"
+  "src/",
+  "src\\",
+  "include/",
+  "include\\",
+  "test/",
+  "test\\"
 };
 
 /* Find the start of the *meaningful* part of __FILE__ since it will bake the full paths the host it was compiled on into the binary. */
