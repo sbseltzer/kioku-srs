@@ -28,6 +28,14 @@ static bool add_card(const char *id, srsTIME added, srsTIME scheduled)
   /* TODO We may want to utilize this for an ASSERT */
   return true;
 }
+
+int comp_card_id(const void *a, const void *b)
+{
+  srsCARD card_a = *((const srsCARD *)a);
+  srsCARD card_b = *((const srsCARD *)b);
+  return strcmp(card_a.id, card_b.id);
+}
+
 /* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */
 TEST test_card(void)
 {
@@ -41,11 +49,12 @@ TEST test_card(void)
   size_t count = 0;
   srsCARD *cards = srsCard_GetAll(".", &count);
   ASSERT_EQ(added_count, count);
+  qsort(cards, count, sizeof(*cards), comp_card_id);
 
-  ASSERT_STR_EQ(cards[0].id, "id_0");
-  ASSERT_STR_EQ(cards[1].id, "id_1");
-  ASSERT_STR_EQ(cards[2].id, "id_2");
-  ASSERT_STR_EQ(cards[3].id, "id_3");
+  ASSERT_STR_EQ("id_0", cards[0].id);
+  ASSERT_STR_EQ("id_1", cards[1].id);
+  ASSERT_STR_EQ("id_2", cards[2].id);
+  ASSERT_STR_EQ("id_3", cards[3].id);
 
   size_t i = 0;
   for (i = 0; i < count; i++)
