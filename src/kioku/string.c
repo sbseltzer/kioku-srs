@@ -21,6 +21,10 @@ const char *srsString_GetSourcePath(const char *_FILENAME)
   const char *filepath = _FILENAME;
   size_t i;
   size_t n = sizeof(srsSTRING_SEARCH_PATH_SEGMENTS) / sizeof(srsSTRING_SEARCH_PATH_SEGMENTS[0]);
+  if (_FILENAME == NULL)
+  {
+    return NULL;
+  }
   for (i = 0; i < n; i++)
   {
     srsLOG_NOTIFY("%zu / %zu = %s", i, n, srsSTRING_SEARCH_PATH_SEGMENTS[i]);
