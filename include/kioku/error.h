@@ -67,14 +67,16 @@ kiokuAPI void srsError_SetLogLineNumber(int32_t log_line_number);
 /**
  * This will take the last set error, create a log for it, then retroactively set its log line number.
  */
-#define srsERROR_LOG()                                              \
+#define srsERROR_LOG()                                                  \
   do {                                                                  \
     srsERROR_DATA data = srsError_Get();                                \
     if (data.code != srsOK)                                             \
     {                                                                   \
-      int32_t line = srsLOG_ERROR("%s:%d[%s] | Error #%d (%s): %s",     \
-                                  data.file_name, data.line_number, data.function_name, \
-                                  data.code, data.name, data.message);  \
+      int32_t line = srsLog_WriteToStreamAndLog(                        \
+        stderr,                                                         \
+        "%s:%d[%s] | Error #%d (%s): %s",                               \
+        data.file_name, data.line_number, data.function_name, data.code, data.name, data.message \
+        );                                                              \
       /** TODO make the srsLOG_* functions more robust and wrappable, and have them return an integer representing the logged line number */ \
       srsError_SetLogLineNumber(line);                                  \
     }                                                                   \
