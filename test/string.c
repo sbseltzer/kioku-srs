@@ -136,6 +136,8 @@ TEST TestSourcePath(void)
   /* Test '\\' path without drive letter or leading slash */
   path = srsString_GetSourcePath("include\\path\\stuff.c");
   ASSERT_STR_EQ("include\\path\\stuff.c", path);
+
+  PASS();
 }
 
 /* Suites can group multiple tests with common setup. */
