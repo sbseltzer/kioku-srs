@@ -127,6 +127,7 @@ done:
   if (!ok)
   {
     free(content);
+    content = NULL;
   }
   srsDir_PopCWD(NULL);
   return content;
