@@ -33,7 +33,7 @@ kiokuAPI int32_t srsLog_WriteToStreamAndLog(FILE *stream, const char *_FILENAME,
   srsLog_WriteToStreamAndLog(stream, __FILE__, __LINE__, srsFUNCTION_NAME, format, __VA_ARGS__);
 
 #define srsLOG_PRINT(format, ...) srsLOG_WRITE(stdout, format, __VA_ARGS__)
-#define srsLOG_ERR(format, ...) srsLOG_WRITE(stderr, format, __VA_ARGS__)
+#define srsLOG_ERROR(format, ...) srsLOG_WRITE(stderr, format, __VA_ARGS__)
 
 #define kLOG_WRITE(...)                                         \
   do {                                                          \
@@ -49,15 +49,6 @@ kiokuAPI int32_t srsLog_WriteToStreamAndLog(FILE *stream, const char *_FILENAME,
       fprintf(stdout, __VA_ARGS__);                   \
       fprintf(stdout, "\r\n");                        \
       fflush(stdout);                                 \
-      kLOG_WRITE(__VA_ARGS__);                        \
-    } while (0)
-
-#define srsLOG_ERROR(...)                             \
-    do {                                              \
-      fprintf(stderr, "%s:%d: ", __FILE__, __LINE__); \
-      fprintf(stderr, __VA_ARGS__);                   \
-      fprintf(stderr, "\r\n");                        \
-      fflush(stderr);                                 \
       kLOG_WRITE(__VA_ARGS__);                        \
     } while (0)
 
