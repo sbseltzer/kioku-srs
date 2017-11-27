@@ -14,6 +14,8 @@
 
 /**
  * A strstr wrapper specifically made for grabbing the meaningful part of a __FILE__ string.
+ * This works for paths with test/, src/, and include/ (also supports DOS style '\\' separator).
+ * Currently does not handle mixed path separators, since with __FILE__ they will always be consistent.
  * @param[in] _FILENAME Presumably __FILE__.
  * @return The start of the meaningful part of the _FILENAME string.
  */
