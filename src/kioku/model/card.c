@@ -104,5 +104,30 @@ srsRESULT srsCard_FreeArray(srsCARD *cards, size_t count)
  */
 char *srsCard_GetContent(srsCARD card, const char *file)
 {
-  return NULL;
+  bool ok = false;
+  size_t content_size = 0;
+  char *content = NULL;
+  srsDir_PushCWD(card.path);
+  content_size = srsFile_GetLength(file) + 1;
+  if (content_size > 0)
+  {
+    goto done;
+  }
+  content = malloc(content_size);
+  if (content == NULL)
+  {
+    goto done;
+  }
+  ok = srsFile_GetContent(file, content, content_size);
+  if (!ok)
+  {
+    goto done;
+  }
+done:
+  if (!ok)
+  {
+    free(content);
+  }
+  srsDir_PopCWD(NULL);
+  return content;
 }
