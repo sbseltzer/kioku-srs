@@ -62,21 +62,7 @@ kiokuAPI void srsError_SetLogLineNumber(int32_t log_line_number);
  * @param[in] msg Same as message for @ref srsError_Set.
  * @param[in] errno_capture Same as errno_capture for @ref srsError_Set.
  */
-#define srsERROR_SET(code, name_getter, msg, errno_capture)     \
-  do {                                                          \
-    srsError_Reset();                                           \
-    const char *error_code_name = NULL;                         \
-    if (name_getter != NULL)                                    \
-    {                                                           \
-      error_code_name = name_getter(code);                      \
-    }                                                           \
-    if (error_code_name == NULL)                                \
-    {                                                           \
-      error_code_name = "UNKNOWN";                              \
-    }                                                           \
-    srsError_Set(code, error_code_name, message, errno_capture, \
-                 __FILE__, __LINE__, srsFUNCTION_NAME);         \
-  } while(0)
+#define srsERROR_SET(code, message) srsError_Set(code, #code, message, 0, __FILE__, __LINE__, srsFUNCTION_NAME)
 
 /**
  * This will take the last set error, create a log for it, then retroactively set its log line number.
