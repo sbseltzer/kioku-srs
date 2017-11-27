@@ -69,6 +69,13 @@ kiokuAPI bool srsTime_ToString(const srsTIME time, srsTIME_STRING string);
  */
 kiokuAPI bool srsTime_FromString(const srsTIME_STRING string, srsTIME *time);
 
+/**
+ * Get the current time.
+ * TODO Add timezone handling, daylight savings handling, and leapyear/leapsecond handling
+ * @return srsTIME representing the moment this function is invoked.
+ */
+kiokuAPI srsTIME srsTime_Now();
+
 kiokuAPI bool srsSchedule_CalculateNextTime(const srsTIME lastRep, uint8_t lastGrade);
 
 #endif /* _KIOKU_SCHEDULE_H */

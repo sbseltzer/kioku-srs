@@ -6,6 +6,7 @@
 
 #define srsTIME_YEAR_OFFSET 1900
 #define srsTIME_MONTH_OFFSET 1
+
 bool srsTime_ToString(const srsTIME time, srsTIME_STRING string)
 {
   bool result = false;
@@ -100,4 +101,22 @@ bool srsTime_FromString(const srsTIME_STRING string, srsTIME *time)
   time->minute = minute;
 end:
   return result;
+}
+
+static srsTIME srsTime_FromTM(struct tm *timeinfo)
+{
+  srsTIME kioku_time = {0};
+  kioku_time.year = timeinfo->tm_year + srsTIME_YEAR_OFFSET;
+  kioku_time.month = timeinfo->tm_mon + srsTIME_MONTH_OFFSET;
+  kioku_time.day = timeinfo->tm_mday;
+  kioku_time.hour = timeinfo->tm_hour;
+  kioku_time.minute = timeinfo->tm_min;
+  return kioku_time;
+}
+
+srsTIME srsTime_Now()
+{
+  time_t now = time(0);
+  struct tm * timeinfo = localtime(&now);
+  return srsTime_FromTM(timeinfo);
 }
