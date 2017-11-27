@@ -27,6 +27,9 @@
  */
 #define srsTIME_STRING_SIZE 32
 
+#define srsTIME_NEVER {UINT16_MAX, UINT8_MAX, UINT8_MAX, UINT8_MAX, UINT8_MAX};
+#define srsTIME_NONE {0};
+
 /**
  * String guaranteed to fit a serialized schedule time.
  */
