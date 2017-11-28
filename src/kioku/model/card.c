@@ -4,6 +4,11 @@
 #include "kioku/datastructure.h"
 #include "kioku/string.h"
 #include "kioku/debug.h"
+#include "kioku/log.h"
+#include "kioku/error.h"
+#include "kioku/result.h"
+#include <stdlib.h>
+#include <string.h>
 
 static srsFILESYSTEM_VISIT_ACTION get_cards(const char *path, void *userdata)
 {
@@ -107,25 +112,39 @@ char *srsCard_GetContent(srsCARD card, const char *file)
   bool ok = false;
   size_t content_size = 0;
   char *content = NULL;
-  srsDir_PushCWD(card.path);
+  const char *cwd = srsDir_PushCWD(card.path);
+  if (cwd == NULL)
+  {
+    srsERROR_SET(srsFAIL, "Unable to navigate to card path");
+    goto done;
+  }
+  if (!srsFile_Exists(file))
+  {
+    srsERROR_SET(srsFAIL, "File does not exist");
+    goto done;
+  }
   content_size = srsFile_GetLength(file) + 1;
   if (content_size <= 0)
   {
+    srsERROR_SET(srsFAIL, "Empty file");
     goto done;
   }
   content = malloc(content_size);
   if (content == NULL)
   {
+    srsERROR_SET(srsFAIL, "Unable to allocate enough memory for file content");
     goto done;
   }
   ok = srsFile_GetContent(file, content, content_size);
   if (!ok)
   {
+    srsERROR_SET(srsFAIL, "Unable to get file contents");
     goto done;
   }
 done:
   if (!ok)
   {
+    srsERROR_LOG();
     free(content);
     content = NULL;
   }
