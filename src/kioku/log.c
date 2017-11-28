@@ -99,6 +99,7 @@ int32_t srsLog_WriteToStreamAndLog(FILE *stream, const char *_FILENAME, uint32_t
   }
   /* Record the line number that was written to the logfile */
   line_number = srsLog_GetLineCount();
+  va_end(args);
   return line_number;
 }
 
