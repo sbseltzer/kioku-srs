@@ -25,10 +25,64 @@ TEST TimeConvertsToAndFromString(void)
   PASS();
 }
 
+TEST TimeComparison(void)
+{
+  srsTIME timeA = {.year=2000, .month=10, .day=02, .hour=12, .minute=30};
+  srsTIME timeB = timeA;
+
+  /* Test equal */
+  ASSERT(srsTime_Compare(timeA, timeB) == 0);
+
+  /* Test less than */
+  {
+    timeB = timeA;
+    timeB.year++;
+    ASSERT(srsTime_Compare(timeA, timeB) < 0);
+
+    timeB = timeA;
+    timeB.month++;
+    ASSERT(srsTime_Compare(timeA, timeB) < 0);
+
+    timeB = timeA;
+    timeB.day++;
+    ASSERT(srsTime_Compare(timeA, timeB) < 0);
+
+    timeB = timeA;
+    timeB.hour++;
+    ASSERT(srsTime_Compare(timeA, timeB) < 0);
+
+    timeB = timeA;
+    timeB.minute++;
+    ASSERT(srsTime_Compare(timeA, timeB) < 0);
+  }
+  /* Test greater than */
+  {
+    timeB = timeA;
+    timeB.year--;
+    ASSERT(srsTime_Compare(timeA, timeB) > 0);
+
+    timeB = timeA;
+    timeB.month--;
+    ASSERT(srsTime_Compare(timeA, timeB) > 0);
+
+    timeB = timeA;
+    timeB.day--;
+    ASSERT(srsTime_Compare(timeA, timeB) > 0);
+
+    timeB = timeA;
+    timeB.hour--;
+    ASSERT(srsTime_Compare(timeA, timeB) > 0);
+
+    timeB = timeA;
+    timeB.minute--;
+    ASSERT(srsTime_Compare(timeA, timeB) > 0);
+  }
+}
 
 /* Suites can group multiple tests with common setup. */
 SUITE(the_suite) {
   RUN_TEST(TimeConvertsToAndFromString);
+  RUN_TEST(TimeComparison);
 }
 
 /* Add definitions that need to be in the test runner's main file. */

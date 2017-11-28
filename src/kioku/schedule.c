@@ -121,3 +121,35 @@ srsTIME srsTime_Now()
   struct tm * timeinfo = localtime(&now);
   return srsTime_FromTM(timeinfo);
 }
+
+int srsTime_Compare(const srsTIME left, const srsTIME right)
+{
+  int result = 0;
+  result = left.year - right.year;
+  if (result != 0)
+  {
+    goto done;
+  }
+  result = left.month - right.month;
+  if (result != 0)
+  {
+    goto done;
+  }
+  result = left.day - right.day;
+  if (result != 0)
+  {
+    goto done;
+  }
+  result = left.hour - right.hour;
+  if (result != 0)
+  {
+    goto done;
+  }
+  result = left.minute - right.minute;
+  if (result != 0)
+  {
+    goto done;
+  }
+done:
+  return result;
+}

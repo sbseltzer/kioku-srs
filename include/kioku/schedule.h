@@ -79,7 +79,13 @@ kiokuAPI bool srsTime_FromString(const srsTIME_STRING string, srsTIME *time);
  */
 kiokuAPI srsTIME srsTime_Now();
 
-kiokuAPI bool srsSchedule_CalculateNextTime(const srsTIME lastRep, uint8_t lastGrade);
+/**
+ * Comparison function for srsTIME structs.
+ * @param[in] left Left side of comparison.
+ * @param[in] right Right side of comparison.
+ * @return Less than 0 if left < right, 0 if left == right, greater than 0 if left > right.
+ */
+kiokuAPI int srsTime_Compare(const srsTIME left, const srsTIME right);
 
 #endif /* _KIOKU_SCHEDULE_H */
 
