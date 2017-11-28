@@ -20,8 +20,10 @@ FILE *srsLog_GetHandle()
 }
 
 /* va_copy support for MSVC - https://stackoverflow.com/a/28641350 */
+#ifndef va_copy
 #if defined _MSVC && _MSC_VER < 1800 /* va_copy is available in vc2013 and onwards */
-#define va_copy(a, b) (a = b)
+#define va_copy(a, b) ((a) = (b))
+#endif
 #endif
 
 static int32_t srsLog_GetLineCount()
