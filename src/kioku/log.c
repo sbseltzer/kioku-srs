@@ -51,7 +51,7 @@ bool srsLog_VWriteToStream(FILE *stream, const char *_FILENAME, uint32_t _LINENU
 
   /* Print the log prefix that indicates where it comes from. */
   /** TODO Reimplement it to write the whole log entry to a buffer first so we can use write to print it atomically */
-  fprintf(stream, "%s:%u [%s]:", filepath, _LINENUMBER, _FUNCNAME);
+  fprintf(stream, "%s:%u (%s): ", filepath, _LINENUMBER, _FUNCNAME);
 
   /* Use the copied args */
   vfprintf(stream, format, args);
