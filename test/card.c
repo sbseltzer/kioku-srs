@@ -2,6 +2,7 @@
 #include "kioku/model/card.h"
 #include "kioku/filesystem.h"
 #include "kioku/log.h"
+#include "kioku/error.h"
 #include <stdlib.h>
 
 static bool add_card(const char *id, srsTIME added, srsTIME scheduled)
@@ -66,9 +67,37 @@ TEST test_card(void)
   srsDir_SetCWD(cwd);
   free(cwd);
 
-  srsLOG_PRINT("Running srsCard_GetAll");
+  srsCARD *cards = NULL;
   size_t count = 0;
-  srsCARD *cards = srsCard_GetAll(".", &count);
+
+  /* Null deck path; Null count output */
+  srsERROR_CLEAR();
+  ASSERT_EQ(NULL, srsCard_GetAll(NULL, NULL));
+  ASSERT_EQ(srsFAIL, srsError_Get().code);
+
+  /* Null deck path; Valid count output */
+  srsERROR_CLEAR();
+  ASSERT_EQ(NULL, srsCard_GetAll(NULL, &count));
+  ASSERT_EQ(srsFAIL, srsError_Get().code);
+
+  /* Valid deck path; Null count output */
+  srsERROR_CLEAR();
+  ASSERT_EQ(NULL, srsCard_GetAll(".", NULL));
+  ASSERT_EQ(srsFAIL, srsError_Get().code);
+
+  /* Missing deck path */
+  srsERROR_CLEAR();
+  ASSERT_EQ(NULL, srsCard_GetAll("missing-deck-path", &count));
+  ASSERT_EQ(srsFAIL, srsError_Get().code);
+
+  /* Invalid deck path */
+  srsERROR_CLEAR();
+  ASSERT_EQ(NULL, srsCard_GetAll("..", &count));
+  ASSERT_EQ(srsFAIL, srsError_Get().code);
+
+  /* Ok, time for perfect world */
+  srsLOG_PRINT("Running srsCard_GetAll");
+  cards = srsCard_GetAll(".", &count);
 
   srsLOG_PRINT("Checking card count");
   ASSERT_EQ(added_count, count);
