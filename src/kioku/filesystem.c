@@ -126,7 +126,7 @@ const char *srsDir_SetCWD(const char *path)
   /* Attempt to change the directory, and if it succeeds cause the current directory to be reallocated */
   if ((path != NULL) && srsDir_SetSystemCWD(path))
   {
-    srsLOG_NOTIFY("Set Kioku CWD to %s", directory_current);
+    srsLOG_NOTIFY("Set CWD to %s - Directory Stack has been cleared", directory_current);
     return srsDir_GetCWD();
   }
   /* Failure to do the actual directory changing returns NULL */
@@ -224,7 +224,7 @@ bool srsDir_PopCWD(char **popped)
     }
     else
     {
-      srsLOG_NOTIFY("Popped Directory: CWD = %s", change_to);
+      srsLOG_NOTIFY("Popped Directory (%s): CWD = %s", directory_current, change_to);
       /* Reset CWD so next call to srsDir_GetCWD regenerates it */
       free(directory_current);
       directory_current = NULL;
