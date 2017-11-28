@@ -69,14 +69,57 @@ static srsFILESYSTEM_VISIT_ACTION get_cards(const char *path, void *userdata)
  */
 srsCARD *srsCard_GetAll(const char *deck_path, size_t *count_out)
 {
+  bool ok = false;
   srsMEMSTACK list = {0};
+  const char *cwd = NULL;
+
+  if (deck_path == NULL)
+  {
+    srsERROR_SET(srsFAIL, "Deck path is NULL");
+    goto done;
+  }
+
+  if (count_out == NULL)
+  {
+    srsERROR_SET(srsFAIL, "Count output is NULL");
+    goto done;
+  }
+
+  if (!srsDir_Exists(deck_path))
+  {
+    srsERROR_SET(srsFAIL, "Deck path does not exist");
+    goto done;
+  }
+
+  cwd = srsDir_PushCWD(deck_path);
+  if (cwd == NULL)
+  {
+    srsERROR_SET(srsFAIL, "Unable to push CWD");
+    goto done;
+  }
+
+  if (!srsDir_Exists("cards"))
+  {
+    srsERROR_SET(srsFAIL, "Deck path does not contain a cards directory");
+    goto done;
+  }
+
   srsMemStack_Init(&list, sizeof(srsCARD), 16);
+  ok = srsFileSystem_Iterate("cards", (void *)&list, get_cards);
 
-  srsDir_PushCWD(deck_path);
-  bool ok = srsFileSystem_Iterate("cards", (void *)&list, get_cards);
-  srsDir_PopCWD(NULL);
-
-  *count_out = list.count;
+done:
+  if (cwd != NULL)
+  {
+    srsDir_PopCWD(NULL);
+  }
+  if (!ok)
+  {
+    srsERROR_LOG();
+  }
+  if (count_out != NULL)
+  {
+    *count_out = list.count;
+  }
   /* We can safely lose reference to the list since the internal malloc'd memory will still exist */
   return list.memory;
 }
