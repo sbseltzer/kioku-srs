@@ -95,8 +95,8 @@ srsRESULT srsCard_FreeArray(srsCARD *cards, size_t count)
   }
   while (count > 0)
   {
-    free(cards[count-1].id);
-    free(cards[count-1].path);
+    free((void *)cards[count-1].id);
+    free((void *)cards[count-1].path);
     count--;
   }
   free(cards);
