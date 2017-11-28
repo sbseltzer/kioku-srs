@@ -23,6 +23,8 @@ static srsFILESYSTEM_VISIT_ACTION get_cards(const char *path, void *userdata)
     srsTIME scheduled_time = srsTime_Now();
     bool ok = false;
 
+    /* TODO handle case where files are missing */
+
     /* Try to load added time */
     ok = srsFile_GetContent("added.txt", added_time_str, sizeof(added_time_str));
     ok = srsTime_FromString(added_time_str, &added_time);
@@ -51,8 +53,8 @@ static srsFILESYSTEM_VISIT_ACTION get_cards(const char *path, void *userdata)
     card.when_next_scheduled = scheduled_time;
     /* Add to list */
     ok = srsMemStack_Push(list, &card);
+    srsASSERT(ok);
   }
-done:
   /* Go out of the card's folder */
   srsDir_PopCWD(NULL);
   return srsFILESYSTEM_VISIT_CONTINUE;
