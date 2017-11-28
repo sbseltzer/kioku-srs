@@ -82,12 +82,10 @@ int32_t srsLog_WriteToStreamAndLog(FILE *stream, const char *_FILENAME, uint32_t
   bool ok = false;
   int32_t line_number = -1;
   va_list args;
-  va_list args_copy;
   va_start(args, format);
   /* We don't actually care about whether this one succeeds, though it'd be nice if it did */
-  va_copy(args_copy, args);
   ok = srsLog_VWriteToStream(stream, _FILENAME, _LINENUMBER, _FUNCNAME, format, args);
-  va_end(args_copy);
+  va_end(args);
   if (!ok)
   {
     fprintf(stderr, "%s:%u: Failed to write to stream (fd = %d)!", srsString_GetSourcePath(_FILENAME), _LINENUMBER, fileno(stream));
@@ -95,13 +93,12 @@ int32_t srsLog_WriteToStreamAndLog(FILE *stream, const char *_FILENAME, uint32_t
   /* If we didn't explicitly tell it to write to the logfile, write to it in addition to whatever stream we just wrote to. */
   if (stream != srsLOGFILE)
   {
-    va_copy(args_copy, args);
+    va_start(args, format);
     ok = srsLog_VWriteToStream(srsLOGFILE, _FILENAME, _LINENUMBER, _FUNCNAME, format, args);
-    va_end(args_copy);
+    va_end(args);
   }
   /* Record the line number that was written to the logfile */
   line_number = srsLog_GetLineCount();
-  va_end(args);
   return line_number;
 }
 
