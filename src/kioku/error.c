@@ -1,4 +1,5 @@
 #include "kioku/error.h"
+#include "kioku/log.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -54,4 +55,23 @@ void srsError_Set(srsRESULT code, const char *name, const char *message, int32_t
 void srsError_SetLogLineNumber(int32_t log_line_number)
 {
   srsError_Last.log_line_number = log_line_number;
+}
+
+void srsError_Log()
+{
+  srsERROR_DATA data = srsError_Get();
+  if (data.code != srsOK)
+  {
+    int32_t line = srsLog_WriteToStreamAndLog(
+      stderr,
+      data.file_name,
+      data.line_number,
+      data.function_name,
+      "ERROR | Result #%d (%s): %s"kiokuSTRING_LF,
+      data.code,
+      data.name,
+      data.message);
+    /** TODO make the srsLOG_* functions more robust and wrappable, and have them return an integer representing the logged line number */
+    srsError_SetLogLineNumber(line);
+  }
 }

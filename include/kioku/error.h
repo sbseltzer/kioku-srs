@@ -56,6 +56,11 @@ kiokuAPI void srsError_Set(srsRESULT code, const char *name, const char *message
 kiokuAPI void srsError_SetLogLineNumber(int32_t log_line_number);
 
 /**
+ * This will take the last set error, create a log for it, then retroactively set its log line number.
+ */
+kiokuAPI void srsError_Log();
+
+/**
  * More user friendly macro for @ref srsError_Set.
  * @param[in] code Same as code for @ref srsError_Set.
  * @param[in] name_getter A function that returns a string for the name. The return value is intended to be either statically allocated, or interned.
@@ -64,22 +69,6 @@ kiokuAPI void srsError_SetLogLineNumber(int32_t log_line_number);
  */
 #define srsERROR_SET(code, message) srsError_Set(code, #code, message, 0, __FILE__, __LINE__, srsFUNCTION_NAME)
 
-/**
- * This will take the last set error, create a log for it, then retroactively set its log line number.
- */
-#define srsERROR_LOG()                                                  \
-  do {                                                                  \
-    srsERROR_DATA data = srsError_Get();                                \
-    if (data.code != srsOK)                                             \
-    {                                                                   \
-      int32_t line = srsLog_WriteToStreamAndLog(                        \
-        stderr,                                                         \
-        "%s:%d[%s] | Error #%d (%s): %s",                               \
-        data.file_name, data.line_number, data.function_name, data.code, data.name, data.message \
-        );                                                              \
-      /** TODO make the srsLOG_* functions more robust and wrappable, and have them return an integer representing the logged line number */ \
-      srsError_SetLogLineNumber(line);                                  \
-    }                                                                   \
-  } while(0)
+#define srsERROR_LOG() srsError_Log()
 
 #endif /* _KIOKU_ERROR_H */
