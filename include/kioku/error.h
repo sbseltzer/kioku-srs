@@ -69,6 +69,8 @@ kiokuAPI void srsError_Log();
  */
 #define srsERROR_SET(code, message) srsError_Set(code, #code, message, 0, __FILE__, __LINE__, srsFUNCTION_NAME)
 
+#define srsERROR_CLEAR() srsError_Reset()
+
 #define srsERROR_LOG() srsError_Log()
 
 #endif /* _KIOKU_ERROR_H */
