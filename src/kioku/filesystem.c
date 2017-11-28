@@ -106,10 +106,6 @@ const char *srsDir_GetCWD()
         free(directory_current);
         directory_current = NULL;
       }
-      else
-      {
-        srsLOG_NOTIFY("Initialized Kioku CWD to %s", directory_current);
-      }
     }
     else
     {
@@ -155,23 +151,19 @@ const char *srsDir_PushCWD(const char *path)
     srsASSERT(dirstack.element_size > 0);
     srsASSERT(dirstack.capacity > 0);
     srsASSERT(dirstack.memory != NULL);
-    srsMEMSTACK_PRINT(dirstack);
   }
   /* Get the current working directory to be pushed (so that a subsequent pop can restore it) */
   cwd = srsDir_GetCWD();
-  srsMEMSTACK_PRINT(dirstack);
   srsASSERT(cwd != NULL);
   /** TODO Check result of srsDir_GetCWD */
   char *push_me = strdup(cwd);
   /** TODO Check result of strdup - not exactly sure how best to handle it. */
   srsASSERT(push_me != NULL);
   srsASSERT(dirstack.memory != NULL);
-  srsMEMSTACK_PRINT(dirstack);
   /* Try to push the current directory onto the stack before navigating to the new one*/
   if (!srsMemStack_Push(&dirstack, &push_me))
   {
     srsLOG_ERROR("Failed attempt to push directory onto stack: %s", push_me);
-    srsMEMSTACK_PRINT(dirstack);
     free(push_me);
     return NULL;
   }
@@ -214,21 +206,15 @@ bool srsDir_PopCWD(char **popped)
   /* Perform the following until we pop to a valid directory */
   while (!popped_to_valid_dir)
   {
-    srsLOG_NOTIFY("Iterate dirstack for pop...");
     /* If the new top of the stack is NULL, it means we ran out of directories to try changing to, so we break from the loop */
     if (dirstack.top == NULL)
     {
       break;
     }
-    srsLOG_NOTIFY("Stack before possibly segfaulty part...");
-    srsMEMSTACK_PRINT(dirstack);
     /* Grab the directory to change to */
     change_to = *((char **)dirstack.top);
-    srsLOG_NOTIFY("Stack still has a top: %s", change_to);
     /* Attempt to change to the new directory */
-    srsLOG_NOTIFY("Try changing to %s as a result of pop", change_to);
     popped_to_valid_dir = srsDir_SetSystemCWD(change_to);
-    srsLOG_NOTIFY("srsDir_SetSystemCWD returned %s", popped_to_valid_dir ? "true" : "false");
     if (!popped_to_valid_dir)
     {
       /* Free it and try the next one. */
@@ -248,11 +234,9 @@ bool srsDir_PopCWD(char **popped)
     {
       break;
     }
-    srsLOG_NOTIFY("Pop worked!");
   }
   if (popped != NULL)
   {
-    srsLOG_NOTIFY("Storing result of srsDir_PopCWD: %s (DON'T FORGET TO FREE)", change_to);
     *popped = change_to;
   }
   return popped_to_valid_dir;
