@@ -878,9 +878,9 @@ TEST TestIteration(void)
   srsLOG_NOTIFY("TestIteration: Testing bad input");
   ASSERT_EQ(false, srsFileSystem_Iterate(NULL, NULL, NULL));
   ASSERT_EQ(false, srsFileSystem_Iterate(dirs[0], NULL, NULL));
-  ASSERT_EQ(false, srsFileSystem_Iterate(dirs[0], 0xDEADBEEF, NULL));
+  ASSERT_EQ(false, srsFileSystem_Iterate(dirs[0], (void *)0xDEADBEEF, NULL));
   ASSERT_EQ(false, srsDir_Exists("not-a-directory-lol"));
-  ASSERT_EQ(false, srsFileSystem_Iterate("not-a-directory-lol", 0xDEADBEEF, &filesystem_counter_iterator));
+  ASSERT_EQ(false, srsFileSystem_Iterate("not-a-directory-lol", (void *)0xDEADBEEF, &filesystem_counter_iterator));
 
   /* Test counting files and dirs */
   srsLOG_NOTIFY("TestIteration: Testing counter");
