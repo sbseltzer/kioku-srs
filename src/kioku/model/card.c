@@ -109,7 +109,7 @@ char *srsCard_GetContent(srsCARD card, const char *file)
   char *content = NULL;
   srsDir_PushCWD(card.path);
   content_size = srsFile_GetLength(file) + 1;
-  if (content_size > 0)
+  if (content_size <= 0)
   {
     goto done;
   }
