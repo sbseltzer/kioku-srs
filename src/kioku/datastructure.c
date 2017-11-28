@@ -46,7 +46,7 @@ static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
   }
   if (set_capacity != stack->capacity)
   {
-    srsLOG_NOTIFY("Reallocating Memory Stack from element capacity of %u to %u", stack->capacity, set_capacity);
+    srsLOG_NOTIFY("Reallocating Memory Stack from element capacity of %zu to %zu", stack->capacity, set_capacity);
     mem = realloc(stack->memory, set_capacity * stack->element_size);
   }
 done:

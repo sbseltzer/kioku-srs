@@ -3,6 +3,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define srsTIME_YEAR_OFFSET 1900
 #define srsTIME_MONTH_OFFSET 1

@@ -47,4 +47,6 @@ kiokuAPI bool srsGit_Add(const char *message);
 
 kiokuAPI bool srsGit_IsRepo(const char *path);
 
+kiokuAPI bool srsGit_Repo_Open(const char *path);
+
 #endif /* _KIOKU_SIMPLEGIT_H */

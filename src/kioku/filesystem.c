@@ -290,7 +290,7 @@ size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
   {
     return result;
   }
-  if (nbytes == NULL)
+  if (nbytes == 0)
   {
     return result;
   }
@@ -952,7 +952,7 @@ static bool srsFileSystem_Iterate_Internal(const char *dirpath, void *userdata, 
   {
     goto done;
   }
-  char *cwd = srsDir_PushCWD(dirpath);
+  const char *cwd = srsDir_PushCWD(dirpath);
   if (cwd == NULL)
   {
     goto done;

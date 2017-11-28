@@ -64,12 +64,12 @@ TEST TestMemStack_Push1Pop1(void)
   ASSERT(srsMemStack_Push(&stack, &value_in));
   srsMEMSTACK_PRINT(stack);
   ASSERT_EQ_FMT(stack.memory, stack.top, "%p");
-  ASSERT_EQ_FMT(value_in, *((uint8_t *)stack.top), "%zu");
+  ASSERT_EQ_FMT(value_in, *((uint8_t *)stack.top), "%u");
 
   srsLOG_NOTIFY("Testing pop from smallest stack capacity");
   ASSERT(srsMemStack_Pop(&stack, &value_out));
   srsMEMSTACK_PRINT(stack);
-  ASSERT_EQ_FMT(value_in, value_out, "%zu");
+  ASSERT_EQ_FMT(value_in, value_out, "%u");
   ASSERT_EQ_FMT(original_state.top, stack.top, "%p");
   ASSERT_EQ_FMT(original_state.count, stack.count, "%zu");
   /* Adding an element doubled the capacity to 2 */
@@ -91,7 +91,7 @@ TEST TestMemStack_PopFromEmptyFailsWithNoOutput(void)
 
   srsLOG_NOTIFY("Testing pop from empty stack");
   ASSERT_EQ(false, srsMemStack_Pop(&stack, &value_out));
-  ASSERT_EQ_FMT(0, value_out, "%zu");
+  ASSERT_EQ_FMT(0, value_out, "%u");
   ASSERT_EQ_FMT(original_state.top, stack.top, "%p");
   ASSERT_EQ_FMT(original_state.count, stack.count, "%zu");
   ASSERT_EQ_FMT(original_state.capacity, stack.capacity, "%zu");

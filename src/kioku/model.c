@@ -87,7 +87,7 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   int32_t linelen = srsFile_ReadLineByNumber(file_path, (uint32_t)atindex, linedata, sizeof(linedata));
   if (linelen < 0)
   {
-    srsLOG_ERROR("%ld line invalid", atindex);
+    srsLOG_ERROR("%d line invalid", atindex);
   }
   srsLOG_NOTIFY("%ld line: %s", atindex, linedata);
   if (card_id_buf_size < linelen + 1)

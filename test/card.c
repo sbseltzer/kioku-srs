@@ -52,8 +52,8 @@ int comp_card_id(const void *a, const void *b)
 /* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */
 TEST test_card(void)
 {
-  char *cwd = srsDir_GetCWD();
-  cwd = strdup(cwd);
+  const char *temp_cwd = srsDir_GetCWD();
+  char *cwd = strdup(temp_cwd);
 
   srsLOG_PRINT("Adding test cards");
   srsTIME now = srsTime_Now();
