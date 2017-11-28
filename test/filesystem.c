@@ -470,7 +470,7 @@ TEST test_file_readlinenumber(void)
   char filebuf[2000] = {0};
   int32_t written = 0;
   size_t index;
-  printf("There are %u lines"kiokuSTRING_LF, sizeof(lines));
+  printf("There are %zu lines"kiokuSTRING_LF, sizeof(lines));
   size_t numlines = sizeof(lines) / sizeof(*lines);
   for (index = 0; index < numlines; index++)
   {
@@ -640,7 +640,7 @@ TEST TestGetFullPath(void)
 
 TEST TestSetGetCWD(void)
 {
-  char *cwd = NULL;
+  const char *cwd = NULL;
   char start_path[kiokuPATH_MAX] = {0};
   char system_cwd[kiokuPATH_MAX] = {0};
 
@@ -690,7 +690,7 @@ TEST TestPushPopCWD(void)
 
   /* Clean up directories from previous tests */
   size_t numdirs = sizeof(dirs) / sizeof(dirs[0]);
-  srsLOG_NOTIFY("Pre-test cleanup for %u dirs", numdirs);
+  srsLOG_NOTIFY("Pre-test cleanup for %zu dirs", numdirs);
   int32_t i = 0;
   for (i = numdirs - 1; i >= 0; i--)
   {
@@ -920,7 +920,7 @@ int main(int argc, char **argv)
 {
   GREATEST_MAIN_BEGIN();      /* command-line options, initialization. */
 
-  srsLOG_NOTIFY("Max Path Length = %zu", kiokuPATH_MAX);
+  srsLOG_NOTIFY("Max Path Length = %zu", (size_t)kiokuPATH_MAX);
   RUN_SUITE(test_filesystem);
 
   GREATEST_MAIN_END();        /* display results */

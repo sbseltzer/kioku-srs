@@ -132,18 +132,18 @@ TEST TestMemStack_Push4Pop4WorksAndIncreasesCapacity(void)
     {
       case 1:
       {
-        ASSERT_EQ_FMT(2, stack.capacity, "%zu");
+        ASSERT_EQ_FMT((size_t)2, stack.capacity, "%zu");
         break;
       }
       case 2:
       case 3:
       {
-        ASSERT_EQ_FMT(4, stack.capacity, "%zu");
+        ASSERT_EQ_FMT((size_t)4, stack.capacity, "%zu");
         break;
       }
       case 4:
       {
-        ASSERT_EQ_FMT(8, stack.capacity, "%zu");
+        ASSERT_EQ_FMT((size_t)8, stack.capacity, "%zu");
         break;
       }
       default:
@@ -181,17 +181,17 @@ TEST TestMemStack_Push4Pop4WorksAndIncreasesCapacity(void)
       case 3:
       case 2:
       {
-        ASSERT_EQ_FMT(8, stack.capacity, "%zu");
+        ASSERT_EQ_FMT((size_t)8, stack.capacity, "%zu");
         break;
       }
       case 1:
       {
-        ASSERT_EQ_FMT(4, stack.capacity, "%zu");
+        ASSERT_EQ_FMT((size_t)4, stack.capacity, "%zu");
         break;
       }
       case 0:
       {
-        ASSERT_EQ_FMT(2, stack.capacity, "%zu");
+        ASSERT_EQ_FMT((size_t)2, stack.capacity, "%zu");
         break;
       }
       default:
