@@ -1,5 +1,6 @@
 #include "kioku/error.h"
 #include "kioku/log.h"
+#include "kioku/debug.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -41,6 +42,9 @@ void srsError_Reset()
 void srsError_Set(srsRESULT code, const char *name, const char *message, int32_t errno_capture,
                            const char *_FILENAME, int32_t _LINENUMBER, const char *_FUNCNAME)
 {
+  /* Violating the following could invoke undefined behaviour */
+  srsASSERT(name < srsError_Name || name > srsError_Name + srsERROR_NAME_SIZE);
+  srsASSERT(message < srsError_Message || message > srsError_Message + srsERROR_MESSAGE_SIZE);
   srsError_Last.code = code;
   strncpy(srsError_Name, name, sizeof(srsError_Name));
   strncpy(srsError_Message, message, sizeof(srsError_Message));
