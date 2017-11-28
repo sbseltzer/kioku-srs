@@ -45,9 +45,12 @@ void srsError_Set(srsRESULT code, const char *name, const char *message, int32_t
   /* Violating the following could invoke undefined behaviour */
   srsASSERT(name < srsError_Name || name > srsError_Name + srsERROR_NAME_SIZE);
   srsASSERT(message < srsError_Message || message > srsError_Message + srsERROR_MESSAGE_SIZE);
+  /* Setup error struct */
   srsError_Last.code = code;
   strncpy(srsError_Name, name, sizeof(srsError_Name));
+  srsError_Name[srsERROR_NAME_SIZE-1] = '\0';
   strncpy(srsError_Message, message, sizeof(srsError_Message));
+  srsError_Message[srsERROR_MESSAGE_SIZE-1] = '\0';
   srsError_Last.captured_errno = errno_capture;
   srsError_Last.file_name = _FILENAME;
   srsError_Last.line_number = _LINENUMBER;
