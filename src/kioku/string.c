@@ -27,12 +27,8 @@ const char *srsString_GetSourcePath(const char *_FILENAME)
   }
   for (i = 0; i < n; i++)
   {
-    srsLOG_NOTIFY("%zu / %zu = %s", i, n, srsSTRING_SEARCH_PATH_SEGMENTS[i]);
     char *subpath = strstr(_FILENAME, srsSTRING_SEARCH_PATH_SEGMENTS[i]);
-    srsLOG_NOTIFY("paths = %p <= %p", _FILENAME, subpath);
     srsASSERT(subpath == NULL || _FILENAME <= subpath);
-    srsLOG_NOTIFY("convert path = %s", _FILENAME);
-    srsLOG_NOTIFY("to path = %s", subpath);
     if (subpath != NULL)
     {
       filepath = subpath;
