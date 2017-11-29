@@ -46,5 +46,8 @@ PKG_CONFIG_PATH=$install_prefix/lib/pkgconfig:$install_prefix/lib64/pkgconfig cm
 cmake --build . --config $build_conf
 CTEST_OUTPUT_ON_FAILURE=1 ctest -C $build_conf
 result=$?
+if "$result" != "0"; then
+    cat Testing/Temporary/LastTest.log
+fi
 cd $start_dir
 exit $result
