@@ -76,7 +76,9 @@ TEST TimeComparison(void)
     timeB = timeA;
     timeB.minute--;
     ASSERT(srsTime_Compare(timeA, timeB) > 0);
+
   }
+  PASS();
 }
 
 /* Suites can group multiple tests with common setup. */
