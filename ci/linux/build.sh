@@ -44,7 +44,7 @@ if test "x$build_shared" = "xON"; then
 fi
 PKG_CONFIG_PATH=$install_prefix/lib/pkgconfig:$install_prefix/lib64/pkgconfig cmake .. -G"$build_type" -DBUILD_SHARED_LIBS=$build_shared -DCMAKE_BUILD_TYPE=$build_conf -DBUILD_SERVER=$build_server -DBUILD_LUA=$build_lua
 cmake --build . --config $build_conf
-CTEST_OUTPUT_ON_FAILURE=1 ctest -C $build_conf
+CTEST_OUTPUT_ON_FAILURE=1 ctest -C $build_conf --timeout 5
 result=$?
 if "$result" != "0"; then
     cat Testing/Temporary/LastTest.log

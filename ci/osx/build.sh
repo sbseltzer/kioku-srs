@@ -21,7 +21,7 @@ mkdir build
 cd build && make clean && rm -rf *
 PKG_CONFIG_PATH=$install_prefix/lib/pkgconfig cmake .. -G"$build_type" -DBUILD_SHARED_LIBS=OFF
 cmake --build . --config $build_conf
-CTEST_OUTPUT_ON_FAILURE=1 ctest -C $build_conf
+CTEST_OUTPUT_ON_FAILURE=1 ctest -C $build_conf --timeout 5
 result=$?
 if "$result" != "0"; then
     cat Testing/Temporary/LastTest.log

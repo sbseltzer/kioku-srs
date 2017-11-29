@@ -58,7 +58,7 @@ if NOT EXIST git2.%lib_ext% (
 cd ..
 IF "%skip_test%"=="" (
    set CTEST_OUTPUT_ON_FAILURE=1
-   ctest -C %build_conf%
+   ctest -C %build_conf% --timeout 5
    set result=%errorlevel%
    if not "%result%"=="0" (
       type Testing\Temporary\LastTest.log
