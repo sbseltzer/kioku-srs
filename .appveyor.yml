@@ -18,4 +18,4 @@ build:
 
 test_script:
   - cd build
-  - ctest -C %CONFIGURATION%
+  - ctest -C %CONFIGURATION% --timeout 5
