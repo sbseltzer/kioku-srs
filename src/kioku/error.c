@@ -49,9 +49,14 @@ void srsError_Set(srsRESULT code, const char *name, const char *message, int32_t
 
   /* Violating the following could invoke undefined behaviour */
   offset = srsABS(name - srsError_Name);
-  srsASSERT(offset >= srsERROR_NAME_SIZE);
+  srsASSERT_MSG(offset >= srsERROR_NAME_SIZE,
+                "name (%p) and srsError_Name (%p) overlap by %d bytes",
+                name, srsError_Name, offset);
   offset = srsABS(message - srsError_Message);
-  srsASSERT(offset >= srsERROR_MESSAGE_SIZE);
+  srsASSERT_MSG(offset >= srsERROR_MESSAGE_SIZE,
+                "message (%p, %s) and srsError_Message (%p, %s) overlap by %d bytes",
+                message, message, srsError_Message, srsError_Message, offset);
+
   /* Setup error struct */
   srsError_Last.code = code;
   strncpy(srsError_Name, name, sizeof(srsError_Name));

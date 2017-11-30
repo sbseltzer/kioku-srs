@@ -10,13 +10,16 @@
 #define _KIOKU_DEBUG_H
 
 #include <assert.h>
+#include <signal.h>
 
-#define srsBAIL() abort()
+#define srsBAIL() raise(SIGABRT)
 
 #ifndef KIOKU_IGNORE_RUNTIME_ASSERTS
-#define srsASSERT(x) do {if (!(x)) {srsLOG_ERROR("Assert Failed: %s", #x); srsBAIL();}} while(0)
+#define srsASSERT(x) do {if (!(x)) {srsLOG_ERROR("Assert Failed { %s }", #x); srsBAIL();}} while(0)
+#define srsASSERT_MSG(x, ...) do {if (!(x)) {srsLOG_ERROR("Assert Failed { %s }", #x); srsLOG_ERROR(__VA_ARGS__); srsBAIL();}} while(0)
 #else
 #define srsASSERT(x) ((void)0)
+#define srsASSERT_MSG(x, ...) ((void)0)
 #endif
 
 #ifndef KIOKU_IGNORE_STATIC_ASSERTS
