@@ -3,6 +3,7 @@
 #include "kioku/debug.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stddef.h>
 
 static char srsError_Name[srsERROR_NAME_SIZE]       = {0};
 static char srsError_Message[srsERROR_MESSAGE_SIZE] = {0};
@@ -38,13 +39,19 @@ void srsError_Reset()
     );
 }
 
+#define srsABS(x) ((x) * ((x) < 0 ? -1 : 1))
+
 /** Sets up the global thread local error data struct */
 void srsError_Set(srsRESULT code, const char *name, const char *message, int32_t errno_capture,
                            const char *_FILENAME, int32_t _LINENUMBER, const char *_FUNCNAME)
 {
+  ptrdiff_t offset = 0;
+
   /* Violating the following could invoke undefined behaviour */
-  srsASSERT(name < srsError_Name || name > srsError_Name + srsERROR_NAME_SIZE);
-  srsASSERT(message < srsError_Message || message > srsError_Message + srsERROR_MESSAGE_SIZE);
+  offset = srsABS(name - srsError_Name);
+  srsASSERT(offset >= srsERROR_NAME_SIZE);
+  offset = srsABS(message - srsError_Message);
+  srsASSERT(offset >= srsERROR_MESSAGE_SIZE);
   /* Setup error struct */
   srsError_Last.code = code;
   strncpy(srsError_Name, name, sizeof(srsError_Name));
