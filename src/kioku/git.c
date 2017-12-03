@@ -71,7 +71,7 @@ bool srsGit_IsRepo(const char *path)
   git_repository *repo = NULL;
   int git_result = git_repository_open_ext(&repo, path, GIT_REPOSITORY_OPEN_NO_SEARCH, NULL);
   result = (git_result == 0);
-  if (!result)
+  if (!result && (git_result != GIT_ENOTFOUND))
   {
     srsGIT_DEBUG_ERROR();
   }
