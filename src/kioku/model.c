@@ -41,8 +41,6 @@ srsRESULT srsModel_SetRoot(const char *path)
   free(srsModel_ROOT_PATH);
   srsGit_Repo_Open(path);
   srsModel_ROOT_PATH = strdup(srsGit_Repo_GetCurrent());
-
-  srsGit_Repo_Close();
   return srsOK;
 }
 
