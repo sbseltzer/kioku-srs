@@ -106,15 +106,15 @@ bool srsGit_Repo_Open(const char *path)
   const char *currepo = srsGit_Repo_GetCurrent();
   if (currepo != NULL)
   {
-    printf("Closing out %s before opening %s" kiokuSTRING_LF, currepo, path);
+    srsLOG_PRINT("Closing out %s before opening %s", currepo, path);
     result = srsGit_Repo_Close();
     if (result)
     {
-      printf("Closed repo successfully.");
+      srsLOG_PRINT("Closed repo successfully.");
     }
     else
     {
-      fprintf(stderr, "Something went wrong while trying to free the repo. Opening a new one could be dangerous!");
+      srsLOG_ERROR("Something went wrong while trying to free the repo. Opening a new one could be dangerous!");
     }
   }
   if (!result)
@@ -192,12 +192,12 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   }
   if (result)
   {
-    printf("Running add...\n");
+    srsLOG_PRINT("Running add...");
     result = srsGit_Add(opts_copy.first_file_name);
   }
   if (result)
   {
-    printf("Running commit...\n");
+    srsLOG_PRINT("Running commit...");
     result = srsGit_Commit(opts_copy.first_commit_message);
   }
   free(fullpath);
@@ -242,15 +242,15 @@ bool srsGit_Commit(const char *message)
     if (!result)
     {
       srsGIT_DEBUG_ERROR();
-      fprintf(stderr, "Unable to write initial tree from index\n");
+      srsLOG_ERROR("Unable to write initial tree from index");
       abort();
     }
   }
 
   size_t count = git_index_entrycount(index);
   /* \todo On windows VC %zu doesn't seem to be valid. Wrap or define the PRIs for it. */
-  printf("Index entry count: %zu\n", count);
-	printf("\n*Commit Writing*\n");
+  srsLOG_PRINT("Index entry count: %zu", count);
+  srsLOG_PRINT("*Commit Writing*");
 
 	/**
 	 * Creating signatures for an authoring identity and time is simple.  You
@@ -265,7 +265,7 @@ bool srsGit_Commit(const char *message)
   result = result && (git_result == 0);
   if (!result)
   {
-    fprintf(stderr, "failed to create signature\n");
+    srsLOG_ERROR("failed to create signature");
     abort();
   }
 
@@ -280,7 +280,7 @@ bool srsGit_Commit(const char *message)
   result = result && (git_result == 0);
   if (!result)
   {
-    fprintf(stderr, "failed to lookup tree\n");
+    srsLOG_ERROR("failed to lookup tree");
     abort();
   }
   git_result = git_repository_head_unborn(srsGIT_REPO);
@@ -298,15 +298,15 @@ bool srsGit_Commit(const char *message)
       const git_error *err = giterr_last();
       if (err == NULL)
       {
-        fprintf(stderr, "Error occurred, but giterr_last returned null...\n");
+        srsLOG_ERROR("Error occurred, but giterr_last returned null...");
       }
-      fprintf(stderr, "Could not lookup parent commit: %s\n", err->message);
+      srsLOG_ERROR("Could not lookup parent commit: %s", err->message);
       abort();
     }
   }
   else
   {
-    fprintf(stderr, "Failed to check whether unborn\n");
+    srsLOG_ERROR("Failed to check whether unborn");
     abort();
   }
 
@@ -329,7 +329,7 @@ bool srsGit_Commit(const char *message)
   result = result && (git_result == GIT_OK);
   if (!result)
   {
-    fprintf(stderr, "failed to lookup parent commit\n");
+    srsLOG_ERROR("failed to lookup parent commit");
     abort();
   }
 
@@ -337,7 +337,7 @@ bool srsGit_Commit(const char *message)
 	 * Now we can take a look at the commit SHA we've generated.
 	 */
 	git_oid_fmt(oid_hex, &commit_id);
-  printf("New Commit: %s\n", oid_hex);
+  srsLOG_PRINT("New Commit: %s", oid_hex);
 
   /* Cleanup */
 	git_tree_free(tree);
