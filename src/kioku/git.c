@@ -89,7 +89,7 @@ const char *srsGit_Repo_GetCurrent()
 {
   const char *result = NULL;
   srsGIT_INIT_LIB();
-  result = git_repository_path(srsGIT_REPO);
+  result = git_repository_workdir(srsGIT_REPO);
   srsGIT_EXIT_LIB();
   return result;
 }
