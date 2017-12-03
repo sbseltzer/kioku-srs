@@ -2,6 +2,8 @@
 #include "kioku/git.h"
 #include "kioku/filesystem.h"
 #include "kioku/log.h"
+#include "kioku/result.h"
+#include "kioku/error.h"
 #include <string.h>
 
 static git_repository *srsGIT_REPO = NULL;
