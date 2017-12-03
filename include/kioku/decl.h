@@ -92,7 +92,7 @@
 
 #define kiokuCHAR_NULL '\0'
 
-/* gcc doesn't know _Thread_local from C11 yet */
+/* https://stackoverflow.com/questions/18298280/how-to-declare-a-variable-as-thread-local-portably */
 #ifdef __GNUC__
 # define srsTHREADLOCAL __thread
 #elif __STDC_VERSION__ >= 201112L
