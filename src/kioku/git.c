@@ -31,10 +31,10 @@ static void srsGIT_DEBUG_ERROR()
   const git_error *err = giterr_last();
   if (err == NULL)
   {
-    srsLOG_ERROR("Error occurred, but giterr_last returned null...\n");
+    srsLOG_ERROR("Error occurred, but giterr_last returned null...");
     abort();
   }
-  srsLOG_ERROR("Git Error %d: %s\n", err->klass, err->message);
+  srsLOG_ERROR("Git Error %d: %s", err->klass, err->message);
   abort();
 }
 
