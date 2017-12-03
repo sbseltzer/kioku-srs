@@ -1,4 +1,5 @@
 #include "greatest.h"
+#include "kioku/git.h"
 #include "kioku/model.h"
 #include "kioku/filesystem.h"
 
@@ -35,6 +36,31 @@ static bool deletecards()
   ok = ok && srsPath_Remove("deck-test/cards/abcdef.txt");
   return ok;
 }
+
+TEST test_get_set_root(void)
+{
+  /* Root should be initialized to NULL */
+  ASSERT_EQ(NULL, srsModel_GetRoot());
+
+  /* Test against NULL path */
+  ASSERT_EQ(srsFAIL, srsModel_SetRoot(NULL));
+  /* Test against non-existing path */
+  ASSERT_EQ(srsFAIL, srsModel_SetRoot("not/a/path"));
+  /* Test against file path */
+  ASSERT_EQ(true, srsFile_Create("is-a-file"));
+  ASSERT_EQ(srsFAIL, srsModel_SetRoot("is-a-file"));
+  /* Test against a non-repository */
+  ASSERT_EQ(true, srsDir_Create("not-a-git-repo"));
+  ASSERT_EQ(srsFAIL, srsModel_SetRoot("not-a-git-repo"));
+  /* Test against a repository */
+
+  const srsGIT_CREATE_OPTS opts = srsGIT_CREATE_OPTS_DEFAULT;
+  ASSERT_EQ(true, srsGit_Repo_Create("maybe-a-git-repo", opts));
+  ASSERT_EQ(srsOK, srsModel_SetRoot("maybe-a-git-repo"));
+
+  PASS();
+}
+
 /* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */
 TEST test_card_getpath(void)
 {
@@ -100,6 +126,7 @@ TEST test_card_getnextid(void)
 SUITE(the_suite) {
   RUN_TEST(test_card_getpath);
   RUN_TEST(test_card_getnextid);
+  RUN_TEST(test_get_set_root);
 }
 
 /* Add definitions that need to be in the test runner's main file. */

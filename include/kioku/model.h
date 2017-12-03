@@ -11,6 +11,7 @@
 
 #include "kioku/decl.h"
 #include "kioku/types.h"
+#include "kioku/result.h"
 
 #ifndef KIOKU_MODEL_USERLIST_NAME
 #define KIOKU_MODEL_USERLIST_NAME "users.json"
@@ -18,6 +19,20 @@
 
 #define srsMODEL_CARD_ID_MAX 256
 #define srsMODEL_DECK_ID_MAX 256
+
+/**
+ * Set the root path for all model operations. All non-absolute paths passed to the model API are assumed to be relative to it.
+ * @param[in] path Path to use as model root. Must be an existing directory that is also a git repository. The string is duplicated - no reference to the actual pointer is kept.
+ * @return srsOK or an error
+ */
+kiokuAPI srsRESULT srsModel_SetRoot(const char *path);
+
+/**
+ * Get the root path for all model operations. It will be an absolute path.
+ * @param[in] path Path to use as model root. Must be an existing directory that is also a git repository. The string is duplicated - no reference to the actual pointer is kept.
+ * @return The current model root path or NULL if one is not set.
+ */
+kiokuAPI const char *srsModel_GetRoot();
 
 /**
  * Get the next card ID for a deck.

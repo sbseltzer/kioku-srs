@@ -8,6 +8,8 @@
 #include "hashmap.h"
 #include "utf8.h"
 
+#include <string.h>
+
 static bool kioku_model_load_userlist()
 {
   JSON_Value *root_value = json_parse_file(KIOKU_MODEL_USERLIST_NAME);
@@ -22,6 +24,31 @@ static bool kioku_model_load_userlist()
     json_serialize_to_file_pretty(root_value, KIOKU_MODEL_USERLIST_NAME);
   }
   return true;
+}
+
+static const char *srsModel_ROOT_PATH = NULL;
+
+srsRESULT srsModel_SetRoot(const char *path)
+{
+  if (!srsDir_Exists(path))
+  {
+    return srsFAIL;
+  }
+  if (!srsGit_IsRepo(path))
+  {
+    return srsFAIL;
+  }
+  free(srsModel_ROOT_PATH);
+  srsGit_Repo_Open(path);
+  srsModel_ROOT_PATH = strdup(srsGit_Repo_GetCurrent());
+
+  srsGit_Repo_Close();
+  return srsOK;
+}
+
+const char *srsModel_GetRoot()
+{
+  return srsModel_ROOT_PATH;
 }
 
 bool srsModel_Card_GetPath(const char *deck_path, const char *card_id, char *path_out, size_t path_size)
