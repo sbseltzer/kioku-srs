@@ -386,21 +386,10 @@ bool srsGit_Add(const char *path)
   }
 
   const char *repo_path = srsGit_Repo_GetCurrent();
-  char fullpath[kiokuPATH_MAX] = {0};
-  size_t fullpath_len = srsPath_GetFull(path, fullpath, sizeof(fullpath));
-  assert(fullpath_len > 0);
-  size_t str_index = 0;
-  printf("Checking %s against %s for relative path\n", fullpath, repo_path);
-  if (strncmp(repo_path, fullpath, strlen(repo_path)) < 0)
-  {
-    while ((repo_path[str_index] == fullpath[str_index]) && (str_index < fullpath_len))
-    {
-      str_index++;
-    }
-  }
-  printf("Adding %s to %s\n", &fullpath[str_index], repo_path);
-  git_result = git_index_add_bypath(index, &fullpath[str_index]);
-  printf("Inspecting result\n");
+  srsLOG_PRINT("Adding %s to %s", path, repo_path);
+  git_result = git_index_add_bypath(index, path);
+
+  srsLOG_PRINT("Inspecting result");
   result = result && (git_result == 0);
   if (!result)
   {
