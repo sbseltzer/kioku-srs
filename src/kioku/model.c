@@ -30,6 +30,12 @@ static const char *srsModel_ROOT_PATH = NULL;
 
 srsRESULT srsModel_SetRoot(const char *path)
 {
+  if (path == NULL)
+  {
+    srsGit_Repo_Close();
+    srsModel_ROOT_PATH = NULL;
+    return srsOK;
+  }
   if (!srsDir_Exists(path))
   {
     return srsFAIL;

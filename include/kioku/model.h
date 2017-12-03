@@ -22,8 +22,8 @@
 
 /**
  * Set the root path for all model operations. All non-absolute paths passed to the model API are assumed to be relative to it.
- * @param[in] path Path to use as model root. Must be an existing directory that is also a git repository. The string is duplicated - no reference to the actual pointer is kept.
- * @return srsOK or an error
+ * @param[in] path Path to use as model root. If NULL, it will attempt to close out any resources associated with it. Otherwise, it must be an existing directory that is also a git repository. The string is duplicated - no reference to the actual pointer is kept.
+ * @return srsOK or an error.
  */
 kiokuAPI srsRESULT srsModel_SetRoot(const char *path);
 
