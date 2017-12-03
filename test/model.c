@@ -56,8 +56,9 @@ TEST test_get_set_root(void)
 
   const srsGIT_CREATE_OPTS opts = srsGIT_CREATE_OPTS_DEFAULT;
   ASSERT_EQ(true, srsGit_Repo_Create("maybe-a-git-repo", opts));
+  const char *git_full_path = srsGit_Repo_GetCurrent();
   ASSERT_EQ(srsOK, srsModel_SetRoot("maybe-a-git-repo"));
-
+  ASSERT_STR_EQ(git_full_path, srsModel_GetRoot());
   PASS();
 }
 
