@@ -148,6 +148,14 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
 {
   bool result = false;
   char *fullpath = NULL;
+  /* Replace opts accordingly */
+  /** TODO Test defaulting of opts */
+  srsGIT_CREATE_OPTS opts_default = srsGIT_CREATE_OPTS_DEFAULT;
+  srsGIT_CREATE_OPTS opts_copy = opts;
+  opts_copy.first_file_name = opts_copy.first_file_name ? opts_copy.first_file_name : opts_default.first_file_name;
+  opts_copy.first_commit_message = opts_copy.first_commit_message ? opts_copy.first_commit_message : opts_default.first_commit_message;
+  opts_copy.first_file_content = opts_copy.first_file_content ? opts_copy.first_file_content : opts_default.first_file_content;
+
   git_repository_init_options gitinitopts = GIT_REPOSITORY_INIT_OPTIONS_INIT;
 
   srsGIT_INIT_LIB();
@@ -161,15 +169,15 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
     return result;
   }
 
-  int32_t pathlen = kioku_path_concat(NULL, 0, path, opts.first_file_name);
+  int32_t pathlen = kioku_path_concat(NULL, 0, path, opts_copy.first_file_name);
   if (pathlen <= 0)
   {
-    srsLOG_ERROR("Couldn't calculate pathlength for %s", opts.first_file_name);
+    srsLOG_ERROR("Couldn't calculate pathlength for %s", opts_copy.first_file_name);
     srsGIT_EXIT_LIB();
     return result;
   }
   fullpath = malloc(pathlen + 1);
-  int32_t wrote = kioku_path_concat(fullpath, pathlen + 1, path, opts.first_file_name);
+  int32_t wrote = kioku_path_concat(fullpath, pathlen + 1, path, opts_copy.first_file_name);
   result = (wrote == pathlen);
   if (result)
   {
@@ -177,17 +185,17 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   }
   if (result)
   {
-    result = srsFile_SetContent(fullpath, opts.first_file_content);
+    result = srsFile_SetContent(fullpath, opts_copy.first_file_content);
   }
   if (result)
   {
     printf("Running add...\n");
-    result = srsGit_Add(fullpath);
+    result = srsGit_Add(opts_copy.first_file_name);
   }
   if (result)
   {
     printf("Running commit...\n");
-    result = srsGit_Commit(opts.first_commit_message);
+    result = srsGit_Commit(opts_copy.first_commit_message);
   }
   free(fullpath);
 
