@@ -246,6 +246,7 @@ bool srsGit_Commit(const char *message)
 	 * `user.email` configuration options.  See the `config` section of this
 	 * example file to see how to access config values.
 	 */
+  /** TODO Don't use magic strings for these */
   git_signature *me = NULL;
   git_result = git_signature_now(&me, "Me", "me@example.com");
   result = result && (git_result == 0);
