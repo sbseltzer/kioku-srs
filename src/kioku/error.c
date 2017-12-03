@@ -8,7 +8,7 @@
 static char srsError_Name[srsERROR_NAME_SIZE]       = {0};
 static char srsError_Message[srsERROR_MESSAGE_SIZE] = {0};
 
-srsTHREADLOCAL static srsERROR_DATA srsError_Last = {
+static srsTHREADLOCAL srsERROR_DATA srsError_Last = {
   srsOK,                        /* Result code */
   srsError_Name,                /* Value never changes, contents do */
   srsError_Message,             /* Value never changes, contents do */
