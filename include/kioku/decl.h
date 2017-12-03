@@ -92,7 +92,16 @@
 
 #define kiokuCHAR_NULL '\0'
 
-#define srsTHREADLOCAL
+/* gcc doesn't know _Thread_local from C11 yet */
+#ifdef __GNUC__
+# define srsTHREADLOCAL __thread
+#elif __STDC_VERSION__ >= 201112L
+# define srsTHREADLOCAL _Thread_local
+#elif defined(_MSC_VER)
+# define srsTHREADLOCAL __declspec(thread)
+#else
+# error Cannot define srsTHREADLOCAL
+#endif
 
 #endif /* _KIOKU_DECL_H */
 
