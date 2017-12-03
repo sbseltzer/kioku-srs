@@ -88,9 +88,12 @@ bool srsGit_IsRepo(const char *path)
 const char *srsGit_Repo_GetCurrent()
 {
   const char *result = NULL;
-  srsGIT_INIT_LIB();
-  result = git_repository_workdir(srsGIT_REPO);
-  srsGIT_EXIT_LIB();
+  if (srsGIT_REPO != NULL)
+  {
+    srsGIT_INIT_LIB();
+    result = git_repository_workdir(srsGIT_REPO);
+    srsGIT_EXIT_LIB();
+  }
   return result;
 }
 
