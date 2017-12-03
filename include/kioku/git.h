@@ -69,4 +69,10 @@ kiokuAPI bool srsGit_IsRepo(const char *path);
  */
 kiokuAPI bool srsGit_Repo_Open(const char *path);
 
+/**
+ * Get the current repo path
+ * @return Current repo path. Memory is owned by the implementation.
+ */
+kiokuAPI const char *srsGit_Repo_GetCurrent();
+
 #endif /* _KIOKU_SIMPLEGIT_H */
