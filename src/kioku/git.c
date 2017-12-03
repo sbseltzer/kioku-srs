@@ -369,27 +369,27 @@ bool srsGit_Add(const char *path)
   git_result = git_repository_head_unborn(srsGIT_REPO);
   if (git_result == 1)
   {
-    printf("Adding - Unborn HEAD\n");
+    srsLOG_PRINT("Adding - Unborn HEAD");
   }
   git_result = git_repository_index(&index, srsGIT_REPO);
   result = result && (git_result == 0) && (index != NULL);
   if (!result)
   {
-    fprintf(stderr, "Could not open repository index");
+    srsLOG_ERROR("Could not open repository index");
     abort();
   }
   git_result = git_index_write_tree(&oid, index);
   result = result && (git_result == 0);
   if (!result)
   {
-    fprintf(stderr, "Unable to write initial tree from index");
+    srsLOG_ERROR("Unable to write initial tree from index");
     abort();
   }
   git_result = git_tree_lookup(&tree, srsGIT_REPO, &oid);
   result = result && (git_result == 0) && (tree != NULL);
   if (!result)
   {
-    fprintf(stderr, "Unable to lookup tree from oid");
+    srsLOG_ERROR("Unable to lookup tree from oid");
     abort();
   }
 
@@ -401,10 +401,10 @@ bool srsGit_Add(const char *path)
   result = result && (git_result == 0);
   if (!result)
   {
-    fprintf(stderr, "Unable to add %s to %s\n", &fullpath[str_index], repo_path);
+    srsLOG_ERROR("Unable to add %s to %s", path, repo_path);
   }
   size_t count = git_index_entrycount(index);
-  printf("Index entry count: %zu\n", count);
+  srsLOG_PRINT("Index entry count: %zu", count);
   /* Write the index so it doesn't show our added entry as untracked */
   git_index_write(index);
   git_index_free(index);
