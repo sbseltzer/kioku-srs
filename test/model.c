@@ -43,7 +43,7 @@ TEST test_get_set_root(void)
   ASSERT_EQ(NULL, srsModel_GetRoot());
 
   /* Test against NULL path */
-  ASSERT_EQ(srsFAIL, srsModel_SetRoot(NULL));
+  ASSERT_EQ(srsOK, srsModel_SetRoot(NULL));
   /* Test against non-existing path */
   ASSERT_EQ(srsFAIL, srsModel_SetRoot("not/a/path"));
   /* Test against file path */
