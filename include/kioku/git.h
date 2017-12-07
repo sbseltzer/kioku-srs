@@ -31,10 +31,9 @@ kiokuAPI bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts
 kiokuAPI uint32_t srsGit_InitCount();
 
 /**
- * Clean up the currently open repo.
- * @return Whether a repository was closed.
+ * Clean up the currently open repo (if any).
  */
-kiokuAPI bool srsGit_Repo_Close();
+kiokuAPI void srsGit_Repo_Close();
 
 /**
  * Fully shut down all inits and free/nullify the working repo.

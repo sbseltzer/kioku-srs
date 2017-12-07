@@ -51,8 +51,10 @@ srsRESULT srsModel_SetRoot(const char *path)
   srsRESULT result = srsGit_Repo_Open(path);
   if (result == srsOK)
   {
+    srsLOG_PRINT("Opened Git repository for the model root at [%s]", path);
     srsModel_ROOT_PATH = strdup(srsGit_Repo_GetCurrent());
     srsASSERT(srsModel_ROOT_PATH != NULL);
+    srsLOG_PRINT("Model root is now [%s]", srsModel_ROOT_PATH);
   }
   else
   {

@@ -46,7 +46,7 @@ uint32_t srsGit_InitCount()
   return srsGIT_READY;
 }
 
-bool srsGit_Repo_Close()
+void srsGit_Repo_Close()
 {
   /* \todo The docs say that any objects associated with the freed repo will remain until freed, and accessing them without their backing repo will result in undefined behaviour. Come up with a strategy to ensure they are all freed here, or at least assert that there's nothing remaining (since not freeing them would be the fault of the programmer). */
   if (srsGit_REPO != NULL)
@@ -56,16 +56,16 @@ bool srsGit_Repo_Close()
   }
   free(srsGit_REPO_PATH);
   srsGit_REPO_PATH = NULL;
-  return srsGit_REPO == NULL;
 }
 
 bool srsGit_Shutdown()
 {
+  srsGit_Repo_Close();
   while (srsGit_InitCount() > 0)
   {
     srsGIT_EXIT_LIB();
   }
-  return (srsGIT_READY == 0) && srsGit_Repo_Close();
+  return (srsGIT_READY == 0);
 }
 
 bool srsGit_IsRepo(const char *path)
