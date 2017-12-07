@@ -17,5 +17,5 @@ build:
   project: build\kioku.sln        # path to Visual Studio solution or project
 
 test_script:
-  - cd build
-  - ctest -C %CONFIGURATION% --timeout 5
+  - set build_conf=%CONFIGURATION%
+  - ci\windows\test.bat
