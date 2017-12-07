@@ -32,6 +32,10 @@
 #include "kioku/controller.h"
 #include "kioku/server.h"
 #include "kioku/rest.h"
+#include "kioku/result.h"
+#include "kioku/error.h"
+#include "kioku/enum.h"
+#include "kioku/datastructure.h"
 
 #endif /* _KIOKU_H */
 
