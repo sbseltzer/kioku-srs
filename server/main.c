@@ -148,6 +148,25 @@ static void handle_GetVersion(struct mg_connection *nc, struct http_message *hm)
   json_value_free(root_value);
 }
 
+static void handle_GetModelRoot(struct mg_connection *nc, struct http_message *hm)
+{
+  JSON_Value *root_value = json_value_init_object();
+  JSON_Object *root_object = json_value_get_object(root_value);
+  char *serialized_string = NULL;
+  srsLOG_PRINT("Asked for model root: Currently %s", srsModel_GetRoot());
+  json_object_set_string(root_object, "model-root", srsModel_GetRoot());
+  serialized_string = json_serialize_to_string_pretty(root_value);
+  const char *codestring = HTTP_OK;
+  if (serialized_string == NULL)
+  {
+    codestring = HTTP_INTERNAL_ERROR;
+    serialized_string = "{\"error\":\"failed to construct response\"}";
+  }
+  rest_respond(nc, codestring, "%s", serialized_string);
+  json_free_serialized_string(serialized_string);
+  json_value_free(root_value);
+}
+
 static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
   struct http_message *hm = (struct http_message *) ev_data;
 
@@ -161,6 +180,10 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
       else if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "version") == 0)
       {
         handle_GetVersion(nc, hm);
+      }
+      else if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "model-root") == 0)
+      {
+        handle_GetModelRoot(nc, hm);
       }
       else if (mg_vcmp(&hm->uri, KIOKU_REST_API_PATH "card/next") == 0)
       {
@@ -256,11 +279,23 @@ int main(int argc, char *argv[]) {
 
   printf("Starting RESTful server on port %s, serving %s\n", s_http_port,
          s_http_server_opts.document_root);
+
+  srsRESULT setroot_result = srsModel_SetRoot(s_http_server_opts.document_root);
+  if (setroot_result != srsOK)
+  {
+    srsLOG_ERROR("Failed to set model root to %s", s_http_server_opts.document_root);
+    kill_me_now = true;
+  }
+  else
+  {
+    srsLOG_PRINT("Set model root to %s using %s", srsModel_GetRoot(), s_http_server_opts.document_root);
+  }
   while (!kill_me_now)
   {
     mg_mgr_poll(&mgr, 1000);
   }
   mg_mgr_free(&mgr);
+  srsModel_SetRoot(NULL);
 
   /* Cleanup logger resources */
   srsLog_Exit();
