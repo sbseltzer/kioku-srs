@@ -252,7 +252,7 @@ target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if (BUILD_SERVER)
   add_executable( kioku-server
-                  src/main.c
+                  server/main.c
                   extern/mongoose/mongoose.c
                   extern/parson/parson.c
                   )
@@ -260,7 +260,10 @@ if (BUILD_SERVER)
   add_dependencies( kioku-server kioku )
 endif()
 
-# add_subdirectory(src)
+# TODO Separate CMakeLists.txt into other subdirectories
+#add_subdirectory(src)
+#add_subdirectory(server)
+
 if (BUILD_TESTS)
    enable_testing()
    add_subdirectory(test)
