@@ -12,7 +12,7 @@ static bool kill_me_now = false;
 
 #define rest_respond(connection, codestring, format, ...)               \
   do {                                                                  \
-    fprintf(stderr, format "\r\n", __VA_ARGS__);                        \
+    srsLOG_ERROR(format "\r\n", __VA_ARGS__);                        \
     mg_printf(connection, "HTTP/1.1 %s\r\nTransfer-Encoding: chunked\r\nAccess-Control-Allow-Origin: *\r\nContent-Type: application/json\r\n\r\n", codestring); \
     mg_printf_http_chunk(connection, format, __VA_ARGS__);              \
     mg_send_http_chunk(connection, "", 0); /* Send empty chunk, the end of response */ \
@@ -254,7 +254,7 @@ int main(int argc, char *argv[]) {
       ssl_cert = argv[++i];
 #endif
     } else {
-      fprintf(stderr, "Unknown option: [%s]\n", argv[i]);
+      srsLOG_ERROR("Unknown option: [%s]", argv[i]);
       exit(1);
     }
   }
@@ -269,7 +269,7 @@ int main(int argc, char *argv[]) {
 #endif
   nc = mg_bind_opt(&mgr, s_http_port, ev_handler, bind_opts);
   if (nc == NULL) {
-    fprintf(stderr, "Error starting server on port %s: %s\n", s_http_port,
+    srsLOG_ERROR("Error starting server on port %s: %s", s_http_port,
             *bind_opts.error_string);
     exit(1);
   }
@@ -277,7 +277,7 @@ int main(int argc, char *argv[]) {
   mg_set_protocol_http_websocket(nc);
   s_http_server_opts.enable_directory_listing = "yes";
 
-  printf("Starting RESTful server on port %s, serving %s\n", s_http_port,
+  srsLOG_PRINT("Starting RESTful server on port %s, serving %s", s_http_port,
          s_http_server_opts.document_root);
 
   srsRESULT setroot_result = srsModel_SetRoot(s_http_server_opts.document_root);
