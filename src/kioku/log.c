@@ -1,5 +1,5 @@
 #include "kioku/log.h"
-#include "kioku/string.h"
+#include "kioku/debug.h"
 #include <errno.h> /* errno */
 #include <string.h> /* strerror, strstr */
 
@@ -38,15 +38,45 @@ static int32_t srsLog_GetLineCount()
   return linecount;
 }
 
+static const char *srsLog_SEARCH_PATH_SEGMENTS[] = {
+  "src/",
+  "src\\",
+  "include/",
+  "include\\",
+  "test/",
+  "test\\"
+};
+
+/* Find the start of the *meaningful* part of __FILE__ since it will bake the full paths the host it was compiled on into the binary. */
+/* Come to think of it, that means your data section size could depend on how deep into the filesystem your project was when it was compiled. Freaky. */
+/* BUG: if none of the search path segments are found, this screws up _FUNCNAME in my vprintf-like functions */
+const char *srsLog_GetSourcePath(const char *_FILENAME)
+{
+  const char *filepath = _FILENAME;
+  size_t i;
+  size_t n = sizeof(srsLog_SEARCH_PATH_SEGMENTS) / sizeof(srsLog_SEARCH_PATH_SEGMENTS[0]);
+  if (_FILENAME == NULL)
+  {
+    return NULL;
+  }
+  for (i = 0; i < n; i++)
+  {
+    char *subpath = strstr(_FILENAME, srsLog_SEARCH_PATH_SEGMENTS[i]);
+    srsASSERT(subpath == NULL || _FILENAME <= subpath);
+    if (subpath != NULL)
+    {
+      filepath = subpath;
+      break;
+    }
+  }
+  return filepath;
+}
+
 bool srsLog_VWriteToStream(FILE *stream, const char *_FILENAME, uint32_t _LINENUMBER, const char *_FUNCNAME, const char *format, va_list args)
 {
-  const char *filepath = NULL;
-
-  filepath = srsString_GetSourcePath(_FILENAME);
-
   /* Print the log prefix that indicates where it comes from. */
   /** TODO Reimplement it to write the whole log entry to a buffer first so we can use write to print it atomically */
-  fprintf(stream, "%s:%u (%s): ", filepath, _LINENUMBER, _FUNCNAME);
+  fprintf(stream, "%s:%u (%s): ", _FILENAME, _LINENUMBER, _FUNCNAME);
 
   /* Use the copied args */
   vfprintf(stream, format, args);
@@ -81,7 +111,7 @@ int32_t srsLog_WriteToStreamAndLog(FILE *stream, const char *_FILENAME, uint32_t
   va_end(args);
   if (!ok)
   {
-    fprintf(stderr, "%s:%u: Failed to write to stream (fd = %d)!", srsString_GetSourcePath(_FILENAME), _LINENUMBER, fileno(stream));
+    fprintf(stderr, "%s:%u: Failed to write to stream (fd = %d)!", _FILENAME, _LINENUMBER, fileno(stream));
   }
   /* If we didn't explicitly tell it to write to the logfile, write to it in addition to whatever stream we just wrote to. */
   if (stream != srsLOGFILE)

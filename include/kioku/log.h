@@ -21,6 +21,15 @@ kiokuAPI FILE *srsLog_GetHandle();
 
 kiokuAPI void srsLog_Exit();
 
+/**
+ * A strstr wrapper specifically made for grabbing the meaningful part of a __FILE__ string.
+ * This works for paths with test/, src/, and include/ (also supports DOS style '\\' separator).
+ * Currently does not handle mixed path separators, since with __FILE__ they will always be consistent.
+ * @param[in] _FILENAME Presumably __FILE__.
+ * @return The start of the meaningful part of the _FILENAME string.
+ */
+kiokuAPI const char *srsLog_GetSourcePath(const char *_FILENAME);
+
 kiokuAPI bool srsLog_VWriteToStream(FILE *stream, const char *_FILENAME, uint32_t _LINENUMBER, const char *_FUNCNAME, const char *format, va_list args);
 
 kiokuAPI bool srsLog_WriteToStream(FILE *stream, const char *_FILENAME, uint32_t _LINENUMBER, const char *_FUNCNAME, const char *format, ...);
@@ -30,7 +39,7 @@ kiokuAPI int32_t srsLog_WriteToStreamAndLog(FILE *stream, const char *_FILENAME,
 #define srsLOGFILE srsLog_GetHandle()
 
 #define srsLOG_WRITE(stream, ...)                               \
-  srsLog_WriteToStreamAndLog(stream, __FILE__, __LINE__, srsFUNCTION_NAME, __VA_ARGS__);
+  srsLog_WriteToStreamAndLog(stream, srsLog_GetSourcePath(__FILE__), __LINE__, srsFUNCTION_NAME, __VA_ARGS__);
 
 #define srsLOG_PRINT(...) srsLOG_WRITE(stdout, __VA_ARGS__)
 #define srsLOG_ERROR(...) srsLOG_WRITE(stderr, __VA_ARGS__)

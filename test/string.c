@@ -1,6 +1,5 @@
 #include "greatest.h"
 #include "kioku/string.h"
-#include "kioku/log.h"
 
 /* char *, bool, int32 */
 #define test_number(str, isnum, num)                        \
@@ -47,103 +46,9 @@ TEST TestStringToU32(void)
   PASS();
 }
 
-TEST TestSourcePath(void)
-{
-  const char *path = NULL;
-
-  /* Test bad input */
-  path = srsString_GetSourcePath(NULL);
-  ASSERT_EQ(path, NULL);
-
-  /* Test this file */
-  path = srsString_GetSourcePath(__FILE__);
-  srsLOG_NOTIFY("Source Path: %s", path);
-  ASSERT(strcmp(path, "test/string.c") == 0 || strcmp(path, "test\\string.c") == 0);
-
-  /**
-   * This is a good example of how testing a very simple function can explode.
-   * There's a lot of code duplication here with simple variations.
-   * - \\ or / separators
-   * - drive letter or no
-   * - leading separator or no
-   * - starts with src/something/ versus src/kioku/ (TODO not tested for yet)
-   * - starts with include/something/ versus include/kioku/ (TODO not tested for yet)
-   * - mixed \\ or / (TODO not accounted for in implementation or tested for yet)
-   */
-
-  /* Prefix with test tests */
-
-  /* Test '/' path with drive letter */
-  path = srsString_GetSourcePath("E:/test/path/stuff.c");
-  ASSERT_STR_EQ("test/path/stuff.c", path);
-  /* Test '/' path without drive letter */
-  path = srsString_GetSourcePath("/test/path/stuff.c");
-  ASSERT_STR_EQ("test/path/stuff.c", path);
-  /* Test '/' path without drive letter or leading slash */
-  path = srsString_GetSourcePath("test/path/stuff.c");
-  ASSERT_STR_EQ("test/path/stuff.c", path);
-
-  /* Test '\\' path with drive letter */
-  path = srsString_GetSourcePath("E:\\test\\path\\stuff.c");
-  ASSERT_STR_EQ("test\\path\\stuff.c", path);
-  /* Test '\\' path without drive letter */
-  path = srsString_GetSourcePath("\\test\\path\\stuff.c");
-  ASSERT_STR_EQ("test\\path\\stuff.c", path);
-  /* Test '\\' path without drive letter or leading slash */
-  path = srsString_GetSourcePath("test\\path\\stuff.c");
-  ASSERT_STR_EQ("test\\path\\stuff.c", path);
-
-  /* Prefix with src tests */
-
-  /* Test '/' path with drive letter */
-  path = srsString_GetSourcePath("E:/src/path/stuff.c");
-  ASSERT_STR_EQ("src/path/stuff.c", path);
-  /* Test '/' path without drive letter */
-  path = srsString_GetSourcePath("/src/path/stuff.c");
-  ASSERT_STR_EQ("src/path/stuff.c", path);
-  /* Test '/' path without drive letter or leading slash */
-  path = srsString_GetSourcePath("src/path/stuff.c");
-  ASSERT_STR_EQ("src/path/stuff.c", path);
-
-  /* Test '\\' path with drive letter */
-  path = srsString_GetSourcePath("E:\\src\\path\\stuff.c");
-  ASSERT_STR_EQ("src\\path\\stuff.c", path);
-  /* Test '\\' path without drive letter */
-  path = srsString_GetSourcePath("\\src\\path\\stuff.c");
-  ASSERT_STR_EQ("src\\path\\stuff.c", path);
-  /* Test '\\' path without drive letter or leading slash */
-  path = srsString_GetSourcePath("src\\path\\stuff.c");
-  ASSERT_STR_EQ("src\\path\\stuff.c", path);
-
-  /* Prefix with include tests */
-
-  /* Test '/' path with drive letter */
-  path = srsString_GetSourcePath("E:/include/path/stuff.c");
-  ASSERT_STR_EQ("include/path/stuff.c", path);
-  /* Test '/' path without drive letter */
-  path = srsString_GetSourcePath("/include/path/stuff.c");
-  ASSERT_STR_EQ("include/path/stuff.c", path);
-  /* Test '/' path without drive letter or leading slash */
-  path = srsString_GetSourcePath("include/path/stuff.c");
-  ASSERT_STR_EQ("include/path/stuff.c", path);
-
-  /* Test '\\' path with drive letter */
-  path = srsString_GetSourcePath("E:\\include\\path\\stuff.c");
-  ASSERT_STR_EQ("include\\path\\stuff.c", path);
-  /* Test '\\' path without drive letter */
-  path = srsString_GetSourcePath("\\include\\path\\stuff.c");
-  ASSERT_STR_EQ("include\\path\\stuff.c", path);
-  /* Test '\\' path without drive letter or leading slash */
-  path = srsString_GetSourcePath("include\\path\\stuff.c");
-  ASSERT_STR_EQ("include\\path\\stuff.c", path);
-
-  PASS();
-}
-
 /* Suites can group multiple tests with common setup. */
 SUITE(the_suite) {
   RUN_TEST(TestStringToU32);
-  RUN_TEST(TestSourcePath);
 }
 
 /* Add definitions that need to be in the test runner's main file. */

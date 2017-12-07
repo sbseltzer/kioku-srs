@@ -5,39 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-static const char *srsSTRING_SEARCH_PATH_SEGMENTS[] = {
-  "src/",
-  "src\\",
-  "include/",
-  "include\\",
-  "test/",
-  "test\\"
-};
-
-/* Find the start of the *meaningful* part of __FILE__ since it will bake the full paths the host it was compiled on into the binary. */
-/* Come to think of it, that means your data section size could depend on how deep into the filesystem your project was when it was compiled. Freaky. */
-const char *srsString_GetSourcePath(const char *_FILENAME)
-{
-  const char *filepath = _FILENAME;
-  size_t i;
-  size_t n = sizeof(srsSTRING_SEARCH_PATH_SEGMENTS) / sizeof(srsSTRING_SEARCH_PATH_SEGMENTS[0]);
-  if (_FILENAME == NULL)
-  {
-    return NULL;
-  }
-  for (i = 0; i < n; i++)
-  {
-    char *subpath = strstr(_FILENAME, srsSTRING_SEARCH_PATH_SEGMENTS[i]);
-    srsASSERT(subpath == NULL || _FILENAME <= subpath);
-    if (subpath != NULL)
-    {
-      filepath = subpath;
-      break;
-    }
-  }
-  return filepath;
-}
-
 bool srsString_ToU32(const char *string, int32_t *out)
 {
   bool result = false;
