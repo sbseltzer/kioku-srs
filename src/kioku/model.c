@@ -34,6 +34,7 @@ srsRESULT srsModel_SetRoot(const char *path)
 {
   if (path == NULL)
   {
+    srsLOG_PRINT("Path is NULL - close the underlying repository and nullify the model root.");
     srsGit_Repo_Close();
     free(srsModel_ROOT_PATH);
     srsModel_ROOT_PATH = NULL;
@@ -48,6 +49,7 @@ srsRESULT srsModel_SetRoot(const char *path)
     return srsFAIL;
   }
   free(srsModel_ROOT_PATH);
+  srsModel_ROOT_PATH = NULL;
   srsRESULT result = srsGit_Repo_Open(path);
   if (result == srsOK)
   {

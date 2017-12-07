@@ -58,8 +58,16 @@ TEST test_get_set_root(void)
   ASSERT_EQ(true, srsGit_Repo_Create("maybe-a-git-repo", opts));
   const char *git_full_path = srsGit_Repo_GetCurrent();
   ASSERT(git_full_path);
+  /*
+    The pointer returned by srsGit_Repo_GetCurrent is not owned by us, and could be invalidated by further API calls.
+    I had a problem before where my SetRoot implementation closing/opening a new repository invalidated the result of srsGit_Repo_GetCurrent.
+    To mitigate this, we copy the path here before doing any checks.
+    I'm thinking that exposing a user to that kind of problem is sign of design flaw, so I'm going to submit an issue for it.
+  */
+  char expected_path[4096] = {0};
+  strcpy(expected_path, git_full_path);
   ASSERT_EQ(srsOK, srsModel_SetRoot("maybe-a-git-repo"));
-  ASSERT_STR_EQ(git_full_path, srsModel_GetRoot());
+  ASSERT_STR_EQ(expected_path, srsModel_GetRoot());
   PASS();
 }
 
