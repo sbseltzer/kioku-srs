@@ -60,6 +60,7 @@ static void handle_exit_call(struct mg_connection *nc, struct http_message *hm)
   rest_respond(nc, HTTP_OK, "%s", "{\"result\":\"OK\"}");
 }
 
+/* Ex: http://localhost:8000/api/v1/card/next?deck=client/testdeck */
 static void handle_GetNextCard(struct mg_connection *nc, struct http_message *hm)
 {
   const char *error_msg = NULL;
