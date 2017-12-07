@@ -6,7 +6,8 @@
 #include "kioku/error.h"
 #include <string.h>
 
-static git_repository *srsGIT_REPO = NULL;
+static git_repository *srsGit_REPO = NULL;
+static char *srsGit_REPO_PATH = NULL;
 static int srsGIT_READY = 0;
 /** Useful resources:
  *  - https://libgit2.github.com/docs/guides/101-samples/
@@ -48,12 +49,14 @@ uint32_t srsGit_InitCount()
 bool srsGit_Repo_Close()
 {
   /* \todo The docs say that any objects associated with the freed repo will remain until freed, and accessing them without their backing repo will result in undefined behaviour. Come up with a strategy to ensure they are all freed here, or at least assert that there's nothing remaining (since not freeing them would be the fault of the programmer). */
-  if (srsGIT_REPO != NULL)
+  if (srsGit_REPO != NULL)
   {
-    git_repository_free(srsGIT_REPO);
-    srsGIT_REPO = NULL;
+    git_repository_free(srsGit_REPO);
+    srsGit_REPO = NULL;
   }
-  return srsGIT_REPO == NULL;
+  free(srsGit_REPO_PATH);
+  srsGit_REPO_PATH = NULL;
+  return srsGit_REPO == NULL;
 }
 
 bool srsGit_Shutdown()
@@ -87,50 +90,39 @@ bool srsGit_IsRepo(const char *path)
 
 const char *srsGit_Repo_GetCurrent()
 {
-  const char *result = NULL;
-  if (srsGIT_REPO != NULL)
+  if (srsGit_REPO != NULL)
   {
-    srsGIT_INIT_LIB();
-    result = git_repository_workdir(srsGIT_REPO);
-    srsGIT_EXIT_LIB();
+    if (srsGit_REPO_PATH == NULL)
+    {
+      srsGIT_INIT_LIB();
+      const char *workdir = git_repository_workdir(srsGit_REPO);
+      srsGIT_EXIT_LIB();
+      srsGit_REPO_PATH = strdup(workdir);
+    }
   }
-  return result;
+  return srsGit_REPO_PATH;
 }
 
-bool srsGit_Repo_Open(const char *path)
+srsRESULT srsGit_Repo_Open(const char *path)
 {
-  bool result = true;
   srsGIT_INIT_LIB();
-
   /* Free the current repository first, if any */
   const char *currepo = srsGit_Repo_GetCurrent();
   if (currepo != NULL)
   {
     srsLOG_PRINT("Closing out %s before opening %s", currepo, path);
-    result = srsGit_Repo_Close();
-    if (result)
-    {
-      srsLOG_PRINT("Closed repo successfully.");
-    }
-    else
-    {
-      srsLOG_ERROR("Something went wrong while trying to free the repo. Opening a new one could be dangerous!");
-    }
+    srsGit_Repo_Close();
   }
-  if (!result)
-  {
-    srsGIT_EXIT_LIB();
-    return result;
-  }
+  srsASSERT(srsGit_REPO == NULL);
+  srsASSERT(srsGit_REPO_PATH == NULL);
 
-  int git_result = git_repository_open(&srsGIT_REPO, path);
-  result = (srsGIT_REPO != NULL);
-  if (!result)
+  int git_result = git_repository_open(&srsGit_REPO, path);
+  if (git_result != 0)
   {
-    srsGIT_EXIT_LIB();
+    return srsFAIL;
   }
   /* We do not call srsGIT_EXIT_LIB here because we want the user to be able to continue using the repository */
-  return result;
+  return srsOK;
 }
 
 #if 0
@@ -139,7 +131,7 @@ bool srsGit_Repo_Clone(const char *path, const char *remote_url)
   bool result = false;
   git_clone_options opts = GIT_CLONE_OPTIONS_INIT;
   srsGIT_INIT_LIB();
-  int git_result = git_clone(&srsGIT_REPO, remote_url, path, &opts);
+  int git_result = git_clone(&srsGit_REPO, remote_url, path, &opts);
   /* \todo handle errors */
   result = git_result == GIT_OK;
   srsGIT_EXIT_LIB();
@@ -164,7 +156,7 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   srsGIT_INIT_LIB();
 
   gitinitopts.flags = GIT_REPOSITORY_INIT_MKPATH;
-  int git_result = git_repository_init_ext(&srsGIT_REPO, path, &gitinitopts);
+  int git_result = git_repository_init_ext(&srsGit_REPO, path, &gitinitopts);
   if (git_result != 0)
   {
     srsGIT_DEBUG_ERROR();
@@ -216,7 +208,7 @@ bool srsGit_Commit(const char *message)
 	git_commit *parent;
 	char oid_hex[GIT_OID_HEXSZ+1] = { 0 };
 	git_index *index;
-  if (srsGIT_REPO == NULL)
+  if (srsGit_REPO == NULL)
   {
     return false;
   }
@@ -224,7 +216,7 @@ bool srsGit_Commit(const char *message)
   srsGIT_INIT_LIB();
 
   /* Try to open the index */
-  git_result = git_repository_index(&index, srsGIT_REPO);
+  git_result = git_repository_index(&index, srsGit_REPO);
   result = result && (git_result == 0);
   if (!result)
   {
@@ -233,7 +225,7 @@ bool srsGit_Commit(const char *message)
   }
 
   /* See if this is the first commit */
-  git_result = git_repository_head_unborn(srsGIT_REPO);
+  git_result = git_repository_head_unborn(srsGit_REPO);
   result = result && (git_result == 0 || git_result == 1);
   if (git_result == 1)
   {
@@ -275,15 +267,15 @@ bool srsGit_Commit(const char *message)
 	 * but you can also use
 	 */
 
-  /* git_result = git_reference_name_to_id(&oid, srsGIT_REPO, "HEAD"); */
-	git_result = git_tree_lookup(&tree, srsGIT_REPO, &oid);
+  /* git_result = git_reference_name_to_id(&oid, srsGit_REPO, "HEAD"); */
+	git_result = git_tree_lookup(&tree, srsGit_REPO, &oid);
   result = result && (git_result == 0);
   if (!result)
   {
     srsLOG_ERROR("failed to lookup tree");
     abort();
   }
-  git_result = git_repository_head_unborn(srsGIT_REPO);
+  git_result = git_repository_head_unborn(srsGit_REPO);
   result = result && (git_result == 0 || git_result == 1);
   if (git_result == 1)
   {
@@ -291,7 +283,7 @@ bool srsGit_Commit(const char *message)
   }
   else if (git_result == 0)
   {
-    git_result = git_commit_lookup(&parent, srsGIT_REPO, &oid);
+    git_result = git_commit_lookup(&parent, srsGit_REPO, &oid);
     result = result && (git_result == 0);
     if (!result)
     {
@@ -318,7 +310,7 @@ bool srsGit_Commit(const char *message)
 	 */
 	git_result = git_commit_create(
     &commit_id, /* out id */
-    srsGIT_REPO,
+    srsGit_REPO,
     "HEAD", /* name of ref to update */
     me, me, /* author & committer */
     "UTF-8",
@@ -361,7 +353,7 @@ bool srsGit_Add(const char *path)
 	git_tree *tree = NULL;
 	git_index *index = NULL;
 
-  if (srsGIT_REPO == NULL)
+  if (srsGit_REPO == NULL)
   {
     return false;
   }
@@ -369,12 +361,12 @@ bool srsGit_Add(const char *path)
   srsGIT_INIT_LIB();
 
   /* See if this is the first commit */
-  git_result = git_repository_head_unborn(srsGIT_REPO);
+  git_result = git_repository_head_unborn(srsGit_REPO);
   if (git_result == 1)
   {
     srsLOG_PRINT("Adding - Unborn HEAD");
   }
-  git_result = git_repository_index(&index, srsGIT_REPO);
+  git_result = git_repository_index(&index, srsGit_REPO);
   result = result && (git_result == 0) && (index != NULL);
   if (!result)
   {
@@ -388,7 +380,7 @@ bool srsGit_Add(const char *path)
     srsLOG_ERROR("Unable to write initial tree from index");
     abort();
   }
-  git_result = git_tree_lookup(&tree, srsGIT_REPO, &oid);
+  git_result = git_tree_lookup(&tree, srsGit_REPO, &oid);
   result = result && (git_result == 0) && (tree != NULL);
   if (!result)
   {

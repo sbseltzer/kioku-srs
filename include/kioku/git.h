@@ -3,6 +3,7 @@
 
 #include <kioku/decl.h>
 #include <kioku/types.h>
+#include <kioku/result.h>
 #include <kioku/debug.h>
 
 typedef struct srsGIT_CREATE_OPTS_s {
@@ -65,9 +66,9 @@ kiokuAPI bool srsGit_IsRepo(const char *path);
 /**
  * Set the new current repository to work with.
  * @param[in] path The path to the repository.
- * @return Whether it was successful.
+ * @return srsOK if successful
  */
-kiokuAPI bool srsGit_Repo_Open(const char *path);
+kiokuAPI srsRESULT srsGit_Repo_Open(const char *path);
 
 /**
  * Get the current repo path

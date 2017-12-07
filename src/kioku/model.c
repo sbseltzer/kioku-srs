@@ -3,6 +3,8 @@
 #include "kioku/filesystem.h"
 #include "kioku/log.h"
 #include "kioku/string.h"
+#include "kioku/debug.h"
+#include "kioku/error.h"
 
 #include "parson.h"
 #include "hashmap.h"
@@ -33,6 +35,7 @@ srsRESULT srsModel_SetRoot(const char *path)
   if (path == NULL)
   {
     srsGit_Repo_Close();
+    free(srsModel_ROOT_PATH);
     srsModel_ROOT_PATH = NULL;
     return srsOK;
   }
@@ -45,9 +48,17 @@ srsRESULT srsModel_SetRoot(const char *path)
     return srsFAIL;
   }
   free(srsModel_ROOT_PATH);
-  srsGit_Repo_Open(path);
-  srsModel_ROOT_PATH = strdup(srsGit_Repo_GetCurrent());
-  return srsOK;
+  srsRESULT result = srsGit_Repo_Open(path);
+  if (result == srsOK)
+  {
+    srsModel_ROOT_PATH = strdup(srsGit_Repo_GetCurrent());
+    srsASSERT(srsModel_ROOT_PATH != NULL);
+  }
+  else
+  {
+    srsLOG_ERROR("Failed to use [%s] as the model root path - something went wrong trying to open the Git repository.", path);
+  }
+  return result;
 }
 
 const char *srsModel_GetRoot()
