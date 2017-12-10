@@ -636,8 +636,9 @@ TEST TestGetFullPath(void)
   }
   ASSERT_STR_EQ(expected_fullpath, path);
 
-  srsDir_Create("test-up-and-back");
+  /* Test up and back at start of a path */
   const char *dir = TESTDIR"/test-up-and-back";
+  srsDir_Create(dir);
   srsDir_SetCWD(dir);
   ASSERT_EQ(true, srsDir_Exists(dir));
   {
@@ -648,6 +649,18 @@ TEST TestGetFullPath(void)
     ASSERT_STR_EQ(dir, buf);
   }
 
+  /* Test up and back in the middle of a path */
+  dir = TESTDIR"/test-up-and-back/abc";
+  srsDir_Create(dir);
+  srsDir_SetCWD(TESTDIR);
+  ASSERT_EQ(true, srsDir_Exists(dir));
+  {
+    char buf[srsPATH_MAX] = {0};
+    const char *resolveme = "test-up-and-back/../test-up-and-back/abc";
+    srsPath_GetFull(resolveme, buf, sizeof(buf));
+    srsLOG_PRINT("Does %s (from %s) resolve to %s?", resolveme, srsDir_GetCWD(), dir);
+    ASSERT_STR_EQ(dir, buf);
+  }
   PASS();
 }
 

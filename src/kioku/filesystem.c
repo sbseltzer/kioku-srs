@@ -296,15 +296,25 @@ size_t srsPath_GetFull(const char *relative, char *path_out, size_t nbytes)
   }
 #ifdef kiokuOS_WINDOWS
   /** @todo Test this */
+  const char *pushed_dir = NULL;
   if (relative[0] == '.')
   {
     relative++;
-    while (relative[0] == '/')
+    if (relative[0] == '.')
+    {
+      relative++;
+      pushed_dir = srsDir_PushCWD("..");
+    }
+    while (srsCHAR_ISDIRSEP(relative[0]))
     {
       relative++;
     }
   }
   char *fullpath = _fullpath(path_out, relative, nbytes);
+  if (pushed_dir != NULL)
+  {
+    srsDir_PopCWD(NULL);
+  }
   if (fullpath != NULL)
   {
     int32_t needed = strlen(fullpath);
