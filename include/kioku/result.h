@@ -24,12 +24,12 @@ typedef enum _srsMODULE_e
 typedef enum _srsRESULT_e
 {
   srsENUM_RANGE_START(srsRESULT, srsMODULE_GENERIC, srsMODULE),
-  srsOK,                 /* All is well */
-  srsFAIL,               /* Generic NOT OK */
-  srsERROR,              /* Generic error */
-  srsERROR_ASSERT,       /* Show stopper */
-  srsERROR_ARG,          /* Bad input */
-  srsERROR_SYSTEM,       /* Generic system-level error */
+  srsOK,                        /* All is well */
+  srsBAD,                       /* All is NOT well */
+  srsFAIL,                      /* Generic failure */
+  srsE_INPUT,                   /* Bad input */
+  srsE_SYSTEM,                  /* Generic system-level error */
+  srsE_API,                     /* An API-specific requirement was not met */
   srsENUM_RANGE_END(srsRESULT, srsMODULE_GENERIC, srsMODULE),
 } srsRESULT;
 
