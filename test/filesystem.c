@@ -635,6 +635,19 @@ TEST TestGetFullPath(void)
     path[strlen(path)] = '\0';
   }
   ASSERT_STR_EQ(expected_fullpath, path);
+
+  srsDir_Create("test-up-and-back");
+  const char *dir = TESTDIR"/test-up-and-back";
+  srsDir_SetCWD(dir);
+  ASSERT_EQ(true, srsDir_Exists(dir));
+  {
+    char buf[srsPATH_MAX] = {0};
+    const char *resolveme = "../test-up-and-back";
+    srsPath_GetFull(resolveme, buf, sizeof(buf));
+    srsLOG_PRINT("Does %s (from %s) resolve to %s?", resolveme, srsDir_GetCWD(), dir);
+    ASSERT_STR_EQ(dir, buf);
+  }
+
   PASS();
 }
 
