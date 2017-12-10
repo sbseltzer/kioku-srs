@@ -9,6 +9,7 @@
 #include "parson.h"
 #include "hashmap.h"
 #include "utf8.h"
+#include "git2.h"
 
 #include <string.h>
 
@@ -84,41 +85,31 @@ bool srsModel_IsPathInRoot(const char *path)
   }
   bool result = false;
   const char *root = srsModel_GetRoot();
+  git_buf rootbuf = {0};
   size_t rootlen = strlen(root);
-  srsDir_PushCWD(root);
+  const char *path_to_root = srsDir_PushCWD(root);
+  if (path_to_root != NULL)
   {
-    char buf[srsPATH_MAX] = {0};
-    size_t length = srsPath_GetFull(path, buf, sizeof(buf));
-    result = (strncmp(root, buf, rootlen) == 0);
-    srsLOG_ERROR("strncmp(%s, %s, %zu) == %s && %zu == %zu", root, buf, rootlen, srsLOG_BOOLSTR(result), rootlen, length);
-    /* I register the following two cases as errors since this kind of input is probably exploitative */
-    if (result && (rootlen == length))
+    int error = git_repository_discover(&rootbuf, path, 0, NULL);
+    if (error != 0)
     {
+      const git_error *error_struct = giterr_last();
+      srsASSERT(error_struct != NULL);
+      srsERROR_SET(srsFAIL, error_struct->message);
       result = false;
-      srsERROR_SET(srsE_INPUT, "Path was equal to the root - why?");
-      goto done;
     }
-    /* TODO Get rid of the #ifs/#endifs by fixing srsPath_GetFull and re-enabling the tests. */
-#if 0
-    if (result == false)
+    else
     {
-#endif
-      if (strncmp("..", path, 2) == 0)
+      srsLOG_PRINT("Discovered root repo: %s", rootbuf.ptr);
+      result = strcmp(rootbuf.ptr, root) == 0;
+      if (!result)
       {
-        srsERROR_SET(srsE_INPUT, "Used relative path to go upward - exploit attempt?");
-        result = false;
-        goto done;
+        srsERROR_SET(srsE_INPUT, "Discovered a root repo, but it was not the model root!");
       }
-#if 0
     }
-#endif
+    srsDir_PopCWD(NULL);
   }
-done:
-  srsDir_PopCWD(NULL);
-  if (result == true)
-  {
-    srsError_Reset();
-  }
+  git_buf_free(&rootbuf); /* returned path data must be freed after use */
   return result;
 }
 
