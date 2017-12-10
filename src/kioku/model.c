@@ -71,6 +71,7 @@ const char *srsModel_GetRoot()
   return srsModel_ROOT_PATH;
 }
 
+#if 0
 bool srsModel_IsPathInRoot(const char *path)
 {
   if (srsModel_GetRoot() == NULL)
@@ -112,6 +113,7 @@ bool srsModel_IsPathInRoot(const char *path)
   git_buf_free(&rootbuf); /* returned path data must be freed after use */
   return result;
 }
+#endif
 
 bool srsModel_Card_GetPath(const char *deck_path, const char *card_id, char *path_out, size_t path_size)
 {
