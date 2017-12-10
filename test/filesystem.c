@@ -861,6 +861,7 @@ srsFILESYSTEM_VISIT_ACTION filesystem_counter_iterator(const char *path, void *u
   }
   return srsFILESYSTEM_VISIT_CONTINUE;
 }
+
 TEST TestIteration(void)
 {
   const char *files[] = {
@@ -921,10 +922,13 @@ SUITE(test_filesystem) {
   printf(kiokuSTRING_LF);
   RUN_TEST(TestSetGetCWD);
   printf(kiokuSTRING_LF);
+  srsDir_SetCWD(TESTDIR);
   RUN_TEST(TestPushPopCWD);
   printf(kiokuSTRING_LF);
+  srsDir_SetCWD(TESTDIR);
   RUN_TEST(TestGetFullPath);
   printf(kiokuSTRING_LF);
+  srsDir_SetCWD(TESTDIR);
   RUN_TEST(TestIteration);
 }
 /* Add definitions that need to be in the test runner's main file. */
