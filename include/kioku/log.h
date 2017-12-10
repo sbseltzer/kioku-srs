@@ -17,6 +17,8 @@
 #include <stdio.h> /* FILE, vfprintf, fopen, fclose */
 #include <stdarg.h> /* va_list */
 
+#define srsLOG_BOOLSTR(expr) ((expr) ? "true" : "false")
+
 kiokuAPI FILE *srsLog_GetHandle();
 
 kiokuAPI void srsLog_Exit();
