@@ -78,7 +78,7 @@ TEST test_card_getpath(void)
   ASSERT(createdeck());
 
   /* ASSERT_FALSE(srsModel_Card_GetPath("deck-test", 0)); */
-  char path[kiokuPATH_MAX] = {0};
+  char path[srsPATH_MAX] = {0};
 
 #define deckpath "deck-test/"
 #define ext ".txt"
@@ -101,7 +101,7 @@ TEST test_card_getnextid(void)
   deletedeck();
   ASSERT(createdeck());
 
-  char path[kiokuPATH_MAX + 1] = {0};
+  char path[srsPATH_MAX + 1] = {0};
 
   srsFile_SetContent("deck-test/.at", "0");
   ASSERT_FALSE(srsModel_Card_GetNextID("deck-test", path, sizeof(path)));

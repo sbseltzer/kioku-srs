@@ -49,7 +49,7 @@ kiokuAPI bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_out, 
  * @param[in] card_id The ID of the card to get the content of.
  * @param[out] path_out Buffer to store the the path in, including null-terminator. The contents are unspecified if this function returns false.
  * @param[in] path_size The size of the @ref path_out buffer including the null-terminator. If there's not enough room, this function will return false.
- * @return Whether the path could be stored. False could indicate a bad parameter, an invalid deck, an invalid card ID, or a buffer that's not large enough according to the specified size. @todo Failure ambiguity is a design flaw. For now the user is expected to use @ref kiokuPATH_MAX + 1 to protect themselves.
+ * @return Whether the path could be stored. False could indicate a bad parameter, an invalid deck, an invalid card ID, or a buffer that's not large enough according to the specified size. @todo Failure ambiguity is a design flaw. For now the user is expected to use @ref srsPATH_MAX + 1 to protect themselves.
  */
 kiokuAPI bool srsModel_Card_GetPath(const char *deck_path, const char *card_id, char *path_out, size_t path_size);
 

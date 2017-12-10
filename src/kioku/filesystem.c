@@ -96,10 +96,10 @@ const char *srsDir_GetCWD()
 {
   if (directory_current == NULL)
   {
-    directory_current = malloc(kiokuPATH_MAX);
+    directory_current = malloc(srsPATH_MAX);
     if (directory_current != NULL)
     {
-      char *cwd = srsDir_GetSystemCWD(directory_current, kiokuPATH_MAX);
+      char *cwd = srsDir_GetSystemCWD(directory_current, srsPATH_MAX);
       if (cwd != directory_current || cwd == NULL)
       {
         srsLOG_ERROR("Failed to get the underlying system CWD when attempting to initialize the API CWD");

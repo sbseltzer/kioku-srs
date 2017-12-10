@@ -15,7 +15,7 @@ make_test(schedule schedule.c)
 make_test(model model.c)
 make_test(card card.c)
 
-add_definitions(-DBUILDDIR="${CMAKE_CURRENT_BINARY_DIR}")
+add_definitions(-DTESTDIR="${CMAKE_CURRENT_BINARY_DIR}")
 
 # TODO Utilize the greatest.h command line options for more fine-grained tests
 add_test(NAME TestLog COMMAND log)

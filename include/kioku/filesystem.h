@@ -21,9 +21,9 @@
   #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
   #if defined _MAX_PATH
-    #define kiokuPATH_MAX (_MAX_PATH - 1)
+    #define srsPATH_MAX (_MAX_PATH - 1)
   #elif defined MAX_PATH
-    #define kiokuPATH_MAX (MAX_PATH - 1)
+    #define srsPATH_MAX (MAX_PATH - 1)
   #else
     #error Could not find macro for max path length!
   #endif
@@ -41,9 +41,9 @@
   /* #include <sys/syslimits.h> */
 #endif /* OS check */
 
-#ifndef kiokuPATH_MAX
+#ifndef srsPATH_MAX
   #ifdef PATH_MAX
-    #define kiokuPATH_MAX PATH_MAX - 1
+    #define srsPATH_MAX PATH_MAX - 1
   #else
     #error Could not find macro for max path length!
   #endif
@@ -51,7 +51,7 @@
 
 #define srsCHAR_ISDIRSEP(x) (((x) == '/') || ((x) == '\\'))
 
-kiokuSTATIC_ASSERT(kiokuPATH_MAX > 0);
+kiokuSTATIC_ASSERT(srsPATH_MAX > 0);
 
 /**
  * Describes what to do at the end of a call to a @ref srsFILESYSTEM_VISIT_FUNC iterator.

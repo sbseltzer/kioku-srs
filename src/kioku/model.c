@@ -90,7 +90,7 @@ bool srsModel_Card_GetPath(const char *deck_path, const char *card_id, char *pat
 bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t card_id_buf_size)
 {
   bool result = false;
-  char file_path[kiokuPATH_MAX] = {0};
+  char file_path[srsPATH_MAX] = {0};
 
   /* Get path to the .at file */
   int32_t atlen = kioku_path_concat(file_path, sizeof(file_path), deck_path, ".at");

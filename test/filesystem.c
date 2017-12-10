@@ -387,7 +387,7 @@ TEST test_file_manage(void) {
   ASSERT(srsPath_Remove("a"));
 
   char fullpath[255] = {0};
-  kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b/c/a.txt");
+  kioku_path_concat(fullpath, sizeof(fullpath), TESTDIR, "a/b/c/a.txt");
   ASSERT_FALSE(srsPath_Exists(fullpath));
   ASSERT(srsFile_Create(fullpath));
   ASSERT(srsPath_Exists(fullpath));
@@ -395,17 +395,17 @@ TEST test_file_manage(void) {
   ASSERT(srsPath_Remove(fullpath));
   ASSERT_FALSE(srsPath_Exists(fullpath));
 
-  kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b/c");
+  kioku_path_concat(fullpath, sizeof(fullpath), TESTDIR, "a/b/c");
   ASSERT(srsPath_Remove(fullpath));
   ASSERT_FALSE(srsPath_Exists(fullpath));
   ASSERT_FALSE(srsPath_Remove(fullpath));
 
-  kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a/b");
+  kioku_path_concat(fullpath, sizeof(fullpath), TESTDIR, "a/b");
   ASSERT(srsPath_Remove(fullpath));
   ASSERT_FALSE(srsPath_Exists(fullpath));
   ASSERT_FALSE(srsPath_Remove(fullpath));
 
-  kioku_path_concat(fullpath, sizeof(fullpath), BUILDDIR, "a");
+  kioku_path_concat(fullpath, sizeof(fullpath), TESTDIR, "a");
   ASSERT(srsPath_Remove(fullpath));
   ASSERT_FALSE(srsPath_Exists(fullpath));
   ASSERT_FALSE(srsPath_Remove(fullpath));
@@ -566,8 +566,8 @@ TEST test_resolve_relative(void)
 {
   printf("Testing kioku_path_resolve_relative..." kiokuSTRING_LF);
   struct path_pair_s {
-    const char in[kiokuPATH_MAX+1];
-    const char out[kiokuPATH_MAX+1];
+    const char in[srsPATH_MAX+1];
+    const char out[srsPATH_MAX+1];
   } paths[] = {
     {".", "."}, /* Maybe this should return "" */
     {"..", ".."},
@@ -592,8 +592,8 @@ TEST test_resolve_relative(void)
   for (i = 0; i < num_pairs; i++)
   {
     printf("Testing conversion of '%s' to '%s'"kiokuSTRING_LF, paths[i].in, paths[i].out);
-    char path[kiokuPATH_MAX+1] = {0};
-    strncpy(path, paths[i].in, kiokuPATH_MAX);
+    char path[srsPATH_MAX+1] = {0};
+    strncpy(path, paths[i].in, srsPATH_MAX);
     /* kioku_path_resolve_relative(path, sizeof(path)); */
     /* ASSERT_STR_EQ(path, paths[i].out); */
   }
@@ -603,9 +603,9 @@ TEST TestGetFullPath(void)
   printf("Testing srsPath_GetFull..." kiokuSTRING_LF);
 
   /* Test a known existing directory */
-  char expected_fullpath[kiokuPATH_MAX];
-  char path[kiokuPATH_MAX];
-  kioku_path_concat(expected_fullpath, sizeof(expected_fullpath), BUILDDIR, "a");
+  char expected_fullpath[srsPATH_MAX];
+  char path[srsPATH_MAX];
+  kioku_path_concat(expected_fullpath, sizeof(expected_fullpath), TESTDIR, "a");
   srsLOG_NOTIFY("Check GetFull expecting %s", expected_fullpath);
   ASSERT(0 != srsPath_GetFull("a", path, sizeof(path)));
   srsLOG_NOTIFY("Check GetFull against %s", path);
@@ -621,7 +621,7 @@ TEST TestGetFullPath(void)
   ASSERT_STR_EQ(expected_fullpath, path);
 
   /* Test a known non-existent directory */
-  kioku_path_concat(expected_fullpath, sizeof(expected_fullpath), BUILDDIR, "i-do-not-exist");
+  kioku_path_concat(expected_fullpath, sizeof(expected_fullpath), TESTDIR, "i-do-not-exist");
   srsLOG_NOTIFY("Check GetFull expecting %s", expected_fullpath);
   ASSERT(0 != srsPath_GetFull("i-do-not-exist", path, sizeof(path)));
   srsLOG_NOTIFY("Check GetFull against %s", path);
@@ -641,8 +641,8 @@ TEST TestGetFullPath(void)
 TEST TestSetGetCWD(void)
 {
   const char *cwd = NULL;
-  char start_path[kiokuPATH_MAX] = {0};
-  char system_cwd[kiokuPATH_MAX] = {0};
+  char start_path[srsPATH_MAX] = {0};
+  char system_cwd[srsPATH_MAX] = {0};
 
   /* Try getting the CWD and check it against the low-level system CWD */
   ASSERT(srsDir_GetSystemCWD(system_cwd, sizeof(system_cwd)));
@@ -679,8 +679,8 @@ TEST TestPushPopCWD(void)
     "./a/b/e",
     "./a/b/e/f"
   };
-  char start_path[kiokuPATH_MAX] = {0};
-  char path[kiokuPATH_MAX] = {0};
+  char start_path[srsPATH_MAX] = {0};
+  char path[srsPATH_MAX] = {0};
   const char *cwd = NULL;
   int32_t up_index = -1;
 
@@ -920,7 +920,7 @@ int main(int argc, char **argv)
 {
   GREATEST_MAIN_BEGIN();      /* command-line options, initialization. */
 
-  srsLOG_NOTIFY("Max Path Length = %zu", (size_t)kiokuPATH_MAX);
+  srsLOG_NOTIFY("Max Path Length = %zu", (size_t)srsPATH_MAX);
   RUN_SUITE(test_filesystem);
 
   GREATEST_MAIN_END();        /* display results */
