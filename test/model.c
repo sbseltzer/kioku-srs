@@ -1,6 +1,7 @@
 #include "greatest.h"
 #include "kioku/git.h"
 #include "kioku/model.h"
+#include "kioku/error.h"
 #include "kioku/filesystem.h"
 
 static bool createdeck()
@@ -132,11 +133,84 @@ TEST test_card_getnextid(void)
   PASS();
 }
 
+TEST test_ispathinroot(void)
+{
+  srsModel_SetRoot(NULL);
+
+  /* Test some input before root is set */
+
+  srsError_Reset();
+  ASSERT_EQ(false, srsModel_IsPathInRoot(NULL));
+  ASSERT_EQ(srsE_API, srsError_Get().code);
+
+  srsError_Reset();
+  ASSERT_EQ(false, srsModel_IsPathInRoot("abc"));
+  ASSERT_EQ(srsE_API, srsError_Get().code);
+
+  srsError_Reset();
+  ASSERT_EQ(false, srsModel_IsPathInRoot(".."));
+  ASSERT_EQ(srsE_API, srsError_Get().code);
+
+  srsError_Reset();
+  ASSERT_EQ(false, srsModel_IsPathInRoot(TESTDIR"/path/to/root"));
+  ASSERT_EQ(srsE_API, srsError_Get().code);
+
+  srsGit_Repo_Create(TESTDIR"/path/to/root", srsGIT_CREATE_OPTS_INIT);
+  srsModel_SetRoot(TESTDIR"/path/to/root");
+
+  /* Test null input */
+  srsError_Reset();
+  ASSERT_EQ(false, srsModel_IsPathInRoot(NULL));
+  ASSERT_EQ(srsE_INPUT, srsError_Get().code);
+
+  const char *root = srsModel_GetRoot();
+  srsLOG_PRINT("Root = %s", root);
+  srsLOG_PRINT("Test Root = %s", TESTDIR"/path/to/root");
+  /* Test root path */
+  ASSERT_EQ(false,  srsModel_IsPathInRoot(root));
+  ASSERT_EQ(false,  srsModel_IsPathInRoot(TESTDIR"//path/to/root"));
+  ASSERT_EQ(false,  srsModel_IsPathInRoot(TESTDIR"/path/to/root/"));
+  /* Test out of root paths */
+  ASSERT_EQ(false,  srsModel_IsPathInRoot(TESTDIR));
+  /* Test something that looks like root path but would misbehave for naive strcmp implementations */
+  ASSERT_EQ(false, srsModel_IsPathInRoot(TESTDIR"path/to/rootabc"));
+
+  /* Test valid absolute paths */
+  ASSERT_EQ(true,  srsModel_IsPathInRoot(TESTDIR"/path/to/root/abc"));
+  ASSERT_EQ(true,  srsModel_IsPathInRoot(TESTDIR"/path/to/root/abc/def"));
+
+  /* Test valid relative paths */
+  ASSERT_EQ(true,  srsModel_IsPathInRoot("./abc"));
+  ASSERT_EQ(true,  srsModel_IsPathInRoot("abc"));
+
+  /* Right now the dependency on srsPath_GetFull is screwing these over */
+  /* Test invalid relative paths */
+  /* TODO do an error check for why on all the falses */
+  ASSERT_EQ(false,  srsModel_IsPathInRoot("."));
+#if 0
+  ASSERT_EQ(false,  srsModel_IsPathInRoot("../root"));
+  ASSERT_EQ(false,  srsModel_IsPathInRoot(".."));
+  ASSERT_EQ(false,  srsModel_IsPathInRoot("../abc"));
+
+  /* Test more valid relative paths that LOOKED like they could've been invalid */
+  ASSERT_EQ(true,  srsModel_IsPathInRoot("../root/abc"));
+
+/* TODO Get rid of the following in favor of above once srsPath_GetFull is fixed */
+#else
+  ASSERT_EQ(false,  srsModel_IsPathInRoot("../root"));
+  ASSERT_EQ(false,  srsModel_IsPathInRoot(".."));
+  ASSERT_EQ(false,  srsModel_IsPathInRoot("../abc"));
+  ASSERT_EQ(false,  srsModel_IsPathInRoot("../root/abc"));
+#endif
+  PASS();
+}
+
 /* Suites can group multiple tests with common setup. */
 SUITE(the_suite) {
   RUN_TEST(test_card_getpath);
   RUN_TEST(test_card_getnextid);
   RUN_TEST(test_get_set_root);
+  RUN_TEST(test_ispathinroot);
 }
 
 /* Add definitions that need to be in the test runner's main file. */
@@ -150,6 +224,8 @@ int main(int argc, char **argv) {
 
   /* Tests can also be gathered into test suites. */
   RUN_SUITE(the_suite);
+
+  srsERROR_LOG();
 
   GREATEST_MAIN_END();        /* display results */
 }

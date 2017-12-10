@@ -70,6 +70,58 @@ const char *srsModel_GetRoot()
   return srsModel_ROOT_PATH;
 }
 
+bool srsModel_IsPathInRoot(const char *path)
+{
+  if (srsModel_GetRoot() == NULL)
+  {
+    srsERROR_SET(srsE_API, "Model Root not set!");
+    return false;
+  }
+  if (path == NULL)
+  {
+    srsERROR_SET(srsE_INPUT, "Path was NULL");
+    return false;
+  }
+  bool result = false;
+  const char *root = srsModel_GetRoot();
+  size_t rootlen = strlen(root);
+  srsDir_PushCWD(root);
+  {
+    char buf[srsPATH_MAX] = {0};
+    size_t length = srsPath_GetFull(path, buf, sizeof(buf));
+    result = (strncmp(root, buf, rootlen) == 0);
+    srsLOG_ERROR("strncmp(%s, %s, %zu) == %s && %zu == %zu", root, buf, rootlen, srsLOG_BOOLSTR(result), rootlen, length);
+    /* I register the following two cases as errors since this kind of input is probably exploitative */
+    if (result && (rootlen == length))
+    {
+      result = false;
+      srsERROR_SET(srsE_INPUT, "Path was equal to the root - why?");
+      goto done;
+    }
+    /* TODO Get rid of the #ifs/#endifs by fixing srsPath_GetFull and re-enabling the tests. */
+#if 0
+    if (result == false)
+    {
+#endif
+      if (strncmp("..", path, 2) == 0)
+      {
+        srsERROR_SET(srsE_INPUT, "Used relative path to go upward - exploit attempt?");
+        result = false;
+        goto done;
+      }
+#if 0
+    }
+#endif
+  }
+done:
+  srsDir_PopCWD(NULL);
+  if (result == true)
+  {
+    srsError_Reset();
+  }
+  return result;
+}
+
 bool srsModel_Card_GetPath(const char *deck_path, const char *card_id, char *path_out, size_t path_size)
 {
   int32_t needed = kioku_path_concat(path_out, path_size, deck_path, card_id);
