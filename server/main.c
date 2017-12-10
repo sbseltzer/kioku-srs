@@ -278,6 +278,8 @@ int main(int argc, char *argv[]) {
   mg_set_protocol_http_websocket(nc);
   s_http_server_opts.enable_directory_listing = "yes";
 
+  printf("\n%s %s\n\n", srsFUNCTION_NAME, __FUNCTION__);
+
   srsLOG_PRINT("Starting RESTful server on port %s, serving %s", s_http_port,
          s_http_server_opts.document_root);
 
