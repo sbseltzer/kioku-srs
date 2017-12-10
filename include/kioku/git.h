@@ -12,13 +12,13 @@ typedef struct srsGIT_CREATE_OPTS_s {
   const char *first_commit_message;
 } srsGIT_CREATE_OPTS;
 
-#define srsGIT_CREATE_OPTS_DEFAULT {".gitignore", "", "Initial Commit"}
+#define srsGIT_CREATE_OPTS_INIT (srsGIT_CREATE_OPTS){".gitignore", "", "Initial Commit"}
 
 /**
  * Create a repository with a first file and initial commit.
  * This will update all git functions to operate on the new repository.
  * @param[in] path The path at which to create it, which represents a directory, and serve as the home of the .git folder. This can be a relative path.
- * @param[in] opts The options that specify how the repository is initialized. If NULL, it will be substituted with srsGIT_CREATE_OPTS_DEFAULT. If non-NULL but with some NULL parameters, the NULL parameters will be substituted with the corresponding value in srsGIT_CREATE_OPTS_DEFAULT.
+ * @param[in] opts The options that specify how the repository is initialized. If NULL, it will be substituted with srsGIT_CREATE_OPTS_INIT. If non-NULL but with some NULL parameters, the NULL parameters will be substituted with the corresponding value in srsGIT_CREATE_OPTS_INIT.
  * @return Whether creation was successful.
  */
 kiokuAPI bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts);

@@ -54,7 +54,7 @@ TEST test_get_set_root(void)
   ASSERT_EQ(srsFAIL, srsModel_SetRoot("not-a-git-repo"));
   /* Test against a repository */
 
-  const srsGIT_CREATE_OPTS opts = srsGIT_CREATE_OPTS_DEFAULT;
+  const srsGIT_CREATE_OPTS opts = srsGIT_CREATE_OPTS_INIT;
   ASSERT_EQ(true, srsGit_Repo_Create("maybe-a-git-repo", opts));
   const char *git_full_path = srsGit_Repo_GetCurrent();
   ASSERT(git_full_path);

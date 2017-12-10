@@ -145,7 +145,7 @@ bool srsGit_Repo_Create(const char *path, const srsGIT_CREATE_OPTS opts)
   char *fullpath = NULL;
   /* Replace opts accordingly */
   /** TODO Test defaulting of opts */
-  srsGIT_CREATE_OPTS opts_default = srsGIT_CREATE_OPTS_DEFAULT;
+  srsGIT_CREATE_OPTS opts_default = srsGIT_CREATE_OPTS_INIT;
   srsGIT_CREATE_OPTS opts_copy = opts;
   opts_copy.first_file_name = opts_copy.first_file_name ? opts_copy.first_file_name : opts_default.first_file_name;
   opts_copy.first_commit_message = opts_copy.first_commit_message ? opts_copy.first_commit_message : opts_default.first_commit_message;
