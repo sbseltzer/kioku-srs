@@ -15,11 +15,11 @@ typedef struct _srsCARD_s
 /**
  * Returns a list of all cards for a deck.
  * TODO Some day we need to support decks with thousands of cards. We cannot allocate that much memory, and we have no real reason to. We will need a new function to replace this one that allows us to filter them.
- * @param[in] deck_path Path to the deck to get the cards from.
+ * @param[in] deck_name Name of the deck to get the cards from.
  * @param[out] count_out Place to store the number of elements in the returned array.
  * @return Unmanaged dynamically allocated card array, or NULL if no cards are found.
  */
-kiokuAPI srsCARD *srsCard_GetAll(const char *deck_path, size_t *count_out);
+kiokuAPI srsCARD *srsCard_GetAll(const char *deck_name, size_t *count_out);
 
 /**
  * Returns the content of a file associated with the specified card.

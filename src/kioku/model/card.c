@@ -63,17 +63,23 @@ static srsFILESYSTEM_VISIT_ACTION get_cards(const char *path, void *userdata)
 /**
  * Returns a list of all cards for a deck.
  * TODO Some day we need to support decks with thousands of cards. We cannot allocate that much memory, and we have no real reason to. We will need a new function to replace this one that allows us to filter them.
- * @param[in] deck_path Path to the deck to get the cards from.
+ * @param[in] deck_name Name of the deck to get the cards from.
  * @param[out] count_out Place to store the number of elements in the returned array.
  * @return Unmanaged dynamically allocated card array, or NULL if no cards are found.
  */
-srsCARD *srsCard_GetAll(const char *deck_path, size_t *count_out)
+srsCARD *srsCard_GetAll(const char *deck_name, size_t *count_out)
 {
   bool ok = false;
   srsMEMSTACK list = {0};
   const char *cwd = NULL;
 
-  if (deck_path == NULL)
+  if (srsModel_GetRoot() == NULL)
+  {
+    srsERROR_SET(srsE_API, "Model Root not set!");
+    return false;
+  }
+
+  if (deck_name == NULL)
   {
     srsERROR_SET(srsFAIL, "Deck path is NULL");
     goto done;
@@ -85,13 +91,13 @@ srsCARD *srsCard_GetAll(const char *deck_path, size_t *count_out)
     goto done;
   }
 
-  if (!srsDir_Exists(deck_path))
+  if (!srsModel_ExistsInRoot(deck_name))
   {
-    srsERROR_SET(srsFAIL, "Deck path does not exist");
+    srsERROR_SET(srsFAIL, "Deck does not exist");
     goto done;
   }
 
-  cwd = srsDir_PushCWD(deck_path);
+  cwd = srsDir_PushCWD(deck_name);
   if (cwd == NULL)
   {
     srsERROR_SET(srsFAIL, "Unable to push CWD");
