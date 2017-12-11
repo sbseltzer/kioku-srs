@@ -160,50 +160,6 @@ bool srsModel_ExistsInRoot(const char *path)
   return result;
 }
 
-#if 0
-bool srsModel_IsPathInRoot(const char *path)
-{
-  if (srsModel_GetRoot() == NULL)
-  {
-    srsERROR_SET(srsE_API, "Model Root not set!");
-    return false;
-  }
-  if (path == NULL)
-  {
-    srsERROR_SET(srsE_INPUT, "Path was NULL");
-    return false;
-  }
-  bool result = false;
-  const char *root = srsModel_GetRoot();
-  git_buf rootbuf = {0};
-  size_t rootlen = strlen(root);
-  const char *path_to_root = srsDir_PushCWD(root);
-  if (path_to_root != NULL)
-  {
-    int error = git_repository_discover(&rootbuf, path, 0, NULL);
-    if (error != 0)
-    {
-      const git_error *error_struct = giterr_last();
-      srsASSERT(error_struct != NULL);
-      srsERROR_SET(srsFAIL, error_struct->message);
-      result = false;
-    }
-    else
-    {
-      srsLOG_PRINT("Discovered root repo: %s", rootbuf.ptr);
-      result = strcmp(rootbuf.ptr, root) == 0;
-      if (!result)
-      {
-        srsERROR_SET(srsE_INPUT, "Discovered a root repo, but it was not the model root!");
-      }
-    }
-    srsDir_PopCWD(NULL);
-  }
-  git_buf_free(&rootbuf); /* returned path data must be freed after use */
-  return result;
-}
-#endif
-
 bool srsModel_Card_GetPath(const char *deck_path, const char *card_id, char *path_out, size_t path_size)
 {
   int32_t needed = kioku_path_concat(path_out, path_size, deck_path, card_id);
