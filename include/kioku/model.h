@@ -44,6 +44,15 @@ kiokuAPI const char *srsModel_GetRoot();
 kiokuAPI bool srsModel_IsPathInRoot(const char *path);
 
 /**
+ * See if a valid filesystem entity is inside the model root. Values that resolve to the model root do not count as "in" it. Used primarily for input validation.
+ * Once the model root is set, the model API ignores current working directory, doing everything from the model root.
+ * That includes relative path input to this function.
+ * @param[in] path An absolute or relative path. Relative paths are counted as relative to the root, NOT the current working directory.
+ * @return True if it's within the root path, false if it's not. If root path is not set, it will return false with error data set.
+ */
+kiokuAPI bool srsModel_ExistsInRoot(const char *path);
+
+/**
  * Get the next card ID for a deck.
  * @param[in] deck_path Path to the deck to get the next card ID of.
  * @param[out] card_id_out Place to store the ID string. Must be large enough to include a null-terminator.

@@ -71,6 +71,95 @@ const char *srsModel_GetRoot()
   return srsModel_ROOT_PATH;
 }
 
+bool srsModel_ExistsInRoot(const char *path)
+{
+  if (srsModel_GetRoot() == NULL)
+  {
+    srsERROR_SET(srsE_API, "Model Root not set!");
+    return false;
+  }
+  if (path == NULL)
+  {
+    srsERROR_SET(srsE_INPUT, "Path was NULL");
+    return false;
+  }
+  const char *root = srsModel_GetRoot();
+  size_t rootlen = strlen(root);
+  bool result = false;
+  char *cur_search_from = strdup(path);
+  git_buf rootbuf = {0};
+  const char *path_to_root = srsDir_PushCWD(root);
+  if (path_to_root != NULL)
+  {
+    /* Put this in a while loop with breaks in it so we can continue searching upward after hitting a potential subrepo */
+    while (true)
+    {
+      /* Asssumption: this returns a full path */
+      int error = git_repository_discover(&rootbuf, cur_search_from, 0, NULL);
+      if (error != 0)
+      {
+        const git_error *error_struct = giterr_last();
+        srsASSERT(error_struct != NULL);
+        srsERROR_SET(srsFAIL, error_struct->message);
+        result = false;
+        break;
+      }
+      else
+      {
+        /* See if we found the root, or if it was some other repo to continue up from */
+        result = (strncmp(rootbuf.ptr, root, rootlen) == 0);
+        srsLOG_PRINT("Discovered a repo: %s (%s model root)", rootbuf.ptr, srsLOG_IS_ISNT(result));
+        if (result)
+        {
+          break;
+        }
+        /* Convert to workdir */
+        char *repo_segment = strstr(rootbuf.ptr, "/.git/");
+        if (repo_segment != NULL)
+        {
+          repo_segment[0] = '\0';
+          /* Go out of workdir */
+          char *lastsep = strrchr(rootbuf.ptr, '/');
+          if (lastsep != NULL)
+          {
+            *lastsep = '\0';
+            /* Retry */
+            free(cur_search_from);
+            cur_search_from = NULL;
+            cur_search_from = strdup(rootbuf.ptr);
+            srsLOG_PRINT("Continuing search from %s", cur_search_from);
+            continue;
+          }
+        }
+        /* Something prevents us from going up further */
+        srsERROR_SET(srsE_INPUT, "Discovered a root repo, but it was not the model root");
+        result = false;
+        break;
+      }
+    }
+    srsDir_PopCWD(NULL);
+  }
+  /* Do a final check to see if this WAS the root dir, since that's not really "in" it. */
+  if (result)
+  {
+    const char *fullpath = srsDir_PushCWD(path);
+    srsLOG_PRINT("Root found: %s - testing against %s", root, fullpath);
+    if (fullpath)
+    {
+      /* We check against strlen's fullpath since it may be missing a trailing '/' (I haven't specified whether CWD does or doesn't) */
+      if (strncmp(root, fullpath, strlen(fullpath)) == 0)
+      {
+        srsERROR_SET(srsE_INPUT, "Model Root is not technically \"in\" the root!");
+        result = false;
+      }
+      srsDir_PopCWD(NULL);
+    }
+  }
+  free(cur_search_from);
+  git_buf_free(&rootbuf); /* returned path data must be freed after use */
+  return result;
+}
+
 #if 0
 bool srsModel_IsPathInRoot(const char *path)
 {

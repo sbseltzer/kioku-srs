@@ -133,79 +133,82 @@ TEST test_card_getnextid(void)
   PASS();
 }
 
-TEST test_ispathinroot(void)
+TEST TestExistsInRoot(void)
 {
-  SKIP();
-#if 0
   srsModel_SetRoot(NULL);
 
   /* Test some input before root is set */
-
   srsError_Reset();
-  ASSERT_EQ(false, srsModel_IsPathInRoot(NULL));
+  ASSERT_EQ(false, srsModel_ExistsInRoot(NULL));
   ASSERT_EQ(srsE_API, srsError_Get().code);
 
   srsError_Reset();
-  ASSERT_EQ(false, srsModel_IsPathInRoot("abc"));
+  ASSERT_EQ(false, srsModel_ExistsInRoot("abc"));
   ASSERT_EQ(srsE_API, srsError_Get().code);
 
   srsError_Reset();
-  ASSERT_EQ(false, srsModel_IsPathInRoot(".."));
+  ASSERT_EQ(false, srsModel_ExistsInRoot(".."));
   ASSERT_EQ(srsE_API, srsError_Get().code);
 
   srsError_Reset();
-  ASSERT_EQ(false, srsModel_IsPathInRoot(TESTDIR"/path/to/root"));
+  ASSERT_EQ(false, srsModel_ExistsInRoot(TESTDIR"/path/to/root"));
   ASSERT_EQ(srsE_API, srsError_Get().code);
 
+  /* Make a repo */
   srsGit_Repo_Create(TESTDIR"/path/to/root", srsGIT_CREATE_OPTS_INIT);
   srsModel_SetRoot(TESTDIR"/path/to/root");
 
   /* Test null input */
   srsError_Reset();
-  ASSERT_EQ(false, srsModel_IsPathInRoot(NULL));
+  ASSERT_EQ(false, srsModel_ExistsInRoot(NULL));
   ASSERT_EQ(srsE_INPUT, srsError_Get().code);
 
   const char *root = srsModel_GetRoot();
+  ASSERT(root);
   srsLOG_PRINT("Root = %s", root);
   srsLOG_PRINT("Test Root = %s", TESTDIR"/path/to/root");
-  /* Test root path */
-  ASSERT_EQ(false,  srsModel_IsPathInRoot(root));
-  ASSERT_EQ(false,  srsModel_IsPathInRoot(TESTDIR"//path/to/root"));
-  ASSERT_EQ(false,  srsModel_IsPathInRoot(TESTDIR"/path/to/root/"));
+  /* Test various forms of the root path */
+  ASSERT_EQ(false,  srsModel_ExistsInRoot(root));
+  ASSERT_EQ(false,  srsModel_ExistsInRoot(TESTDIR"//path/to/root"));
+  ASSERT_EQ(false,  srsModel_ExistsInRoot(TESTDIR"/path/to/root/"));
+  ASSERT_EQ(false,  srsModel_ExistsInRoot(TESTDIR"/path/to/root/../root"));
+  ASSERT_EQ(false,  srsModel_ExistsInRoot(TESTDIR"/path/to/root/../root/"));
   /* Test out of root paths */
-  ASSERT_EQ(false,  srsModel_IsPathInRoot(TESTDIR));
+  ASSERT_EQ(false,  srsModel_ExistsInRoot(TESTDIR));
   /* Test something that looks like root path but would misbehave for naive strcmp implementations */
-  ASSERT_EQ(false, srsModel_IsPathInRoot(TESTDIR"path/to/rootabc"));
+  srsFile_Create(TESTDIR"path/to/rootabc/def");
+  ASSERT_EQ(true, srsFile_Exists(TESTDIR"path/to/rootabc/def"));
+  ASSERT_EQ(false, srsModel_ExistsInRoot(TESTDIR"path/to/rootabc/def"));
 
   /* Test valid absolute paths */
-  ASSERT_EQ(true,  srsModel_IsPathInRoot(TESTDIR"/path/to/root/abc"));
-  ASSERT_EQ(true,  srsModel_IsPathInRoot(TESTDIR"/path/to/root/abc/def"));
+  srsFile_Create(TESTDIR"/path/to/root/abc/def");
+  ASSERT_EQ(true, srsFile_Exists(TESTDIR"/path/to/root/abc/def"));
+  ASSERT_EQ(true,  srsModel_ExistsInRoot(TESTDIR"/path/to/root/abc/"));
+  ASSERT_EQ(true,  srsModel_ExistsInRoot(TESTDIR"/path/to/root/abc/def"));
+  ASSERT_EQ(true,  srsModel_ExistsInRoot(TESTDIR"/path/to/root/abc"));
 
   /* Test valid relative paths */
-  ASSERT_EQ(true,  srsModel_IsPathInRoot("./abc"));
-  ASSERT_EQ(true,  srsModel_IsPathInRoot("abc"));
+  srsDir_SetCWD(root);
+  ASSERT_EQ(true,  srsModel_ExistsInRoot("./abc"));
+  ASSERT_EQ(true,  srsModel_ExistsInRoot("./abc/"));
+  ASSERT_EQ(true,  srsModel_ExistsInRoot("./abc/def"));
+  ASSERT_EQ(true,  srsModel_ExistsInRoot("abc"));
+  ASSERT_EQ(true,  srsModel_ExistsInRoot("abc/def"));
 
-  /* Right now the dependency on srsPath_GetFull is screwing these over */
   /* Test invalid relative paths */
-  /* TODO do an error check for why on all the falses */
-  ASSERT_EQ(false,  srsModel_IsPathInRoot("."));
-#if 0
-  ASSERT_EQ(false,  srsModel_IsPathInRoot("../root"));
-  ASSERT_EQ(false,  srsModel_IsPathInRoot(".."));
-  ASSERT_EQ(false,  srsModel_IsPathInRoot("../abc"));
+  ASSERT_EQ(false,  srsModel_ExistsInRoot("."));
+  ASSERT_EQ(false,  srsModel_ExistsInRoot("./abc/ghi"));
+  ASSERT_EQ(false,  srsModel_ExistsInRoot("abc/ghi"));
+  ASSERT_EQ(false,  srsModel_ExistsInRoot("../root"));
+  ASSERT_EQ(false,  srsModel_ExistsInRoot(".."));
+  ASSERT_EQ(true, srsFile_Create(TESTDIR"path/to/notroot"));
+  ASSERT_EQ(false,  srsModel_ExistsInRoot("../notroot"));
 
-  /* Test more valid relative paths that LOOKED like they could've been invalid */
-  ASSERT_EQ(true,  srsModel_IsPathInRoot("../root/abc"));
-
-/* TODO Get rid of the following in favor of above once srsPath_GetFull is fixed */
-#else
-  ASSERT_EQ(false,  srsModel_IsPathInRoot("../root"));
-  ASSERT_EQ(false,  srsModel_IsPathInRoot(".."));
-  ASSERT_EQ(false,  srsModel_IsPathInRoot("../abc"));
-  ASSERT_EQ(false,  srsModel_IsPathInRoot("../root/abc"));
-#endif
+  /* Test more valid relative paths that LOOKED like they could've been INVALID */
+  ASSERT_EQ(true,  srsModel_ExistsInRoot("../root/abc"));
+  ASSERT_EQ(true,  srsModel_ExistsInRoot("../root/abc/def"));
+  ASSERT_EQ(true,  srsModel_ExistsInRoot("../notroot/../root/abc/def"));
   PASS();
-#endif
 }
 
 /* Suites can group multiple tests with common setup. */
@@ -213,7 +216,7 @@ SUITE(the_suite) {
   RUN_TEST(test_card_getpath);
   RUN_TEST(test_card_getnextid);
   RUN_TEST(test_get_set_root);
-  RUN_TEST(test_ispathinroot);
+  RUN_TEST(TestExistsInRoot);
 }
 
 /* Add definitions that need to be in the test runner's main file. */
