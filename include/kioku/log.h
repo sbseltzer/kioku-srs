@@ -17,7 +17,9 @@
 #include <stdio.h> /* FILE, vfprintf, fopen, fclose */
 #include <stdarg.h> /* va_list */
 
-#define srsLOG_BOOLSTR(expr) ((expr) ? "true" : "false")
+#define srsLOG_TRUE_FALSE(expr) ((expr) ? "true" : "false")
+#define srsLOG_YES_NO(expr) ((expr) ? "yes" : "no")
+#define srsLOG_IS_ISNT(expr) ((expr) ? "is" : "isn't")
 
 kiokuAPI FILE *srsLog_GetHandle();
 
