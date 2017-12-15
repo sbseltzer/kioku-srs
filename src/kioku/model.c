@@ -4,6 +4,7 @@
 #include "kioku/log.h"
 #include "kioku/string.h"
 #include "kioku/debug.h"
+#include "kioku/result.h"
 #include "kioku/error.h"
 
 #include "parson.h"
@@ -12,6 +13,11 @@
 #include "git2.h"
 
 #include <string.h>
+
+#define srsMODEL_DECKS_DIRNAME "decks"
+#define srsMODEL_CARDS_DIRNAME "cards"
+#define srsMODEL_META_FILENAME ".meta"
+#define srsMODEL_CREATE_OPTS (srsGIT_CREATE_OPTS){srsMODEL_META_FILENAME, "MODEL", "Initialized"}
 
 static bool kioku_model_load_userlist()
 {
@@ -49,6 +55,15 @@ srsRESULT srsModel_SetRoot(const char *path)
   {
     return srsFAIL;
   }
+  if (srsDir_PushCWD(path))
+  {
+    bool ok = srsFile_Exists(srsMODEL_DECKS_DIRNAME "/" srsMODEL_META_FILENAME);
+    srsDir_PopCWD(NULL);
+    if (!ok)
+    {
+      return srsFAIL;
+    }
+  }
   free(srsModel_ROOT_PATH);
   srsModel_ROOT_PATH = NULL;
   srsRESULT result = srsGit_Repo_Open(path);
@@ -69,6 +84,72 @@ srsRESULT srsModel_SetRoot(const char *path)
 const char *srsModel_GetRoot()
 {
   return srsModel_ROOT_PATH;
+}
+
+bool srsModel_IsValidRoot(const char *path)
+{
+  bool result = false;
+  if (srsDir_PushCWD(path))
+  {
+    bool model_exists = srsFile_Exists(srsMODEL_META_FILENAME);
+    if (!model_exists)
+    {
+      srsERROR_SET(srsFAIL, "Path does not contain a model metadata file");
+      result = model_exists;
+    }
+    else
+    {
+      bool decks_exists = srsFile_Exists(srsMODEL_DECKS_DIRNAME"/"srsMODEL_META_FILENAME);
+      if (!decks_exists)
+      {
+        srsERROR_SET(srsFAIL, "Path does not contain a deck metadata file");
+      }
+      else
+      {
+        /* TODO check file contents */
+      }
+      result = decks_exists;
+    }
+    srsDir_PopCWD(NULL);
+  }
+  return result;
+}
+
+srsRESULT srsModel_CreateRoot(const char *path)
+{
+  srsRESULT result = srsOK;
+  srsGIT_CREATE_OPTS opts = srsMODEL_CREATE_OPTS;
+  bool ok = srsGit_Repo_Create(path, opts);
+  if (!ok)
+  {
+    srsERROR_SET(srsFAIL, "Failed to create repository for model");
+    result = srsFAIL;
+  }
+  else
+  {
+    if (srsDir_PushCWD(path))
+    {
+      result = srsFile_Create(srsMODEL_DECKS_DIRNAME"/"srsMODEL_META_FILENAME) ? srsOK : srsFAIL;
+      srsDir_PopCWD(NULL);
+    }
+  }
+  return result;
+}
+
+srsRESULT srsModel_CreateAndSetRoot(const char *path)
+{
+  srsRESULT create_result = srsModel_CreateRoot(path);
+  if (create_result != srsOK)
+  {
+    return srsFAIL;
+  }
+  srsRESULT set_result = srsModel_SetRoot(path);
+  if (set_result != srsOK)
+  {
+    /** TODO delete created root repo if it can't be set */
+    return srsFAIL;
+  }
+  return srsOK;
 }
 
 bool srsModel_ExistsInRoot(const char *path)

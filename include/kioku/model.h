@@ -35,6 +35,14 @@ kiokuAPI srsRESULT srsModel_SetRoot(const char *path);
 kiokuAPI const char *srsModel_GetRoot();
 
 /**
+ * Check to see if the path is to a valid model root directory.
+ * This is only true if it's a workdir of a git repository and contains known metadata files that are characteristic of the model.
+ * @param[in] path An absolute or relative path. This is relative to the CWD.
+ * @return True if it's a valid root, false if it's not. Error data will be set to indicate why it's invalid.
+ */
+kiokuAPI bool srsModel_IsValidRoot(const char *path);
+
+/**
  * See if a valid filesystem entity is inside the model root. Values that resolve to the model root do not count as "in" it. Used primarily for input validation.
  * Once the model root is set, the model API ignores current working directory, doing everything from the model root.
  * That includes relative path input to this function.
@@ -42,6 +50,20 @@ kiokuAPI const char *srsModel_GetRoot();
  * @return True if it's within the root path, false if it's not. If root path is not set, it will return false with error data set.
  */
 kiokuAPI bool srsModel_ExistsInRoot(const char *path);
+
+/**
+ * Attempt to create an empty model root.
+ * @param[in] path An absolute or relative path. This is relative to the CWD.
+ * @return srsOK if it succeeds.
+ */
+kiokuAPI srsRESULT srsModel_CreateRoot(const char *path);
+
+/**
+ * Attempt to create an empty model root and then set it. Shorthand for calling @ref srsModel_CreateRoot followed by @ref srsModel_SetRoot.
+ * @param[in] path An absolute or relative path. This is relative to the CWD.
+ * @return srsOK if it succeeds.
+ */
+kiokuAPI srsRESULT srsModel_CreateAndSetRoot(const char *path);
 
 /**
  * Get the next card ID for a deck.
