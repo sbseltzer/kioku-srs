@@ -60,6 +60,11 @@ static srsFILESYSTEM_VISIT_ACTION get_cards(const char *path, void *userdata)
   return srsFILESYSTEM_VISIT_CONTINUE;
 }
 
+bool srsDeck_IsValidName(const char *deck_name)
+{
+  return (deck_name == NULL || strchr(deck_name, '\\') || strchr(deck_name, '/'));
+}
+
 /**
  * Returns a list of all cards for a deck.
  * TODO Some day we need to support decks with thousands of cards. We cannot allocate that much memory, and we have no real reason to. We will need a new function to replace this one that allows us to filter them.
@@ -71,50 +76,66 @@ srsCARD *srsCard_GetAll(const char *deck_name, size_t *count_out)
 {
   bool ok = false;
   srsMEMSTACK list = {0};
-  const char *cwd = NULL;
+  const char *root_path = NULL;
+  const char *deck_path = NULL;
 
+  /* Check API state */
   if (srsModel_GetRoot() == NULL)
   {
     srsERROR_SET(srsE_API, "Model Root not set!");
     return false;
   }
 
-  if (deck_name == NULL)
-  {
-    srsERROR_SET(srsFAIL, "Deck path is NULL");
-    goto done;
-  }
-
+  /* Check input */
   if (count_out == NULL)
   {
     srsERROR_SET(srsFAIL, "Count output is NULL");
     goto done;
   }
+  if (!srsDeck_IsValidName(deck_name))
+  {
+    srsERROR_SET(srsFAIL, "Invalid deck name");
+    goto done;
+  }
 
+  /* Open model root */
+  root_path = srsDir_PushCWD(srsModel_GetRoot());
+  if (root_path == NULL)
+  {
+    srsERROR_SET(srsFAIL, "Unable to set CWD to model root");
+    goto done;
+  }
+
+  /* Try to open deck */
   if (!srsModel_ExistsInRoot(deck_name))
   {
     srsERROR_SET(srsFAIL, "Deck does not exist");
     goto done;
   }
-
-  cwd = srsDir_PushCWD(deck_name);
-  if (cwd == NULL)
+  deck_path = srsDir_PushCWD(deck_name);
+  if (deck_path == NULL)
   {
     srsERROR_SET(srsFAIL, "Unable to push CWD");
     goto done;
   }
 
+  /* Check for cards */
   if (!srsDir_Exists("cards"))
   {
     srsERROR_SET(srsFAIL, "Deck path does not contain a cards directory");
     goto done;
   }
 
+  /* List cards */
   srsMemStack_Init(&list, sizeof(srsCARD), 16);
   ok = srsFileSystem_Iterate("cards", (void *)&list, get_cards);
 
 done:
-  if (cwd != NULL)
+  if (root_path != NULL)
+  {
+    srsDir_PopCWD(NULL);
+  }
+  if (deck_path != NULL)
   {
     srsDir_PopCWD(NULL);
   }
