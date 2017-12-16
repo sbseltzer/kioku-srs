@@ -62,7 +62,7 @@ static srsFILESYSTEM_VISIT_ACTION get_cards(const char *path, void *userdata)
 
 bool srsDeck_IsValidName(const char *deck_name)
 {
-  return (deck_name == NULL || strchr(deck_name, '\\') || strchr(deck_name, '/'));
+  return !(deck_name == NULL || strchr(deck_name, '\\') || strchr(deck_name, '/'));
 }
 
 /**
