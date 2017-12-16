@@ -159,8 +159,7 @@ TEST TestExistsInRoot(void)
   ASSERT_EQ(srsE_API, srsError_Get().code);
 
   /* Make a repo */
-  srsGit_Repo_Create(TESTDIR"/path/to/root", srsGIT_CREATE_OPTS_INIT);
-  srsModel_SetRoot(TESTDIR"/path/to/root");
+  srsModel_CreateAndSetRoot(TESTDIR"/path/to/root");
 
   /* Test null input */
   srsError_Reset();
