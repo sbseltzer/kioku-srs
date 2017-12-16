@@ -70,6 +70,13 @@ TEST test_card(void)
   srsCARD *cards = NULL;
   size_t count = 0;
 
+  srsLOG_PRINT("starting without root");
+  srsModel_SetRoot(NULL);
+
+  /* Make sure things fail before a root is present */
+  srsERROR_CLEAR();
+  ASSERT_EQ(NULL, srsCard_GetAll(".", &count));
+  ASSERT_EQ(srsE_API, srsError_Get().code);
   /* Null deck path; Null count output */
   srsERROR_CLEAR();
   ASSERT_EQ(NULL, srsCard_GetAll(NULL, NULL));
@@ -84,6 +91,13 @@ TEST test_card(void)
   srsERROR_CLEAR();
   ASSERT_EQ(NULL, srsCard_GetAll(".", NULL));
   ASSERT_EQ(srsFAIL, srsError_Get().code);
+
+  srsLOG_PRINT("testing input with root not set");
+
+  /* Model root not set */
+  srsERROR_CLEAR();
+  ASSERT_EQ(NULL, srsCard_GetAll(".", &count));
+  ASSERT_EQ(srsE_API, srsError_Get().code);
 
   /* Missing deck path */
   srsERROR_CLEAR();
