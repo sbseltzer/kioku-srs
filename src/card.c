@@ -1,4 +1,4 @@
-#include "kioku/model/card.h"
+#include "kioku/card.h"
 #include "kioku/filesystem.h"
 #include "kioku/schedule.h"
 #include "kioku/datastructure.h"

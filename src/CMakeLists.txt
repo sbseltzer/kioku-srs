@@ -7,7 +7,7 @@ add_library( kioku ${LIBRARY_TYPE}
                    schedule.c
                    string.c
                    model.c
-                   model/card.c
+                   card.c
                    controller.c
                    rest.c
                    server.c

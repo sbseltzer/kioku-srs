@@ -1,5 +1,5 @@
-#ifndef _KIOKU_MODEL_CARD_H
-#define _KIOKU_MODEL_CARD_H
+#ifndef _KIOKU_CARD_H
+#define _KIOKU_CARD_H
 
 #include "kioku/schedule.h"
 #include "kioku/result.h"
@@ -37,4 +37,4 @@ kiokuAPI char *srsCard_GetContent(srsCARD card, const char *file);
  */
 kiokuAPI srsRESULT srsCard_FreeArray(srsCARD *cards, size_t count);
 
-#endif /* _KIOKU_MODEL_CARD_H */
+#endif /* _KIOKU_CARD_H */
