@@ -220,49 +220,17 @@ if (NOT MSVC)
    endif()
 endif ()
 message("${KIOKU_LIBS}")
-add_library( kioku ${LIBRARY_TYPE}
-                   src/kioku/error.c
-                   src/kioku/log.c
-                   src/kioku/datastructure.c
-                   src/kioku/filesystem.c
-                   src/kioku/git.c
-                   src/kioku/schedule.c
-                   src/kioku/string.c
-                   src/kioku/model.c
-                   src/kioku/model/card.c
-                   src/kioku/controller.c
-                   src/kioku/rest.c
-                   src/kioku/server.c
-                   extern/parson/parson.c
-                   )
-target_link_libraries( kioku ${KIOKU_LIBS} )
-# Edited from https://github.com/commontk/Log4Qt/blob/patched/CMakeLists.txt#L116
-if (NOT MSVC)
-   include(CheckCCompilerFlag)
-   if (BUILD_SHARED_LIBS)
-      CHECK_C_COMPILER_FLAG("-fPIC" HAS_FPIC)
-      IF( HAS_FPIC AND CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
-          SET_TARGET_PROPERTIES(kioku PROPERTIES COMPILE_FLAGS "-fPIC")
-      ENDIF()
-   endif()
-endif ()
+
+# Library
+add_subdirectory(src)
 
 find_library( KIOKU_LIBRARY_PATH kioku ${LIBRARY_OUTPUT_DIRECTORY})
 target_include_directories(kioku PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
+# Server
 if (BUILD_SERVER)
-  add_executable( kioku-server
-                  server/main.c
-                  extern/mongoose/mongoose.c
-                  extern/parson/parson.c
-                  )
-  target_link_libraries( kioku-server kioku ${KIOKU_LIBS})
-  add_dependencies( kioku-server kioku )
+  add_subdirectory(server)
 endif()
-
-# TODO Separate CMakeLists.txt into other subdirectories
-#add_subdirectory(src)
-#add_subdirectory(server)
 
 if (BUILD_TESTS)
    enable_testing()
