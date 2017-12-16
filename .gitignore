@@ -18,3 +18,4 @@ extern/install
 build/
 Testing/
 LOG.txt
+*.stackdump
