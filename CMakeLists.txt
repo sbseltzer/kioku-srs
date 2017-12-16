@@ -4,8 +4,8 @@ project (kioku C)
 
 OPTION (BUILD_SHARED_LIBS "Build Shared Library (OFF for Static)" ON)
 OPTION (BUILD_TESTS "Build Tests" ON)
-OPTION (BUILD_SERVER "Build default server implementation" ON)
-OPTION (BUILD_LUA "Build Lua" ON)
+OPTION (BUILD_SERVER "Build default server implementation" OFF)
+OPTION (BUILD_LUA "Build Lua" OFF)
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
