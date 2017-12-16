@@ -33,15 +33,15 @@ typedef struct _srsMEMSTACK_s
 
 #define srsMEMSTACK_PRINT(stack_struct)                                 \
   do {                                                                  \
-    srsLOG_NOTIFY(kiokuSTRING_LF                                        \
-                  "memstack {"kiokuSTRING_LF                            \
-                  "  element_size: %zu"kiokuSTRING_LF                    \
-                  "  capacity: %zu"kiokuSTRING_LF                        \
-                  "  count: %zu"kiokuSTRING_LF                           \
-                  "  memory: %p"kiokuSTRING_LF                          \
-                  "  top: %p"kiokuSTRING_LF                             \
-                  "}"kiokuSTRING_LF,                                    \
-                  stack_struct.element_size, stack_struct.capacity, stack_struct.count, stack_struct.memory, stack_struct.top); \
+    srsLOG_PRINT(kiokuSTRING_LF                                         \
+                 "memstack {"kiokuSTRING_LF                             \
+                 "  element_size: %zu"kiokuSTRING_LF                    \
+                 "  capacity: %zu"kiokuSTRING_LF                        \
+                 "  count: %zu"kiokuSTRING_LF                           \
+                 "  memory: %p"kiokuSTRING_LF                           \
+                 "  top: %p"kiokuSTRING_LF                              \
+                 "}"kiokuSTRING_LF,                                     \
+                 stack_struct.element_size, stack_struct.capacity, stack_struct.count, stack_struct.memory, stack_struct.top); \
   } while (0)
 
 /**

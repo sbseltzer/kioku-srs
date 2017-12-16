@@ -606,9 +606,9 @@ TEST TestGetFullPath(void)
   char expected_fullpath[srsPATH_MAX];
   char path[srsPATH_MAX];
   kioku_path_concat(expected_fullpath, sizeof(expected_fullpath), TESTDIR, "a");
-  srsLOG_NOTIFY("Check GetFull expecting %s", expected_fullpath);
+  srsLOG_PRINT("Check GetFull expecting %s", expected_fullpath);
   ASSERT(0 != srsPath_GetFull("a", path, sizeof(path)));
-  srsLOG_NOTIFY("Check GetFull against %s", path);
+  srsLOG_PRINT("Check GetFull against %s", path);
   /** TODO At some point we must specify whether trailing slashes will be returned by these functions */
   if (expected_fullpath[strlen(expected_fullpath)] == '/')
   {
@@ -622,9 +622,9 @@ TEST TestGetFullPath(void)
 
   /* Test a known non-existent directory */
   kioku_path_concat(expected_fullpath, sizeof(expected_fullpath), TESTDIR, "i-do-not-exist");
-  srsLOG_NOTIFY("Check GetFull expecting %s", expected_fullpath);
+  srsLOG_PRINT("Check GetFull expecting %s", expected_fullpath);
   ASSERT(0 != srsPath_GetFull("i-do-not-exist", path, sizeof(path)));
-  srsLOG_NOTIFY("Check GetFull against %s", path);
+  srsLOG_PRINT("Check GetFull against %s", path);
   /** TODO At some point we must specify whether trailing slashes will be returned by these functions */
   if (expected_fullpath[strlen(expected_fullpath)] == '/')
   {
@@ -672,7 +672,7 @@ TEST TestSetGetCWD(void)
 
   /* Try getting the CWD and check it against the low-level system CWD */
   ASSERT(srsDir_GetSystemCWD(system_cwd, sizeof(system_cwd)));
-  srsLOG_NOTIFY("System CWD: %s", system_cwd);
+  srsLOG_PRINT("System CWD: %s", system_cwd);
   cwd = srsDir_GetCWD();
   ASSERT_STR_EQ(system_cwd, cwd);
   /* Store for later check */
@@ -683,7 +683,7 @@ TEST TestSetGetCWD(void)
   ASSERT(srsFile_Create("./testdir/file"));
   ASSERT(srsDir_SetCWD("./testdir"));
   ASSERT(srsDir_GetSystemCWD(system_cwd, sizeof(system_cwd)));
-  srsLOG_NOTIFY("System CWD: %s", system_cwd);
+  srsLOG_PRINT("System CWD: %s", system_cwd);
   cwd = srsDir_GetCWD();
   ASSERT_STR_EQ(system_cwd, cwd);
 
@@ -696,7 +696,7 @@ TEST TestSetGetCWD(void)
 
 TEST TestPushPopCWD(void)
 {
-  srsLOG_NOTIFY("Testing dir traversal");
+  srsLOG_PRINT("Testing dir traversal");
   const char *dirs[] = {
     "./a",
     "./a/b",
@@ -710,31 +710,31 @@ TEST TestPushPopCWD(void)
   const char *cwd = NULL;
   int32_t up_index = -1;
 
-  srsLOG_NOTIFY("NULL tests");
+  srsLOG_PRINT("NULL tests");
   ASSERT_EQ(NULL,  srsDir_PushCWD(NULL));
   ASSERT_EQ(false, srsDir_PopCWD(NULL));
 
   /* Clean up directories from previous tests */
   size_t numdirs = sizeof(dirs) / sizeof(dirs[0]);
-  srsLOG_NOTIFY("Pre-test cleanup for %zu dirs", numdirs);
+  srsLOG_PRINT("Pre-test cleanup for %zu dirs", numdirs);
   int32_t i = 0;
   for (i = numdirs - 1; i >= 0; i--)
   {
-    srsLOG_NOTIFY("Attempting a remove on %s", dirs[i]);
+    srsLOG_PRINT("Attempting a remove on %s", dirs[i]);
     srsPath_Remove(dirs[i]);
-    srsLOG_NOTIFY("Attempted a remove on %s", dirs[i]);
+    srsLOG_PRINT("Attempted a remove on %s", dirs[i]);
     ASSERT_FALSE(srsPath_Exists(dirs[i]));
   }
 
-  srsLOG_NOTIFY("Attempt to get the CWD");
+  srsLOG_PRINT("Attempt to get the CWD");
   cwd = srsDir_GetCWD();
   ASSERT(cwd != NULL);
-  srsLOG_NOTIFY("Store cwd %s in buffer", cwd);
+  srsLOG_PRINT("Store cwd %s in buffer", cwd);
   strcpy(start_path, cwd);
-  srsLOG_NOTIFY("Stored cwd as %s in buffer", start_path);
+  srsLOG_PRINT("Stored cwd as %s in buffer", start_path);
   for (i = 0; i < numdirs; i++)
   {
-    srsLOG_NOTIFY("Test pushpop for #%d: %s", i, dirs[i]);
+    srsLOG_PRINT("Test pushpop for #%d: %s", i, dirs[i]);
     ASSERT(srsDir_Create(dirs[i]));
     /* Grab the full path of the new dir before we change to it. */
     ASSERT(0 != srsPath_GetFull(dirs[i], path, sizeof(path)));
@@ -750,7 +750,7 @@ TEST TestPushPopCWD(void)
     /* Now pop the directory and make sure we returned to the right place */
     ASSERT(srsDir_PopCWD(NULL));
     cwd = srsDir_GetCWD();
-    srsLOG_NOTIFY("Check whether %s < %s (%d < 0)", cwd, path, strcmp(cwd, path));
+    srsLOG_PRINT("Check whether %s < %s (%d < 0)", cwd, path, strcmp(cwd, path));
     ASSERT(strcmp(cwd, path) < 0);
     ASSERT_STR_EQ(start_path, cwd);
   }
@@ -760,7 +760,7 @@ TEST TestPushPopCWD(void)
     cwd = srsDir_GetCWD();
     ASSERT(cwd != NULL);
     strcpy(start_path, cwd);
-    srsLOG_NOTIFY(cwd);
+    srsLOG_PRINT(cwd);
   }
   /* Get the expected parent directory */
   {
@@ -773,7 +773,7 @@ TEST TestPushPopCWD(void)
   {
     cwd = srsDir_SetCWD("..");
     ASSERT(cwd != NULL);
-    srsLOG_NOTIFY(cwd);
+    srsLOG_PRINT(cwd);
     ASSERT_STR_EQ(path, cwd);
   }
   /* Test getting the current directory against the return value of setting it */
@@ -788,7 +788,7 @@ TEST TestPushPopCWD(void)
   {
     cwd = srsDir_SetCWD(start_path);
     ASSERT(cwd != NULL);
-    srsLOG_NOTIFY(cwd);
+    srsLOG_PRINT(cwd);
     strcpy(path, cwd);
   }
 
@@ -797,7 +797,7 @@ TEST TestPushPopCWD(void)
     /* Pop everything off the stack */
     while(srsDir_PopCWD(NULL));
     /* Pop without anything on the stack */
-    srsLOG_NOTIFY("Pop without anything on the stack");
+    srsLOG_PRINT("Pop without anything on the stack");
     ASSERT_FALSE(srsDir_PopCWD(NULL));
     /* Ensure that pop didn't change the CWD */
     cwd = srsDir_GetCWD();
@@ -812,7 +812,7 @@ TEST TestPushPopCWD(void)
     ASSERT(up_index > 0);
     strcpy(path, cwd);
     path[up_index] = '\0';
-    srsLOG_NOTIFY("Expecting to go up: %s", path);
+    srsLOG_PRINT("Expecting to go up: %s", path);
     /* Go up one directory via push */
     cwd = srsDir_PushCWD("..");
     ASSERT(cwd != NULL);
@@ -820,29 +820,29 @@ TEST TestPushPopCWD(void)
     /* Go up another directory via push*/
     cwd = srsDir_PushCWD("..");
     ASSERT(cwd != NULL);
-    srsLOG_NOTIFY(cwd);
+    srsLOG_PRINT(cwd);
     ASSERT(strcmp(path, cwd) != 0); /** @todo Use a < or > here as appropriate. */
     /* Go back */
-    srsLOG_NOTIFY("This time when we pop, try storing the result");
+    srsLOG_PRINT("This time when we pop, try storing the result");
     char *popped;
     ASSERT(srsDir_PopCWD(&popped));
     ASSERT(popped != NULL);
-    srsLOG_NOTIFY("Popped: %s", popped);
+    srsLOG_PRINT("Popped: %s", popped);
     ASSERT_STR_EQ(path, popped);
     free(popped);
     /* Calculate what the directory should have changed to */
     cwd = srsDir_GetCWD();
-    srsLOG_NOTIFY(cwd);
+    srsLOG_PRINT(cwd);
     ASSERT(srsDir_PopCWD(&popped));
     ASSERT(popped != NULL);
-    srsLOG_NOTIFY("Popped: %s", popped);
+    srsLOG_PRINT("Popped: %s", popped);
     free(popped);
     cwd = srsDir_GetCWD();
-    srsLOG_NOTIFY(cwd);
+    srsLOG_PRINT(cwd);
     ASSERT_FALSE(srsDir_PopCWD(&popped));
     ASSERT(popped == NULL);
     cwd = srsDir_GetCWD();
-    srsLOG_NOTIFY(cwd);
+    srsLOG_PRINT(cwd);
   }
 
   /* Test popping several directories */
@@ -860,17 +860,17 @@ struct filesystem_counter
 srsFILESYSTEM_VISIT_ACTION filesystem_counter_iterator(const char *path, void *userdata)
 {
   struct filesystem_counter *counter = ((struct filesystem_counter *)userdata);
-  srsLOG_NOTIFY("ITERATOR: VISTITING %s", path);
+  srsLOG_PRINT("ITERATOR: VISTITING %s", path);
   if (srsDir_Exists(path))
   {
     counter->numdirs++;
-    srsLOG_NOTIFY("ITERATOR: numdirs = %zu", counter->numdirs);
+    srsLOG_PRINT("ITERATOR: numdirs = %zu", counter->numdirs);
     return srsFILESYSTEM_VISIT_RECURSE;
   }
   else
   {
     counter->numfiles++;
-    srsLOG_NOTIFY("ITERATOR: numfiles = %zu", counter->numfiles);
+    srsLOG_PRINT("ITERATOR: numfiles = %zu", counter->numfiles);
   }
   return srsFILESYSTEM_VISIT_CONTINUE;
 }
@@ -902,7 +902,7 @@ TEST TestIteration(void)
   }
 
   /* Test bad input */
-  srsLOG_NOTIFY("TestIteration: Testing bad input");
+  srsLOG_PRINT("TestIteration: Testing bad input");
   ASSERT_EQ(false, srsFileSystem_Iterate(NULL, NULL, NULL));
   ASSERT_EQ(false, srsFileSystem_Iterate(dirs[0], NULL, NULL));
   ASSERT_EQ(false, srsFileSystem_Iterate(dirs[0], (void *)0xDEADBEEF, NULL));
@@ -910,7 +910,7 @@ TEST TestIteration(void)
   ASSERT_EQ(false, srsFileSystem_Iterate("not-a-directory-lol", (void *)0xDEADBEEF, &filesystem_counter_iterator));
 
   /* Test counting files and dirs */
-  srsLOG_NOTIFY("TestIteration: Testing counter");
+  srsLOG_PRINT("TestIteration: Testing counter");
   struct filesystem_counter counter = {0};
   ASSERT_EQ(true, srsFileSystem_Iterate(dirs[0], &counter, &filesystem_counter_iterator));
   /* We subtract 1 from numdirs because we start in dirs[0], so that one won't increment the counter */
@@ -950,7 +950,7 @@ int main(int argc, char **argv)
 {
   GREATEST_MAIN_BEGIN();      /* command-line options, initialization. */
 
-  srsLOG_NOTIFY("Max Path Length = %zu", (size_t)srsPATH_MAX);
+  srsLOG_PRINT("Max Path Length = %zu", (size_t)srsPATH_MAX);
   RUN_SUITE(test_filesystem);
 
   GREATEST_MAIN_END();        /* display results */

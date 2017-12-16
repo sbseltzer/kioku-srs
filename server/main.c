@@ -70,7 +70,7 @@ static void handle_GetNextCard(struct mg_connection *nc, struct http_message *hm
   char *serialized_string = NULL;
   char deck_id[srsMODEL_DECK_ID_MAX] = {0};
   mg_get_http_var(&hm->query_string, "deck", deck_id, sizeof(deck_id));
-  srsLOG_NOTIFY("User attempting to open Deck %s from %s", deck_id, srsDir_GetCWD());
+  srsLOG_PRINT("User attempting to open Deck %s from %s", deck_id, srsDir_GetCWD());
   if (!srsDir_Exists(deck_id))
   {
     codestring = HTTP_BAD_REQUEST;

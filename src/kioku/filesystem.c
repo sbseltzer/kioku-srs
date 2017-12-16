@@ -126,7 +126,7 @@ const char *srsDir_SetCWD(const char *path)
   /* Attempt to change the directory, and if it succeeds cause the current directory to be reallocated */
   if ((path != NULL) && srsDir_SetSystemCWD(path))
   {
-    srsLOG_NOTIFY("Set CWD to %s - Directory Stack has been cleared", directory_current);
+    srsLOG_PRINT("Set CWD to %s - Directory Stack has been cleared", directory_current);
     return srsDir_GetCWD();
   }
   /* Failure to do the actual directory changing returns NULL */
@@ -145,7 +145,7 @@ const char *srsDir_PushCWD(const char *path)
   /* Initialize the dirstack if it isn't */
   if (dirstack.memory == NULL)
   {
-    srsLOG_NOTIFY("Directory Stack appears to be uninitialized - run srsMemStack_Init");
+    srsLOG_PRINT("Directory Stack appears to be uninitialized - run srsMemStack_Init");
     bool ok = srsMemStack_Init(&dirstack, sizeof(char *), -1);
     srsASSERT(ok);
     srsASSERT(dirstack.element_size > 0);
@@ -175,11 +175,11 @@ const char *srsDir_PushCWD(const char *path)
     directory_current = NULL;
     cwd = srsDir_GetCWD();
     srsASSERT(cwd != NULL);
-    srsLOG_NOTIFY("Pushed Directory (%s): CWD = %s", path, cwd);
+    srsLOG_PRINT("Pushed Directory (%s): CWD = %s", path, cwd);
   }
   else
   {
-    srsLOG_NOTIFY("Failed to change to directory %s - undo change to stack!", path);
+    srsLOG_PRINT("Failed to change to directory %s - undo change to stack!", path);
     bool ok = srsMemStack_Pop(&dirstack, NULL);
     /* TODO There may be a better way to handle this */
     srsASSERT(ok);
@@ -199,7 +199,7 @@ bool srsDir_PopCWD(char **popped)
   bool popped_to_valid_dir = false;
   if (dirstack.memory == NULL)
   {
-    srsLOG_NOTIFY("Initializing memory stack before popping, perhaps against our better judgement...");
+    srsLOG_PRINT("Initializing memory stack before popping, perhaps against our better judgement...");
     bool ok = srsMemStack_Init(&dirstack, sizeof(char *), -1);
     srsASSERT(ok);
   }
@@ -224,7 +224,7 @@ bool srsDir_PopCWD(char **popped)
     }
     else
     {
-      srsLOG_NOTIFY("Popped Directory (%s): CWD = %s", directory_current, change_to);
+      srsLOG_PRINT("Popped Directory (%s): CWD = %s", directory_current, change_to);
       /* Reset CWD so next call to srsDir_GetCWD regenerates it */
       free(directory_current);
       directory_current = NULL;
@@ -607,7 +607,7 @@ bool srsDir_Create(const char *path)
       srsLOG_ERROR("Attempted to create dir `%s`, but a file with that name already exists!", create_dir);
       goto done;
     }
-    srsLOG_NOTIFY("Attempt to create dir `%s`", create_dir);
+    srsLOG_PRINT("Attempt to create dir `%s`", create_dir);
 #ifdef kiokuOS_WINDOWS
     ok = _mkdir(create_dir) == 0;
 #else
@@ -638,7 +638,7 @@ done:
   {
     if (!ok)
     {
-      srsLOG_NOTIFY("Failed to create final dir `%s`", create_dir);
+      srsLOG_PRINT("Failed to create final dir `%s`", create_dir);
     }
     free(create_dir);
   }
@@ -973,7 +973,7 @@ static bool srsFileSystem_Iterate_Internal(const char *dirpath, void *userdata, 
   {
     goto done;
   }
-  srsLOG_NOTIFY("Iterating in %s (%s)", dirpath, cwd);
+  srsLOG_PRINT("Iterating in %s (%s)", dirpath, cwd);
   result = true;
   while (dir.has_next)
   {
@@ -998,7 +998,7 @@ static bool srsFileSystem_Iterate_Internal(const char *dirpath, void *userdata, 
       }
       continue;
     }
-    srsLOG_NOTIFY("Visiting %s", file.name);
+    srsLOG_PRINT("Visiting %s", file.name);
     /* Perform one iteration to see what the user wants to do from here */
     srsFILESYSTEM_VISIT_ACTION action = iterate(file.name, userdata);
     switch(action)
@@ -1008,12 +1008,12 @@ static bool srsFileSystem_Iterate_Internal(const char *dirpath, void *userdata, 
       {
         if (file.is_dir)
         {
-          srsLOG_NOTIFY("RECURSE -> %s", file.name);
+          srsLOG_PRINT("RECURSE -> %s", file.name);
           /* Traverse into directory */
           result = srsFileSystem_Iterate_Internal(file.name, userdata, iterate, exit_out, depth_out);
           if (!result || *exit_out)
           {
-            srsLOG_NOTIFY("Breaking out of iteration (result = %s, exit = %s)", result ? "true" : "false", *exit_out ? "true" : "false");
+            srsLOG_PRINT("Breaking out of iteration (result = %s, exit = %s)", result ? "true" : "false", *exit_out ? "true" : "false");
             goto done;
           }
           break;
@@ -1023,19 +1023,19 @@ static bool srsFileSystem_Iterate_Internal(const char *dirpath, void *userdata, 
       /* The user wants to continue onto the next item */
       case srsFILESYSTEM_VISIT_CONTINUE:
       {
-        srsLOG_NOTIFY("CONTINUE processing %s (%s)", dirpath, cwd);
+        srsLOG_PRINT("CONTINUE processing %s (%s)", dirpath, cwd);
         break;
       }
       case srsFILESYSTEM_VISIT_STOP:
       {
         /* The user wants to break out of directory being traversed, which may mean picking up from another one. */
-        srsLOG_NOTIFY("STOP processing %s (%s)", dirpath, cwd);
+        srsLOG_PRINT("STOP processing %s (%s)", dirpath, cwd);
         goto done;
       }
       case srsFILESYSTEM_VISIT_EXIT:
       {
         *exit_out = true;
-        srsLOG_NOTIFY("EXIT all processing from %s (%s) upward", dirpath, cwd);
+        srsLOG_PRINT("EXIT all processing from %s (%s) upward", dirpath, cwd);
         goto done;
       }
     }
@@ -1066,7 +1066,7 @@ bool srsFileSystem_Iterate(const char *dirpath, void *userdata, srsFILESYSTEM_VI
   result = srsFileSystem_Iterate_Internal(dirpath, userdata, iterate, &exit_triggered, &depth);
   while (depth > 0)
   {
-    srsLOG_NOTIFY("Must pop %zu more directories to store CWD to what it was before srsFileSystem_Iterate was called", depth);
+    srsLOG_PRINT("Must pop %zu more directories to store CWD to what it was before srsFileSystem_Iterate was called", depth);
     /** TODO There's a serious problem with the @ref srsDir_PopCWD behaviour for inaccessible files being opaque. Not only could it screw up depth_out, but also cause the iterate function to behave unpredictably. */
     srsDir_PopCWD(NULL);
     depth--;

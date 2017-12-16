@@ -46,7 +46,7 @@ static bool srsMemStack_UpdateCapacity(srsMEMSTACK *stack)
   }
   if (set_capacity != stack->capacity)
   {
-    srsLOG_NOTIFY("Reallocating Memory Stack from element capacity of %zu to %zu", stack->capacity, set_capacity);
+    srsLOG_PRINT("Reallocating Memory Stack from element capacity of %zu to %zu", stack->capacity, set_capacity);
     mem = realloc(stack->memory, set_capacity * stack->element_size);
   }
 done:
@@ -81,7 +81,7 @@ bool srsMemStack_Init(srsMEMSTACK *stack, size_t element_size, int32_t initial_c
 done:
   if (!result && (stack != NULL))
   {
-    srsLOG_NOTIFY("Failed to initialize srsMEMSTACK - free any memory that was allocated and zero out the struct");
+    srsLOG_PRINT("Failed to initialize srsMEMSTACK - free any memory that was allocated and zero out the struct");
     free(stack->memory);
     memset(stack, 0, sizeof(*stack));
   }

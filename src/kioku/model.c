@@ -274,7 +274,7 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   /* Get content from .at file */
   char atindex_string[16] = {0};
   result = srsFile_GetContent(file_path, atindex_string, sizeof(atindex_string));
-  srsLOG_NOTIFY(".at = %s", atindex_string);
+  srsLOG_PRINT(".at = %s", atindex_string);
   if (!result)
   {
     return result;
@@ -306,7 +306,7 @@ bool srsModel_Card_GetNextID(const char *deck_path, char *card_id_buf, size_t ca
   {
     srsLOG_ERROR("%d line invalid", atindex);
   }
-  srsLOG_NOTIFY("%ld line: %s", atindex, linedata);
+  srsLOG_PRINT("%ld line: %s", atindex, linedata);
   if (card_id_buf_size < linelen + 1)
   {
     srsLOG_ERROR("Insufficient string size: %zu < %zu", card_id_buf_size, linelen);

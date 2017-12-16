@@ -60,7 +60,7 @@ bool srsString_ToU32(const char *string, int32_t *out)
   /* Stopped at an invalid character? */
   if (*end != '\0')
   {
-    srsLOG_NOTIFY("Result of strtol/strtoll stopped at an invalid character %c, but the prior digits will still be stored.", *end);
+    srsLOG_PRINT("Result of strtol/strtoll stopped at an invalid character %c, but the prior digits will still be stored.", *end);
   }
   /* Range check */
   if (number >= INT32_MAX || number <= INT32_MIN)

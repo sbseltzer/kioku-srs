@@ -7,14 +7,14 @@ TEST TestMemStack_InitAndFree(void)
 {
   srsMEMSTACK stack = {0};
   uint8_t value = 0;
-  srsLOG_NOTIFY("Testing bad input for memstack");
+  srsLOG_PRINT("Testing bad input for memstack");
   /* Test invalid input */
   ASSERT_FALSE(srsMemStack_Init(NULL, sizeof(value), -1));
   ASSERT_FALSE(srsMemStack_Init(&stack, 0, -1));
   ASSERT_FALSE(srsMemStack_FreeContents(NULL));
   ASSERT_FALSE(srsMemStack_FreeContents(&stack));
 
-  srsLOG_NOTIFY("Testing input defaulting for memstack");
+  srsLOG_PRINT("Testing input defaulting for memstack");
 
   /* Test that initial_capacity of -1 results in a minimum capacity being chosen */
   ASSERT(srsMemStack_Init(&stack, sizeof(value), -1));
@@ -26,7 +26,7 @@ TEST TestMemStack_InitAndFree(void)
   ASSERT_EQ(srsMEMSTACK_MINIMUM_CAPACITY, stack.capacity);
   ASSERT(srsMemStack_FreeContents(&stack));
 
-  srsLOG_NOTIFY("Testing results of free on memstack contents");
+  srsLOG_PRINT("Testing results of free on memstack contents");
   /* Test all members of stack with a few elements */
   int32_t capacity = 3;
   ASSERT(srsMemStack_Init(&stack, sizeof(value), capacity));
@@ -36,7 +36,7 @@ TEST TestMemStack_InitAndFree(void)
   ASSERT_EQ(capacity, stack.capacity);
   ASSERT_EQ(sizeof(value), stack.element_size);
   ASSERT(srsMemStack_FreeContents(&stack));
-  srsLOG_NOTIFY("Testing results of free on memstack contents");
+  srsLOG_PRINT("Testing results of free on memstack contents");
   srsMEMSTACK zeroed = {0};
   ASSERT_EQ(0, memcmp(&stack, &zeroed, sizeof(zeroed)));
   PASS();
@@ -59,14 +59,14 @@ TEST TestMemStack_Push1Pop1(void)
   ASSERT(srsMemStack_Init(&stack, sizeof(value_in), 1));
   srsMEMSTACK original_state = stack;
 
-  srsLOG_NOTIFY("Testing push on smallest possible stack capacity");
+  srsLOG_PRINT("Testing push on smallest possible stack capacity");
   srsMEMSTACK_PRINT(stack);
   ASSERT(srsMemStack_Push(&stack, &value_in));
   srsMEMSTACK_PRINT(stack);
   ASSERT_EQ_FMT(stack.memory, stack.top, "%p");
   ASSERT_EQ_FMT(value_in, *((uint8_t *)stack.top), "%u");
 
-  srsLOG_NOTIFY("Testing pop from smallest stack capacity");
+  srsLOG_PRINT("Testing pop from smallest stack capacity");
   ASSERT(srsMemStack_Pop(&stack, &value_out));
   srsMEMSTACK_PRINT(stack);
   ASSERT_EQ_FMT(value_in, value_out, "%u");
@@ -89,7 +89,7 @@ TEST TestMemStack_PopFromEmptyFailsWithNoOutput(void)
   ASSERT(srsMemStack_Init(&stack, sizeof(value_in), 1));
   srsMEMSTACK original_state = stack;
 
-  srsLOG_NOTIFY("Testing pop from empty stack");
+  srsLOG_PRINT("Testing pop from empty stack");
   ASSERT_EQ(false, srsMemStack_Pop(&stack, &value_out));
   ASSERT_EQ_FMT(0, value_out, "%u");
   ASSERT_EQ_FMT(original_state.top, stack.top, "%p");
@@ -120,7 +120,7 @@ TEST TestMemStack_Push4Pop4WorksAndIncreasesCapacity(void)
     /* See if count is what we expect */
     ASSERT_EQ_FMT(i-1, stack.count, "%zu");
     /* Push */
-    srsLOG_NOTIFY("Pushing value #%zu (%d)", i, value_in);
+    srsLOG_PRINT("Pushing value #%zu (%d)", i, value_in);
     ASSERT(srsMemStack_Push(&stack, &value_in));
     srsMEMSTACK_PRINT(stack);
     /* See if top of stack updated to expected value */
@@ -158,7 +158,7 @@ TEST TestMemStack_Push4Pop4WorksAndIncreasesCapacity(void)
     /* See if count is what we expect */
     ASSERT_EQ_FMT(i, stack.count, "%zu");
     /* Pop */
-    srsLOG_NOTIFY("Popping value #%zu (%d)", i, value_in);
+    srsLOG_PRINT("Popping value #%zu (%d)", i, value_in);
     ASSERT(srsMemStack_Pop(&stack, &value_out));
     srsMEMSTACK_PRINT(stack);
     /* See if we got the right value */

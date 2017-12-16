@@ -11,7 +11,7 @@ TEST TestSourcePath(void)
 
   /* Test this file */
   path = srsLog_GetSourcePath(__FILE__);
-  srsLOG_NOTIFY("Source Path: %s", path);
+  srsLOG_PRINT("Source Path: %s", path);
   ASSERT(strcmp(path, "test/log.c") == 0 || strcmp(path, "test\\log.c") == 0);
 
   /**
