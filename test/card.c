@@ -182,5 +182,7 @@ int main(int argc, char **argv) {
   /* Tests can also be gathered into test suites. */
   RUN_SUITE(the_suite);
 
+  srsERROR_LOG();
+
   GREATEST_MAIN_END();        /* display results */
 }
