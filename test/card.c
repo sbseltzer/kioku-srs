@@ -94,7 +94,7 @@ TEST test_card(void)
   ASSERT_EQ(NULL, srsCard_GetAll(NULL, &count));
   ASSERT_EQ(srsFAIL, srsError_Get().code);
 
-  /* Valid deck path; Null count output */
+  /* Non-null deck path; Null count output */
   srsERROR_CLEAR();
   ASSERT_EQ(NULL, srsCard_GetAll(".", NULL));
   ASSERT_EQ(srsFAIL, srsError_Get().code);
@@ -111,7 +111,7 @@ TEST test_card(void)
   ASSERT_EQ(NULL, srsCard_GetAll("missing-deck-path", &count));
   ASSERT_EQ(srsFAIL, srsError_Get().code);
 
-  /* Invalid deck path */
+  /* Invalid deck name */
   srsERROR_CLEAR();
   ASSERT_EQ(NULL, srsCard_GetAll("..", &count));
   ASSERT_EQ(srsFAIL, srsError_Get().code);
