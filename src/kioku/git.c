@@ -255,11 +255,7 @@ bool srsGit_Commit(const char *message)
   git_signature *me = NULL;
   git_result = git_signature_now(&me, "Me", "me@example.com");
   result = result && (git_result == 0);
-  if (!result)
-  {
-    srsLOG_ERROR("failed to create signature");
-    abort();
-  }
+  srsASSERT_MSG(result, "failed to create signature");
 
 	/**
 	 * Commit objects need a tree to point to and optionally one or more
@@ -270,11 +266,7 @@ bool srsGit_Commit(const char *message)
   /* git_result = git_reference_name_to_id(&oid, srsGit_REPO, "HEAD"); */
 	git_result = git_tree_lookup(&tree, srsGit_REPO, &oid);
   result = result && (git_result == 0);
-  if (!result)
-  {
-    srsLOG_ERROR("failed to lookup tree");
-    abort();
-  }
+  srsASSERT_MSG(result, "failed to lookup tree");
   git_result = git_repository_head_unborn(srsGit_REPO);
   result = result && (git_result == 0 || git_result == 1);
   if (git_result == 1)
