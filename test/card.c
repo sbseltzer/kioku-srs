@@ -77,6 +77,13 @@ TEST test_card(void)
   srsERROR_CLEAR();
   ASSERT_EQ(NULL, srsCard_GetAll(".", &count));
   ASSERT_EQ(srsE_API, srsError_Get().code);
+
+  srsLOG_PRINT("creating root");
+  ASSERT_EQ(srsOK, srsModel_CreateAndSetRoot("my-root"));
+  ASSERT(srsModel_GetRoot());
+
+  srsLOG_PRINT("testing null inputs");
+
   /* Null deck path; Null count output */
   srsERROR_CLEAR();
   ASSERT_EQ(NULL, srsCard_GetAll(NULL, NULL));
