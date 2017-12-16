@@ -139,13 +139,13 @@ done:
   {
     srsDir_PopCWD(NULL);
   }
-  if (!ok)
-  {
-    srsERROR_LOG();
-  }
   if (count_out != NULL)
   {
     *count_out = list.count;
+  }
+  if (!ok)
+  {
+    srsERROR_LOG();
   }
   /* We can safely lose reference to the list since the internal malloc'd memory will still exist */
   return list.memory;
