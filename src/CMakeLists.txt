@@ -1,16 +1,16 @@
 add_library( kioku ${LIBRARY_TYPE}
-                   kioku/error.c
-                   kioku/log.c
-                   kioku/datastructure.c
-                   kioku/filesystem.c
-                   kioku/git.c
-                   kioku/schedule.c
-                   kioku/string.c
-                   kioku/model.c
-                   kioku/model/card.c
-                   kioku/controller.c
-                   kioku/rest.c
-                   kioku/server.c
+                   error.c
+                   log.c
+                   datastructure.c
+                   filesystem.c
+                   git.c
+                   schedule.c
+                   string.c
+                   model.c
+                   model/card.c
+                   controller.c
+                   rest.c
+                   server.c
                    ${CMAKE_SOURCE_DIR}/extern/parson/parson.c
                    )
 target_link_libraries( kioku ${KIOKU_LIBS} )
