@@ -1,0 +1,14 @@
+opened anki
+selected user
+synced
+opened add dialog
+added text
+added tags
+clozed some text
+previewed it
+interacted with preview a bit
+closed preview
+edited some more text
+added more tags
+finished adding card
+synced
